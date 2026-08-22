@@ -133,7 +133,7 @@
   },
   "primaryTokenAttribute": "silk",
   "secondaryTokenAttribute": "",
-  "socket": false,
+  "socket": true,
   "url": "https://github.com/PainHog/SpideyHeist",
   "bugs": "https://github.com/PainHog/SpideyHeist/issues",
   "manifest": "https://github.com/PainHog/SpideyHeist/releases/latest/download/system.json",

@@ -100,7 +100,12 @@ async function buildPack(def) {
         sort,
         ownership: { default: 0 }
       };
-      if (def.type === "Actor") { doc.items = []; doc.prototypeToken = {}; }
+      // Threats track no player resource, so disable the token's default
+      // (silk) bar to avoid an empty bar rendering over creature tokens.
+      if (def.type === "Actor") {
+        doc.items = [];
+        doc.prototypeToken = { bar1: { attribute: "" }, bar2: { attribute: "" } };
+      }
       batch.put(`!${def.collection}!${id}`, doc);
       count++;
     }

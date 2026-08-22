@@ -16,6 +16,7 @@ import { HeistyDice } from "./helpers/dice.mjs";
 import { HeistyAlert, AlertMeter, registerAlertSettings } from "./helpers/alert.mjs";
 import { CharacterBuilder } from "./apps/character-builder.mjs";
 import { importContent, autoImportContent } from "./helpers/content.mjs";
+import { registerSocket } from "./helpers/socket.mjs";
 
 /* -------------------------------------------- */
 /*  Init                                        */
@@ -78,6 +79,9 @@ Hooks.once("init", function () {
 /* -------------------------------------------- */
 
 Hooks.once("ready", async function () {
+  // Player character-creation proxy (players lack ACTOR_CREATE by default).
+  registerSocket();
+
   // Populate empty compendiums from bundled source, if needed (GM only, once).
   await autoImportContent();
 
@@ -100,7 +104,8 @@ Hooks.once("ready", async function () {
 /* -------------------------------------------- */
 
 Hooks.on("renderActorDirectory", (app, html) => {
-  if (!game.user.can("ACTOR_CREATE")) return;
+  // Shown to everyone: players who lack ACTOR_CREATE are handled by the GM
+  // socket proxy when they finish the builder.
   const root = html instanceof HTMLElement ? html : html?.[0];
   if (!root || root.querySelector(".heisty-build-spider")) return;
 

@@ -9,6 +9,7 @@
  */
 
 import { HEISTY } from "../config.mjs";
+import { requestSpiderCreation } from "../helpers/socket.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -463,23 +464,40 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const flaw = this._flaws.find(x => x.id === this.state.flawId);
     if (flaw) embedded.push(flaw.toObject());
 
-    let actor;
-    try {
-      actor = await Actor.create({
-        name: this.state.name.trim(),
-        type: "spider",
-        img: speciesDoc?.img ?? "systems/heisty-spideys/assets/icons/spider.svg",
-        system: systemData,
-        items: embedded
-      });
-    } catch (err) {
-      console.error("Heisty Spideys | Failed to create spider:", err);
-      ui.notifications?.error("Something went wrong creating the spider — check the console.");
+    const name = this.state.name.trim();
+    const actorData = {
+      name,
+      type: "spider",
+      img: speciesDoc?.img ?? "systems/heisty-spideys/assets/icons/spider.svg",
+      system: systemData,
+      items: embedded
+    };
+
+    // GMs (and players granted "Create New Actors") create directly.
+    if (game.user.can("ACTOR_CREATE")) {
+      let actor;
+      try {
+        actor = await Actor.create(actorData);
+      } catch (err) {
+        console.error("Heisty Spideys | Failed to create spider:", err);
+        ui.notifications?.error("Something went wrong creating the spider — check the console.");
+        return;
+      }
+      ui.notifications?.info(`${actor.name} has joined the crew.`);
+      await this.close();
+      actor.sheet?.render(true);
       return;
     }
 
-    ui.notifications?.info(`${actor.name} has joined the crew.`);
+    // Players without that permission ask the active Storyteller to finalize it.
+    if (!game.users?.activeGM) {
+      ui.notifications?.error(
+        "No Storyteller is online to bring your spider in. Ask your GM to enable “Create New Actors,” or try again once they're connected."
+      );
+      return;
+    }
+    requestSpiderCreation(actorData);
+    ui.notifications?.info(`Sent ${name} to the Storyteller to bring into the crew…`);
     await this.close();
-    actor.sheet?.render(true);
   }
 }

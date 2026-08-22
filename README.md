@@ -26,6 +26,7 @@ The official companion game system for **Heisty Spideys, First Edition** — bui
 ## Playing
 
 - **Build a spider:** open the **Actors** sidebar and click **🕷 Build a Spider**, or run the macro `game.heistySpideys.openBuilder()`. Walk the steps; the builder won't let you finish an illegal build. Hit **Create Spider** and the finished sheet opens.
+  - *Players and permissions:* Foundry doesn't grant players the "Create New Actors" permission by default. This system handles that automatically — when a player finishes the builder, the request is passed to the **online Storyteller (GM)**, who creates the spider and hands ownership back to the player (no action needed on the GM's part). If you'd rather let players create actors directly, turn on **Game Settings → Configure Permissions → Create New Actors** for the Player role. Either way works; if no GM is online, the player is told to try again when one is.
 - **Roll:** on the sheet, click a Skill name (Attribute + Skill) or an Attribute's die. Set the Difficulty (Successes needed) and any bonus/penalty dice; Vitality and the Alert are applied automatically. Results post a themed card to chat.
 - **Run the Alert:** as Storyteller, use the floating **Alert** meter (drag it anywhere) or the ±1/±2 buttons on any roll card. Set the location's Alert **Limit** to pick its difficulty (Easy 10 · Standard 8 · Hard 6 · Absurd 4 · Legendary 2).
 - **Threats:** drag any creature from the *Creature Compendium* onto a scene. Its sheet lists action pools — click to roll them against the crew.
