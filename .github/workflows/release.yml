@@ -36,17 +36,7 @@ jobs:
           fi
 
       - name: Stamp version into system.json
-        run: |
-          node -e '
-            const fs = require("fs");
-            const s = JSON.parse(fs.readFileSync("system.json", "utf8"));
-            s.version = process.env.VERSION;
-            // manifest stays on /latest/ so Foundry can detect future updates;
-            // download is pinned to this exact release's asset.
-            s.manifest = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/latest/download/system.json`;
-            s.download = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/v${process.env.VERSION}/system.zip`;
-            fs.writeFileSync("system.json", JSON.stringify(s, null, 2));
-          '
+        run: node tools/stamp-version.mjs
         env:
           VERSION: ${{ steps.vars.outputs.version }}
 
