@@ -188,7 +188,10 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
 
   async _prepareContext(options) {
     await this._loadPacks();
-    const context = await super._prepareContext(options);
+    // ApplicationV2 (non-document) may not define _prepareContext; guard the super call.
+    const context = (typeof super._prepareContext === "function")
+      ? await super._prepareContext(options)
+      : {};
 
     const current = this.tabGroups?.primary ?? "species";
     const bonus = this.speciesBonuses;
@@ -197,7 +200,7 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const sb = this.skillBudget();
     const validation = this.validate();
 
-    context.tabs = this._prepareTabs("primary");
+    context.tabs = this.#buildTabs(current);
     context.currentStep = current;
     context.stepOrder = CharacterBuilder.#STEP_ORDER;
     context.stepIndex = CharacterBuilder.#STEP_ORDER.indexOf(current);
@@ -294,6 +297,15 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const v = this.validate();
     const btn = this.element?.querySelector("[data-action='create']");
     if (btn) btn.disabled = !v.ok;
+  }
+
+  /** Build the tab render state ourselves (the wizard drives its own nav). */
+  #buildTabs(active) {
+    const out = {};
+    for (const t of CharacterBuilder.TABS.primary.tabs) {
+      out[t.id] = { ...t, group: "primary", active: t.id === active, cssClass: t.id === active ? "active" : "" };
+    }
+    return out;
   }
 
   /* -------------------------------------------- */

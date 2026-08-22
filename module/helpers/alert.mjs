@@ -86,6 +86,12 @@ export function registerAlertSettings() {
     default: true,
     onChange: () => ui.heistyAlert?.render()
   });
+  game.settings.register(HEISTY.id, "alertMeterPosition", {
+    scope: "client",
+    config: false,
+    type: Object,
+    default: null
+  });
 }
 
 /** The always-visible Alert meter HUD. */
@@ -95,7 +101,7 @@ export class AlertMeter extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ["heisty-spideys", "heisty-alert-meter"],
     tag: "section",
     window: { frame: false, positioned: true },
-    position: { width: 268, height: "auto", top: 70, left: 16 },
+    position: { width: 260, height: "auto", top: 96, left: 78 },
     actions: {
       bump: AlertMeter.#onBump,
       reset: AlertMeter.#onReset,
@@ -160,27 +166,43 @@ export class AlertMeter extends HandlebarsApplicationMixin(ApplicationV2) {
     if (grip) this.#enableDrag(grip);
   }
 
+  /** Apply the saved position the first time the meter is shown. */
+  _onFirstRender(context, options) {
+    super._onFirstRender?.(context, options);
+    let saved = null;
+    try { saved = game.settings.get(HEISTY.id, "alertMeterPosition"); } catch (e) { /* not ready */ }
+    if (saved && Number.isFinite(saved.top) && Number.isFinite(saved.left)) {
+      this.setPosition({ top: saved.top, left: saved.left });
+    }
+  }
+
+  #savePosition() {
+    const { top, left } = this.position;
+    if (!Number.isFinite(top) || !Number.isFinite(left)) return;
+    game.settings.set(HEISTY.id, "alertMeterPosition", { top, left }).catch(() => {});
+  }
+
   #enableDrag(handle) {
     handle.style.cursor = "grab";
-    handle.addEventListener("pointerdown", startEvent => {
-      startEvent.preventDefault();
-      handle.setPointerCapture?.(startEvent.pointerId);
-      handle.style.cursor = "grabbing";
-      const start = { x: startEvent.clientX, y: startEvent.clientY };
-      const origin = { top: this.position.top, left: this.position.left };
-      const onMove = moveEvent => {
-        this.setPosition({
-          left: origin.left + (moveEvent.clientX - start.x),
-          top: origin.top + (moveEvent.clientY - start.y)
-        });
+    handle.addEventListener("pointerdown", ev => {
+      // Left button only, and never start a drag from a control (toggle, buttons…).
+      if (ev.button !== 0 || ev.target.closest("button, a, input, select")) return;
+      ev.preventDefault();
+      const start = {
+        x: ev.clientX, y: ev.clientY,
+        top: this.position.top ?? 0, left: this.position.left ?? 0
       };
+      const onMove = e => this.setPosition({
+        left: start.left + (e.clientX - start.x),
+        top: start.top + (e.clientY - start.y)
+      });
       const onUp = () => {
-        handle.style.cursor = "grab";
-        window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("pointerup", onUp);
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onUp);
+        this.#savePosition();
       };
-      window.addEventListener("pointermove", onMove);
-      window.addEventListener("pointerup", onUp);
+      document.addEventListener("pointermove", onMove);
+      document.addEventListener("pointerup", onUp);
     });
   }
 

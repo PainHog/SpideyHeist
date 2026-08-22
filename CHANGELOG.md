@@ -2,6 +2,14 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.0.1] — Field fixes
+
+Fixes from first live play.
+
+### Fixed
+- **Character Builder wouldn't open.** As a non-document ApplicationV2 it called `super._prepareContext()`, which doesn't exist on the base class, so the render threw silently. Guarded the super call and now build the tab state directly instead of relying on a framework method. The launcher also surfaces any error instead of failing quietly.
+- **Alert meter couldn't be minimized and blocked the UI.** The whole header captured the pointer, swallowing the collapse-button click (and could break dragging). Rewrote the drag to ignore control clicks and use document listeners, moved the default position clear of the left toolbar, and the meter now remembers where you drag it.
+
 ## [1.0.0] — First Edition
 
 The first release of the Heisty Spideys Foundry VTT system.

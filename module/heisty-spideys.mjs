@@ -31,7 +31,17 @@ Hooks.once("init", function () {
     dice: HeistyDice,
     alert: HeistyAlert,
     CharacterBuilder,
-    openBuilder: () => new CharacterBuilder().render(true),
+    openBuilder: () => {
+      try {
+        return Promise.resolve(new CharacterBuilder().render(true)).catch(err => {
+          console.error("Heisty Spideys | Character Builder failed to render:", err);
+          ui.notifications?.error("The Character Builder hit an error — press F12 and check the console.");
+        });
+      } catch (err) {
+        console.error("Heisty Spideys | Character Builder failed to open:", err);
+        ui.notifications?.error("The Character Builder failed to open — press F12 and check the console.");
+      }
+    },
     importContent
   };
   CONFIG.HEISTY = HEISTY;
