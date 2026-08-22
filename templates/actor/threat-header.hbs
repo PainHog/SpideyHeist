@@ -1,0 +1,24 @@
+<header class="heisty-header threat-header">
+  <div class="portrait-wrap">
+    <img class="portrait threat-portrait" src="{{actor.img}}" data-action="editImage" data-edit="img"
+         alt="{{actor.name}}" title="Change portrait" />
+  </div>
+  <div class="identity">
+    <input class="spider-name threat-name" type="text" name="name" value="{{actor.name}}" placeholder="Threat name" />
+    <div class="threat-meta">
+      <label class="meta-field">
+        <span>Threat Level</span>
+        <input type="text" name="system.threatLevel" value="{{system.threatLevel}}" placeholder="Standard" />
+      </label>
+      <label class="meta-field">
+        <span>Speed</span>
+        <input type="number" min="0" name="system.speed.value" value="{{system.speed.value}}" />
+      </label>
+    </div>
+    <label class="meta-field wide">
+      <span>Alert Contribution</span>
+      <input type="text" name="system.alertContribution" value="{{system.alertContribution}}"
+             placeholder="+1 per round while active" />
+    </label>
+  </div>
+</header>

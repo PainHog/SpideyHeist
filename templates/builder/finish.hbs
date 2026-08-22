@@ -1,0 +1,32 @@
+<section class="tab builder-step step-finish" data-tab="finish" data-group="primary">
+  <div class="step-head"><h2>Name Your Spider</h2></div>
+  <p class="step-blurb">Names tend toward objects they've been near, things humans call them, or titles more dramatic than earned. One of the random results is just &ldquo;Gerald.&rdquo; You are allowed to be Gerald.</p>
+
+  <div class="name-row">
+    <input type="text" name="spiderName" value="{{state.name}}" placeholder="Spider name" />
+    <button type="button" class="btn-random" data-action="randomName"><i class="fa-solid fa-dice"></i> 2d6</button>
+    <input type="text" name="spiderPronouns" value="{{state.pronouns}}" placeholder="Pronouns (optional)" />
+  </div>
+
+  <div class="summary-card">
+    <h3 class="summary-title">{{summary.species}} &middot; {{summary.role}}</h3>
+    <div class="summary-stats">
+      {{#each summary.attributes}}<span class="sstat"><b>{{this.abbr}}</b> {{this.value}}</span>{{/each}}
+      <span class="sstat alt"><b>Speed</b> {{summary.speed}}</span>
+      <span class="sstat alt"><b>Silk</b> {{summary.silk}}</span>
+    </div>
+    <div class="summary-line"><strong>Perks:</strong>
+      {{#if summary.perks.length}}{{#each summary.perks}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}<span class="dim">none yet</span>{{/if}}
+    </div>
+    <div class="summary-line"><strong>Flaw:</strong> {{summary.flaw}}</div>
+  </div>
+
+  {{#unless validation.ok}}
+  <div class="validation">
+    <p class="validation-title"><i class="fa-solid fa-circle-exclamation"></i> Still to do</p>
+    <ul>{{#each validation.issues}}<li>{{this}}</li>{{/each}}</ul>
+  </div>
+  {{else}}
+  <p class="ready-note"><i class="fa-solid fa-circle-check"></i> Ready to run. Hit <strong>Create Spider</strong> below.</p>
+  {{/unless}}
+</section>

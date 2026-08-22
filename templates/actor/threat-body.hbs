@@ -1,0 +1,46 @@
+<section class="threat-body">
+
+  <div class="panel">
+    <h3 class="panel-title">Action Pools
+      <span class="panel-sub">click to roll &middot; each die 4+ is a Success</span>
+      {{#if editable}}<a class="panel-add" data-action="rollAdd" title="Add a pool"><i class="fa-solid fa-plus"></i></a>{{/if}}
+    </h3>
+    <div class="threat-rolls">
+      {{#each rolls}}
+      <div class="threat-roll" data-index="{{this.index}}">
+        <button type="button" class="roll-pool-btn" data-action="rollThreat" data-index="{{this.index}}"
+                title="Roll {{this.pool}}d6">
+          <span class="pool-num">{{this.pool}}</span><i class="fa-solid fa-dice-d6"></i>
+        </button>
+        <input class="roll-label" type="text" name="system.rolls.{{this.index}}.label" value="{{this.label}}" placeholder="Action" />
+        <input class="roll-value" type="number" min="0" name="system.rolls.{{this.index}}.pool" value="{{this.pool}}" />
+        <input class="roll-note" type="text" name="system.rolls.{{this.index}}.note" value="{{this.note}}" placeholder="note" />
+        {{#if @root.editable}}<a class="roll-remove" data-action="rollRemove" data-index="{{this.index}}" title="Remove"><i class="fa-solid fa-xmark"></i></a>{{/if}}
+      </div>
+      {{else}}
+      <p class="empty-hint">No action pools yet.</p>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="threat-fields">
+    {{#*inline "threatField"}}
+    <div class="panel threat-field">
+      <h3 class="panel-title">{{label}}</h3>
+      {{#if @root.editable}}
+      <prose-mirror name="system.{{field}}" button="true" editable="true" toggled="false"
+                    value="{{value}}">{{{enriched}}}</prose-mirror>
+      {{else}}
+      <div class="prose">{{{enriched}}}</div>
+      {{/if}}
+    </div>
+    {{/inline}}
+
+    {{> threatField label="Passive" field="passive" value=system.passive enriched=enriched.passive}}
+    {{> threatField label="Senses" field="senses" value=system.senses enriched=enriched.senses}}
+    {{> threatField label="Escalation" field="escalation" value=system.escalation enriched=enriched.escalation}}
+    {{> threatField label="Weakness" field="weakness" value=system.weakness enriched=enriched.weakness}}
+    {{> threatField label="Notes" field="notes" value=system.notes enriched=enriched.notes}}
+    {{> threatField label="Description" field="biography" value=system.biography enriched=enriched.biography}}
+  </div>
+</section>

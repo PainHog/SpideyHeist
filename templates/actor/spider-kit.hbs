@@ -1,0 +1,124 @@
+<section class="tab heisty-tab kit-tab" data-tab="kit" data-group="primary">
+
+  <div class="kit-columns">
+    <div class="kit-col">
+      <div class="panel kit-feature">
+        <h3 class="panel-title">Species</h3>
+        {{#if species}}
+        <div class="feature-card" data-item-id="{{species.id}}">
+          <div class="feature-head">
+            <img class="feature-icon" src="{{species.img}}" alt="{{species.name}}" />
+            <div class="feature-title">
+              <span class="feature-name">{{species.name}}</span>
+              <span class="feature-meta">Speed {{species.speed}}{{#if species.bonusSummary}} &middot; {{species.bonusSummary}}{{/if}}</span>
+            </div>
+            <div class="feature-controls">
+              <a data-action="itemEdit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+              <a data-action="itemDelete" title="Remove"><i class="fa-solid fa-trash"></i></a>
+            </div>
+          </div>
+          <div class="feature-ability"><strong>{{species.ability}}</strong>{{{species.abilityText}}}</div>
+        </div>
+        {{else}}
+        <p class="empty-hint">No Species yet. Drag one from the <em>Spider Species</em> compendium, or use the Character Builder.</p>
+        {{/if}}
+      </div>
+
+      <div class="panel kit-feature">
+        <h3 class="panel-title">Crew Role</h3>
+        {{#if role}}
+        <div class="feature-card" data-item-id="{{role.id}}">
+          <div class="feature-head">
+            <img class="feature-icon" src="{{role.img}}" alt="{{role.name}}" />
+            <div class="feature-title">
+              <span class="feature-name">{{role.name}}</span>
+              <span class="feature-meta">Signature Move</span>
+            </div>
+            <div class="feature-controls">
+              <a data-action="itemEdit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+              <a data-action="itemDelete" title="Remove"><i class="fa-solid fa-trash"></i></a>
+            </div>
+          </div>
+          <div class="feature-ability"><strong>{{role.signature}}</strong>{{{role.signatureText}}}</div>
+        </div>
+        {{else}}
+        <p class="empty-hint">No Role yet. Drag one from the <em>Crew Roles</em> compendium.</p>
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="kit-col">
+      <div class="panel">
+        <h3 class="panel-title">Perks</h3>
+        <ul class="item-list">
+          {{#each perks}}
+          <li class="item-entry" data-item-id="{{this.id}}">
+            <details data-sync>
+              <summary>
+                <img class="item-icon" src="{{this.img}}" alt="" />
+                <span class="item-name">{{this.name}}</span>
+                <span class="item-controls">
+                  <a data-action="itemEdit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                  <a data-action="itemDelete" title="Remove"><i class="fa-solid fa-trash"></i></a>
+                </span>
+              </summary>
+              <div class="item-body">{{{this.effect}}}</div>
+            </details>
+          </li>
+          {{else}}
+          <li class="empty-hint">No Perks. Pick two from your Role in the compendium or Builder.</li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">Flaw</h3>
+        <ul class="item-list">
+          {{#each flaws}}
+          <li class="item-entry" data-item-id="{{this.id}}">
+            <details data-sync>
+              <summary>
+                <img class="item-icon" src="{{this.img}}" alt="" />
+                <span class="item-name">{{this.name}}</span>
+                <span class="item-controls">
+                  <a data-action="itemEdit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                  <a data-action="itemDelete" title="Remove"><i class="fa-solid fa-trash"></i></a>
+                </span>
+              </summary>
+              <div class="item-body">{{{this.effect}}}</div>
+            </details>
+          </li>
+          {{else}}
+          <li class="empty-hint">No Flaw yet. Every spider has exactly one.</li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">Silk &amp; Gadgets
+          <a class="panel-add" data-action="itemCreate" data-type="gadget" title="Add a gadget"><i class="fa-solid fa-plus"></i></a>
+        </h3>
+        <ul class="item-list">
+          {{#each gadgets}}
+          <li class="item-entry" data-item-id="{{this.id}}">
+            <details data-sync>
+              <summary>
+                <img class="item-icon" src="{{this.img}}" alt="" />
+                <span class="item-name">{{this.name}}</span>
+                {{#if this.consumable}}<span class="item-uses">{{this.uses}} use{{#if (heNeq this.uses 1)}}s{{/if}}</span>{{/if}}
+                <span class="item-controls">
+                  <a data-action="itemEdit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                  <a data-action="itemDelete" title="Remove"><i class="fa-solid fa-trash"></i></a>
+                </span>
+              </summary>
+              <div class="item-body">{{{this.description}}}</div>
+            </details>
+          </li>
+          {{else}}
+          <li class="empty-hint">Nothing in the bag yet.</li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

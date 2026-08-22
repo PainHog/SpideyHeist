@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Build / packaging output
+dist/
+*.zip
+
+# Foundry LevelDB runtime noise ONLY — the numbered *.log files are the write-
+# ahead log and DO contain pack data, so they must be committed. Ignore just the
+# lock file and the human-readable debug log.
+packs/**/LOCK
+packs/**/LOG
+packs/**/LOG.old

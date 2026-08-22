@@ -1,0 +1,92 @@
+[
+  {
+    "key": "arachnophobe-magnet",
+    "name": "Arachnophobe Magnet",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 1,
+      "effect": "<p>Humans notice you more than other spiders. The Difficulty to be spotted by humans is reduced by 1 at all times.</p><p><em>A documented phenomenon.</em></p>"
+    }
+  },
+  {
+    "key": "overconfident",
+    "name": "Overconfident",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 2,
+      "effect": "<p>Once per heist, the ST may make you volunteer for something you shouldn't have, because you said you could handle it. Spend 1 SP to delay it a round &mdash; you still do it.</p><p><em>You've handled worse. (You haven't handled this.)</em></p>"
+    }
+  },
+  {
+    "key": "loud",
+    "name": "Loud",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 3,
+      "effect": "<p>Operationally loud. At Alert 5+, all your Stealth rolls have their Difficulty increased by 1.</p><p><em>Not physically loud. Operationally loud. Things break near you.</em></p>"
+    }
+  },
+  {
+    "key": "dramatic",
+    "name": "Dramatic",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 4,
+      "effect": "<p>You cannot simply do a thing. Once per heist, the ST may require your action to involve unnecessary spectacle, raising the Alert by 1. Spend 1 SP to delay one round; it still fires.</p><p><em>Everything is an event. You know. You can't stop.</em></p>"
+    }
+  },
+  {
+    "key": "allergic-to-dust",
+    "name": "Allergic to Dust",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 5,
+      "effect": "<p>You'll sneeze at a bad moment at least once per heist &mdash; the ST picks when. When you do, make a Stealth roll (Difficulty 3) or the Alert rises by 1. Either way, everyone in earshot knows something happened.</p>"
+    }
+  },
+  {
+    "key": "compulsive-planner",
+    "name": "Compulsive Planner",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 6,
+      "effect": "<p>Once per heist, the ST may freeze your action for a round while you insist on revising the plan. If the crew acts anyway during that round, you lose 1 SP from the stress. Spend 1 SP to delay the trigger a round &mdash; the freeze still happens.</p><p><em>You must revise the plan, ideally right now, ideally out loud.</em></p>"
+    }
+  },
+  {
+    "key": "butterfingers",
+    "name": "Butterfingers",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 7,
+      "effect": "<p>Once per heist, at a moment of the ST's choosing while you're holding an item or the loot, you lose your grip. It lands in a random adjacent square. Someone must use an Action to recover it before moving on. You earn 1 SP for the trouble.</p><p><em>You will drop the thing. The important thing. At the important moment.</em></p>"
+    }
+  },
+  {
+    "key": "fear-of-vacuums",
+    "name": "Fear of Vacuums",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 8,
+      "effect": "<p>Vacuums cause immediate panic. When one activates in your scene, make a NERVE roll (Difficulty 3) or lose your action.</p><p><em>Vacuums cause immediate, total panic.</em></p>"
+    }
+  },
+  {
+    "key": "easily-distracted",
+    "name": "Easily Distracted",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 9,
+      "effect": "<p>Shiny objects, interesting smells, and fascinating details derail you. Once per heist, the ST can delay your action by one round.</p>"
+    }
+  },
+  {
+    "key": "show-off",
+    "name": "Show-Off",
+    "img": "systems/heisty-spideys/assets/icons/crack.svg",
+    "system": {
+      "rollValue": 10,
+      "effect": "<p>Once per heist, the ST may require the Difficulty 4 version of a roll instead of the standard, because you chose the flashier approach. On a Critical, earn 1 SP &mdash; the crowd appreciated it. Spend 1 SP to delay the trigger one round.</p><p><em>You'll take the flashier, harder approach. Sometimes it even works.</em></p>"
+    }
+  }
+]

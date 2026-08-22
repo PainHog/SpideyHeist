@@ -1,0 +1,40 @@
+<div class="alert-meter-inner band-{{state.key}} {{#if collapsed}}collapsed{{/if}}">
+  <div class="am-grip heisty-alert-grip">
+    <span class="am-title"><i class="fa-solid fa-triangle-exclamation"></i> The Alert</span>
+    <button type="button" class="am-toggle" data-action="toggle" title="Collapse / expand">
+      <i class="fa-solid fa-chevron-{{#if collapsed}}down{{else}}up{{/if}}"></i>
+    </button>
+  </div>
+
+  {{#unless collapsed}}
+  <div class="am-body">
+    <div class="am-readout">
+      <span class="am-value">{{value}}</span><span class="am-limit">/ {{limit}}</span>
+      <span class="am-band">{{state.label}}</span>
+    </div>
+
+    <div class="am-bar">
+      <div class="am-fill" style="width:{{pct}}%"></div>
+      {{#if atLimit}}<span class="am-locked">FULL ALERT</span>{{/if}}
+    </div>
+
+    <p class="am-desc">{{state.description}}</p>
+
+    {{#if isGM}}
+    <div class="am-controls">
+      <button type="button" data-action="bump" data-delta="-1" title="Critical Success (−1)">−1</button>
+      <button type="button" data-action="bump" data-delta="1" title="Failure / spotted (+1)">+1</button>
+      <button type="button" data-action="bump" data-delta="2" title="Botch / spider Out (+2)">+2</button>
+      <input type="number" name="alertValue" value="{{value}}" min="0" title="Set exact Alert" />
+      <button type="button" data-action="reset" title="Reset to 0"><i class="fa-solid fa-rotate-left"></i></button>
+    </div>
+    <div class="am-limit-row">
+      <label>Limit</label>
+      <select name="alertLimit">
+        {{#each limits}}<option value="{{this.value}}" {{#if (heEq this.value ../limit)}}selected{{/if}}>{{this.label}} ({{this.value}})</option>{{/each}}
+      </select>
+    </div>
+    {{/if}}
+  </div>
+  {{/unless}}
+</div>

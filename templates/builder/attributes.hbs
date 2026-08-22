@@ -1,0 +1,24 @@
+<section class="tab builder-step step-attributes" data-tab="attributes" data-group="primary">
+  <div class="step-head">
+    <h2>Distribute Attributes</h2>
+    <span class="budget {{#if (heEq attrRemaining 0)}}done{{else}}pending{{/if}}">{{attrSpent}} / 10 spent</span>
+  </div>
+  <p class="step-blurb">10 points to spread, minimum 1 in each, maximum 5 including your species bonus.</p>
+  <div class="attr-buy">
+    {{#each attributes}}
+    <div class="attr-buy-row">
+      <div class="abr" title="{{this.hint}}">{{this.abbr}}</div>
+      <div class="attr-buy-controls">
+        <button type="button" data-action="attrDec" data-attr="{{this.key}}" {{#if this.atMin}}disabled{{/if}}>&minus;</button>
+        <span class="attr-buy-val">{{this.base}}</span>
+        <button type="button" data-action="attrInc" data-attr="{{this.key}}" {{#if this.atMax}}disabled{{/if}}>+</button>
+      </div>
+      <div class="attr-buy-final">
+        {{#if this.bonus}}<span class="bonus">+{{this.bonus}} species</span>{{/if}}
+        <span class="final">{{this.final}}</span>
+      </div>
+      <div class="attr-buy-name">{{this.label}}</div>
+    </div>
+    {{/each}}
+  </div>
+</section>

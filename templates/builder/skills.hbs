@@ -1,0 +1,31 @@
+<section class="tab builder-step step-skills" data-tab="skills" data-group="primary">
+  <div class="step-head">
+    <h2>Distribute Skills</h2>
+    <div class="budget-group">
+      <span class="budget {{#if (heEq skillBudget.generalSpent 12)}}done{{/if}}">{{skillBudget.generalSpent}} / 12 points</span>
+      {{#unless needsRole}}
+      <span class="budget core {{#if (heEq skillBudget.roleBonusUsed 3)}}done{{/if}}">Role bonus {{skillBudget.roleBonusUsed}} / 3</span>
+      {{/unless}}
+    </div>
+  </div>
+  {{#if needsRole}}
+  <p class="step-warn"><i class="fa-solid fa-circle-info"></i> Choose a Role to unlock the 3 core-skill bonus points.</p>
+  {{else}}
+  <p class="step-blurb">12 points, maximum 3 in any one skill at creation. Your Role adds 3 more that must land on your two <span class="core-word">core skills</span> (starred).</p>
+  {{/if}}
+  <div class="skill-buy-columns">
+    {{#each skillGroups}}
+    <div class="skill-buy-col">
+      <h4>{{this.abbr}}</h4>
+      {{#each this.skills}}
+      <div class="skill-buy-row {{#if this.isCore}}core{{/if}}">
+        <button type="button" data-action="skillDec" data-skill="{{this.key}}" {{#if this.atMin}}disabled{{/if}}>&minus;</button>
+        <span class="skill-buy-val">{{this.value}}</span>
+        <button type="button" data-action="skillInc" data-skill="{{this.key}}" {{#if this.atMax}}disabled{{/if}}>+</button>
+        <span class="skill-buy-name">{{this.label}}{{#if this.isCore}} <i class="fa-solid fa-star core-star"></i>{{/if}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/each}}
+  </div>
+</section>

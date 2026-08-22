@@ -1,0 +1,10 @@
+<div class="builder-steps">
+  <div class="builder-title"><i class="fa-solid fa-spider"></i> Build a Spider</div>
+  <nav class="step-chips">
+    {{#each tabs}}
+    <button type="button" class="step-chip {{this.cssClass}}" data-action="goStep" data-step="{{this.id}}">
+      <i class="{{this.icon}}"></i><span class="chip-label">{{this.label}}</span>
+    </button>
+    {{/each}}
+  </nav>
+</div>

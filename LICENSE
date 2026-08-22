@@ -1,0 +1,27 @@
+Heisty Spideys — Foundry VTT System
+Copyright (c) 2026 PainHog. All rights reserved.
+
+This repository contains two kinds of material:
+
+1. SOFTWARE — the Foundry VTT system code (everything under module/, styles/,
+   templates/, tools/, assets/, and the manifest files).
+
+2. GAME CONTENT — the text of the game "Heisty Spideys" reproduced in the
+   compendiums and source data (src/packs/ and the compiled packs/), including
+   the rules, the five ready-to-run heists, the creatures, and all associated
+   writing.
+
+All rights are reserved by the copyright holder. No part of this repository may
+be reproduced, distributed, sold, or sublicensed without the express written
+permission of the copyright holder.
+
+NOTE FOR THE AUTHOR: this is a conservative default suited to a commercial
+release (e.g. on DriveThru RPG). If you wish to open-source the software while
+keeping the game content proprietary, replace this file with your chosen
+software license (for example the MIT License) and add an explicit statement
+that the GAME CONTENT above remains © the author and is excluded from that
+license.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.

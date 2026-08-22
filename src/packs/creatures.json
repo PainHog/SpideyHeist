@@ -1,0 +1,201 @@
+[
+  {
+    "key": "house-cat",
+    "name": "House Cat",
+    "img": "systems/heisty-spideys/assets/icons/cat.svg",
+    "system": {
+      "threatLevel": "Standard",
+      "alertContribution": "+1 per round while active",
+      "speed": { "value": 8 },
+      "rolls": [
+        { "label": "Perception", "pool": 4, "note": "" },
+        { "label": "Pursuit", "pool": 5, "note": "Athletics" },
+        { "label": "Pounce", "pool": 4, "note": "Brawl" }
+      ],
+      "senses": "<p>Spots suspicious movement within about 6 squares in line of sight.</p>",
+      "passive": "<p>Asleep ~70% of the time. When awake, paying complete attention.</p>",
+      "escalation": "<p>Alert 3, ears rotate. Alert 5, moves toward the sound. Alert 7, hunting.</p>",
+      "weakness": "<p>Shiny objects (Difficulty 1 to redirect), sudden loud noises in the opposite direction, and cucumbers. The ST may rule a cucumber a Difficulty 0 distraction if the crew somehow produced one.</p>",
+      "notes": "<p><strong>Fear:</strong> nothing. The cat fears nothing.</p>",
+      "biography": "<p><em>&ldquo;The Reason We Can't Have Nice Heists.&rdquo;</em></p><p>Asleep roughly seventy percent of the time. The other thirty percent, it is the single most attentive being in the location &mdash; and it fears nothing.</p>"
+    }
+  },
+  {
+    "key": "house-dog",
+    "name": "House Dog",
+    "img": "systems/heisty-spideys/assets/icons/dog.svg",
+    "system": {
+      "threatLevel": "High",
+      "alertContribution": "+2 per round while active (it is loud)",
+      "speed": { "value": 8 },
+      "rolls": [
+        { "label": "Nose", "pool": 5, "note": "Perception" },
+        { "label": "Chase", "pool": 4, "note": "Athletics" },
+        { "label": "Bark", "pool": 5, "note": "Intimidation" }
+      ],
+      "senses": "<p>Smells a spider automatically at Alert 2+; doesn't need line of sight.</p>",
+      "passive": "<p>Not malicious. Wants to play. Equally threatening.</p>",
+      "escalation": "<p>At Alert 4 it barks. When it barks, the Alert immediately rises by 2.</p>",
+      "weakness": "<p>Treats, another animal to fixate on, going outside (needs a door opened, which is a whole thing).</p>",
+      "notes": "<p><strong>Note:</strong> the dog will try to carry crew members gently in its mouth. Acrobatics (Difficulty 4) to escape. It thinks it's helping.</p>",
+      "biography": "<p><em>&ldquo;It Wants to Be Friends. That's Worse.&rdquo;</em></p><p>Not malicious &mdash; it just wants to play, which is exactly as threatening. Loud, fast, and completely convinced it is helping.</p>"
+    }
+  },
+  {
+    "key": "vacuum",
+    "name": "Vacuum",
+    "img": "systems/heisty-spideys/assets/icons/vacuum.svg",
+    "system": {
+      "threatLevel": "Low&ndash;Medium",
+      "alertContribution": "+1 per round in pursuit",
+      "speed": { "value": 4 },
+      "rolls": [
+        { "label": "Navigation", "pool": 2, "note": "" },
+        { "label": "Pursuit", "pool": 3, "note": "" }
+      ],
+      "senses": "<p>Notices nothing. Navigates by bumping into things.</p>",
+      "passive": "<p>Follows a programmed route. Predictable, loud, covers the same ground on a loop.</p>",
+      "escalation": "",
+      "weakness": "<p>Furniture legs, small obstacles, and stairs (it stops at stairs and makes a sad noise).</p>",
+      "notes": "<p><strong>Fear Interaction:</strong> any spider with Fear of Vacuums treats it as an active threat no matter what it's doing. The vacuum is unaware of this. The vacuum is unaware of everything.</p><p><strong>Special:</strong> a spider that climbs onto the vacuum rides along with it. This is both tactically useful and deeply undignified.</p>",
+      "biography": "<p><em>&ldquo;It Has No Feelings, and That Makes It Worse.&rdquo;</em></p><p>It follows its programmed route on a loop, notices nothing, navigates by bumping into things, and cannot be reasoned with &mdash; because there is nothing there to reason with.</p>"
+    }
+  },
+  {
+    "key": "curious-child",
+    "name": "Curious Child",
+    "img": "systems/heisty-spideys/assets/icons/child.svg",
+    "system": {
+      "threatLevel": "High",
+      "alertContribution": "+3 if it catches a spider (pure excitement)",
+      "speed": { "value": 6 },
+      "rolls": [
+        { "label": "Spotting", "pool": 4, "note": "" },
+        { "label": "Capture Attempt", "pool": 3, "note": "" }
+      ],
+      "senses": "<p>Checks everywhere &mdash; under the couch, behind the shelf, directly into corners.</p>",
+      "passive": "<p>Present during the day, actively hunting for interesting things to catch.</p>",
+      "escalation": "<p>Shouting for a parent: automatic at Alert 7+.</p>",
+      "weakness": "<p>Television (Difficulty 1), toys (Difficulty 1), snacks (Difficulty 0).</p>",
+      "notes": "<p><strong>Capture Result:</strong> a caught spider goes into a jar with air holes and is given a name. The Alert immediately rises by 3, and the crew now has a second objective: get that spider back.</p>",
+      "biography": "<p><em>&ldquo;The Most Dangerous Predator in the Location.&rdquo;</em></p><p>Present during the day and actively hunting for interesting things to catch. Children look directly at things. It checks everywhere &mdash; under the couch, behind the shelf, directly into corners.</p>"
+    }
+  },
+  {
+    "key": "guard-spider",
+    "name": "Guard Spider",
+    "img": "systems/heisty-spideys/assets/icons/guard-spider.svg",
+    "system": {
+      "threatLevel": "High",
+      "alertContribution": "+1 per round aware, +2 if it calls for backup",
+      "speed": { "value": 6 },
+      "rolls": [
+        { "label": "Perception", "pool": 4, "note": "" },
+        { "label": "Brawl", "pool": 3, "note": "" },
+        { "label": "Stealth", "pool": 2, "note": "" },
+        { "label": "Deception", "pool": 1, "note": "" }
+      ],
+      "senses": "",
+      "passive": "<p>Hired by someone who knew a heist was possible. Patrols actively.</p>",
+      "escalation": "",
+      "weakness": "<p>Bribery (the crew must produce something valuable on the spot), the Grifter's Decoy (works once), the Bruiser (works, but loudly).</p>",
+      "notes": "<p><strong>Note:</strong> cannot be charmed by the Face &mdash; professional courtesy. Raises the Alert the moment it spots the crew.</p><p><strong>Note:</strong> guard spiders aren't evil. They're working. The crew could try talking to one. The Difficulty is 4. Worth one attempt.</p>",
+      "biography": "<p><em>&ldquo;Professional. Unfortunately.&rdquo;</em></p><p>Another spider, hired by someone who knew a heist was possible. It knows what you are and what you're doing, and it is simply working.</p>"
+    }
+  },
+  {
+    "key": "goldfish",
+    "name": "Goldfish",
+    "img": "systems/heisty-spideys/assets/icons/creature.svg",
+    "system": {
+      "threatLevel": "Low",
+      "alertContribution": "",
+      "speed": { "value": 0 },
+      "rolls": [
+        { "label": "Persuasion", "pool": 1, "note": "will cooperate, cannot actually help" }
+      ],
+      "senses": "",
+      "passive": "<p>Will cooperate. Has a three-second memory. Cannot actually help with anything.</p>",
+      "escalation": "",
+      "weakness": "",
+      "notes": "<p><strong>Primary Roll:</strong> Persuasion (Difficulty 1).</p>",
+      "biography": "<p>The most agreeable creature in any location. It will cooperate with whatever the crew asks, forget the entire arrangement within three seconds, and be of no practical use to the plan whatsoever.</p>"
+    }
+  },
+  {
+    "key": "corn-snake",
+    "name": "Corn Snake",
+    "img": "systems/heisty-spideys/assets/icons/creature.svg",
+    "system": {
+      "threatLevel": "Standard",
+      "alertContribution": "",
+      "speed": { "value": 4 },
+      "rolls": [
+        { "label": "Strike", "pool": 4, "note": "Athletics" }
+      ],
+      "senses": "<p>Aware of you the moment you cross the floor near its tank.</p>",
+      "passive": "<p>Slow to commit, but fast once it does.</p>",
+      "escalation": "",
+      "weakness": "",
+      "notes": "<p>The display tank's lid is loose &mdash; everyone knows, nobody has fixed it.</p>",
+      "biography": "<p>A large corn snake in a display tank near the counter of the pet store. It watches the crew cross the floor with unhurried interest. Slow to commit &mdash; but fast once it does.</p>"
+    }
+  },
+  {
+    "key": "alert-parrot",
+    "name": "Alert Parrot",
+    "img": "systems/heisty-spideys/assets/icons/creature.svg",
+    "system": {
+      "threatLevel": "Standard",
+      "alertContribution": "",
+      "speed": { "value": 0 },
+      "rolls": [
+        { "label": "Perception", "pool": 4, "note": "repeats what it hears, loudly" }
+      ],
+      "senses": "<p>It has seen you. It will describe you.</p>",
+      "passive": "<p>Repeats what it hears, loudly and at length.</p>",
+      "escalation": "",
+      "weakness": "",
+      "notes": "<p>It will describe you. In detail. At volume. The noise pushes the Alert up.</p>",
+      "biography": "<p>An alert parrot near the front of the pet store that repeats what it hears, loudly and at length. It has seen you. It will describe you. In detail. At volume.</p>"
+    }
+  },
+  {
+    "key": "the-exterminator",
+    "name": "The Exterminator",
+    "img": "systems/heisty-spideys/assets/icons/creature.svg",
+    "system": {
+      "threatLevel": "High",
+      "alertContribution": "",
+      "speed": { "value": 6 },
+      "rolls": [
+        { "label": "Any", "pool": 5, "note": "the ST rolls any relevant pool, 4-5" }
+      ],
+      "senses": "",
+      "passive": "<p>Came prepared. Arrives only once the Alert has climbed dangerously high.</p>",
+      "escalation": "",
+      "weakness": "",
+      "notes": "<p><strong>Primary Roll:</strong> Any (4&ndash;5).</p>",
+      "biography": "<p><em>&ldquo;Came prepared. If the Alert got this high, something already went very wrong.&rdquo;</em></p><p>The end-of-the-line threat. If the Exterminator is on the map, the crew's situation has already gone badly sideways.</p>"
+    }
+  },
+  {
+    "key": "protection-rat",
+    "name": "Protection Rat",
+    "img": "systems/heisty-spideys/assets/icons/creature.svg",
+    "system": {
+      "threatLevel": "Standard",
+      "alertContribution": "",
+      "speed": { "value": 6 },
+      "rolls": [
+        { "label": "Persuasion", "pool": 4, "note": "he wants something first" }
+      ],
+      "senses": "",
+      "passive": "<p>Runs protection for the block.</p>",
+      "escalation": "",
+      "weakness": "",
+      "notes": "<p>He wants something. Work out what. It's a negotiation, not a fight.</p>",
+      "biography": "<p>A rat lives under the dishwasher of the restaurant and runs protection for the block. He'll want something before the crew gets anywhere near the office. Work out what.</p>"
+    }
+  }
+]

@@ -1,0 +1,143 @@
+{
+  "id": "heisty-spideys",
+  "title": "Heisty Spideys",
+  "description": "A tabletop roleplaying game of eight-legged larceny. Roll a handful of d6s, count every 4, 5, or 6 as a Success, and try not to get vacuumed. The official companion system for Heisty Spideys, First Edition.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "PainHog",
+      "url": "https://github.com/painhog/spideyheist"
+    }
+  ],
+  "esmodules": [
+    "module/heisty-spideys.mjs"
+  ],
+  "styles": [
+    "styles/heisty-spideys.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "spider": {
+        "htmlFields": ["biography", "details.notes", "details.waitingWeb"]
+      },
+      "threat": {
+        "htmlFields": ["biography", "senses", "passive", "escalation", "weakness", "notes"]
+      }
+    },
+    "Item": {
+      "species": {
+        "htmlFields": ["abilityText", "blurb"]
+      },
+      "role": {
+        "htmlFields": ["signatureText", "blurb"]
+      },
+      "perk": {
+        "htmlFields": ["effect"]
+      },
+      "flaw": {
+        "htmlFields": ["effect"]
+      },
+      "gadget": {
+        "htmlFields": ["effect", "description"]
+      }
+    }
+  },
+  "packs": [
+    {
+      "name": "species",
+      "label": "Spider Species",
+      "path": "packs/species",
+      "type": "Item",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "roles",
+      "label": "Crew Roles",
+      "path": "packs/roles",
+      "type": "Item",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "perks",
+      "label": "Role Perks",
+      "path": "packs/perks",
+      "type": "Item",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "flaws",
+      "label": "Flaws",
+      "path": "packs/flaws",
+      "type": "Item",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "gadgets",
+      "label": "Silk, Gadgets & Found Materials",
+      "path": "packs/gadgets",
+      "type": "Item",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "creatures",
+      "label": "Creature Compendium",
+      "path": "packs/creatures",
+      "type": "Actor",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "heists",
+      "label": "Five Ready-to-Run Heists",
+      "path": "packs/heists",
+      "type": "JournalEntry",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "rules",
+      "label": "Rules Reference",
+      "path": "packs/rules",
+      "type": "JournalEntry",
+      "system": "heisty-spideys",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Heisty Spideys",
+      "sorting": "m",
+      "color": "#5f2470",
+      "packs": ["species", "roles", "perks", "flaws", "gadgets", "creatures", "heists", "rules"]
+    }
+  ],
+  "grid": {
+    "distance": 1,
+    "units": "sq"
+  },
+  "primaryTokenAttribute": "silk",
+  "secondaryTokenAttribute": "",
+  "socket": false,
+  "url": "https://github.com/painhog/spideyheist",
+  "manifest": "https://github.com/painhog/spideyheist/releases/latest/download/system.json",
+  "download": "https://github.com/painhog/spideyheist/releases/latest/download/system.zip",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "changelog": "CHANGELOG.md"
+}

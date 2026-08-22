@@ -1,0 +1,39 @@
+<div class="heisty-roll-card result-{{resultCss}}{{#if isBotch}} is-botch{{/if}}">
+  <header class="hrc-head">
+    <img class="hrc-avatar" src="{{actorImg}}" alt="" />
+    <div class="hrc-title">
+      <span class="hrc-actor">{{actorName}}</span>
+      <span class="hrc-label">{{label}} <span class="hrc-sub">{{subtitle}}</span></span>
+    </div>
+    <div class="hrc-verdict-badge">{{resultLabel}}</div>
+  </header>
+
+  <div class="hrc-dice">
+    {{#each faces}}<span class="die face-{{this.result}} {{#if this.success}}hit{{/if}}">{{this.result}}</span>{{/each}}
+  </div>
+
+  <div class="hrc-result">
+    {{#if isBotch}}
+      <span class="hrc-count">The pool bottomed out — one die rolled a <strong>{{botchDie}}</strong>.</span>
+    {{else}}
+      <span class="hrc-count"><strong>{{successes}}</strong> Success{{#if (heNeq successes 1)}}es{{/if}} vs Difficulty <strong>{{difficulty}}</strong></span>
+    {{/if}}
+  </div>
+
+  <p class="hrc-blurb">{{blurb}}</p>
+
+  <div class="hrc-breakdown">
+    <span class="chip">{{pool}}d6</span>
+    {{#if vitPenalty}}<span class="chip warn">Vitality {{heSigned vitPenalty}}</span>{{/if}}
+    {{#if bonus}}<span class="chip good">bonus +{{bonus}}</span>{{/if}}
+    {{#if penalty}}<span class="chip warn">penalty −{{penalty}}</span>{{/if}}
+    {{#if alertApplied}}<span class="chip warn">Alert +{{alertDiff}} Diff</span>{{/if}}
+  </div>
+
+  <div class="hrc-alert-controls">
+    <span class="hrc-alert-label"><i class="fa-solid fa-triangle-exclamation"></i> Alert</span>
+    <button type="button" data-heisty-alert="-1" class="{{#if (heEq suggested -1)}}suggested{{/if}}">−1</button>
+    <button type="button" data-heisty-alert="1" class="{{#if (heEq suggested 1)}}suggested{{/if}}">+1</button>
+    <button type="button" data-heisty-alert="2" class="{{#if (heEq suggested 2)}}suggested{{/if}}">+2</button>
+  </div>
+</div>

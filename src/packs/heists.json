@@ -1,0 +1,242 @@
+[
+  {
+    "key": "heist-cookie-situation",
+    "name": "The Cookie Situation",
+    "pages": [
+      {
+        "key": "overview",
+        "name": "Overview",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>House &middot; Easy</em></p><p><strong>Alert Limit:</strong> 10 &middot; <strong>Loot:</strong> Crumb/Trinket &middot; <strong>For:</strong> a first session</p><h3>The Objective</h3><p>A specific cookie &mdash; the good kind, from the tin with the blue lid &mdash; in the kitchen of a single-story house. In and out. Except the cat is new.</p><h3>What the Crew Sees at the Score</h3><p>A standard two-bedroom home. The objective is a tin on the second shelf of the cabinet above the counter. In plain sight: a young cat, very interested in things, and a human who gets up twice a night for water.</p><p><em>Present only what's visible. The intel, the threats, and the unknown obstacle are ST information &mdash; let Planning reveal the rest.</em></p>"
+        }
+      },
+      {
+        "key": "casing-intel",
+        "name": "Casing Intel",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The counter was wiped down this evening and is slippery (Acrobatics to climb).</li><li>The cat's bed is 9 squares from the cabinet.</li><li>The human's water runs roughly every ninety minutes.</li></ul>"
+        }
+      },
+      {
+        "key": "st-prep-unknown-obstacle",
+        "name": "ST Prep &mdash; The Unknown Obstacle",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>There are two identical tins on that shelf. One holds cookies. One holds sewing supplies. The crew finds out which the hard way.</p>"
+        }
+      },
+      {
+        "key": "suggested-obstacles",
+        "name": "Suggested Obstacles",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<ol><li>Cross the living room while the cat is awake and watching the door.</li><li>Climb the cabinet &mdash; slippery surface, freshly wiped.</li><li>Open the tin quietly. Tight lid. The Tinkerer will have opinions.</li><li><strong>(Unknown)</strong> It's the sewing tin. The cookie tin is in the other cabinet. Recalibrate.</li></ol>"
+        }
+      },
+      {
+        "key": "map",
+        "name": "Map",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Sample map (one square &asymp; one spider):</p><pre>###############\nV.....~~~~~~..C#\n#.....~~~~~~...#\n#.............#\n#....K........#\n#.........door#\n###############</pre><p><strong>Legend:</strong> <code>#</code> wall &middot; <code>.</code> floor &middot; <code>C</code> cabinet with the tin &middot; <code>~</code> counter &middot; <code>K</code> cat's bed &middot; <code>V</code> entry vent.</p>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "heist-office-after-hours",
+    "name": "The Office After Hours",
+    "pages": [
+      {
+        "key": "overview",
+        "name": "Overview",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>Office &middot; Standard</em></p><p><strong>Alert Limit:</strong> 8 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> a second or third session</p><h3>The Objective</h3><p>A memory stick in the desk drawer of the corner office. Empty after 6 p.m. except for a cleaning crew that comes through at 8.</p><h3>What the Crew Sees at the Score</h3><p>A small open-plan office with a corner room for the manager, two floors, entry from the ground-floor ventilation. In plain sight: a motion-sensor light system across the main floor, and a guard spider working the overnight shift.</p>"
+        }
+      },
+      {
+        "key": "casing-intel",
+        "name": "Casing Intel",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The sensor beam covers a known line of squares with a fixed timing gap.</li><li>The guard spider's patrol loops the perimeter every few rounds.</li><li>The drawer uses a standard lock.</li></ul>"
+        }
+      },
+      {
+        "key": "st-prep-unknown-obstacle",
+        "name": "ST Prep &mdash; The Unknown Obstacle",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>The cleaning crew came at 7 tonight, not 8. They're already here.</p>"
+        }
+      },
+      {
+        "key": "suggested-obstacles",
+        "name": "Suggested Obstacles",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<ol><li>The motion sensors. Pattern known, timing tight.</li><li>The guard spider. Professional, alert, doing the job. First real opposed roll.</li><li>The locked desk drawer. Engineering moment.</li><li><strong>(Unknown)</strong> The cleaning cart is parked across the vent the crew planned to leave through.</li></ol>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "heist-pet-store-problem",
+    "name": "The Pet Store Problem",
+    "pages": [
+      {
+        "key": "overview",
+        "name": "Overview",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>Pet Store &middot; Standard</em></p><p><strong>Alert Limit:</strong> 8 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> any session that wants guaranteed disaster</p><h3>The Objective</h3><p>A specific cricket &mdash; yes, a cricket &mdash; in the feeder bin behind the service counter. A client is paying in premium silk. Don't ask.</p><h3>What the Crew Sees at the Score</h3><p>A three-aisle, single-floor retail space. In plain sight: a large corn snake in a display tank near the counter (its lid is loose, everyone knows, nobody has fixed it), and an alert parrot near the front that repeats what it hears, loudly and at length.</p>"
+        }
+      },
+      {
+        "key": "casing-intel",
+        "name": "Casing Intel",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The snake is slow to commit but fast once it does.</li><li>The parrot's cage is 5 squares off the main aisle.</li><li>The feeder bin sits behind the counter with one narrow approach.</li></ul>"
+        }
+      },
+      {
+        "key": "st-prep-unknown-obstacle",
+        "name": "ST Prep &mdash; The Unknown Obstacle",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>There are forty-seven crickets in that bin. The client described the target as &ldquo;the big one.&rdquo; They are all the same size. This becomes a negotiation with a cricket.</p>"
+        }
+      },
+      {
+        "key": "suggested-obstacles",
+        "name": "Suggested Obstacles",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<ol><li>Enter through the loading dock &mdash; a gap in the back, but the feeder insects live there and some have opinions.</li><li>Cross the floor past the snake tank. The lid is loose. The snake is aware of you.</li><li>The parrot. It has seen you. It will describe you. In detail. At volume.</li><li><strong>(Unknown)</strong> Forty-seven identical crickets. Identify the right one. It's a social encounter now.</li></ol>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "heist-library-job",
+    "name": "The Library Job",
+    "pages": [
+      {
+        "key": "overview",
+        "name": "Overview",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>Library &middot; Hard</em></p><p><strong>Alert Limit:</strong> 6 &middot; <strong>Loot:</strong> Treasure &middot; <strong>For:</strong> an experienced crew</p><h3>The Objective</h3><p>A rare book in the locked reference section of a public library. It contains a spider map &mdash; a generational silk record of every web in the city. Someone wants it back. Someone else wants it more.</p><h3>What the Crew Sees at the Score</h3><p>Three floors; the reference section is on the second, behind a locked glass case. In plain sight: a head librarian who stays late and is extraordinarily observant, and the library cat &mdash; enormous, and it has seen things.</p>"
+        }
+      },
+      {
+        "key": "casing-intel",
+        "name": "Casing Intel",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The librarian's route covers every floor on an irregular schedule.</li><li>The case uses an antique lock (Engineering 4).</li><li>There are two stairwells and a dumbwaiter between floors.</li></ul>"
+        }
+      },
+      {
+        "key": "st-prep-unknown-obstacle",
+        "name": "ST Prep &mdash; The Unknown Obstacle",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>Another crew is already inside, after the same book.</p>"
+        }
+      },
+      {
+        "key": "suggested-obstacles",
+        "name": "Suggested Obstacles",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<ol><li>Entry &mdash; a guard spider (not hired, just lives here) near the entry point, with feelings about the reference section.</li><li>The librarian's late-night route. Every floor, irregular timing.</li><li>The locked case. Antique lock, Engineering Difficulty 4.</li><li><strong>(Unknown)</strong> The other crew. Negotiate, compete, or recruit &mdash; all three are valid.</li></ol>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "heist-restaurant-rush",
+    "name": "The Restaurant Rush",
+    "pages": [
+      {
+        "key": "overview",
+        "name": "Overview",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>Restaurant &middot; Standard/Hard</em></p><p><strong>Alert Limit:</strong> 7 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> any session wanting maximum disaster</p><h3>The Objective</h3><p>The chef's personal recipe notebook, kept in the back office. A rival baker &mdash; a wasp, and nobody is happy about it &mdash; hired the crew. The place closes at 11; the crew moves at midnight. Except dinner service ran late.</p><h3>What the Crew Sees at the Score</h3><p>A mid-sized restaurant &mdash; kitchen, dining room, bar, small office. In plain sight: two closing staff finishing cleanup, and a kitchen that is still warm and smells extraordinary (spiders with Easily Distracted roll on entry).</p>"
+        }
+      },
+      {
+        "key": "casing-intel",
+        "name": "Casing Intel",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The staff move unpredictably with no set route.</li><li>A rat lives under the dishwasher and runs protection for the block &mdash; he'll want something.</li><li>The office door sticks.</li></ul>"
+        }
+      },
+      {
+        "key": "st-prep-unknown-obstacle",
+        "name": "ST Prep &mdash; The Unknown Obstacle",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>A third staff member fell asleep in the break room and will wake at the worst moment.</p>"
+        }
+      },
+      {
+        "key": "suggested-obstacles",
+        "name": "Suggested Obstacles",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<ol><li>The dining room &mdash; two staff moving unpredictably, no patrol pattern.</li><li>The kitchen &mdash; warm, incredible smells. Easily Distracted triggers. Also, the rat.</li><li>The rat. Negotiations. He wants something. Work out what.</li><li><strong>(Unknown)</strong> The sleeping staffer wakes exactly when the crew is in the office.</li></ol>"
+        }
+      }
+    ]
+  }
+]

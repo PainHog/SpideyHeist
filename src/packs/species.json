@@ -1,0 +1,80 @@
+[
+  {
+    "key": "jumping-spider",
+    "name": "Jumping Spider",
+    "img": "systems/heisty-spideys/assets/icons/spider.svg",
+    "system": {
+      "speciesKey": "jumping",
+      "ability": "Did You See That Jump?!",
+      "abilityText": "<p>Once per scene, declare an automatic success on a single leap: cross a gap in a straight line up to your Speed in squares, no roll, landing exactly where you meant to.</p><p>It does not make you land quietly. That is a separate problem, and it is now yours.</p>",
+      "speed": 6,
+      "bonuses": { "body": 1, "wit": 0, "nerve": 0, "grace": 1 },
+      "blurb": "<p>Jumping Spiders are the acrobats of the underworld, and they know it, and they will bring it up. They look like someone glued oversized eyes to a scrap of carpet, which is exactly why humans who spot them say &ldquo;aww&rdquo; instead of reaching for a shoe. That reaction lasts about four seconds. Use them well.</p>"
+    }
+  },
+  {
+    "key": "orb-weaver",
+    "name": "Orb Weaver",
+    "img": "systems/heisty-spideys/assets/icons/spider.svg",
+    "system": {
+      "speciesKey": "orbweaver",
+      "ability": "Everything Connects",
+      "abilityText": "<p>As an Action, spin silk across up to 3 connected squares &mdash; a line or a small web. Choose what it is when you spin it:</p><ul><li><strong>Snare:</strong> the first creature to enter a webbed square is caught. It must spend an Action to break free, or roll Athletics/Brawl against Difficulty 3.</li><li><strong>Line:</strong> your crew moves along the webbed squares as safe footing &mdash; up a wall, across a gap &mdash; with no Acrobatics roll.</li></ul><p>It lasts until it's broken or the scene ends. Once per scene.</p>",
+      "speed": 5,
+      "bonuses": { "body": 0, "wit": 2, "nerve": 0, "grace": 0 },
+      "blurb": "<p>Orb Weavers are architects. They look at a room and see the geometry first and the crime second. Give one a corner and a minute and they will have rigged the space to work for the crew &mdash; a tripline here, a bridge there, all of it load-bearing and none of it where the cat is looking.</p>"
+    }
+  },
+  {
+    "key": "wolf-spider",
+    "name": "Wolf Spider",
+    "img": "systems/heisty-spideys/assets/icons/spider.svg",
+    "system": {
+      "speciesKey": "wolf",
+      "ability": "Run It Again",
+      "abilityText": "<p>When you fail or partially succeed on a chase, pursuit, or physical-confrontation roll, immediately reroll all your failed dice and keep the better result. Once per scene.</p><p>Wolf Spiders do not accept the first result. They would like you to know they don't accept the second one either, but the rules only give them the one reroll.</p>",
+      "speed": 7,
+      "bonuses": { "body": 2, "wit": 0, "nerve": 0, "grace": 0 },
+      "blurb": "<p>Wolf Spiders are the muscle &mdash; built, fast, and constitutionally opposed to sneaking. They don't spin webs; they chase things down. They shine in the part of every heist where the plan is over and someone needs to run very fast in a useful direction.</p>"
+    }
+  },
+  {
+    "key": "cellar-spider",
+    "name": "Cellar Spider",
+    "img": "systems/heisty-spideys/assets/icons/spider.svg",
+    "system": {
+      "speciesKey": "cellar",
+      "ability": "Contortionist",
+      "abilityText": "<p>You squeeze through any gap a spider could theoretically fit through &mdash; no roll, no penalty for tight spaces, ever.</p><p>You can also fold around a creature in your path: you may move through an occupied square, including an enemy's, as long as you don't end your turn there.</p>",
+      "speed": 5,
+      "bonuses": { "body": 0, "wit": 0, "nerve": 0, "grace": 2 },
+      "blurb": "<p>Cellar Spiders are long, thin, and aggressively unimpressive, which is a tactical asset. Nobody worries about the faint spindly thing in the corner. Nobody has ever worried about the faint spindly thing in the corner. The faint spindly thing in the corner is already inside the wall the safe is bolted to.</p>"
+    }
+  },
+  {
+    "key": "spitting-spider",
+    "name": "Spitting Spider",
+    "img": "systems/heisty-spideys/assets/icons/spider.svg",
+    "system": {
+      "speciesKey": "spitting",
+      "ability": "Precision Application",
+      "abilityText": "<p>Fire a precise silk-and-venom strand up to 6 squares, no roll to hit, as long as you have line of sight. Use it to jam a small mechanism (a lock, a sensor, a latch), snag a light object, or pin a small target in place for one round.</p><p>The range is exactly 6 squares. That is most of a room.</p>",
+      "speed": 5,
+      "bonuses": { "body": 0, "wit": 2, "nerve": 1, "grace": 0 },
+      "blurb": "<p>Spitting Spiders are the snipers of the species. They don't rush. They identify a target, work out the line, and fire with the calm of someone who never misses. They have, in fact, missed. They do not discuss it.</p><p><em>Yes, that's a +3 total, one more than everyone else. The trade is range: 6 squares is a real limit, and a Spitting Spider who can't get within 6 is just a spider with excellent posture.</em></p>"
+    }
+  },
+  {
+    "key": "crab-spider",
+    "name": "Crab Spider",
+    "img": "systems/heisty-spideys/assets/icons/spider.svg",
+    "system": {
+      "speciesKey": "crab",
+      "ability": "Wait, Was That There Before?",
+      "abilityText": "<p>Hold completely still for one full turn and your coloring shifts to match your surroundings. It's not perfect &mdash; you're a spider the color of a countertop &mdash; but the Difficulty to spot you increases by 2 until you move.</p><p>Crab Spiders are excellent at waiting. They are worse at stopping.</p>",
+      "speed": 4,
+      "bonuses": { "body": 0, "wit": 0, "nerve": 1, "grace": 1 },
+      "blurb": "<p>Crab Spiders move sideways, which is unsettling before they've done anything, and they hunt by ambush, which makes them the only species with patience built into the body. They hold a position beautifully. They sometimes hold it past the moment they were supposed to act, because they were comfortable.</p>"
+    }
+  }
+]

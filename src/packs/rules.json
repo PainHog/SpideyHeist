@@ -1,0 +1,298 @@
+[
+  {
+    "key": "core-rules-rolling-the-dice",
+    "name": "Core Rules &mdash; Rolling the Dice",
+    "pages": [
+      {
+        "key": "the-one-rule",
+        "name": "The One Rule",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>When a spider tries something uncertain &mdash; a lock, a sleeping cat, convincing a human the scratching in the wall is nothing &mdash; you roll dice. Six-sided dice. Only six-sided dice.</p><h3>The Core Mechanic</h3><p>Roll a handful of d6s. Every die showing 4, 5, or 6 is a Success. The Storyteller says how many Successes the task needs. You get them or you don't. That is the entire engine. Everything after this is detail.</p><p><strong>The One Rule:</strong> Roll your pool of d6s. Count every 4, 5, or 6 as a Success. Get enough and the thing happens. Fall short and it doesn't &mdash; and something else goes wrong. The dice do not care about your plan. The dice do not care about anything.</p><h3>Building Your Dice Pool</h3><p>Your pool = the relevant Attribute + Skill. The ST tells you which apply. Add them, grab that many d6s, roll.</p><p><em>Example:</em> Pebbles, a Wolf Spider Bruiser, wants to shove a stuck cabinet door. The ST calls for BODY + Athletics. Pebbles has BODY 4 and Athletics 3, so she rolls 7 dice against a Difficulty 3 door. She rolls five Successes and flings the door open hard enough to bounce it off the wall. She succeeded. The heist may not have. The human is awake now.</p>"
+        }
+      },
+      {
+        "key": "difficulty",
+        "name": "Difficulty",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Difficulty</th><th>Successes</th><th>What It Looks Like</th></tr></thead><tbody><tr><td>Trivial</td><td>1</td><td>Crossing an empty counter. Nothing is happening.</td></tr><tr><td>Easy</td><td>2</td><td>Moving quietly while the TV is on. Picking up a small thing without dropping it.</td></tr><tr><td>Moderate</td><td>3</td><td>Picking a lock. Sneaking past a drowsy cat. Most of a normal heist.</td></tr><tr><td>Hard</td><td>4</td><td>Sneaking past an alert cat. Cracking a password. Surviving the exterminator.</td></tr><tr><td>Absurd</td><td>5</td><td>Stealing a specific item from a locked case while the cat watches and the vacuum is running.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "types-of-results",
+        "name": "Types of Results",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><strong>Full Success</strong> &mdash; it worked. You got enough Successes. The thing happens. Enjoy it. The Alert is still right there.</p><p><strong>Partial Success</strong> &mdash; it worked, but. At least one Success, fewer than needed. You make progress and a complication lands. The lock opens, but you made noise. You clear the gap, but you drop the bag. The ST picks the complication &mdash; ideally the funniest one that also actually costs you something.</p><p><strong>Failure</strong> &mdash; it did not work. Zero Successes. No progress, and something gets worse. Failure is a beat, not a wall. The door stays shut and there's a noise now. Every failure should cost something and reveal something.</p><p><strong>Critical Success</strong> &mdash; you did it perfectly. Double the required Successes (6 on a Difficulty 3, 8 on a Difficulty 4). It works better than planned &mdash; you get the item and spot a second way out &mdash; and the Alert drops by 1. This is the only thing that lowers the Alert during a heist. Savor it.</p><h3>The Botch</h3><p>Your pool has been reduced to 0 or below &mdash; by Vitality penalties, Lockdown, or a situation so bad the ST rules you can barely function (crushed against a surface, total darkness, upside down in a jar). You still roll one die. On a 1&ndash;3, Botch: you fail and the Alert jumps by 2. On a 4&ndash;6, a clean failure, no bonus disaster. This time.</p><p>A Botch is what happens when the Bruiser attempts subtlety at Stealth 0. Once the table recovers, it is very funny.</p>"
+        }
+      },
+      {
+        "key": "assists-opposed-rolls",
+        "name": "Assists & Opposed Rolls",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<h3>Assists</h3><p>Any crew member in the same scene who isn't the one rolling can Assist, as their Action, if they can actually reach or help the active spider &mdash; usually meaning adjacent on the grid, or connected by a silk line, or otherwise plausibly lending a hand. They roll their relevant Skill only &mdash; no Attribute &mdash; to a maximum of 3 dice, minimum 1. Each Success adds one die to the active spider's pool. Only one spider can Assist a given roll.</p><h3>Opposed Rolls</h3><p>When you act against something that's actively resisting &mdash; an alert cat, a suspicious human, a vacuum in pursuit &mdash; both sides roll. Most Successes wins. Ties go to the defender. When you and the world tie, the world wins; it's bigger than you. (The exception is taking a hit, where you are the defender &mdash; see Vitality.) Assists work normally, but only the spider side can receive one.</p><h3>When Not to Roll</h3><p>Not everything needs dice. If success is guaranteed, just say yes. A Stealth 4 spider crossing an empty kitchen at 3 a.m. walks across. The same spider crossing while the cat stares directly at it rolls.</p><p>Roll when the outcome is uncertain and failure would be interesting. If either is false, skip the dice. The story doesn't need a d6's permission to continue.</p>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "the-alert",
+    "name": "The Alert",
+    "pages": [
+      {
+        "key": "alert-overview",
+        "name": "How the Alert Works",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>The Alert is a single number that tracks how awake the location is. It starts at 0 and climbs toward a Limit the Storyteller sets before the heist. When it reaches the Limit, the place goes to Full Alert: the objective is lost, and the only goal left is getting out with your legs attached.</p><p>The Alert only goes up during a heist. The one exception is a Critical Success, which drops it by 1. Everything else is upward pressure. Plan accordingly.</p><p>The Alert is the location's overall state of alertness, not any one creature's senses. When Stealth gets harder at Alert 3, the cat didn't suddenly grow better ears &mdash; the cat is awake and moving, covering ground it wasn't before. Higher Alert means more things are active, in more places. The fiction justifies the number; the number just keeps score.</p>"
+        }
+      },
+      {
+        "key": "alert-limit",
+        "name": "The Alert Limit",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Location</th><th>Limit</th><th>Description</th></tr></thead><tbody><tr><td>Easy</td><td>10</td><td>A mostly empty house. Light traffic. One cat, and it's elderly.</td></tr><tr><td>Standard</td><td>8</td><td>Occupied home with pets. A small office. A restaurant after hours.</td></tr><tr><td>Hard</td><td>6</td><td>An active office. A pet store with several animals. A library with an attentive librarian.</td></tr><tr><td>Absurd</td><td>4</td><td>Anywhere with a cat and a dog and a human who sleeps lightly.</td></tr><tr><td>Legendary</td><td>2</td><td>So locked down it's barely worth it. Active guards, several independent threats, a professionally suspicious human. The job pays 8 AP. That's why.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "what-raises-the-alert",
+        "name": "What Raises the Alert",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Amount</th><th>Trigger</th></tr></thead><tbody><tr><td>+1</td><td>A roll fails with a consequence &mdash; noise, attention, evidence.</td></tr><tr><td>+1</td><td>Spotted briefly &mdash; an NPC notices something's off but isn't sure.</td></tr><tr><td>+1</td><td>A Silk Clutch is used. The universe keeps score.</td></tr><tr><td>+2</td><td>A Botch. Everything that could go wrong did, plus one new thing.</td></tr><tr><td>+2</td><td>A confirmed alert &mdash; an NPC knows something is happening, even if not what.</td></tr><tr><td>+2</td><td>A spider goes Out. The location notices something is very wrong.</td></tr><tr><td>+2</td><td>A Loud Failure &mdash; something loud breaks, a crash that carries across the location.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "alert-thresholds",
+        "name": "Alert Thresholds",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Level</th><th>What Happens</th></tr></thead><tbody><tr><td>0&ndash;2 &mdash; Calm</td><td>The plan is working. Enjoy it. It won't last.</td></tr><tr><td>3&ndash;4 &mdash; Stirring</td><td>Something feels off. Stealth rolls have their Difficulty increased by 1.</td></tr><tr><td>5&ndash;6 &mdash; Active</td><td>A threat has woken up &mdash; the cat is on its feet, a human checked the kitchen, the vacuum changed its route. No roll penalty yet.</td></tr><tr><td>7&ndash;8 &mdash; Lockdown</td><td>Everything is wrong. All rolls have their Difficulty increased by 1. Multiple NPCs are active.</td></tr><tr><td>At Limit &mdash; Full Alert</td><td>The location is compromised. If the crew doesn't have the objective yet, it's out of reach. Escape is the only play, and it will be memorable. If they do have it, they just need to get out.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "active-vs-lockdown",
+        "name": "Active vs. Lockdown",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p><em>Storyteller note &mdash; two thresholds people confuse.</em></p><p>Penalties stack. At Alert 7+, Stealth is +2 Difficulty total (the Stirring penalty and the Lockdown penalty both apply). Track them separately so the crew always knows what they're facing.</p><p>The critical distinction: <strong>Active</strong> (5&ndash;6) turns threats on &mdash; it does not raise Difficulty. The cat wakes; the human stirs; nothing gets mechanically harder to roll yet. Only <strong>Lockdown</strong> (7+) raises Difficulty. This is the single most misread rule in the game. Active means something is now moving. Lockdown means everything is now harder.</p><p>The Alert should feel like pressure, not punishment. At 3, foreshadow &mdash; a creak, one open eye. At 5, escalate &mdash; make something active and specific. At 7, hard but survivable. At the Limit, the heist is over but the escape is its own story. Never just say &ldquo;the Alert hit 8, you lose.&rdquo; Make the lockdown land.</p>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "silk-points",
+    "name": "Silk Points",
+    "pages": [
+      {
+        "key": "silk-points-overview",
+        "name": "The Economy of the Heist",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Silk Points are the economy of the heist. They represent your spider's preparation, focus, and the specific desperate improvisation that only happens when you're three squares from the prize and the vacuum just switched on.</p><p>You start with WIT + NERVE Silk Points. When they're gone, they're gone &mdash; there's no mid-heist refill. There's only spending well, earning a few back through spectacular failure, and rationing the rest.</p>"
+        }
+      },
+      {
+        "key": "spending-silk-points",
+        "name": "Spending Silk Points",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Cost</th><th>Effect</th></tr></thead><tbody><tr><td>1 SP &mdash; Extra Die</td><td>Add 1 die to a roll before it's made. The most common spend, and a good one.</td></tr><tr><td>1 SP &mdash; Silk Line</td><td>Instantly run a silk line between two points up to 5 squares apart, for climbing, swinging, or rigging. No roll.</td></tr><tr><td>2 SP &mdash; Reroll</td><td>After rolling, reroll up to 3 dice and keep the better result. For when the dice have wronged you personally.</td></tr><tr><td>2 SP &mdash; Web Structure</td><td>Build a small web structure with no roll &mdash; a net, a tripwire, a platform, a hammock. The hammock has no tactical use. The Tinkerer built it anyway.</td></tr><tr><td>2 SP &mdash; Improvise</td><td>Attempt any check on your Attribute alone &mdash; no Skill &mdash; at +1 Difficulty. A last resort for working outside your specialty. It won't beat a real specialist, but it beats total helplessness.</td></tr><tr><td>3 SP &mdash; Silk Clutch</td><td>After a failed roll, spend 3 SP to succeed anyway. The Alert rises by 1. You did it, at a cost.</td></tr><tr><td>3 SP &mdash; Damage Control</td><td>The crew spends 3 SP together to reduce one +2 Alert spike to +1. Once per heist. Call it the moment the spike triggers, before it's added.</td></tr><tr><td>4 SP &mdash; Not Part of the Plan</td><td>Negate one complication the ST just introduced &mdash; used immediately, before consequences resolve. Once per heist. The complication doesn't happen. You explain later how you accounted for it. You didn't.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "earning-silk-points",
+        "name": "Earning Silk Points",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Reward</th><th>When</th></tr></thead><tbody><tr><td>+1 SP &mdash; Flaw Moment</td><td>Your Flaw causes a genuine problem the crew has to deal with.</td></tr><tr><td>+1 SP &mdash; Spectacular Failure</td><td>You fail in a way that genuinely makes the table laugh. ST's call.</td></tr><tr><td>+1 SP &mdash; Creative Species Use</td><td>You use your species ability in a way nobody saw coming, and it works.</td></tr><tr><td>+2 SP &mdash; Brilliant Plan</td><td>You describe a plan that makes the whole table lean in and say &ldquo;oh, that's good,&rdquo; and the ST agrees.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "silk-point-management",
+        "name": "Silk Point Management",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>The classic mistake is spending Silk Points early on small problems and having none when the Alert is at 7 and the cat has found the bag. Start conservative; spend big when it matters. Your strategy should shift as the Alert climbs: early on, hoard &mdash; small failures aren't worth big spends. As the Alert nears its limit, switch to preventing failures rather than recovering from them. A 1 SP die before a roll at Alert 6 is worth more than a 3 SP Silk Clutch after a roll at Alert 8.</p>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "vitality",
+    "name": "Vitality",
+    "pages": [
+      {
+        "key": "the-vitality-track",
+        "name": "The Vitality Track",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Spiders get hurt. They're swatted, startled off ledges, trapped in jars, and occasionally inhaled by a vacuum nobody planned for. Vitality tracks how much your spider can take before they're Out.</p><table><thead><tr><th>State</th><th>Effect</th></tr></thead><tbody><tr><td>Unharmed</td><td>Full capabilities. The cat hasn't found you.</td></tr><tr><td>Rattled (&minus;1 die)</td><td>Shaken, bruised, or briefly jarred. &minus;1 die on all rolls.</td></tr><tr><td>Hurt (&minus;2 dice, half Speed)</td><td>Bad. You're limping. &minus;2 dice on everything, and your Speed is halved (round down).</td></tr><tr><td>Critical (&minus;3 dice, must be assisted)</td><td>You can't move effectively under your own power &mdash; a crewmate must help you move. You can still act, barely. &minus;3 dice.</td></tr><tr><td>Out</td><td>Caught. Jarred, vacuumed, or adopted. Out of this heist. Activate the Waiting Web.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "taking-hits",
+        "name": "Taking Hits",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>When a threat lands a hit on you &mdash; a pounce, a swat, a snapping beak &mdash; you drop one Vitality level, unless you can shrug it off.</p><p>To shrug it off, roll BODY + Endurance against the threat's attack. Compare Successes:</p><ul><li>You meet or beat the attack's Successes &mdash; you shrug it off. No level lost.</li><li>The attack beats you by 1 or 2 &mdash; drop one level.</li><li>The attack beats you by 3 or more &mdash; drop two levels. That one landed.</li></ul><p>You're the defender here, so ties go to you. BODY and Endurance help, but they no longer make you nearly untouchable &mdash; a solid hit from a real threat will get through more often than not, which is the point. Getting hit should cost something.</p><p>Not every contact is a full hit. A glancing bump or a bit of flying debris might be a flat &minus;1 die for one round instead of a Vitality check &mdash; the ST calibrates. Reserve full checks for genuine impacts: a direct swat, a fall, a pounce that connects. Rough guide: if a human would notice it happening, it's a hit. If they wouldn't, it's a distraction at most.</p><p>Some hits skip the roll. When a book falls on you or a child's hand closes around you, the ST will just tell you it landed. You drop a level &mdash; or go straight to Out &mdash; and the story moves.</p>"
+        }
+      },
+      {
+        "key": "recovery",
+        "name": "Recovery",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>Spend a full turn with no threat able to reach or target you and you recover one level. Recovery is passive &mdash; surviving a quiet turn is enough; you don't have to spend your Action on it.</p><p>A Tinkerer can also patch you actively: Engineering, Difficulty 2, as their Action, while adjacent &mdash; one level recovered on a success, threats present or not.</p><p>Recovery means actually stopping. &ldquo;I'll heal while running&rdquo; is not a thing.</p>"
+        }
+      },
+      {
+        "key": "the-waiting-web",
+        "name": "Going Out &mdash; The Waiting Web",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>When a spider goes Out, two things happen at once:</p><p><strong>First:</strong> the Alert rises by 2. The location noticed.</p><p><strong>Second:</strong> the player draws a fresh spider from the Waiting Web. Same Role, Attributes, Skills, and Perks as the original &mdash; this is backup crew built for the job, not a stranger wandering in. Change the name, and optionally the species. They enter at the start of the next obstacle, starting Rattled (not Unharmed) with half their starting Silk Points, rounded down. They heard it was bad in there. They came anyway.</p>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "five-phases-and-advancement",
+    "name": "The Five Phases & Advancement",
+    "pages": [
+      {
+        "key": "the-five-phases",
+        "name": "The Five Phases",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>A heist runs in five phases: the briefing, the plan, the job, the scramble, and the debrief where everyone agrees it went fine and no one mentions the cat.</p><table><thead><tr><th>Phase</th><th>Summary</th></tr></thead><tbody><tr><td>1 &mdash; The Score</td><td>The ST presents the job and the visible map &mdash; geography, obvious features, the objective, threats in plain sight. Roleplay only. No rolls, no Alert.</td></tr><tr><td>2 &mdash; Planning</td><td>Case for intel (each Success = one true detail the ST is holding). Make Preparations &mdash; tactical setup, not auto-wins; each gets a complication that adds texture.</td></tr><tr><td>3 &mdash; The Heist</td><td>3&ndash;4 obstacles. The Alert starts at 0 and climbs. At least one obstacle is something the crew didn't uncover in Planning.</td></tr><tr><td>4 &mdash; The Escape</td><td>1&ndash;2 obstacles. The Alert carries over unchanged. At least one obstacle must be solvable without Athletics &mdash; every spider needs a way to contribute.</td></tr><tr><td>5 &mdash; The Debrief</td><td>Count the loot, award AP, argue about what went wrong, take the next job. They're always interested.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "advancement-points",
+        "name": "Advancement Points",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<p>The crew is out and mostly alive. Count what they got.</p><table><thead><tr><th>Outcome</th><th>Advancement Points</th></tr></thead><tbody><tr><td>Full Success</td><td>Escaped with the complete objective. Full AP for the difficulty: Easy 2, Standard 3, Hard 5, Legendary 8.</td></tr><tr><td>Partial Success</td><td>Escaped alive but without the objective, or with incomplete loot. Half AP, rounded down.</td></tr><tr><td>Loss</td><td>The whole crew went Out before escaping. No AP. Significant embarrassment. Not discussed.</td></tr></tbody></table><h3>Spending AP</h3><table><thead><tr><th>Cost</th><th>Effect</th></tr></thead><tbody><tr><td>1 AP</td><td>+1 to a Skill.</td></tr><tr><td>2 AP</td><td>+1 to an Attribute.</td></tr><tr><td>3 AP</td><td>A new Perk from your Role list (no maximum).</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "the-loot",
+        "name": "The Loot",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Tier</th><th>Description</th></tr></thead><tbody><tr><td>Crumb (Trivial)</td><td>A single bit of food, a small charm, a coin. Simple job, modest reward.</td></tr><tr><td>Trinket (Easy)</td><td>A small shiny thing, a memory stick, a piece of jewelry light enough to move.</td></tr><tr><td>Prize (Standard)</td><td>Something significant &mdash; the main event of a proper heist. Full reward on success.</td></tr><tr><td>Treasure (Hard)</td><td>High value, high security, genuinely dangerous to take.</td></tr><tr><td>The Score (Legendary)</td><td>The kind of job spiders tell the spiderlings about. Maximum reward. Maximum everything-went-wrong.</td></tr></tbody></table>"
+        }
+      }
+    ]
+  },
+  {
+    "key": "quick-reference",
+    "name": "Quick Reference",
+    "pages": [
+      {
+        "key": "rolling",
+        "name": "Rolling",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Term</th><th>Rule</th></tr></thead><tbody><tr><td>Pool</td><td>Attribute + Skill (+ any bonus dice)</td></tr><tr><td>Success</td><td>Each die showing 4, 5, or 6</td></tr><tr><td>Difficulty</td><td>1 Trivial &middot; 2 Easy &middot; 3 Moderate &middot; 4 Hard &middot; 5 Absurd</td></tr><tr><td>Partial</td><td>1+ Successes but short of the target: succeed with a complication</td></tr><tr><td>Failure</td><td>0 Successes: fail, a consequence occurs</td></tr><tr><td>Critical</td><td>Double the required Successes: succeed + bonus + Alert &minus;1</td></tr><tr><td>Botch</td><td>Pool at 0: roll 1 die. 1&ndash;3 fail + Alert +2. 4&ndash;6 clean fail.</td></tr><tr><td>Assist</td><td>Adjacent ally rolls Skill only (max 3 dice). Each Success = +1 die.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "the-grid",
+        "name": "The Grid",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Rule</th><th>Detail</th></tr></thead><tbody><tr><td>Scale</td><td>1 square = 1 spider. Distances are counted in squares.</td></tr><tr><td>Speed</td><td>Squares per turn, set by species. Most 5 &middot; Wolf 7 &middot; Jumping 6 &middot; Crab 4.</td></tr><tr><td>Your turn</td><td>Move up to Speed (may split) + one Action. Diagonals count as 1.</td></tr><tr><td>Adjacency</td><td>The 8 surrounding squares. Brawl and Assist need adjacency.</td></tr><tr><td>Cover</td><td>A solid object between you and a viewer: +2 Difficulty to spot/target you.</td></tr><tr><td>Climbing</td><td>Normal cost on walls/ceilings. Slick/hostile surfaces cost double or a roll.</td></tr><tr><td>Hurt/Critical</td><td>Speed halved (round down).</td></tr><tr><td>Turn order</td><td>Only when timing is tight: crew acts (any order), then the ST's threats.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "the-alert",
+        "name": "The Alert",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Rule</th><th>Detail</th></tr></thead><tbody><tr><td>Only goes up</td><td>+1 failed roll w/ consequence, spotted briefly, Silk Clutch &middot; +2 Botch, confirmed alert, spider Out, Loud Failure</td></tr><tr><td>Thresholds</td><td>3&ndash;4 Stirring: Stealth +1 &middot; 5&ndash;6 Active: threat wakes, no roll penalty &middot; 7&ndash;8 Lockdown: all rolls +1 (Stealth +2, stacks) &middot; Limit: Full Alert</td></tr><tr><td>Reduction</td><td>Critical Success only: Alert &minus;1</td></tr><tr><td>Limits</td><td>Easy 10 &middot; Standard 8 &middot; Hard 6 &middot; Absurd 4 &middot; Legendary 2</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "silk-points",
+        "name": "Silk Points",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Cost/Reward</th><th>Effect</th></tr></thead><tbody><tr><td>1 SP</td><td>+1 die to a roll &middot; run a Silk Line (&le;5 squares)</td></tr><tr><td>2 SP</td><td>Reroll up to 3 dice &middot; build a web structure &middot; Improvise (Attribute only, +1 Difficulty)</td></tr><tr><td>3 SP</td><td>Silk Clutch (fail &rarr; success, Alert +1) &middot; Damage Control (crew: one +2 spike &rarr; +1, once/heist)</td></tr><tr><td>4 SP</td><td>Not Part of the Plan (negate one complication, once/heist)</td></tr><tr><td>Earn +1</td><td>Flaw bites &middot; spectacular funny failure &middot; creative species use</td></tr><tr><td>Earn +2</td><td>Genuinely brilliant plan, table agrees, ST confirms</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "vitality",
+        "name": "Vitality",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>State</th><th>Effect</th></tr></thead><tbody><tr><td>Unharmed</td><td>Full pool.</td></tr><tr><td>Rattled</td><td>&minus;1 die on all rolls.</td></tr><tr><td>Hurt</td><td>&minus;2 dice, half Speed.</td></tr><tr><td>Critical</td><td>&minus;3 dice, must be assisted to move.</td></tr><tr><td>Out</td><td>Remove from heist. Alert +2. Activate the Waiting Web.</td></tr><tr><td>Taking a hit</td><td>Drop 1 level. Shrug off with BODY+Endurance vs the attack: meet/beat = no drop; lose by 3+ = drop 2. Ties to you.</td></tr></tbody></table>"
+        }
+      },
+      {
+        "key": "phases-and-advancement",
+        "name": "The Five Phases & Advancement",
+        "type": "text",
+        "title": { "show": true, "level": 1 },
+        "text": {
+          "format": 1,
+          "content": "<table><thead><tr><th>Phase</th><th>Summary</th></tr></thead><tbody><tr><td>1 &mdash; The Score</td><td>ST presents the job and the visible map. Roleplay only. No rolls, no Alert.</td></tr><tr><td>2 &mdash; Planning</td><td>Case for intel (a Success = one true detail). Make Preparations (setup, not auto-wins; each gets a complication).</td></tr><tr><td>3 &mdash; The Heist</td><td>3&ndash;4 obstacles. The Alert climbs. At least one thing the crew didn't uncover.</td></tr><tr><td>4 &mdash; The Escape</td><td>1&ndash;2 obstacles. Alert carries over. At least one must be solvable without Athletics.</td></tr><tr><td>5 &mdash; Debrief</td><td>Count loot, award AP, argue about what happened, take the next job.</td></tr></tbody></table><h3>Advancement Points</h3><table><thead><tr><th>Result</th><th>AP</th></tr></thead><tbody><tr><td>Full Success</td><td>Easy 2 &middot; Standard 3 &middot; Hard 5 &middot; Legendary 8</td></tr><tr><td>Partial</td><td>Half AP, rounded down</td></tr><tr><td>Loss</td><td>0 AP. Never discussed.</td></tr><tr><td>Spending AP</td><td>1 AP: +1 to a Skill &middot; 2 AP: +1 to an Attribute &middot; 3 AP: a new Perk from your Role list (no maximum)</td></tr></tbody></table><p><em>Good luck out there. The cat is watching. Don't get vacuumed.</em></p>"
+        }
+      }
+    ]
+  }
+]

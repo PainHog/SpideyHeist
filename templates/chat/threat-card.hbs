@@ -1,0 +1,25 @@
+<div class="heisty-roll-card threat-card">
+  <header class="hrc-head">
+    <img class="hrc-avatar" src="{{actorImg}}" alt="" />
+    <div class="hrc-title">
+      <span class="hrc-actor">{{actorName}}</span>
+      <span class="hrc-label">{{label}}{{#if note}} <span class="hrc-sub">{{note}}</span>{{/if}}</span>
+    </div>
+    <div class="hrc-verdict-badge threat">{{successes}} Succ.</div>
+  </header>
+
+  <div class="hrc-dice">
+    {{#each faces}}<span class="die face-{{this.result}} {{#if this.success}}hit{{/if}}">{{this.result}}</span>{{/each}}
+  </div>
+
+  <div class="hrc-result">
+    <span class="hrc-count"><strong>{{successes}}</strong> Success{{#if (heNeq successes 1)}}es{{/if}} on {{pool}}d6</span>
+  </div>
+  <p class="hrc-blurb">Opposed: most Successes wins. Ties go to the defender.</p>
+
+  <div class="hrc-alert-controls">
+    <span class="hrc-alert-label"><i class="fa-solid fa-triangle-exclamation"></i> Alert</span>
+    <button type="button" data-heisty-alert="1">+1</button>
+    <button type="button" data-heisty-alert="2">+2</button>
+  </div>
+</div>

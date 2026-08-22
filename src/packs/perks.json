@@ -1,0 +1,380 @@
+[
+  {
+    "key": "silver-tongue",
+    "name": "Silver Tongue",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "face",
+      "effect": "<p>When you fail a Persuasion roll, reroll it once. You said it better the second time.</p>"
+    }
+  },
+  {
+    "key": "read-the-room",
+    "name": "Read the Room",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "face",
+      "effect": "<p>Before a social encounter, ask the ST one thing the NPC actually wants. They answer honestly.</p>"
+    }
+  },
+  {
+    "key": "plausible-deniability",
+    "name": "Plausible Deniability",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "face",
+      "effect": "<p>Once per scene, when the crew does something that would raise the Alert by 1, talk that single point away. Stops a +1 only &mdash; never a +2 or higher. Not an undo button for the loud mistakes.</p>"
+    }
+  },
+  {
+    "key": "fast-talk",
+    "name": "Fast Talk",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "face",
+      "effect": "<p>Distract any NPC as a free action, no roll, once per scene. It holds for exactly one round.</p>"
+    }
+  },
+  {
+    "key": "actually-i-planned-this",
+    "name": "Actually, I Planned This",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "face",
+      "effect": "<p>Once per heist, after a plan visibly falls apart, declare it was the plan. The crew gets +1 die on their next roll as everyone commits to the lie.</p>"
+    }
+  },
+  {
+    "key": "familiar-face",
+    "name": "Familiar Face",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "face",
+      "effect": "<p>You've been here before. You know one true detail about the target or location that wasn't in the briefing.</p>"
+    }
+  },
+  {
+    "key": "silk-trail",
+    "name": "Silk Trail",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "ghost",
+      "effect": "<p>Leave a near-invisible line anywhere you've been. Crew can follow it or ride it as a zip line. Holds two spiders.</p>"
+    }
+  },
+  {
+    "key": "dead-drop",
+    "name": "Dead Drop",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "ghost",
+      "effect": "<p>Stash a small item anywhere during Planning, no roll. You know exactly where it is. Nobody else does.</p>"
+    }
+  },
+  {
+    "key": "soundless",
+    "name": "Soundless",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "ghost",
+      "effect": "<p>Reduce the Difficulty of Stealth rolls made while moving by 1. You don't make noise. You make a point of it.</p>"
+    }
+  },
+  {
+    "key": "second-story-spider",
+    "name": "Second-Story Spider",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "ghost",
+      "effect": "<p>Climb any surface at full Speed with no roll &mdash; even slick or hostile ones that would cost other spiders double or a check.</p>"
+    }
+  },
+  {
+    "key": "ghost-protocol",
+    "name": "Ghost Protocol",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "ghost",
+      "effect": "<p>When you're the one spotted, immediately make a free Stealth roll to vanish again before the NPC reacts.</p>"
+    }
+  },
+  {
+    "key": "i-was-never-here",
+    "name": "I Was Never Here",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "ghost",
+      "effect": "<p>Increase the Difficulty for any NPC to remember seeing you by 2. You are deeply, fundamentally forgettable.</p>"
+    }
+  },
+  {
+    "key": "jury-rig",
+    "name": "Jury-Rig",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "tinkerer",
+      "effect": "<p>Once per scene, fix, jam, or modify a small mechanical device with a Difficulty 2 Engineering roll. Locks, sensors, that one drawer.</p>"
+    }
+  },
+  {
+    "key": "spider-sense-sort-of",
+    "name": "Spider-Sense… Sort Of",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "tinkerer",
+      "effect": "<p>Spend a turn observing an area and the ST tells you whether any mechanical traps, alarms, or sensors are present &mdash; not where.</p>"
+    }
+  },
+  {
+    "key": "overclock",
+    "name": "Overclock",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "tinkerer",
+      "effect": "<p>Spend 1 Silk Point for +2 dice on an Engineering roll. It just takes more legs than usual.</p>"
+    }
+  },
+  {
+    "key": "field-repair",
+    "name": "Field Repair",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "tinkerer",
+      "effect": "<p>Once per scene, patch an adjacent crewmate's Vitality up one level with a Difficulty 2 Engineering roll. You're an engineer, not a doctor. Close enough.</p>"
+    }
+  },
+  {
+    "key": "trap-architect",
+    "name": "Trap Architect",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "tinkerer",
+      "effect": "<p>During Planning, set one web-based trap on the known map. When an NPC triggers it, the ST rolls Difficulty 3 for them to avoid it.</p>"
+    }
+  },
+  {
+    "key": "i-see-how-this-works",
+    "name": "I See How This Works",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "tinkerer",
+      "effect": "<p>The first time you meet any new lock, alarm, or mechanism, ask the ST one yes/no question about how it works. Free. Just by looking.</p>"
+    }
+  },
+  {
+    "key": "take-the-hit",
+    "name": "Take the Hit",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "bruiser",
+      "effect": "<p>Once per scene, redirect a physical consequence meant for an adjacent crewmate to yourself. You chose this.</p>"
+    }
+  },
+  {
+    "key": "unfazed",
+    "name": "Unfazed",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "bruiser",
+      "effect": "<p>Ignore the first -1 die penalty from being Rattled. You've been Rattled before. You're fine.</p>"
+    }
+  },
+  {
+    "key": "thunderous-entrance",
+    "name": "Thunderous Entrance",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "bruiser",
+      "effect": "<p>Enter a scene from an unexpected direction and every NPC must pass a Difficulty 3 check or freeze in surprise for a round.</p>"
+    }
+  },
+  {
+    "key": "negotiating-position",
+    "name": "Negotiating Position",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "bruiser",
+      "effect": "<p>Your presence helps. The Face gets +1 die on Persuasion while you're visibly nearby.</p>"
+    }
+  },
+  {
+    "key": "silk-grapple",
+    "name": "Silk Grapple",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "bruiser",
+      "effect": "<p>Fire a silk line to grab and restrain a target up to 3 squares away &mdash; Brawl, Difficulty 3. Small targets held one round.</p>"
+    }
+  },
+  {
+    "key": "that-all-you-got",
+    "name": "That All You Got?",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "bruiser",
+      "effect": "<p>After a hit that would drop you to Critical, roll Endurance (Difficulty 3). On a success, you stop at Hurt instead.</p>"
+    }
+  },
+  {
+    "key": "early-warning",
+    "name": "Early Warning",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "lookout",
+      "effect": "<p>At the start of each obstacle, the ST tells you which direction any active threat moves next. No roll.</p>"
+    }
+  },
+  {
+    "key": "tactical-feed",
+    "name": "Tactical Feed",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "lookout",
+      "effect": "<p>Once per round, give a crewmate +1 die on their next roll by telling them exactly what to do. You're not helping. You're instructing.</p>"
+    }
+  },
+  {
+    "key": "pattern-recognition",
+    "name": "Pattern Recognition",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "lookout",
+      "effect": "<p>After watching a patrol or recurring threat for one full round, you know its next three actions.</p>"
+    }
+  },
+  {
+    "key": "contingency",
+    "name": "Contingency",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "lookout",
+      "effect": "<p>Once per heist during Planning, set one Contingency with the ST. If a specific trigger happens, it activates automatically as a success.</p>"
+    }
+  },
+  {
+    "key": "escape-routes",
+    "name": "Escape Routes",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "lookout",
+      "effect": "<p>You always know the fastest way out of a room you've been in. Reduce the Difficulty of escape rolls by 1 while you lead.</p>"
+    }
+  },
+  {
+    "key": "counter-surveillance",
+    "name": "Counter-Surveillance",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "lookout",
+      "effect": "<p>Detect when an NPC is watching a specific area &mdash; Perception, Difficulty 2. On a success, the ST tells you what's watched and from where.</p>"
+    }
+  },
+  {
+    "key": "always-a-way-out",
+    "name": "Always a Way Out",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "wheelman",
+      "effect": "<p>You can't be fully cornered. Even when the ST would logically have you trapped, you have one option left. It may be unpleasant.</p>"
+    }
+  },
+  {
+    "key": "shortcut",
+    "name": "Shortcut",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "wheelman",
+      "effect": "<p>During Planning, establish one shortcut between two points on the known map. The crew can use it once.</p>"
+    }
+  },
+  {
+    "key": "dont-look-down",
+    "name": "Don't Look Down",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "wheelman",
+      "effect": "<p>Remove the penalty from height-based Acrobatics rolls. You've looked down. You've made your peace.</p>"
+    }
+  },
+  {
+    "key": "passenger",
+    "name": "Passenger",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "wheelman",
+      "effect": "<p>Carry one incapacitated crewmate at full Speed. It looks extremely dramatic.</p>"
+    }
+  },
+  {
+    "key": "drafting",
+    "name": "Drafting",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "wheelman",
+      "effect": "<p>When you lead group movement, each crewmate gets +1 die on movement rolls. You set the pace; they follow.</p>"
+    }
+  },
+  {
+    "key": "abort-abort",
+    "name": "Abort, Abort",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "wheelman",
+      "effect": "<p>Once per heist, call an immediate abort on a failed plan. The crew retreats without the extra Alert that failure would have added.</p>"
+    }
+  },
+  {
+    "key": "method-actor",
+    "name": "Method Actor",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "grifter",
+      "effect": "<p>Choose one NPC before the heist; you've studied them. +2 dice on all Deception and Disguise involving that NPC.</p>"
+    }
+  },
+  {
+    "key": "double-bluff",
+    "name": "Double Bluff",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "grifter",
+      "effect": "<p>When an NPC sees through your disguise, reveal the disguise was the distraction. Spend 1 Silk Point; the NPC is confused for a round.</p>"
+    }
+  },
+  {
+    "key": "planted-evidence",
+    "name": "Planted Evidence",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "grifter",
+      "effect": "<p>During Planning, place one false piece of information on the known map. The first NPC to find it believes it completely.</p>"
+    }
+  },
+  {
+    "key": "quick-change",
+    "name": "Quick Change",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "grifter",
+      "effect": "<p>Alter your disguise between scenes with no roll. You look different now. You are still a spider.</p>"
+    }
+  },
+  {
+    "key": "the-long-con",
+    "name": "The Long Con",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "grifter",
+      "effect": "<p>Spend Planning establishing a false identity and all rolls using it get +1 die. The identity must be specific and named.</p>"
+    }
+  },
+  {
+    "key": "smoke-and-mirrors",
+    "name": "Smoke and Mirrors",
+    "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+    "system": {
+      "role": "grifter",
+      "effect": "<p>When you fail a Deception roll, reframe the failure as intentional. The NPC still isn't fooled, but they don't raise the Alert.</p>"
+    }
+  }
+]

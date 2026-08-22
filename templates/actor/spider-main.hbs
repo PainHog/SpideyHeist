@@ -1,0 +1,76 @@
+<section class="tab heisty-tab" data-tab="main" data-group="primary">
+  <div class="main-grid">
+
+    <div class="panel attributes-panel">
+      <h3 class="panel-title">Attributes</h3>
+      <div class="attributes">
+        {{#each attributes}}
+        <div class="attribute" data-attr="{{this.key}}" title="{{this.hint}}">
+          <button type="button" class="attr-roll" data-action="rollAttribute" data-attr="{{this.key}}"
+                  title="Roll {{this.abbr}} alone">
+            <i class="fa-solid fa-dice-d6"></i>
+          </button>
+          <span class="attr-abbr">{{this.abbr}}</span>
+          <input class="attr-value" type="number" min="1" max="5"
+                 name="system.attributes.{{this.key}}.value" value="{{this.value}}" />
+          <span class="attr-name">{{this.label}}</span>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="panel vitality-panel">
+      <h3 class="panel-title">Vitality</h3>
+      <div class="vitality-ladder">
+        {{#each vitality}}
+        <button type="button" class="vit-step vit-{{this.key}} {{#if this.selected}}active{{/if}}"
+                data-action="setVitality" data-state="{{this.key}}" title="{{this.hint}}">
+          <span class="vit-label">{{this.label}}</span>
+          {{#if this.penalty}}<span class="vit-pen">{{heSigned this.penalty}}</span>{{/if}}
+        </button>
+        {{/each}}
+      </div>
+      <p class="vitality-hint">{{vitalityState.hint}}</p>
+    </div>
+
+    <div class="panel silk-panel">
+      <h3 class="panel-title">Silk Points</h3>
+      <div class="silk-track">
+        <button type="button" class="silk-btn" data-action="silkAdjust" data-delta="-1" title="Spend 1 Silk">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+        <div class="silk-pips">
+          {{#each silkPips}}<span class="pip {{#if this.filled}}filled{{/if}}"></span>{{/each}}
+        </div>
+        <button type="button" class="silk-btn" data-action="silkAdjust" data-delta="1" title="Earn 1 Silk back">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <span class="silk-count">{{system.silk.value}} / {{system.silk.max}}</span>
+      </div>
+      <p class="silk-hint">Starting Silk = WIT + NERVE. When it's gone, it's gone.</p>
+    </div>
+
+    <div class="panel skills-panel">
+      <h3 class="panel-title">Skills
+        <span class="panel-sub">click a name to roll &middot; shift-click skips the dialog</span>
+      </h3>
+      <div class="skill-columns">
+        {{#each skillGroups}}
+        <div class="skill-col">
+          <h4 class="skill-col-title">{{this.label}} <span class="col-abbr">{{this.abbr}}</span></h4>
+          {{#each this.skills}}
+          <div class="skill-row">
+            <input class="skill-value" type="number" min="0" max="5"
+                   name="system.skills.{{this.key}}.value" value="{{this.value}}" />
+            <button type="button" class="skill-name" data-action="rollSkill" data-skill="{{this.key}}"
+                    title="{{this.hint}}">{{this.label}}</button>
+            <span class="skill-pool" title="Dice pool (Attribute + Skill)">{{this.pool}}</span>
+          </div>
+          {{/each}}
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+  </div>
+</section>

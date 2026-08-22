@@ -1,0 +1,20 @@
+<section class="tab builder-step step-perks" data-tab="perks" data-group="primary">
+  <div class="step-head">
+    <h2>Choose 2 Perks</h2>
+    <span class="budget {{#if (heEq perkCount 2)}}done{{/if}}">{{perkCount}} / 2 chosen</span>
+  </div>
+  {{#if needsRole}}
+  <p class="step-warn"><i class="fa-solid fa-circle-info"></i> Choose a Crew Role first — Perks come from your Role's list.</p>
+  {{else}}
+  <p class="step-blurb">Pick two. These are what make your spider different from every other spider of the same Role.</p>
+  <div class="perk-list">
+    {{#each rolePerks}}
+    <button type="button" class="perk-choice {{#if this.selected}}selected{{/if}}" data-action="togglePerk"
+            data-id="{{this.id}}" {{#if this.disabled}}disabled{{/if}}>
+      <div class="perk-choice-head"><i class="fa-solid fa-star"></i><span>{{this.name}}</span></div>
+      <div class="perk-choice-effect">{{{this.effect}}}</div>
+    </button>
+    {{/each}}
+  </div>
+  {{/if}}
+</section>

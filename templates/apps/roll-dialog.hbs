@@ -1,0 +1,40 @@
+<div class="heisty-roll-dialog-body">
+  <div class="hrd-summary">
+    <div class="hrd-pool">
+      <span class="hrd-pool-num">{{base}}</span>
+      <span class="hrd-pool-lbl">base pool</span>
+    </div>
+    <div class="hrd-headline">
+      <span class="hrd-label">{{label}}</span>
+      <span class="hrd-sub">{{subtitle}}</span>
+    </div>
+  </div>
+
+  {{#if hasVitPenalty}}<p class="hrd-note warn"><i class="fa-solid fa-heart-crack"></i> Vitality {{heSigned vitPenalty}} dice will apply.</p>{{/if}}
+  <p class="hrd-note"><i class="fa-solid fa-triangle-exclamation"></i> Alert {{alertValue}}/{{alertLimit}} &mdash; <strong>{{band.label}}</strong>. {{band.description}}</p>
+
+  <div class="form-group">
+    <label>Difficulty <span class="dim">(Successes needed)</span></label>
+    <input type="number" name="difficulty" value="{{defaultDifficulty}}" min="1" max="8" list="heisty-diffs" autofocus />
+    <datalist id="heisty-diffs">
+      {{#each difficulties}}<option value="{{@key}}" label="{{this.label}}"></option>{{/each}}
+    </datalist>
+  </div>
+
+  {{#if hasAlertDiff}}
+  <div class="form-group checkbox-group">
+    <label><input type="checkbox" name="applyAlert" checked /> Apply Alert penalty (+{{alertDiff}} Difficulty{{#if isStealth}}, Stealth{{/if}})</label>
+  </div>
+  {{/if}}
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Bonus dice <span class="dim">(Silk, Assist, ability)</span></label>
+      <input type="number" name="bonus" value="0" min="0" max="20" />
+    </div>
+    <div class="form-group">
+      <label>Penalty dice</label>
+      <input type="number" name="penalty" value="0" min="0" max="20" />
+    </div>
+  </div>
+</div>

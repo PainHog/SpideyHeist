@@ -1,0 +1,17 @@
+<section class="tab builder-step step-species" data-tab="species" data-group="primary">
+  <div class="step-head">
+    <h2>Choose Your Species</h2>
+    <button type="button" class="btn-random" data-action="randomSpecies"><i class="fa-solid fa-dice"></i> Roll 1d6</button>
+  </div>
+  <p class="step-blurb">Your species grants a passive ability, an Attribute bonus, and your Speed. There are no wrong picks — the crew wants variety, not optimization.</p>
+  <div class="choice-grid">
+    {{#each species}}
+    <button type="button" class="choice-card {{#if this.selected}}selected{{/if}}" data-action="selectSpecies" data-id="{{this.id}}">
+      <img class="choice-icon" src="{{this.img}}" alt="" />
+      <span class="choice-name">{{this.name}}</span>
+      <span class="choice-meta">Speed {{this.system.speed}}{{#if this.bonusSummary}} &middot; {{this.bonusSummary}}{{/if}}</span>
+      <span class="choice-ability">{{this.system.ability}}</span>
+    </button>
+    {{/each}}
+  </div>
+</section>

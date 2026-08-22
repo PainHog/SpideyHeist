@@ -1,0 +1,94 @@
+<section class="item-body-content type-{{item.type}}">
+
+  {{#*inline "editor"}}
+    {{#if @root.editable}}
+    <prose-mirror name="system.{{field}}" button="true" editable="true" toggled="false"
+                  value="{{value}}">{{{enriched}}}</prose-mirror>
+    {{else}}
+    <div class="prose">{{{enriched}}}</div>
+    {{/if}}
+  {{/inline}}
+
+  {{#if (heEq item.type "species")}}
+    <div class="field-row">
+      <label class="field"><span>Species Ability</span>
+        <input type="text" name="system.ability" value="{{system.ability}}" placeholder="Did You See That Jump?!" />
+      </label>
+      <label class="field narrow"><span>Speed</span>
+        <input type="number" min="0" name="system.speed" value="{{system.speed}}" />
+      </label>
+    </div>
+    <div class="bonus-row">
+      <span class="bonus-label">Attribute Bonuses</span>
+      <label><span>BODY</span><input type="number" name="system.bonuses.body" value="{{system.bonuses.body}}" /></label>
+      <label><span>WIT</span><input type="number" name="system.bonuses.wit" value="{{system.bonuses.wit}}" /></label>
+      <label><span>NERVE</span><input type="number" name="system.bonuses.nerve" value="{{system.bonuses.nerve}}" /></label>
+      <label><span>GRACE</span><input type="number" name="system.bonuses.grace" value="{{system.bonuses.grace}}" /></label>
+    </div>
+    <h4 class="field-head">Ability</h4>
+    {{> editor field="abilityText" value=system.abilityText enriched=enriched.abilityText}}
+    <h4 class="field-head">Flavor</h4>
+    {{> editor field="blurb" value=system.blurb enriched=enriched.blurb}}
+
+  {{else if (heEq item.type "role")}}
+    <div class="field-row">
+      <label class="field"><span>Signature Move</span>
+        <input type="text" name="system.signature" value="{{system.signature}}" />
+      </label>
+      <label class="field narrow"><span>Role Bonus</span>
+        <input type="number" min="0" name="system.roleBonus" value="{{system.roleBonus}}" />
+      </label>
+    </div>
+    <div class="field-row">
+      <label class="field"><span>Core Skill 1</span>
+        <select name="system.coreSkills.0">
+          {{#each skillChoices}}<option value="{{this.key}}" {{#if (heEq this.key (lookup ../system.coreSkills 0))}}selected{{/if}}>{{this.label}}</option>{{/each}}
+        </select>
+      </label>
+      <label class="field"><span>Core Skill 2</span>
+        <select name="system.coreSkills.1">
+          {{#each skillChoices}}<option value="{{this.key}}" {{#if (heEq this.key (lookup ../system.coreSkills 1))}}selected{{/if}}>{{this.label}}</option>{{/each}}
+        </select>
+      </label>
+    </div>
+    <h4 class="field-head">Signature Move</h4>
+    {{> editor field="signatureText" value=system.signatureText enriched=enriched.signatureText}}
+    <h4 class="field-head">Flavor</h4>
+    {{> editor field="blurb" value=system.blurb enriched=enriched.blurb}}
+
+  {{else if (heEq item.type "perk")}}
+    <label class="field"><span>Belongs to Role</span>
+      <select name="system.role">
+        <option value="">— any —</option>
+        {{#each roleChoices}}<option value="{{this.key}}" {{#if (heEq this.key ../system.role)}}selected{{/if}}>{{this.label}}</option>{{/each}}
+      </select>
+    </label>
+    <h4 class="field-head">Effect</h4>
+    {{> editor field="effect" value=system.effect enriched=enriched.effect}}
+
+  {{else if (heEq item.type "flaw")}}
+    <label class="field narrow"><span>Flaw Table Roll (1d10)</span>
+      <input type="number" min="1" max="10" name="system.rollValue" value="{{system.rollValue}}" />
+    </label>
+    <h4 class="field-head">Effect</h4>
+    {{> editor field="effect" value=system.effect enriched=enriched.effect}}
+
+  {{else if (heEq item.type "gadget")}}
+    <div class="field-row">
+      <label class="field narrow"><span>Uses</span>
+        <input type="number" min="0" name="system.uses" value="{{system.uses}}" />
+      </label>
+      <label class="field checkbox"><span>Consumable</span>
+        <input type="checkbox" name="system.consumable" {{#if system.consumable}}checked{{/if}} />
+      </label>
+      <label class="field"><span>Source / Material</span>
+        <input type="text" name="system.source" value="{{system.source}}" placeholder="a bent paperclip" />
+      </label>
+    </div>
+    <h4 class="field-head">Effect</h4>
+    {{> editor field="effect" value=system.effect enriched=enriched.effect}}
+    <h4 class="field-head">Description</h4>
+    {{> editor field="description" value=system.description enriched=enriched.description}}
+  {{/if}}
+
+</section>

@@ -1,0 +1,15 @@
+<footer class="builder-footer">
+  <button type="button" class="footer-btn back" data-action="back" {{#if isFirst}}disabled{{/if}}>
+    <i class="fa-solid fa-chevron-left"></i> Back
+  </button>
+  <span class="footer-progress">Step {{heAdd stepIndex 1}} of {{stepOrder.length}}</span>
+  {{#if isLast}}
+  <button type="button" class="footer-btn create" data-action="create" {{#unless validation.ok}}disabled{{/unless}}>
+    <i class="fa-solid fa-spider"></i> Create Spider
+  </button>
+  {{else}}
+  <button type="button" class="footer-btn next" data-action="next">
+    Next <i class="fa-solid fa-chevron-right"></i>
+  </button>
+  {{/if}}
+</footer>

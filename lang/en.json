@@ -1,0 +1,17 @@
+{
+  "HEISTY.Tab.Main": "Sheet",
+  "HEISTY.Tab.Kit": "Kit",
+  "HEISTY.Tab.Bio": "Story",
+  "HEISTY.SheetLabel.Spider": "Heisty Spideys — Spider",
+  "HEISTY.SheetLabel.Threat": "Heisty Spideys — Threat",
+  "HEISTY.SheetLabel.Item": "Heisty Spideys — Item",
+  "HEISTY.Settings.ShowAlertMeter.Name": "Show the Alert Meter",
+  "HEISTY.Settings.ShowAlertMeter.Hint": "Display the floating Alert meter HUD. The Storyteller can move the Alert; everyone can see it.",
+  "TYPES.Actor.spider": "Spider",
+  "TYPES.Actor.threat": "Threat",
+  "TYPES.Item.species": "Species",
+  "TYPES.Item.role": "Crew Role",
+  "TYPES.Item.perk": "Perk",
+  "TYPES.Item.flaw": "Flaw",
+  "TYPES.Item.gadget": "Silk & Gadget"
+}

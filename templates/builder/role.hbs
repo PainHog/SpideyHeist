@@ -1,0 +1,17 @@
+<section class="tab builder-step step-role" data-tab="role" data-group="primary">
+  <div class="step-head">
+    <h2>Choose Your Crew Role</h2>
+    <button type="button" class="btn-random" data-action="randomRole"><i class="fa-solid fa-dice"></i> Roll 1d6</button>
+  </div>
+  <p class="step-blurb">Your Role is your job on the crew: a Signature Move no other Role has, bonus points in your core skills, and a list of Perks.</p>
+  <div class="choice-grid roles">
+    {{#each roles}}
+    <button type="button" class="choice-card {{#if this.selected}}selected{{/if}}" data-action="selectRole" data-id="{{this.id}}">
+      <img class="choice-icon" src="{{this.img}}" alt="" />
+      <span class="choice-name">{{this.name}}</span>
+      <span class="choice-meta">Core: {{this.coreLabels}}</span>
+      <span class="choice-ability">{{this.system.signature}}</span>
+    </button>
+    {{/each}}
+  </div>
+</section>

@@ -1,0 +1,14 @@
+{
+  "name": "heisty-spideys",
+  "version": "1.0.0",
+  "description": "Heisty Spideys — a Foundry VTT game system of eight-legged larceny.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:packs": "node tools/build-packs.mjs",
+    "clean:packs": "node tools/build-packs.mjs --clean"
+  },
+  "devDependencies": {
+    "classic-level": "^1.4.1"
+  }
+}

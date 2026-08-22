@@ -1,0 +1,15 @@
+<section class="tab builder-step step-flaw" data-tab="flaw" data-group="primary">
+  <div class="step-head">
+    <h2>Choose Your Flaw</h2>
+    <button type="button" class="btn-random" data-action="randomFlaw"><i class="fa-solid fa-dice"></i> Roll 1d10</button>
+  </div>
+  <p class="step-blurb">Take exactly one. It's a real constraint, and it will come up — and it pays you 1 Silk Point when it causes the crew a genuine problem.</p>
+  <div class="flaw-list">
+    {{#each flaws}}
+    <button type="button" class="flaw-choice {{#if this.selected}}selected{{/if}}" data-action="selectFlaw" data-id="{{this.id}}">
+      <div class="flaw-choice-head"><span class="flaw-roll">{{this.rollValue}}</span><span>{{this.name}}</span></div>
+      <div class="flaw-choice-effect">{{{this.effect}}}</div>
+    </button>
+    {{/each}}
+  </div>
+</section>

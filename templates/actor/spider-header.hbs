@@ -1,0 +1,41 @@
+<header class="heisty-header spider-header">
+  <div class="portrait-wrap">
+    <img class="portrait" src="{{actor.img}}" data-action="editImage" data-edit="img"
+         alt="{{actor.name}}" title="Change portrait" />
+    <div class="vitality-chip vit-{{system.vitality.state}}">
+      <i class="fa-solid fa-heart-pulse"></i> {{vitalityState.label}}
+    </div>
+  </div>
+
+  <div class="identity">
+    <input class="spider-name" type="text" name="name" value="{{actor.name}}" placeholder="Name your spider" />
+    <div class="identity-row">
+      <input class="concept" type="text" name="system.details.concept"
+             value="{{system.details.concept}}" placeholder="Concept — e.g. 'reluctant getaway driver'" />
+      <input class="pronouns" type="text" name="system.details.pronouns"
+             value="{{system.details.pronouns}}" placeholder="Pronouns" />
+    </div>
+    <div class="identity-tags">
+      {{#if species}}<span class="tag species-tag"><i class="fa-solid fa-spider"></i> {{species.name}}</span>
+      {{else}}<span class="tag tag-empty">No Species</span>{{/if}}
+      {{#if role}}<span class="tag role-tag"><i class="fa-solid fa-user-secret"></i> {{role.name}}</span>
+      {{else}}<span class="tag tag-empty">No Role</span>{{/if}}
+    </div>
+  </div>
+
+  <div class="header-stats">
+    <div class="stat-block">
+      <span class="stat-value">{{system.speed.effective}}</span>
+      <span class="stat-label"><i class="fa-solid fa-shoe-prints"></i> Speed</span>
+      {{#if vitalityState.halfSpeed}}<span class="stat-note">halved</span>{{/if}}
+    </div>
+    <div class="stat-block silk-block">
+      <span class="stat-value">{{system.silk.value}}<span class="stat-max">/{{system.silk.max}}</span></span>
+      <span class="stat-label"><i class="fa-solid fa-diagram-project"></i> Silk</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-value">{{system.advancement.value}}</span>
+      <span class="stat-label"><i class="fa-solid fa-trophy"></i> AP</span>
+    </div>
+  </div>
+</header>
