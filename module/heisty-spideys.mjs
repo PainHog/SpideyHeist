@@ -97,7 +97,7 @@ Hooks.once("ready", async function () {
 
   // Raise the Alert meter HUD.
   ui.heistyAlert = new AlertMeter();
-  ui.heistyAlert.render(true);
+  ui.heistyAlert.render();
 
   // One-time migration bookkeeping.
   if (game.user.isGM) {

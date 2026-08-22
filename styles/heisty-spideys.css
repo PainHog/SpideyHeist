@@ -410,7 +410,7 @@
 /* ==========================================================================
    ALERT METER (HUD)
    ========================================================================== */
-#heisty-alert-meter { z-index: 60; }
+#heisty-alert-meter { position: fixed; z-index: 70; width: 260px; }
 .alert-meter-inner {
   width: 260px; border-radius: 10px; overflow: hidden;
   background: var(--hs-cream); color: var(--hs-ink);

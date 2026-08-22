@@ -2,6 +2,11 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.0.2] — Movable Alert meter
+
+### Changed
+- **The Alert meter is now a plain, reliably-draggable HUD.** The ApplicationV2 frameless window wasn't honoring placement or drag, so the meter got stuck in a spot that blocked the interface. It's now a fixed-position element that **anyone** (GM or player) can drag anywhere by its title bar, and each person's placement is remembered across reloads. GM controls (±, limit, reset) are unchanged; players see it read-only. You can still hide it entirely via *Configure Settings → Show the Alert Meter*.
+
 ## [1.0.1] — Field fixes
 
 Fixes from first live play.
