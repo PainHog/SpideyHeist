@@ -115,6 +115,25 @@ async function buildPack(def) {
   return count;
 }
 
+/** Fail loudly if any two source entries would produce the same document id. */
+function scanForDuplicateIds() {
+  const seen = new Map();
+  for (const def of PACKS) {
+    const raws = readSource(def.file);
+    raws.forEach(raw => {
+      const check = (id, where) => {
+        if (seen.has(id)) throw new Error(`Duplicate id ${id}: ${where} collides with ${seen.get(id)}`);
+        seen.set(id, where);
+      };
+      const id = makeId(def.out, raw.key);
+      check(id, `${def.out}::${raw.key}`);
+      (raw.pages ?? []).forEach((page, p) =>
+        check(makeId(def.out, raw.key, page.key ?? String(p)), `${def.out}::${raw.key}#${page.key ?? p}`));
+    });
+  }
+  console.log(`  id scan: ${seen.size} unique ids, no collisions.`);
+}
+
 async function main() {
   if (process.argv.includes("--clean")) {
     if (existsSync(OUT)) rmSync(OUT, { recursive: true, force: true });
@@ -123,6 +142,7 @@ async function main() {
   }
   mkdirSync(OUT, { recursive: true });
   console.log("Building Heisty Spideys compendium packs…");
+  scanForDuplicateIds();
   let total = 0;
   for (const def of PACKS) total += await buildPack(def);
   console.log(`Done. ${total} primary documents across ${PACKS.length} packs.`);

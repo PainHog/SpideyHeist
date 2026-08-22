@@ -29,7 +29,9 @@ jobs:
             const fs = require("fs");
             const s = JSON.parse(fs.readFileSync("system.json", "utf8"));
             s.version = process.env.VERSION;
-            s.manifest = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/v${process.env.VERSION}/system.json`;
+            // manifest stays on /latest/ so Foundry can detect future updates;
+            // download is pinned to this exact release's asset.
+            s.manifest = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/latest/download/system.json`;
             s.download = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/v${process.env.VERSION}/system.zip`;
             fs.writeFileSync("system.json", JSON.stringify(s, null, 2));
           '
@@ -39,7 +41,9 @@ jobs:
       - name: Build system.zip
         run: |
           zip -r system.zip . \
-            -x ".git/*" -x ".github/*" -x "node_modules/*" -x "*.zip" -x "package-lock.json"
+            -x ".git/*" -x ".github/*" -x "node_modules/*" -x "*.zip" \
+            -x "package.json" -x "package-lock.json" -x "tools/*" \
+            -x "packs/*/LOCK" -x "packs/*/LOG" -x "packs/*/LOG.old"
 
       - name: Publish release
         uses: softprops/action-gh-release@v2

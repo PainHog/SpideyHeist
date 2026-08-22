@@ -134,9 +134,10 @@
   "primaryTokenAttribute": "silk",
   "secondaryTokenAttribute": "",
   "socket": false,
-  "url": "https://github.com/painhog/spideyheist",
-  "manifest": "https://github.com/painhog/spideyheist/releases/latest/download/system.json",
-  "download": "https://github.com/painhog/spideyheist/releases/latest/download/system.zip",
+  "url": "https://github.com/PainHog/SpideyHeist",
+  "bugs": "https://github.com/PainHog/SpideyHeist/issues",
+  "manifest": "https://github.com/PainHog/SpideyHeist/releases/latest/download/system.json",
+  "download": "https://github.com/PainHog/SpideyHeist/releases/latest/download/system.zip",
   "license": "LICENSE",
   "readme": "README.md",
   "changelog": "CHANGELOG.md"
