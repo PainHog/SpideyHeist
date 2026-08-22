@@ -69,7 +69,8 @@
   border-color: var(--hs-plum-soft);
   box-shadow: 0 0 0 2px rgba(123, 58, 142, 0.25);
 }
-.heisty-spideys .tab:not(.active) { display: none; }
+/* Hide only inactive tab *content* sections — never the nav <a class="tab"> links. */
+.heisty-spideys section.tab:not(.active) { display: none; }
 .heisty-spideys .prose { line-height: 1.5; }
 .heisty-spideys .dim { color: var(--hs-ink-soft); font-weight: normal; font-size: 0.85em; }
 

@@ -33,8 +33,7 @@ export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       editImage: SpiderSheet.#onEditImage,
       itemEdit: SpiderSheet.#onItemEdit,
       itemDelete: SpiderSheet.#onItemDelete,
-      itemCreate: SpiderSheet.#onItemCreate,
-      openBuilder: SpiderSheet.#onOpenBuilder
+      itemCreate: SpiderSheet.#onItemCreate
     }
   };
 
@@ -110,7 +109,7 @@ export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.flaws = actor.flaws.map(f => ({ id: f.id, name: f.name, img: f.img, effect: f.system.effect }));
     context.gadgets = actor.gadgets.map(g => ({
       id: g.id, name: g.name, img: g.img, uses: g.system.uses,
-      consumable: g.system.consumable, description: g.system.description
+      consumable: g.system.consumable, effect: g.system.effect, description: g.system.description
     }));
 
     // Biography tab (enriched rich text)
@@ -172,8 +171,5 @@ export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       name: `New ${HEISTY.itemTypes[type] ?? "Item"}`, type
     }]);
     created[0]?.sheet.render(true);
-  }
-  static #onOpenBuilder() {
-    game.heistySpideys?.openBuilder?.();
   }
 }
