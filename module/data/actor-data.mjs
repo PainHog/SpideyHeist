@@ -60,6 +60,7 @@ export class SpiderData extends foundry.abstract.TypeDataModel {
   prepareDerivedData() {
     // Starting Silk Points = WIT + NERVE (using final Attribute values).
     this.silk.max = this.attributes.wit.value + this.attributes.nerve.value;
+    this.silk.value = Math.min(this.silk.value, this.silk.max);
 
     // Resolve the Vitality state into its mechanical effects.
     const v = HEISTY.vitality[this.vitality.state] ?? HEISTY.vitality.unharmed;
@@ -69,8 +70,13 @@ export class SpiderData extends foundry.abstract.TypeDataModel {
     this.vitality.label = v.label;
     this.vitality.order = v.order;
 
+    // A worn Species item sets Speed; otherwise the stored value stands.
+    const species = this.parent?.items?.find(i => i.type === "species");
+    const baseSpeed = (species?.system?.speed ?? this.speed.value) || 0;
+    this.speed.base = baseSpeed;
+
     // Speed is halved (round down) while Hurt, Critical, or Out.
-    this.speed.effective = v.halfSpeed ? Math.floor(this.speed.value / 2) : this.speed.value;
+    this.speed.effective = v.halfSpeed ? Math.floor(baseSpeed / 2) : baseSpeed;
   }
 }
 

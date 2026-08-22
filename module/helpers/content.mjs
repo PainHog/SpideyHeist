@@ -105,6 +105,14 @@ export async function autoImportContent() {
     if (index.size === 0) { anyEmpty = true; break; }
   }
 
-  if (anyEmpty) await importContent(false);
-  await game.settings.set(HEISTY.id, "contentImported", true);
+  // Packs already have content (pre-built) — mark done and never re-check.
+  if (!anyEmpty) {
+    await game.settings.set(HEISTY.id, "contentImported", true);
+    return;
+  }
+
+  // Something was empty — import, but only mark done if it actually succeeded,
+  // so a failed first import is retried on the next load rather than swallowed.
+  const imported = await importContent(false);
+  if (imported > 0) await game.settings.set(HEISTY.id, "contentImported", true);
 }

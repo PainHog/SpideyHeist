@@ -100,6 +100,7 @@ Hooks.once("ready", async function () {
 /* -------------------------------------------- */
 
 Hooks.on("renderActorDirectory", (app, html) => {
+  if (!game.user.can("ACTOR_CREATE")) return;
   const root = html instanceof HTMLElement ? html : html?.[0];
   if (!root || root.querySelector(".heisty-build-spider")) return;
 

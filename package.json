@@ -9,6 +9,7 @@
     "clean:packs": "node tools/build-packs.mjs --clean"
   },
   "devDependencies": {
-    "classic-level": "^1.4.1"
+    "classic-level": "^1.4.1",
+    "handlebars": "^4.7.9"
   }
 }

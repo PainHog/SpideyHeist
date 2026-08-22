@@ -143,8 +143,8 @@ export const HeistyDice = {
       actorImg: actor.img,
       label: cfg.label,
       subtitle: cfg.subtitle,
-      pool: ctx.pool,
-      faces: this._readFaces(roll),
+      pool: 1,
+      faces: [{ result: die, success: false }],
       successes: 0,
       difficulty: ctx.difficulty,
       baseDifficulty: ctx.choice.difficulty,
@@ -235,12 +235,7 @@ export const HeistyDice = {
 
   /** The suggested Alert change for a result (the ST always has the final say). */
   _alertSuggestion(resultKey) {
-    switch (resultKey) {
-      case "critical": return -1;
-      case "botch": return 2;
-      case "failure": return 1;
-      default: return 0;
-    }
+    return HEISTY.results[resultKey]?.alert ?? 0;
   },
 
   /* -------------------------------------------- */

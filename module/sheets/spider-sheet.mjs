@@ -135,7 +135,8 @@ export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
   static async #onSilkAdjust(event, target) {
     const delta = Number(target.dataset.delta ?? 0);
-    const next = Math.max(0, (this.actor.system.silk.value ?? 0) + delta);
+    const max = this.actor.system.silk.max ?? 0;
+    const next = Math.min(max, Math.max(0, (this.actor.system.silk.value ?? 0) + delta));
     await this.actor.update({ "system.silk.value": next });
   }
 
