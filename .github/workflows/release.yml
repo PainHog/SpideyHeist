@@ -1,0 +1,51 @@
+name: Release
+
+# Publishes a Foundry-installable release whenever a v* tag is pushed.
+# The manifest URL for Foundry becomes:
+#   https://github.com/PainHog/SpideyHeist/releases/latest/download/system.json
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set version from tag
+        id: vars
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Stamp version into system.json
+        run: |
+          node -e '
+            const fs = require("fs");
+            const s = JSON.parse(fs.readFileSync("system.json", "utf8"));
+            s.version = process.env.VERSION;
+            s.manifest = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/v${process.env.VERSION}/system.json`;
+            s.download = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/v${process.env.VERSION}/system.zip`;
+            fs.writeFileSync("system.json", JSON.stringify(s, null, 2));
+          '
+        env:
+          VERSION: ${{ steps.vars.outputs.version }}
+
+      - name: Build system.zip
+        run: |
+          zip -r system.zip . \
+            -x ".git/*" -x ".github/*" -x "node_modules/*" -x "*.zip" -x "package-lock.json"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Heisty Spideys ${{ github.ref_name }}
+          files: |
+            system.json
+            system.zip
+          generate_release_notes: true
