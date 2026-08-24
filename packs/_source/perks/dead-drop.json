@@ -1,0 +1,9 @@
+{
+  "key": "dead-drop",
+  "name": "Dead Drop",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "ghost",
+    "effect": "<p>Stash a small item anywhere during Planning, no roll. You know exactly where it is. Nobody else does.</p>"
+  }
+}

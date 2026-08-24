@@ -1,0 +1,9 @@
+{
+  "key": "pattern-recognition",
+  "name": "Pattern Recognition",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "lookout",
+    "effect": "<p>After watching a patrol or recurring threat for one full round, you know its next three actions.</p>"
+  }
+}

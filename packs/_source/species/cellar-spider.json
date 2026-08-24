@@ -1,0 +1,18 @@
+{
+  "key": "cellar-spider",
+  "name": "Cellar Spider",
+  "img": "systems/heisty-spideys/assets/icons/spider.svg",
+  "system": {
+    "speciesKey": "cellar",
+    "ability": "Contortionist",
+    "abilityText": "<p>You squeeze through any gap a spider could theoretically fit through &mdash; no roll, no penalty for tight spaces, ever.</p><p>You can also fold around a creature in your path: you may move through an occupied square, including an enemy's, as long as you don't end your turn there.</p>",
+    "speed": 5,
+    "bonuses": {
+      "body": 0,
+      "wit": 0,
+      "nerve": 0,
+      "grace": 2
+    },
+    "blurb": "<p>Cellar Spiders are long, thin, and aggressively unimpressive, which is a tactical asset. Nobody worries about the faint spindly thing in the corner. Nobody has ever worried about the faint spindly thing in the corner. The faint spindly thing in the corner is already inside the wall the safe is bolted to.</p>"
+  }
+}

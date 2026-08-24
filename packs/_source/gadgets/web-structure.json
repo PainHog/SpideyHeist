@@ -1,0 +1,12 @@
+{
+  "key": "web-structure",
+  "name": "Web Structure",
+  "img": "systems/heisty-spideys/assets/icons/web.svg",
+  "system": {
+    "effect": "<p>For 2 Silk Points, build a small web structure with no roll &mdash; a net, a tripwire, a platform, or a hammock.</p>",
+    "uses": 1,
+    "consumable": false,
+    "source": "Silk",
+    "description": "<p>The hammock has no tactical use. The Tinkerer built it anyway.</p>"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "key": "protection-rat",
+  "name": "Protection Rat",
+  "img": "systems/heisty-spideys/assets/icons/creature.svg",
+  "system": {
+    "threatLevel": "Standard",
+    "alertContribution": "",
+    "speed": {
+      "value": 6
+    },
+    "rolls": [
+      {
+        "label": "Persuasion",
+        "pool": 4,
+        "note": "he wants something first"
+      }
+    ],
+    "senses": "",
+    "passive": "<p>Runs protection for the block.</p>",
+    "escalation": "",
+    "weakness": "",
+    "notes": "<p>He wants something. Work out what. It's a negotiation, not a fight.</p>",
+    "biography": "<p>A rat lives under the dishwasher of the restaurant and runs protection for the block. He'll want something before the crew gets anywhere near the office. Work out what.</p>"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "key": "always-a-way-out",
+  "name": "Always a Way Out",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "wheelman",
+    "effect": "<p>You can't be fully cornered. Even when the ST would logically have you trapped, you have one option left. It may be unpleasant.</p>"
+  }
+}

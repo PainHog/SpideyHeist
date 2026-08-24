@@ -1,0 +1,18 @@
+{
+  "key": "jumping-spider",
+  "name": "Jumping Spider",
+  "img": "systems/heisty-spideys/assets/icons/spider.svg",
+  "system": {
+    "speciesKey": "jumping",
+    "ability": "Did You See That Jump?!",
+    "abilityText": "<p>Once per scene, declare an automatic success on a single leap: cross a gap in a straight line up to your Speed in squares, no roll, landing exactly where you meant to.</p><p>It does not make you land quietly. That is a separate problem, and it is now yours.</p>",
+    "speed": 6,
+    "bonuses": {
+      "body": 1,
+      "wit": 0,
+      "nerve": 0,
+      "grace": 1
+    },
+    "blurb": "<p>Jumping Spiders are the acrobats of the underworld, and they know it, and they will bring it up. They look like someone glued oversized eyes to a scrap of carpet, which is exactly why humans who spot them say &ldquo;aww&rdquo; instead of reaching for a shoe. That reaction lasts about four seconds. Use them well.</p>"
+  }
+}

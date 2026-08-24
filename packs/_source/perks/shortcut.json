@@ -1,0 +1,9 @@
+{
+  "key": "shortcut",
+  "name": "Shortcut",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "wheelman",
+    "effect": "<p>During Planning, establish one shortcut between two points on the known map. The crew can use it once.</p>"
+  }
+}

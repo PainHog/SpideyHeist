@@ -1,0 +1,58 @@
+{
+  "key": "heist-pet-store-problem",
+  "name": "The Pet Store Problem",
+  "pages": [
+    {
+      "key": "overview",
+      "name": "Overview",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>Pet Store &middot; Standard</em></p><p><strong>Alert Limit:</strong> 8 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> any session that wants guaranteed disaster</p><h3>The Objective</h3><p>A specific cricket &mdash; yes, a cricket &mdash; in the feeder bin behind the service counter. A client is paying in premium silk. Don't ask.</p><h3>What the Crew Sees at the Score</h3><p>A three-aisle, single-floor retail space. In plain sight: a large corn snake in a display tank near the counter (its lid is loose, everyone knows, nobody has fixed it), and an alert parrot near the front that repeats what it hears, loudly and at length.</p>"
+      }
+    },
+    {
+      "key": "casing-intel",
+      "name": "Casing Intel",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The snake is slow to commit but fast once it does.</li><li>The parrot's cage is 5 squares off the main aisle.</li><li>The feeder bin sits behind the counter with one narrow approach.</li></ul>"
+      }
+    },
+    {
+      "key": "st-prep-unknown-obstacle",
+      "name": "ST Prep &mdash; The Unknown Obstacle",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>There are forty-seven crickets in that bin. The client described the target as &ldquo;the big one.&rdquo; They are all the same size. This becomes a negotiation with a cricket.</p>"
+      }
+    },
+    {
+      "key": "suggested-obstacles",
+      "name": "Suggested Obstacles",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<ol><li>Enter through the loading dock &mdash; a gap in the back, but the feeder insects live there and some have opinions.</li><li>Cross the floor past the snake tank. The lid is loose. The snake is aware of you.</li><li>The parrot. It has seen you. It will describe you. In detail. At volume.</li><li><strong>(Unknown)</strong> Forty-seven identical crickets. Identify the right one. It's a social encounter now.</li></ol>"
+      }
+    }
+  ]
+}

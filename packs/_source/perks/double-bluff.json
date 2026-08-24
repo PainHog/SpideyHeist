@@ -1,0 +1,9 @@
+{
+  "key": "double-bluff",
+  "name": "Double Bluff",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "grifter",
+    "effect": "<p>When an NPC sees through your disguise, reveal the disguise was the distraction. Spend 1 Silk Point; the NPC is confused for a round.</p>"
+  }
+}

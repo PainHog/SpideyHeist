@@ -1,0 +1,9 @@
+{
+  "key": "negotiating-position",
+  "name": "Negotiating Position",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "bruiser",
+    "effect": "<p>Your presence helps. The Face gets +1 die on Persuasion while you're visibly nearby.</p>"
+  }
+}

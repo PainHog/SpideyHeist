@@ -4,12 +4,12 @@
  * can never drift on pack names, id derivation, or source layout.
  */
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-export const SRC = join(ROOT, "src", "packs");
+export const SRC = join(ROOT, "packs", "_source");
 export const OUT = join(ROOT, "packs");
 
 /** file → output pack, document class & subtype. Must match system.json packs[]. */
@@ -29,6 +29,14 @@ export function makeId(...parts) {
   return createHash("sha256").update(parts.join("::")).digest("hex").slice(0, 16);
 }
 
+/**
+ * Read a pack's source: one JSON file per document under packs/_source/<name>/,
+ * returned as an array sorted by filename (deterministic for reproducible builds).
+ */
 export function readSource(file) {
-  return JSON.parse(readFileSync(join(SRC, `${file}.json`), "utf8"));
+  const dir = join(SRC, file);
+  return readdirSync(dir)
+    .filter(f => f.endsWith(".json"))
+    .sort()
+    .map(f => JSON.parse(readFileSync(join(dir, f), "utf8")));
 }

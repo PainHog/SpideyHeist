@@ -44,7 +44,8 @@ jobs:
         run: |
           zip -r system.zip . \
             -x ".git/*" -x ".github/*" -x "node_modules/*" -x "*.zip" \
-            -x "package.json" -x "package-lock.json" -x "tools/*" \
+            -x "package.json" -x "package-lock.json" -x "tools/*" -x "test/*" \
+            -x "packs/_source/*" \
             -x "packs/*/LOCK" -x "packs/*/LOG" -x "packs/*/LOG.old"
 
       - name: Publish release

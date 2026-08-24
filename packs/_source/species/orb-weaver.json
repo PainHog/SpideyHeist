@@ -1,0 +1,18 @@
+{
+  "key": "orb-weaver",
+  "name": "Orb Weaver",
+  "img": "systems/heisty-spideys/assets/icons/spider.svg",
+  "system": {
+    "speciesKey": "orbweaver",
+    "ability": "Everything Connects",
+    "abilityText": "<p>As an Action, spin silk across up to 3 connected squares &mdash; a line or a small web. Choose what it is when you spin it:</p><ul><li><strong>Snare:</strong> the first creature to enter a webbed square is caught. It must spend an Action to break free, or roll Athletics/Brawl against Difficulty 3.</li><li><strong>Line:</strong> your crew moves along the webbed squares as safe footing &mdash; up a wall, across a gap &mdash; with no Acrobatics roll.</li></ul><p>It lasts until it's broken or the scene ends. Once per scene.</p>",
+    "speed": 5,
+    "bonuses": {
+      "body": 0,
+      "wit": 2,
+      "nerve": 0,
+      "grace": 0
+    },
+    "blurb": "<p>Orb Weavers are architects. They look at a room and see the geometry first and the crime second. Give one a corner and a minute and they will have rigged the space to work for the crew &mdash; a tripline here, a bridge there, all of it load-bearing and none of it where the cat is looking.</p>"
+  }
+}

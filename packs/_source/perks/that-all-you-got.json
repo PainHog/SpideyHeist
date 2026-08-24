@@ -1,0 +1,9 @@
+{
+  "key": "that-all-you-got",
+  "name": "That All You Got?",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "bruiser",
+    "effect": "<p>After a hit that would drop you to Critical, roll Endurance (Difficulty 3). On a success, you stop at Hurt instead.</p>"
+  }
+}

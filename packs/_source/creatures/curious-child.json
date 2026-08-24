@@ -1,0 +1,30 @@
+{
+  "key": "curious-child",
+  "name": "Curious Child",
+  "img": "systems/heisty-spideys/assets/icons/child.svg",
+  "system": {
+    "threatLevel": "High",
+    "alertContribution": "+3 if it catches a spider (pure excitement)",
+    "speed": {
+      "value": 6
+    },
+    "rolls": [
+      {
+        "label": "Spotting",
+        "pool": 4,
+        "note": ""
+      },
+      {
+        "label": "Capture Attempt",
+        "pool": 3,
+        "note": ""
+      }
+    ],
+    "senses": "<p>Checks everywhere &mdash; under the couch, behind the shelf, directly into corners.</p>",
+    "passive": "<p>Present during the day, actively hunting for interesting things to catch.</p>",
+    "escalation": "<p>Shouting for a parent: automatic at Alert 7+.</p>",
+    "weakness": "<p>Television (Difficulty 1), toys (Difficulty 1), snacks (Difficulty 0).</p>",
+    "notes": "<p><strong>Capture Result:</strong> a caught spider goes into a jar with air holes and is given a name. The Alert immediately rises by 3, and the crew now has a second objective: get that spider back.</p>",
+    "biography": "<p><em>&ldquo;The Most Dangerous Predator in the Location.&rdquo;</em></p><p>Present during the day and actively hunting for interesting things to catch. Children look directly at things. It checks everywhere &mdash; under the couch, behind the shelf, directly into corners.</p>"
+  }
+}

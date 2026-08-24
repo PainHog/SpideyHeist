@@ -1,0 +1,9 @@
+{
+  "key": "fear-of-vacuums",
+  "name": "Fear of Vacuums",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 8,
+    "effect": "<p>Vacuums cause immediate panic. When one activates in your scene, make a NERVE roll (Difficulty 3) or lose your action.</p><p><em>Vacuums cause immediate, total panic.</em></p>"
+  }
+}

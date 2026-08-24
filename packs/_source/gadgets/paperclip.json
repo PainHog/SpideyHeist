@@ -1,0 +1,12 @@
+{
+  "key": "paperclip",
+  "name": "Paperclip",
+  "img": "systems/heisty-spideys/assets/icons/gear.svg",
+  "system": {
+    "effect": "<p>A found object. A lever, a lockpick blank, a structural spar &mdash; repurpose with WIT + Engineering, Difficulty scaling with ambition.</p>",
+    "uses": 1,
+    "consumable": false,
+    "source": "The desk drawer",
+    "description": "<p>The Tinkerer has plans for this. The Tinkerer has plans for everything.</p>"
+  }
+}

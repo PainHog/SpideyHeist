@@ -1,0 +1,9 @@
+{
+  "key": "jury-rig",
+  "name": "Jury-Rig",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "tinkerer",
+    "effect": "<p>Once per scene, fix, jam, or modify a small mechanical device with a Difficulty 2 Engineering roll. Locks, sensors, that one drawer.</p>"
+  }
+}

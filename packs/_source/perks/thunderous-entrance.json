@@ -1,0 +1,9 @@
+{
+  "key": "thunderous-entrance",
+  "name": "Thunderous Entrance",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "bruiser",
+    "effect": "<p>Enter a scene from an unexpected direction and every NPC must pass a Difficulty 3 check or freeze in surprise for a round.</p>"
+  }
+}

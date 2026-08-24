@@ -1,0 +1,9 @@
+{
+  "key": "silver-tongue",
+  "name": "Silver Tongue",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "face",
+    "effect": "<p>When you fail a Persuasion roll, reroll it once. You said it better the second time.</p>"
+  }
+}

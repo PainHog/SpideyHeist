@@ -1,0 +1,40 @@
+{
+  "key": "guard-spider",
+  "name": "Guard Spider",
+  "img": "systems/heisty-spideys/assets/icons/guard-spider.svg",
+  "system": {
+    "threatLevel": "High",
+    "alertContribution": "+1 per round aware, +2 if it calls for backup",
+    "speed": {
+      "value": 6
+    },
+    "rolls": [
+      {
+        "label": "Perception",
+        "pool": 4,
+        "note": ""
+      },
+      {
+        "label": "Brawl",
+        "pool": 3,
+        "note": ""
+      },
+      {
+        "label": "Stealth",
+        "pool": 2,
+        "note": ""
+      },
+      {
+        "label": "Deception",
+        "pool": 1,
+        "note": ""
+      }
+    ],
+    "senses": "",
+    "passive": "<p>Hired by someone who knew a heist was possible. Patrols actively.</p>",
+    "escalation": "",
+    "weakness": "<p>Bribery (the crew must produce something valuable on the spot), the Grifter's Decoy (works once), the Bruiser (works, but loudly).</p>",
+    "notes": "<p><strong>Note:</strong> cannot be charmed by the Face &mdash; professional courtesy. Raises the Alert the moment it spots the crew.</p><p><strong>Note:</strong> guard spiders aren't evil. They're working. The crew could try talking to one. The Difficulty is 4. Worth one attempt.</p>",
+    "biography": "<p><em>&ldquo;Professional. Unfortunately.&rdquo;</em></p><p>Another spider, hired by someone who knew a heist was possible. It knows what you are and what you're doing, and it is simply working.</p>"
+  }
+}

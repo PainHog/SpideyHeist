@@ -1,0 +1,9 @@
+{
+  "key": "abort-abort",
+  "name": "Abort, Abort",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "wheelman",
+    "effect": "<p>Once per heist, call an immediate abort on a failed plan. The crew retreats without the extra Alert that failure would have added.</p>"
+  }
+}

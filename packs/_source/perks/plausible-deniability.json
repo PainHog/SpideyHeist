@@ -1,0 +1,9 @@
+{
+  "key": "plausible-deniability",
+  "name": "Plausible Deniability",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "face",
+    "effect": "<p>Once per scene, when the crew does something that would raise the Alert by 1, talk that single point away. Stops a +1 only &mdash; never a +2 or higher. Not an undo button for the loud mistakes.</p>"
+  }
+}

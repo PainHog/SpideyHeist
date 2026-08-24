@@ -1,0 +1,9 @@
+{
+  "key": "planted-evidence",
+  "name": "Planted Evidence",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "grifter",
+    "effect": "<p>During Planning, place one false piece of information on the known map. The first NPC to find it believes it completely.</p>"
+  }
+}

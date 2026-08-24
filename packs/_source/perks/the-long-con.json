@@ -1,0 +1,9 @@
+{
+  "key": "the-long-con",
+  "name": "The Long Con",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "grifter",
+    "effect": "<p>Spend Planning establishing a false identity and all rolls using it get +1 die. The identity must be specific and named.</p>"
+  }
+}

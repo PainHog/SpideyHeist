@@ -1,0 +1,12 @@
+{
+  "key": "i-made-a-thing",
+  "name": "\"I Made a Thing\" Gadget",
+  "img": "systems/heisty-spideys/assets/icons/gear.svg",
+  "system": {
+    "effect": "<p>A one-use gadget cobbled from materials at hand. Pick one effect when you build it:</p><ul><li><strong>Bypass:</strong> defeat one small mechanical obstacle within reach &mdash; no roll.</li><li><strong>Boost:</strong> hand it to a crewmate for +2 dice on their next roll.</li><li><strong>Distraction:</strong> set it off in a target square within 6, pulling every nearby NPC's attention there for one round.</li></ul>",
+    "uses": 1,
+    "consumable": true,
+    "source": "Anything plausibly on the map",
+    "description": "<p>The Tinkerer's specialty. The ST can veto materials that clearly aren't available.</p>"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "key": "heist-library-job",
+  "name": "The Library Job",
+  "pages": [
+    {
+      "key": "overview",
+      "name": "Overview",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>Library &middot; Hard</em></p><p><strong>Alert Limit:</strong> 6 &middot; <strong>Loot:</strong> Treasure &middot; <strong>For:</strong> an experienced crew</p><h3>The Objective</h3><p>A rare book in the locked reference section of a public library. It contains a spider map &mdash; a generational silk record of every web in the city. Someone wants it back. Someone else wants it more.</p><h3>What the Crew Sees at the Score</h3><p>Three floors; the reference section is on the second, behind a locked glass case. In plain sight: a head librarian who stays late and is extraordinarily observant, and the library cat &mdash; enormous, and it has seen things.</p>"
+      }
+    },
+    {
+      "key": "casing-intel",
+      "name": "Casing Intel",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The librarian's route covers every floor on an irregular schedule.</li><li>The case uses an antique lock (Engineering 4).</li><li>There are two stairwells and a dumbwaiter between floors.</li></ul>"
+      }
+    },
+    {
+      "key": "st-prep-unknown-obstacle",
+      "name": "ST Prep &mdash; The Unknown Obstacle",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>Another crew is already inside, after the same book.</p>"
+      }
+    },
+    {
+      "key": "suggested-obstacles",
+      "name": "Suggested Obstacles",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<ol><li>Entry &mdash; a guard spider (not hired, just lives here) near the entry point, with feelings about the reference section.</li><li>The librarian's late-night route. Every floor, irregular timing.</li><li>The locked case. Antique lock, Engineering Difficulty 4.</li><li><strong>(Unknown)</strong> The other crew. Negotiate, compete, or recruit &mdash; all three are valid.</li></ol>"
+      }
+    }
+  ]
+}

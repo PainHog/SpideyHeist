@@ -1,0 +1,9 @@
+{
+  "key": "show-off",
+  "name": "Show-Off",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 10,
+    "effect": "<p>Once per heist, the ST may require the Difficulty 4 version of a roll instead of the standard, because you chose the flashier approach. On a Critical, earn 1 SP &mdash; the crowd appreciated it. Spend 1 SP to delay the trigger one round.</p><p><em>You'll take the flashier, harder approach. Sometimes it even works.</em></p>"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "key": "heist-restaurant-rush",
+  "name": "The Restaurant Rush",
+  "pages": [
+    {
+      "key": "overview",
+      "name": "Overview",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>Restaurant &middot; Standard/Hard</em></p><p><strong>Alert Limit:</strong> 7 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> any session wanting maximum disaster</p><h3>The Objective</h3><p>The chef's personal recipe notebook, kept in the back office. A rival baker &mdash; a wasp, and nobody is happy about it &mdash; hired the crew. The place closes at 11; the crew moves at midnight. Except dinner service ran late.</p><h3>What the Crew Sees at the Score</h3><p>A mid-sized restaurant &mdash; kitchen, dining room, bar, small office. In plain sight: two closing staff finishing cleanup, and a kitchen that is still warm and smells extraordinary (spiders with Easily Distracted roll on entry).</p>"
+      }
+    },
+    {
+      "key": "casing-intel",
+      "name": "Casing Intel",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The staff move unpredictably with no set route.</li><li>A rat lives under the dishwasher and runs protection for the block &mdash; he'll want something.</li><li>The office door sticks.</li></ul>"
+      }
+    },
+    {
+      "key": "st-prep-unknown-obstacle",
+      "name": "ST Prep &mdash; The Unknown Obstacle",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>A third staff member fell asleep in the break room and will wake at the worst moment.</p>"
+      }
+    },
+    {
+      "key": "suggested-obstacles",
+      "name": "Suggested Obstacles",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<ol><li>The dining room &mdash; two staff moving unpredictably, no patrol pattern.</li><li>The kitchen &mdash; warm, incredible smells. Easily Distracted triggers. Also, the rat.</li><li>The rat. Negotiations. He wants something. Work out what.</li><li><strong>(Unknown)</strong> The sleeping staffer wakes exactly when the crew is in the office.</li></ol>"
+      }
+    }
+  ]
+}

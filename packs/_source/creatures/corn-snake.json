@@ -1,0 +1,25 @@
+{
+  "key": "corn-snake",
+  "name": "Corn Snake",
+  "img": "systems/heisty-spideys/assets/icons/creature.svg",
+  "system": {
+    "threatLevel": "Standard",
+    "alertContribution": "",
+    "speed": {
+      "value": 4
+    },
+    "rolls": [
+      {
+        "label": "Strike",
+        "pool": 4,
+        "note": "Athletics"
+      }
+    ],
+    "senses": "<p>Aware of you the moment you cross the floor near its tank.</p>",
+    "passive": "<p>Slow to commit, but fast once it does.</p>",
+    "escalation": "",
+    "weakness": "",
+    "notes": "<p>The display tank's lid is loose &mdash; everyone knows, nobody has fixed it.</p>",
+    "biography": "<p>A large corn snake in a display tank near the counter of the pet store. It watches the crew cross the floor with unhurried interest. Slow to commit &mdash; but fast once it does.</p>"
+  }
+}

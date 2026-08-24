@@ -1,0 +1,45 @@
+{
+  "key": "five-phases-and-advancement",
+  "name": "The Five Phases & Advancement",
+  "pages": [
+    {
+      "key": "the-five-phases",
+      "name": "The Five Phases",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>A heist runs in five phases: the briefing, the plan, the job, the scramble, and the debrief where everyone agrees it went fine and no one mentions the cat.</p><table><thead><tr><th>Phase</th><th>Summary</th></tr></thead><tbody><tr><td>1 &mdash; The Score</td><td>The ST presents the job and the visible map &mdash; geography, obvious features, the objective, threats in plain sight. Roleplay only. No rolls, no Alert.</td></tr><tr><td>2 &mdash; Planning</td><td>Case for intel (each Success = one true detail the ST is holding). Make Preparations &mdash; tactical setup, not auto-wins; each gets a complication that adds texture.</td></tr><tr><td>3 &mdash; The Heist</td><td>3&ndash;4 obstacles. The Alert starts at 0 and climbs. At least one obstacle is something the crew didn't uncover in Planning.</td></tr><tr><td>4 &mdash; The Escape</td><td>1&ndash;2 obstacles. The Alert carries over unchanged. At least one obstacle must be solvable without Athletics &mdash; every spider needs a way to contribute.</td></tr><tr><td>5 &mdash; The Debrief</td><td>Count the loot, award AP, argue about what went wrong, take the next job. They're always interested.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "advancement-points",
+      "name": "Advancement Points",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>The crew is out and mostly alive. Count what they got.</p><table><thead><tr><th>Outcome</th><th>Advancement Points</th></tr></thead><tbody><tr><td>Full Success</td><td>Escaped with the complete objective. Full AP for the difficulty: Easy 2, Standard 3, Hard 5, Legendary 8.</td></tr><tr><td>Partial Success</td><td>Escaped alive but without the objective, or with incomplete loot. Half AP, rounded down.</td></tr><tr><td>Loss</td><td>The whole crew went Out before escaping. No AP. Significant embarrassment. Not discussed.</td></tr></tbody></table><h3>Spending AP</h3><table><thead><tr><th>Cost</th><th>Effect</th></tr></thead><tbody><tr><td>1 AP</td><td>+1 to a Skill.</td></tr><tr><td>2 AP</td><td>+1 to an Attribute.</td></tr><tr><td>3 AP</td><td>A new Perk from your Role list (no maximum).</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "the-loot",
+      "name": "The Loot",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Tier</th><th>Description</th></tr></thead><tbody><tr><td>Crumb (Trivial)</td><td>A single bit of food, a small charm, a coin. Simple job, modest reward.</td></tr><tr><td>Trinket (Easy)</td><td>A small shiny thing, a memory stick, a piece of jewelry light enough to move.</td></tr><tr><td>Prize (Standard)</td><td>Something significant &mdash; the main event of a proper heist. Full reward on success.</td></tr><tr><td>Treasure (Hard)</td><td>High value, high security, genuinely dangerous to take.</td></tr><tr><td>The Score (Legendary)</td><td>The kind of job spiders tell the spiderlings about. Maximum reward. Maximum everything-went-wrong.</td></tr></tbody></table>"
+      }
+    }
+  ]
+}

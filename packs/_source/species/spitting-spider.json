@@ -1,0 +1,18 @@
+{
+  "key": "spitting-spider",
+  "name": "Spitting Spider",
+  "img": "systems/heisty-spideys/assets/icons/spider.svg",
+  "system": {
+    "speciesKey": "spitting",
+    "ability": "Precision Application",
+    "abilityText": "<p>Fire a precise silk-and-venom strand up to 6 squares, no roll to hit, as long as you have line of sight. Use it to jam a small mechanism (a lock, a sensor, a latch), snag a light object, or pin a small target in place for one round.</p><p>The range is exactly 6 squares. That is most of a room.</p>",
+    "speed": 5,
+    "bonuses": {
+      "body": 0,
+      "wit": 2,
+      "nerve": 1,
+      "grace": 0
+    },
+    "blurb": "<p>Spitting Spiders are the snipers of the species. They don't rush. They identify a target, work out the line, and fire with the calm of someone who never misses. They have, in fact, missed. They do not discuss it.</p><p><em>Yes, that's a +3 total, one more than everyone else. The trade is range: 6 squares is a real limit, and a Spitting Spider who can't get within 6 is just a spider with excellent posture.</em></p>"
+  }
+}

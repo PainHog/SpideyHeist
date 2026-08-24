@@ -1,0 +1,16 @@
+{
+  "key": "the-bruiser",
+  "name": "The Bruiser",
+  "img": "systems/heisty-spideys/assets/icons/mask.svg",
+  "system": {
+    "roleKey": "bruiser",
+    "coreSkills": [
+      "brawl",
+      "endurance"
+    ],
+    "roleBonus": 3,
+    "signature": "Make a Scene",
+    "signatureText": "<p>When the Bruiser causes or joins a significant physical commotion, they may pull every NPC in the scene onto themselves for one full round. This costs nothing &mdash; it's simply what just happened. During that round, every other crew member in the scene gets +2 dice on any roll.</p><p>Afterward, the entire room is looking very hard at the Bruiser, and the Alert goes up by 1. Worth it? Almost always.</p>",
+    "blurb": "<p><em>&ldquo;The plan was to be quiet. That was before the plan involved the cat.&rdquo;</em></p><p>The Bruiser solves problems physically &mdash; not for lack of other options, but because most problems, given enough spider at enough speed, resolve. First responder for anything involving direct confrontation, sudden escalation, or hauling something too heavy for everyone else.</p><p><strong>Role Bonus:</strong> +3 points split between Brawl and Endurance.</p>"
+  }
+}

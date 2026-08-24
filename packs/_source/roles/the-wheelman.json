@@ -1,0 +1,16 @@
+{
+  "key": "the-wheelman",
+  "name": "The Wheelman",
+  "img": "systems/heisty-spideys/assets/icons/mask.svg",
+  "system": {
+    "roleKey": "wheelman",
+    "coreSkills": [
+      "acrobatics",
+      "tactics"
+    ],
+    "roleBonus": 3,
+    "signature": "I Know a Way",
+    "signatureText": "<p>Once per heist, during the Escape only, declare a route nobody knew existed &mdash; a gap behind the washing machine, a vent straight to the outside, a window that's mysteriously always cracked. Describe it; the crew can use it.</p><p>It reduces the Difficulty of every Escape roll by 1 for the whole crew. The route has to be physically possible for spiders.</p>",
+    "blurb": "<p><em>&ldquo;The exit is that way. It was always that way. We practiced this. WHY ARE YOU GOING THAT WAY.&rdquo;</em></p><p>The Wheelman runs the getaway. They know every exit, the fastest line to the outside, and how to get eight legs through a closing window in under two seconds. The most important spider on the crew for the last five minutes of any job &mdash; which is also when everything is on fire.</p><p><strong>Role Bonus:</strong> +3 points split between Acrobatics and Tactics.</p>"
+  }
+}

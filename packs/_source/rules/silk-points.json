@@ -1,0 +1,58 @@
+{
+  "key": "silk-points",
+  "name": "Silk Points",
+  "pages": [
+    {
+      "key": "silk-points-overview",
+      "name": "The Economy of the Heist",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Silk Points are the economy of the heist. They represent your spider's preparation, focus, and the specific desperate improvisation that only happens when you're three squares from the prize and the vacuum just switched on.</p><p>You start with WIT + NERVE Silk Points. When they're gone, they're gone &mdash; there's no mid-heist refill. There's only spending well, earning a few back through spectacular failure, and rationing the rest.</p>"
+      }
+    },
+    {
+      "key": "spending-silk-points",
+      "name": "Spending Silk Points",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Cost</th><th>Effect</th></tr></thead><tbody><tr><td>1 SP &mdash; Extra Die</td><td>Add 1 die to a roll before it's made. The most common spend, and a good one.</td></tr><tr><td>1 SP &mdash; Silk Line</td><td>Instantly run a silk line between two points up to 5 squares apart, for climbing, swinging, or rigging. No roll.</td></tr><tr><td>2 SP &mdash; Reroll</td><td>After rolling, reroll up to 3 dice and keep the better result. For when the dice have wronged you personally.</td></tr><tr><td>2 SP &mdash; Web Structure</td><td>Build a small web structure with no roll &mdash; a net, a tripwire, a platform, a hammock. The hammock has no tactical use. The Tinkerer built it anyway.</td></tr><tr><td>2 SP &mdash; Improvise</td><td>Attempt any check on your Attribute alone &mdash; no Skill &mdash; at +1 Difficulty. A last resort for working outside your specialty. It won't beat a real specialist, but it beats total helplessness.</td></tr><tr><td>3 SP &mdash; Silk Clutch</td><td>After a failed roll, spend 3 SP to succeed anyway. The Alert rises by 1. You did it, at a cost.</td></tr><tr><td>3 SP &mdash; Damage Control</td><td>The crew spends 3 SP together to reduce one +2 Alert spike to +1. Once per heist. Call it the moment the spike triggers, before it's added.</td></tr><tr><td>4 SP &mdash; Not Part of the Plan</td><td>Negate one complication the ST just introduced &mdash; used immediately, before consequences resolve. Once per heist. The complication doesn't happen. You explain later how you accounted for it. You didn't.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "earning-silk-points",
+      "name": "Earning Silk Points",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Reward</th><th>When</th></tr></thead><tbody><tr><td>+1 SP &mdash; Flaw Moment</td><td>Your Flaw causes a genuine problem the crew has to deal with.</td></tr><tr><td>+1 SP &mdash; Spectacular Failure</td><td>You fail in a way that genuinely makes the table laugh. ST's call.</td></tr><tr><td>+1 SP &mdash; Creative Species Use</td><td>You use your species ability in a way nobody saw coming, and it works.</td></tr><tr><td>+2 SP &mdash; Brilliant Plan</td><td>You describe a plan that makes the whole table lean in and say &ldquo;oh, that's good,&rdquo; and the ST agrees.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "silk-point-management",
+      "name": "Silk Point Management",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>The classic mistake is spending Silk Points early on small problems and having none when the Alert is at 7 and the cat has found the bag. Start conservative; spend big when it matters. Your strategy should shift as the Alert climbs: early on, hoard &mdash; small failures aren't worth big spends. As the Alert nears its limit, switch to preventing failures rather than recovering from them. A 1 SP die before a roll at Alert 6 is worth more than a 3 SP Silk Clutch after a roll at Alert 8.</p>"
+      }
+    }
+  ]
+}

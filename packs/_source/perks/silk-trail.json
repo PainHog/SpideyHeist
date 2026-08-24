@@ -1,0 +1,9 @@
+{
+  "key": "silk-trail",
+  "name": "Silk Trail",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "ghost",
+    "effect": "<p>Leave a near-invisible line anywhere you've been. Crew can follow it or ride it as a zip line. Holds two spiders.</p>"
+  }
+}

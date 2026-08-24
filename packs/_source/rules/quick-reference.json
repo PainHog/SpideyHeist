@@ -1,0 +1,84 @@
+{
+  "key": "quick-reference",
+  "name": "Quick Reference",
+  "pages": [
+    {
+      "key": "rolling",
+      "name": "Rolling",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Term</th><th>Rule</th></tr></thead><tbody><tr><td>Pool</td><td>Attribute + Skill (+ any bonus dice)</td></tr><tr><td>Success</td><td>Each die showing 4, 5, or 6</td></tr><tr><td>Difficulty</td><td>1 Trivial &middot; 2 Easy &middot; 3 Moderate &middot; 4 Hard &middot; 5 Absurd</td></tr><tr><td>Partial</td><td>1+ Successes but short of the target: succeed with a complication</td></tr><tr><td>Failure</td><td>0 Successes: fail, a consequence occurs</td></tr><tr><td>Critical</td><td>Double the required Successes: succeed + bonus + Alert &minus;1</td></tr><tr><td>Botch</td><td>Pool at 0: roll 1 die. 1&ndash;3 fail + Alert +2. 4&ndash;6 clean fail.</td></tr><tr><td>Assist</td><td>Adjacent ally rolls Skill only (max 3 dice). Each Success = +1 die.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "the-grid",
+      "name": "The Grid",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Rule</th><th>Detail</th></tr></thead><tbody><tr><td>Scale</td><td>1 square = 1 spider. Distances are counted in squares.</td></tr><tr><td>Speed</td><td>Squares per turn, set by species. Most 5 &middot; Wolf 7 &middot; Jumping 6 &middot; Crab 4.</td></tr><tr><td>Your turn</td><td>Move up to Speed (may split) + one Action. Diagonals count as 1.</td></tr><tr><td>Adjacency</td><td>The 8 surrounding squares. Brawl and Assist need adjacency.</td></tr><tr><td>Cover</td><td>A solid object between you and a viewer: +2 Difficulty to spot/target you.</td></tr><tr><td>Climbing</td><td>Normal cost on walls/ceilings. Slick/hostile surfaces cost double or a roll.</td></tr><tr><td>Hurt/Critical</td><td>Speed halved (round down).</td></tr><tr><td>Turn order</td><td>Only when timing is tight: crew acts (any order), then the ST's threats.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "the-alert",
+      "name": "The Alert",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Rule</th><th>Detail</th></tr></thead><tbody><tr><td>Only goes up</td><td>+1 failed roll w/ consequence, spotted briefly, Silk Clutch &middot; +2 Botch, confirmed alert, spider Out, Loud Failure</td></tr><tr><td>Thresholds</td><td>3&ndash;4 Stirring: Stealth +1 &middot; 5&ndash;6 Active: threat wakes, no roll penalty &middot; 7&ndash;8 Lockdown: all rolls +1 (Stealth +2, stacks) &middot; Limit: Full Alert</td></tr><tr><td>Reduction</td><td>Critical Success only: Alert &minus;1</td></tr><tr><td>Limits</td><td>Easy 10 &middot; Standard 8 &middot; Hard 6 &middot; Absurd 4 &middot; Legendary 2</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "silk-points",
+      "name": "Silk Points",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Cost/Reward</th><th>Effect</th></tr></thead><tbody><tr><td>1 SP</td><td>+1 die to a roll &middot; run a Silk Line (&le;5 squares)</td></tr><tr><td>2 SP</td><td>Reroll up to 3 dice &middot; build a web structure &middot; Improvise (Attribute only, +1 Difficulty)</td></tr><tr><td>3 SP</td><td>Silk Clutch (fail &rarr; success, Alert +1) &middot; Damage Control (crew: one +2 spike &rarr; +1, once/heist)</td></tr><tr><td>4 SP</td><td>Not Part of the Plan (negate one complication, once/heist)</td></tr><tr><td>Earn +1</td><td>Flaw bites &middot; spectacular funny failure &middot; creative species use</td></tr><tr><td>Earn +2</td><td>Genuinely brilliant plan, table agrees, ST confirms</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "vitality",
+      "name": "Vitality",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>State</th><th>Effect</th></tr></thead><tbody><tr><td>Unharmed</td><td>Full pool.</td></tr><tr><td>Rattled</td><td>&minus;1 die on all rolls.</td></tr><tr><td>Hurt</td><td>&minus;2 dice, half Speed.</td></tr><tr><td>Critical</td><td>&minus;3 dice, must be assisted to move.</td></tr><tr><td>Out</td><td>Remove from heist. Alert +2. Activate the Waiting Web.</td></tr><tr><td>Taking a hit</td><td>Drop 1 level. Shrug off with BODY+Endurance vs the attack: meet/beat = no drop; lose by 3+ = drop 2. Ties to you.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "phases-and-advancement",
+      "name": "The Five Phases & Advancement",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Phase</th><th>Summary</th></tr></thead><tbody><tr><td>1 &mdash; The Score</td><td>ST presents the job and the visible map. Roleplay only. No rolls, no Alert.</td></tr><tr><td>2 &mdash; Planning</td><td>Case for intel (a Success = one true detail). Make Preparations (setup, not auto-wins; each gets a complication).</td></tr><tr><td>3 &mdash; The Heist</td><td>3&ndash;4 obstacles. The Alert climbs. At least one thing the crew didn't uncover.</td></tr><tr><td>4 &mdash; The Escape</td><td>1&ndash;2 obstacles. Alert carries over. At least one must be solvable without Athletics.</td></tr><tr><td>5 &mdash; Debrief</td><td>Count loot, award AP, argue about what happened, take the next job.</td></tr></tbody></table><h3>Advancement Points</h3><table><thead><tr><th>Result</th><th>AP</th></tr></thead><tbody><tr><td>Full Success</td><td>Easy 2 &middot; Standard 3 &middot; Hard 5 &middot; Legendary 8</td></tr><tr><td>Partial</td><td>Half AP, rounded down</td></tr><tr><td>Loss</td><td>0 AP. Never discussed.</td></tr><tr><td>Spending AP</td><td>1 AP: +1 to a Skill &middot; 2 AP: +1 to an Attribute &middot; 3 AP: a new Perk from your Role list (no maximum)</td></tr></tbody></table><p><em>Good luck out there. The cat is watching. Don't get vacuumed.</em></p>"
+      }
+    }
+  ]
+}

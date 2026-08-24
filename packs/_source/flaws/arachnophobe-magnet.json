@@ -1,0 +1,9 @@
+{
+  "key": "arachnophobe-magnet",
+  "name": "Arachnophobe Magnet",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 1,
+    "effect": "<p>Humans notice you more than other spiders. The Difficulty to be spotted by humans is reduced by 1 at all times.</p><p><em>A documented phenomenon.</em></p>"
+  }
+}

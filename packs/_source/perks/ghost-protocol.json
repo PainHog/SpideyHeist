@@ -1,0 +1,9 @@
+{
+  "key": "ghost-protocol",
+  "name": "Ghost Protocol",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "ghost",
+    "effect": "<p>When you're the one spotted, immediately make a free Stealth roll to vanish again before the NPC reacts.</p>"
+  }
+}

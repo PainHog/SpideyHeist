@@ -1,0 +1,16 @@
+{
+  "key": "the-ghost",
+  "name": "The Ghost",
+  "img": "systems/heisty-spideys/assets/icons/mask.svg",
+  "system": {
+    "roleKey": "ghost",
+    "coreSkills": [
+      "stealth",
+      "acrobatics"
+    ],
+    "roleBonus": 3,
+    "signature": "Phase Through",
+    "signatureText": "<p>Once per scene, move through any space a spider could theoretically fit &mdash; a crack, a pipe, the gap under a door &mdash; no roll, no Alert increase, regardless of the current Alert Level. You arrive on the far side the same turn.</p><p>Use it to get into a room, out of a room, or, in one documented case, away from a cat so fast the cat sat down and pretended it had never cared.</p>",
+    "blurb": "<p><em>&ldquo;I was never here. That shadow wasn't moving. Go back to sleep.&rdquo;</em></p><p>The Ghost lives in the spaces between spaces &mdash; vents, wall gaps, the three squares behind the fridge nobody has cleaned since 2018. Where others work around security, the Ghost simply isn't there when it looks.</p><p><strong>Role Bonus:</strong> +3 points split between Stealth and Acrobatics.</p>"
+  }
+}

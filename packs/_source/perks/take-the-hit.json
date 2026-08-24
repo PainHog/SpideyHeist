@@ -1,0 +1,9 @@
+{
+  "key": "take-the-hit",
+  "name": "Take the Hit",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "bruiser",
+    "effect": "<p>Once per scene, redirect a physical consequence meant for an adjacent crewmate to yourself. You chose this.</p>"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "key": "the-tinkerer",
+  "name": "The Tinkerer",
+  "img": "systems/heisty-spideys/assets/icons/mask.svg",
+  "system": {
+    "roleKey": "tinkerer",
+    "coreSkills": [
+      "engineering",
+      "perception"
+    ],
+    "roleBonus": 3,
+    "signature": "I Made a Thing",
+    "signatureText": "<p>Once per scene, as your Action, cobble a one-use gadget out of materials at hand &mdash; anything plausibly on the map. Pick one effect:</p><ul><li><strong>Bypass:</strong> defeat one small mechanical obstacle within reach &mdash; jam a sensor, pop a simple latch, wedge a drawer &mdash; no roll.</li><li><strong>Boost:</strong> hand it to a crewmate for +2 dice on their next roll.</li><li><strong>Distraction:</strong> set it off in a target square within 6, pulling every nearby NPC's attention there for one round.</li></ul><p>The ST can veto materials that clearly aren't available. When in doubt, they'll ask what you're building it out of.</p>",
+    "blurb": "<p><em>&ldquo;I can build that. I need a paperclip, some lint, and forty minutes. &hellip;Thirty. Give me thirty.&rdquo;</em></p><p>The Tinkerer is the crew's engineer, gadget-maker, and lock-cracker, and the reason there's always something strange in the bag. They build tools out of what's lying around, and the tools work about as often as tools made of lint and crumbs should &mdash; which is more often than you'd think.</p><p><strong>Role Bonus:</strong> +3 points split between Engineering and Perception.</p>"
+  }
+}

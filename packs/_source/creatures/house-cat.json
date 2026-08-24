@@ -1,0 +1,35 @@
+{
+  "key": "house-cat",
+  "name": "House Cat",
+  "img": "systems/heisty-spideys/assets/icons/cat.svg",
+  "system": {
+    "threatLevel": "Standard",
+    "alertContribution": "+1 per round while active",
+    "speed": {
+      "value": 8
+    },
+    "rolls": [
+      {
+        "label": "Perception",
+        "pool": 4,
+        "note": ""
+      },
+      {
+        "label": "Pursuit",
+        "pool": 5,
+        "note": "Athletics"
+      },
+      {
+        "label": "Pounce",
+        "pool": 4,
+        "note": "Brawl"
+      }
+    ],
+    "senses": "<p>Spots suspicious movement within about 6 squares in line of sight.</p>",
+    "passive": "<p>Asleep ~70% of the time. When awake, paying complete attention.</p>",
+    "escalation": "<p>Alert 3, ears rotate. Alert 5, moves toward the sound. Alert 7, hunting.</p>",
+    "weakness": "<p>Shiny objects (Difficulty 1 to redirect), sudden loud noises in the opposite direction, and cucumbers. The ST may rule a cucumber a Difficulty 0 distraction if the crew somehow produced one.</p>",
+    "notes": "<p><strong>Fear:</strong> nothing. The cat fears nothing.</p>",
+    "biography": "<p><em>&ldquo;The Reason We Can't Have Nice Heists.&rdquo;</em></p><p>Asleep roughly seventy percent of the time. The other thirty percent, it is the single most attentive being in the location &mdash; and it fears nothing.</p>"
+  }
+}

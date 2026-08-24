@@ -1,0 +1,12 @@
+{
+  "key": "rubber-band",
+  "name": "Rubber Band",
+  "img": "systems/heisty-spideys/assets/icons/gear.svg",
+  "system": {
+    "effect": "<p>A found object. Tension, a launcher, a latch-release component. Three rubber bands and a thumbtack into a working latch-release is <em>not</em> Easy.</p>",
+    "uses": 1,
+    "consumable": false,
+    "source": "The junk drawer",
+    "description": "<p>Stores energy. Occasionally releases it at the intended moment.</p>"
+  }
+}

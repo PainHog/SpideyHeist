@@ -1,0 +1,9 @@
+{
+  "key": "dont-look-down",
+  "name": "Don't Look Down",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "wheelman",
+    "effect": "<p>Remove the penalty from height-based Acrobatics rolls. You've looked down. You've made your peace.</p>"
+  }
+}

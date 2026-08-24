@@ -1,9 +1,9 @@
 /**
  * HEISTY SPIDEYS — Compendium Pack Builder
  * ----------------------------------------
- * Compiles the human-readable source JSON in src/packs/ into Foundry VTT v13/v14
- * LevelDB compendium packs in packs/. Deterministic 16-char ids are derived from
- * each entry's `key`, so rebuilds are stable and re-runnable.
+ * Compiles the per-document source JSON in packs/_source/<name>/ into Foundry
+ * VTT v13/v14 LevelDB compendium packs in packs/<name>/. Deterministic 16-char
+ * ids are derived from each document's `key`, so rebuilds are stable.
  *
  * Usage:  node tools/build-packs.mjs   |   node tools/build-packs.mjs --clean
  *

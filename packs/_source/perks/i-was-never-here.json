@@ -1,0 +1,9 @@
+{
+  "key": "i-was-never-here",
+  "name": "I Was Never Here",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "ghost",
+    "effect": "<p>Increase the Difficulty for any NPC to remember seeing you by 2. You are deeply, fundamentally forgettable.</p>"
+  }
+}

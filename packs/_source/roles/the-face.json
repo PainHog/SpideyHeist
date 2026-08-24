@@ -1,0 +1,16 @@
+{
+  "key": "the-face",
+  "name": "The Face",
+  "img": "systems/heisty-spideys/assets/icons/mask.svg",
+  "system": {
+    "roleKey": "face",
+    "coreSkills": [
+      "deception",
+      "persuasion"
+    ],
+    "roleBonus": 3,
+    "signature": "That's Not What Happened",
+    "signatureText": "<p>Once per heist, after any roll &mdash; including one the ST made for an NPC &mdash; spend 2 Silk Points to reframe what just happened in the crew's favor. You don't change the mechanical result; you change the story around it. The cat didn't spot you &mdash; it spotted a bit of fluff. The human didn't hear a crash &mdash; the building settled.</p><p>Deliver it smoothly, with total confidence. The ST accepts it. If the cat rolled to pounce, the pounce still happens &mdash; you're just explaining why it landed on nothing important.</p>",
+    "blurb": "<p><em>&ldquo;Relax. I've got this. No &mdash; actually, keep worrying, that part's fair.&rdquo;</em></p><p>The Face is the crew's social specialist. Where others use force or stealth or engineering, the Face uses conversation &mdash; with cats, humans, guard spiders, whatever stands between the crew and the door. Charming, quick, and occasionally making things worse in ways that won't surface until it's far too late to bring up.</p><p><strong>Role Bonus:</strong> +3 points split between Deception and Persuasion.</p>"
+  }
+}

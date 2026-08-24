@@ -1,0 +1,9 @@
+{
+  "key": "second-story-spider",
+  "name": "Second-Story Spider",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "ghost",
+    "effect": "<p>Climb any surface at full Speed with no roll &mdash; even slick or hostile ones that would cost other spiders double or a check.</p>"
+  }
+}

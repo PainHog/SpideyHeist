@@ -1,0 +1,25 @@
+{
+  "key": "goldfish",
+  "name": "Goldfish",
+  "img": "systems/heisty-spideys/assets/icons/creature.svg",
+  "system": {
+    "threatLevel": "Low",
+    "alertContribution": "",
+    "speed": {
+      "value": 0
+    },
+    "rolls": [
+      {
+        "label": "Persuasion",
+        "pool": 1,
+        "note": "will cooperate, cannot actually help"
+      }
+    ],
+    "senses": "",
+    "passive": "<p>Will cooperate. Has a three-second memory. Cannot actually help with anything.</p>",
+    "escalation": "",
+    "weakness": "",
+    "notes": "<p><strong>Primary Roll:</strong> Persuasion (Difficulty 1).</p>",
+    "biography": "<p>The most agreeable creature in any location. It will cooperate with whatever the crew asks, forget the entire arrangement within three seconds, and be of no practical use to the plan whatsoever.</p>"
+  }
+}

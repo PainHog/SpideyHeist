@@ -1,0 +1,9 @@
+{
+  "key": "allergic-to-dust",
+  "name": "Allergic to Dust",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 5,
+    "effect": "<p>You'll sneeze at a bad moment at least once per heist &mdash; the ST picks when. When you do, make a Stealth roll (Difficulty 3) or the Alert rises by 1. Either way, everyone in earshot knows something happened.</p>"
+  }
+}

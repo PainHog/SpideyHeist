@@ -15,7 +15,6 @@ import { HeistyItemSheet } from "./sheets/item-sheet.mjs";
 import { HeistyDice } from "./helpers/dice.mjs";
 import { HeistyAlert, AlertMeter, registerAlertSettings } from "./helpers/alert.mjs";
 import { CharacterBuilder } from "./apps/character-builder.mjs";
-import { importContent, autoImportContent } from "./helpers/content.mjs";
 import { registerSocket } from "./helpers/socket.mjs";
 import { migrateWorld } from "./helpers/migration.mjs";
 
@@ -42,8 +41,7 @@ Hooks.once("init", function () {
         console.error("Heisty Spideys | Character Builder failed to open:", err);
         ui.notifications?.error("The Character Builder failed to open — press F12 and check the console.");
       }
-    },
-    importContent
+    }
   };
   CONFIG.HEISTY = HEISTY;
 
@@ -77,9 +75,6 @@ Hooks.once("init", function () {
   game.settings.register(HEISTY.id, "systemMigrationVersion", {
     scope: "world", config: false, type: String, default: ""
   });
-  game.settings.register(HEISTY.id, "contentImported", {
-    scope: "world", config: false, type: Boolean, default: false
-  });
 
   registerHandlebarsHelpers();
   HeistyDice.registerChatListeners();
@@ -92,9 +87,6 @@ Hooks.once("init", function () {
 Hooks.once("ready", async function () {
   // Player character-creation proxy (players lack ACTOR_CREATE by default).
   registerSocket();
-
-  // Populate empty compendiums from bundled source, if needed (GM only, once).
-  await autoImportContent();
 
   // Raise the Alert meter HUD.
   ui.heistyAlert = new AlertMeter();

@@ -1,0 +1,9 @@
+{
+  "key": "method-actor",
+  "name": "Method Actor",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "grifter",
+    "effect": "<p>Choose one NPC before the heist; you've studied them. +2 dice on all Deception and Disguise involving that NPC.</p>"
+  }
+}

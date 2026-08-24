@@ -1,0 +1,9 @@
+{
+  "key": "overconfident",
+  "name": "Overconfident",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 2,
+    "effect": "<p>Once per heist, the ST may make you volunteer for something you shouldn't have, because you said you could handle it. Spend 1 SP to delay it a round &mdash; you still do it.</p><p><em>You've handled worse. (You haven't handled this.)</em></p>"
+  }
+}

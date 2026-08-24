@@ -1,0 +1,30 @@
+{
+  "key": "vacuum",
+  "name": "Vacuum",
+  "img": "systems/heisty-spideys/assets/icons/vacuum.svg",
+  "system": {
+    "threatLevel": "Low&ndash;Medium",
+    "alertContribution": "+1 per round in pursuit",
+    "speed": {
+      "value": 4
+    },
+    "rolls": [
+      {
+        "label": "Navigation",
+        "pool": 2,
+        "note": ""
+      },
+      {
+        "label": "Pursuit",
+        "pool": 3,
+        "note": ""
+      }
+    ],
+    "senses": "<p>Notices nothing. Navigates by bumping into things.</p>",
+    "passive": "<p>Follows a programmed route. Predictable, loud, covers the same ground on a loop.</p>",
+    "escalation": "",
+    "weakness": "<p>Furniture legs, small obstacles, and stairs (it stops at stairs and makes a sad noise).</p>",
+    "notes": "<p><strong>Fear Interaction:</strong> any spider with Fear of Vacuums treats it as an active threat no matter what it's doing. The vacuum is unaware of this. The vacuum is unaware of everything.</p><p><strong>Special:</strong> a spider that climbs onto the vacuum rides along with it. This is both tactically useful and deeply undignified.</p>",
+    "biography": "<p><em>&ldquo;It Has No Feelings, and That Makes It Worse.&rdquo;</em></p><p>It follows its programmed route on a loop, notices nothing, navigates by bumping into things, and cannot be reasoned with &mdash; because there is nothing there to reason with.</p>"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "key": "quick-change",
+  "name": "Quick Change",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "grifter",
+    "effect": "<p>Alter your disguise between scenes with no roll. You look different now. You are still a spider.</p>"
+  }
+}

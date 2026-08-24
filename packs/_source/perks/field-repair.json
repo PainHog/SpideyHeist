@@ -1,0 +1,9 @@
+{
+  "key": "field-repair",
+  "name": "Field Repair",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "tinkerer",
+    "effect": "<p>Once per scene, patch an adjacent crewmate's Vitality up one level with a Difficulty 2 Engineering roll. You're an engineer, not a doctor. Close enough.</p>"
+  }
+}

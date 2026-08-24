@@ -1,0 +1,9 @@
+{
+  "key": "drafting",
+  "name": "Drafting",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "wheelman",
+    "effect": "<p>When you lead group movement, each crewmate gets +1 die on movement rolls. You set the pace; they follow.</p>"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "key": "trap-architect",
+  "name": "Trap Architect",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "tinkerer",
+    "effect": "<p>During Planning, set one web-based trap on the known map. When an NPC triggers it, the ST rolls Difficulty 3 for them to avoid it.</p>"
+  }
+}

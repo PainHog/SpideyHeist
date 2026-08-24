@@ -1,0 +1,9 @@
+{
+  "key": "fast-talk",
+  "name": "Fast Talk",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "face",
+    "effect": "<p>Distract any NPC as a free action, no roll, once per scene. It holds for exactly one round.</p>"
+  }
+}

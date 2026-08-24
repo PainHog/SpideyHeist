@@ -1,0 +1,9 @@
+{
+  "key": "easily-distracted",
+  "name": "Easily Distracted",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 9,
+    "effect": "<p>Shiny objects, interesting smells, and fascinating details derail you. Once per heist, the ST can delay your action by one round.</p>"
+  }
+}

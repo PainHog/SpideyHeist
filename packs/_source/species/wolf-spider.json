@@ -1,0 +1,18 @@
+{
+  "key": "wolf-spider",
+  "name": "Wolf Spider",
+  "img": "systems/heisty-spideys/assets/icons/spider.svg",
+  "system": {
+    "speciesKey": "wolf",
+    "ability": "Run It Again",
+    "abilityText": "<p>When you fail or partially succeed on a chase, pursuit, or physical-confrontation roll, immediately reroll all your failed dice and keep the better result. Once per scene.</p><p>Wolf Spiders do not accept the first result. They would like you to know they don't accept the second one either, but the rules only give them the one reroll.</p>",
+    "speed": 7,
+    "bonuses": {
+      "body": 2,
+      "wit": 0,
+      "nerve": 0,
+      "grace": 0
+    },
+    "blurb": "<p>Wolf Spiders are the muscle &mdash; built, fast, and constitutionally opposed to sneaking. They don't spin webs; they chase things down. They shine in the part of every heist where the plan is over and someone needs to run very fast in a useful direction.</p>"
+  }
+}

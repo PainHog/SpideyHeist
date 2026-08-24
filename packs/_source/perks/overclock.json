@@ -1,0 +1,9 @@
+{
+  "key": "overclock",
+  "name": "Overclock",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "tinkerer",
+    "effect": "<p>Spend 1 Silk Point for +2 dice on an Engineering roll. It just takes more legs than usual.</p>"
+  }
+}

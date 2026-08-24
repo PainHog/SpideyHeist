@@ -1,0 +1,35 @@
+{
+  "key": "house-dog",
+  "name": "House Dog",
+  "img": "systems/heisty-spideys/assets/icons/dog.svg",
+  "system": {
+    "threatLevel": "High",
+    "alertContribution": "+2 per round while active (it is loud)",
+    "speed": {
+      "value": 8
+    },
+    "rolls": [
+      {
+        "label": "Nose",
+        "pool": 5,
+        "note": "Perception"
+      },
+      {
+        "label": "Chase",
+        "pool": 4,
+        "note": "Athletics"
+      },
+      {
+        "label": "Bark",
+        "pool": 5,
+        "note": "Intimidation"
+      }
+    ],
+    "senses": "<p>Smells a spider automatically at Alert 2+; doesn't need line of sight.</p>",
+    "passive": "<p>Not malicious. Wants to play. Equally threatening.</p>",
+    "escalation": "<p>At Alert 4 it barks. When it barks, the Alert immediately rises by 2.</p>",
+    "weakness": "<p>Treats, another animal to fixate on, going outside (needs a door opened, which is a whole thing).</p>",
+    "notes": "<p><strong>Note:</strong> the dog will try to carry crew members gently in its mouth. Acrobatics (Difficulty 4) to escape. It thinks it's helping.</p>",
+    "biography": "<p><em>&ldquo;It Wants to Be Friends. That's Worse.&rdquo;</em></p><p>Not malicious &mdash; it just wants to play, which is exactly as threatening. Loud, fast, and completely convinced it is helping.</p>"
+  }
+}

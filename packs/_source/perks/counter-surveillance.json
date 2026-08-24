@@ -1,0 +1,9 @@
+{
+  "key": "counter-surveillance",
+  "name": "Counter-Surveillance",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "lookout",
+    "effect": "<p>Detect when an NPC is watching a specific area &mdash; Perception, Difficulty 2. On a success, the ST tells you what's watched and from where.</p>"
+  }
+}

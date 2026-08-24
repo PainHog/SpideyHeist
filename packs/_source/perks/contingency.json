@@ -1,0 +1,9 @@
+{
+  "key": "contingency",
+  "name": "Contingency",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "lookout",
+    "effect": "<p>Once per heist during Planning, set one Contingency with the ST. If a specific trigger happens, it activates automatically as a success.</p>"
+  }
+}

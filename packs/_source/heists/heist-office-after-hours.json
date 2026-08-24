@@ -1,0 +1,58 @@
+{
+  "key": "heist-office-after-hours",
+  "name": "The Office After Hours",
+  "pages": [
+    {
+      "key": "overview",
+      "name": "Overview",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>Office &middot; Standard</em></p><p><strong>Alert Limit:</strong> 8 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> a second or third session</p><h3>The Objective</h3><p>A memory stick in the desk drawer of the corner office. Empty after 6 p.m. except for a cleaning crew that comes through at 8.</p><h3>What the Crew Sees at the Score</h3><p>A small open-plan office with a corner room for the manager, two floors, entry from the ground-floor ventilation. In plain sight: a motion-sensor light system across the main floor, and a guard spider working the overnight shift.</p>"
+      }
+    },
+    {
+      "key": "casing-intel",
+      "name": "Casing Intel",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The sensor beam covers a known line of squares with a fixed timing gap.</li><li>The guard spider's patrol loops the perimeter every few rounds.</li><li>The drawer uses a standard lock.</li></ul>"
+      }
+    },
+    {
+      "key": "st-prep-unknown-obstacle",
+      "name": "ST Prep &mdash; The Unknown Obstacle",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>The cleaning crew came at 7 tonight, not 8. They're already here.</p>"
+      }
+    },
+    {
+      "key": "suggested-obstacles",
+      "name": "Suggested Obstacles",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<ol><li>The motion sensors. Pattern known, timing tight.</li><li>The guard spider. Professional, alert, doing the job. First real opposed roll.</li><li>The locked desk drawer. Engineering moment.</li><li><strong>(Unknown)</strong> The cleaning cart is parked across the vent the crew planned to leave through.</li></ol>"
+      }
+    }
+  ]
+}

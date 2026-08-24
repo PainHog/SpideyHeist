@@ -1,0 +1,9 @@
+{
+  "key": "silk-grapple",
+  "name": "Silk Grapple",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "bruiser",
+    "effect": "<p>Fire a silk line to grab and restrain a target up to 3 squares away &mdash; Brawl, Difficulty 3. Small targets held one round.</p>"
+  }
+}

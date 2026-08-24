@@ -1,0 +1,9 @@
+{
+  "key": "smoke-and-mirrors",
+  "name": "Smoke and Mirrors",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "grifter",
+    "effect": "<p>When you fail a Deception roll, reframe the failure as intentional. The NPC still isn't fooled, but they don't raise the Alert.</p>"
+  }
+}

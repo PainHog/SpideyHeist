@@ -33,17 +33,17 @@ The official companion game system for **Heisty Spideys, First Edition** — bui
 
 ## Developing / building
 
-The compendiums ship pre-compiled. To edit content, change the source JSON in `src/packs/` and rebuild the LevelDB packs, then validate:
+The compendiums ship pre-compiled. Source is **one JSON file per document** under `packs/_source/<name>/` (e.g. `packs/_source/species/jumping-spider.json`). Edit or add a file, then rebuild the LevelDB packs and validate:
 
 ```bash
 npm install          # dev deps: classic-level, handlebars
-npm run build:packs  # src/packs/*.json  ->  packs/*  (LevelDB)  — commit the result
+npm run build:packs  # packs/_source/<name>/*.json  ->  packs/<name>/  (LevelDB) — commit the result
 npm run validate     # manifest, pack integrity, compiled-matches-source, templates
 npm test             # pure-logic unit tests (node:test)
 npm run check        # validate + test (run before every commit)
 ```
 
-Deterministic 16-character ids are derived from each entry's `key`, so rebuilds are stable, and the build fails loudly on any id collision. **Always rebuild and commit `packs/` after editing source** — the system ships as a ZIP with no build step on the user's server, and CI (`.github/workflows/ci.yml`) fails if the committed packs don't match source. The pure engine/build math lives in `module/logic/rules.mjs` (Foundry-free, unit-tested). If a pack ever ships empty, the system auto-imports the bundled source on first load (GM only); you can also force it from the console with `game.heistySpideys.importContent(true)`.
+Deterministic 16-character ids are derived from each document's `key`, so rebuilds are stable, and the build fails loudly on any id collision. **Always rebuild and commit `packs/<name>/` after editing source** — the system ships as a ZIP with no build step on the user's server, and CI (`.github/workflows/ci.yml`) fails if the committed packs don't match source. The pure engine/build math lives in `module/logic/rules.mjs` (Foundry-free, unit-tested).
 
 ### Project layout
 
@@ -60,9 +60,10 @@ module/                  ES modules
 templates/               Handlebars templates
 styles/                  Theme
 assets/icons/            Wax-seal SVG icon set
-src/packs/               Human-readable compendium source
-packs/                   Compiled LevelDB compendiums
-tools/                   Pack build & verify scripts
+packs/_source/<name>/    Human-readable compendium source (one JSON per document)
+packs/<name>/            Compiled LevelDB compendiums
+tools/                   Pack build, validate & shared config
+test/                    node:test unit tests
 ```
 
 ## Compatibility

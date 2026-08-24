@@ -1,0 +1,9 @@
+{
+  "key": "dramatic",
+  "name": "Dramatic",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 4,
+    "effect": "<p>You cannot simply do a thing. Once per heist, the ST may require your action to involve unnecessary spectacle, raising the Alert by 1. Spend 1 SP to delay one round; it still fires.</p><p><em>Everything is an event. You know. You can't stop.</em></p>"
+  }
+}

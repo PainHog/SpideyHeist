@@ -1,0 +1,9 @@
+{
+  "key": "i-see-how-this-works",
+  "name": "I See How This Works",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "tinkerer",
+    "effect": "<p>The first time you meet any new lock, alarm, or mechanism, ask the ST one yes/no question about how it works. Free. Just by looking.</p>"
+  }
+}

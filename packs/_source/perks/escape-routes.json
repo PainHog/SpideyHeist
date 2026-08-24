@@ -1,0 +1,9 @@
+{
+  "key": "escape-routes",
+  "name": "Escape Routes",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "lookout",
+    "effect": "<p>You always know the fastest way out of a room you've been in. Reduce the Difficulty of escape rolls by 1 while you lead.</p>"
+  }
+}

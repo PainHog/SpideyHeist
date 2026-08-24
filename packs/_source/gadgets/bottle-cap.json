@@ -1,0 +1,12 @@
+{
+  "key": "bottle-cap",
+  "name": "Bottle Cap",
+  "img": "systems/heisty-spideys/assets/icons/gear.svg",
+  "system": {
+    "effect": "<p>A found object. Turning a bottle cap into a shield is an Easy (WIT + Engineering) repurpose.</p>",
+    "uses": 1,
+    "consumable": false,
+    "source": "The floor",
+    "description": "<p>The location is full of things a spider can use. This is one of the good ones.</p>"
+  }
+}

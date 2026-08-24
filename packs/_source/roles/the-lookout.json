@@ -1,0 +1,16 @@
+{
+  "key": "the-lookout",
+  "name": "The Lookout",
+  "img": "systems/heisty-spideys/assets/icons/mask.svg",
+  "system": {
+    "roleKey": "lookout",
+    "coreSkills": [
+      "perception",
+      "tactics"
+    ],
+    "roleBonus": 3,
+    "signature": "I Called It",
+    "signatureText": "<p>Once per heist, before any roll, declare you predicted exactly this during your surveillance, and say in one sentence what tipped you off.</p><ul><li>If it's remotely plausible, the whole crew gets +1 die on that roll.</li><li>If it's genuinely plausible and fits what's been established, +2 instead.</li><li>If it contradicts known facts, you get nothing, and the ST is allowed to look at you for a while.</li></ul>",
+    "blurb": "<p><em>&ldquo;Cat at two o'clock. Human moving. Vacuum &mdash; the vacuum is doing the thing again.&rdquo;</em></p><p>The Lookout is the crew's eyes. They track every moving piece &mdash; patrol lines, human habits, the cat's mood, where the vacuum is in its route &mdash; and relay it in real time. A good Lookout means nobody is surprised. A bad one means everybody is surprised at once, which is at least fair.</p><p><strong>Role Bonus:</strong> +3 points split between Perception and Tactics.</p>"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "key": "early-warning",
+  "name": "Early Warning",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "lookout",
+    "effect": "<p>At the start of each obstacle, the ST tells you which direction any active threat moves next. No roll.</p>"
+  }
+}

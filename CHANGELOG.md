@@ -2,6 +2,12 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.1.1] — One-file-per-document pack sources
+
+### Changed
+- **Compendium source is now one JSON file per document** under `packs/_source/<name>/` (e.g. `packs/_source/species/jumping-spider.json`), replacing the per-pack array files. Cleaner diffs and merges, and the layout the build/validate tooling expects. The build, validator, and CI all read the new layout; the shipped ZIP excludes the source (compiled packs only).
+- Removed the runtime content auto-importer: packs always ship compiled and committed (CI enforces it), so the fallback was dead weight.
+
 ## [1.1.0] — Hardening: tests, CI, and a safer launcher
 
 ### Added

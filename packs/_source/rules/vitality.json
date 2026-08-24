@@ -1,0 +1,58 @@
+{
+  "key": "vitality",
+  "name": "Vitality",
+  "pages": [
+    {
+      "key": "the-vitality-track",
+      "name": "The Vitality Track",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Spiders get hurt. They're swatted, startled off ledges, trapped in jars, and occasionally inhaled by a vacuum nobody planned for. Vitality tracks how much your spider can take before they're Out.</p><table><thead><tr><th>State</th><th>Effect</th></tr></thead><tbody><tr><td>Unharmed</td><td>Full capabilities. The cat hasn't found you.</td></tr><tr><td>Rattled (&minus;1 die)</td><td>Shaken, bruised, or briefly jarred. &minus;1 die on all rolls.</td></tr><tr><td>Hurt (&minus;2 dice, half Speed)</td><td>Bad. You're limping. &minus;2 dice on everything, and your Speed is halved (round down).</td></tr><tr><td>Critical (&minus;3 dice, must be assisted)</td><td>You can't move effectively under your own power &mdash; a crewmate must help you move. You can still act, barely. &minus;3 dice.</td></tr><tr><td>Out</td><td>Caught. Jarred, vacuumed, or adopted. Out of this heist. Activate the Waiting Web.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "taking-hits",
+      "name": "Taking Hits",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>When a threat lands a hit on you &mdash; a pounce, a swat, a snapping beak &mdash; you drop one Vitality level, unless you can shrug it off.</p><p>To shrug it off, roll BODY + Endurance against the threat's attack. Compare Successes:</p><ul><li>You meet or beat the attack's Successes &mdash; you shrug it off. No level lost.</li><li>The attack beats you by 1 or 2 &mdash; drop one level.</li><li>The attack beats you by 3 or more &mdash; drop two levels. That one landed.</li></ul><p>You're the defender here, so ties go to you. BODY and Endurance help, but they no longer make you nearly untouchable &mdash; a solid hit from a real threat will get through more often than not, which is the point. Getting hit should cost something.</p><p>Not every contact is a full hit. A glancing bump or a bit of flying debris might be a flat &minus;1 die for one round instead of a Vitality check &mdash; the ST calibrates. Reserve full checks for genuine impacts: a direct swat, a fall, a pounce that connects. Rough guide: if a human would notice it happening, it's a hit. If they wouldn't, it's a distraction at most.</p><p>Some hits skip the roll. When a book falls on you or a child's hand closes around you, the ST will just tell you it landed. You drop a level &mdash; or go straight to Out &mdash; and the story moves.</p>"
+      }
+    },
+    {
+      "key": "recovery",
+      "name": "Recovery",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Spend a full turn with no threat able to reach or target you and you recover one level. Recovery is passive &mdash; surviving a quiet turn is enough; you don't have to spend your Action on it.</p><p>A Tinkerer can also patch you actively: Engineering, Difficulty 2, as their Action, while adjacent &mdash; one level recovered on a success, threats present or not.</p><p>Recovery means actually stopping. &ldquo;I'll heal while running&rdquo; is not a thing.</p>"
+      }
+    },
+    {
+      "key": "the-waiting-web",
+      "name": "Going Out &mdash; The Waiting Web",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>When a spider goes Out, two things happen at once:</p><p><strong>First:</strong> the Alert rises by 2. The location noticed.</p><p><strong>Second:</strong> the player draws a fresh spider from the Waiting Web. Same Role, Attributes, Skills, and Perks as the original &mdash; this is backup crew built for the job, not a stranger wandering in. Change the name, and optionally the species. They enter at the start of the next obstacle, starting Rattled (not Unharmed) with half their starting Silk Points, rounded down. They heard it was bad in there. They came anyway.</p>"
+      }
+    }
+  ]
+}

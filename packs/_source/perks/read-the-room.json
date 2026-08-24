@@ -1,0 +1,9 @@
+{
+  "key": "read-the-room",
+  "name": "Read the Room",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "face",
+    "effect": "<p>Before a social encounter, ask the ST one thing the NPC actually wants. They answer honestly.</p>"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "key": "soundless",
+  "name": "Soundless",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "ghost",
+    "effect": "<p>Reduce the Difficulty of Stealth rolls made while moving by 1. You don't make noise. You make a point of it.</p>"
+  }
+}

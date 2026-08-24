@@ -1,0 +1,18 @@
+{
+  "key": "crab-spider",
+  "name": "Crab Spider",
+  "img": "systems/heisty-spideys/assets/icons/spider.svg",
+  "system": {
+    "speciesKey": "crab",
+    "ability": "Wait, Was That There Before?",
+    "abilityText": "<p>Hold completely still for one full turn and your coloring shifts to match your surroundings. It's not perfect &mdash; you're a spider the color of a countertop &mdash; but the Difficulty to spot you increases by 2 until you move.</p><p>Crab Spiders are excellent at waiting. They are worse at stopping.</p>",
+    "speed": 4,
+    "bonuses": {
+      "body": 0,
+      "wit": 0,
+      "nerve": 1,
+      "grace": 1
+    },
+    "blurb": "<p>Crab Spiders move sideways, which is unsettling before they've done anything, and they hunt by ambush, which makes them the only species with patience built into the body. They hold a position beautifully. They sometimes hold it past the moment they were supposed to act, because they were comfortable.</p>"
+  }
+}

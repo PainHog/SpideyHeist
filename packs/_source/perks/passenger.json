@@ -1,0 +1,9 @@
+{
+  "key": "passenger",
+  "name": "Passenger",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "wheelman",
+    "effect": "<p>Carry one incapacitated crewmate at full Speed. It looks extremely dramatic.</p>"
+  }
+}

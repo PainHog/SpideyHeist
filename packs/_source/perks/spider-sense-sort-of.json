@@ -1,0 +1,9 @@
+{
+  "key": "spider-sense-sort-of",
+  "name": "Spider-Sense… Sort Of",
+  "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
+  "system": {
+    "role": "tinkerer",
+    "effect": "<p>Spend a turn observing an area and the ST tells you whether any mechanical traps, alarms, or sensors are present &mdash; not where.</p>"
+  }
+}

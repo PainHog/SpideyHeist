@@ -1,0 +1,25 @@
+{
+  "key": "alert-parrot",
+  "name": "Alert Parrot",
+  "img": "systems/heisty-spideys/assets/icons/creature.svg",
+  "system": {
+    "threatLevel": "Standard",
+    "alertContribution": "",
+    "speed": {
+      "value": 0
+    },
+    "rolls": [
+      {
+        "label": "Perception",
+        "pool": 4,
+        "note": "repeats what it hears, loudly"
+      }
+    ],
+    "senses": "<p>It has seen you. It will describe you.</p>",
+    "passive": "<p>Repeats what it hears, loudly and at length.</p>",
+    "escalation": "",
+    "weakness": "",
+    "notes": "<p>It will describe you. In detail. At volume. The noise pushes the Alert up.</p>",
+    "biography": "<p>An alert parrot near the front of the pet store that repeats what it hears, loudly and at length. It has seen you. It will describe you. In detail. At volume.</p>"
+  }
+}

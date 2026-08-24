@@ -1,0 +1,9 @@
+{
+  "key": "loud",
+  "name": "Loud",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 3,
+    "effect": "<p>Operationally loud. At Alert 5+, all your Stealth rolls have their Difficulty increased by 1.</p><p><em>Not physically loud. Operationally loud. Things break near you.</em></p>"
+  }
+}

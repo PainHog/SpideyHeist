@@ -1,0 +1,16 @@
+{
+  "key": "the-grifter",
+  "name": "The Grifter",
+  "img": "systems/heisty-spideys/assets/icons/mask.svg",
+  "system": {
+    "roleKey": "grifter",
+    "coreSkills": [
+      "deception",
+      "disguise"
+    ],
+    "roleBonus": 3,
+    "signature": "You're Looking at the Wrong Spider",
+    "signatureText": "<p>Once per heist, stage a Decoy &mdash; a fake version of what the crew is doing, somewhere NPCs can see it. Describe it, and every NPC in the location goes to investigate it for two full rounds, unless they pass a Difficulty 3 Perception roll.</p><p>For those two rounds the real crew works unobserved, and every roll that's part of the actual job gets +1 die.</p>",
+    "blurb": "<p><em>&ldquo;I am not a spider. I am a dust bunny. Please don't look directly at me.&rdquo;</em></p><p>The Grifter works through identity and misdirection. Where the Face talks through a situation, the Grifter changes what the situation looks like &mdash; disguises, false trails, planted information. They shape what everyone else thinks is happening, which is usually unrelated to what's happening. On purpose.</p><p><strong>Role Bonus:</strong> +3 points split between Deception and Disguise.</p>"
+  }
+}

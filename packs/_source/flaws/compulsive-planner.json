@@ -1,0 +1,9 @@
+{
+  "key": "compulsive-planner",
+  "name": "Compulsive Planner",
+  "img": "systems/heisty-spideys/assets/icons/crack.svg",
+  "system": {
+    "rollValue": 6,
+    "effect": "<p>Once per heist, the ST may freeze your action for a round while you insist on revising the plan. If the crew acts anyway during that round, you lose 1 SP from the stress. Spend 1 SP to delay the trigger a round &mdash; the freeze still happens.</p><p><em>You must revise the plan, ideally right now, ideally out loud.</em></p>"
+  }
+}
