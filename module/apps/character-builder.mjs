@@ -10,6 +10,7 @@
 
 import { HEISTY } from "../config.mjs";
 import { requestSpiderCreation } from "../helpers/socket.mjs";
+import { skillBudget as calcSkillBudget, finalAttributes as calcFinalAttributes, attributesSpent } from "../logic/rules.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -131,14 +132,9 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     return { body: b.body ?? 0, wit: b.wit ?? 0, nerve: b.nerve ?? 0, grace: b.grace ?? 0 };
   }
 
-  /** Final attribute values (base + species bonus). */
+  /** Final attribute values (base + species bonus) — pure math in logic/rules. */
   finalAttributes() {
-    const bonus = this.speciesBonuses;
-    const out = {};
-    for (const k of Object.keys(this.state.attributes)) {
-      out[k] = this.state.attributes[k] + (bonus[k] ?? 0);
-    }
-    return out;
+    return calcFinalAttributes(this.state.attributes, this.speciesBonuses);
   }
 
   /** Core skill keys of the chosen Role. */
@@ -146,14 +142,9 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     return this.roleDoc?.system?.coreSkills ?? [];
   }
 
-  /** Point accounting for the Skills step. */
+  /** Point accounting for the Skills step — pure math in logic/rules. */
   skillBudget() {
-    const core = this.coreSkills;
-    const total = Object.values(this.state.skills).reduce((a, b) => a + b, 0);
-    const coreSum = core.reduce((a, k) => a + (this.state.skills[k] ?? 0), 0);
-    const roleBonusUsed = Math.min(3, coreSum);
-    const generalSpent = total - roleBonusUsed;
-    return { total, coreSum, roleBonusUsed, generalSpent, generalMax: 12, roleBonusMax: 3 };
+    return calcSkillBudget(this.state.skills, this.coreSkills);
   }
 
   /** Validate the whole build; returns { ok, issues[] }. */
@@ -162,7 +153,7 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     if (!this.speciesDoc) issues.push("Choose a Species.");
     if (!this.roleDoc) issues.push("Choose a Crew Role.");
 
-    const attrSpent = Object.values(this.state.attributes).reduce((a, b) => a + b, 0);
+    const attrSpent = attributesSpent(this.state.attributes);
     if (attrSpent !== 10) issues.push(`Spend all 10 Attribute points (currently ${attrSpent}/10).`);
     const finals = this.finalAttributes();
     for (const [k, v] of Object.entries(finals)) {
@@ -196,7 +187,7 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     const current = this.tabGroups?.primary ?? "species";
     const bonus = this.speciesBonuses;
     const finals = this.finalAttributes();
-    const attrSpent = Object.values(this.state.attributes).reduce((a, b) => a + b, 0);
+    const attrSpent = attributesSpent(this.state.attributes);
     const sb = this.skillBudget();
     const validation = this.validate();
 

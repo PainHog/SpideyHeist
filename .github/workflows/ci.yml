@@ -1,0 +1,35 @@
+name: CI
+
+# Validates the system on every push and PR: manifest sanity, pack integrity,
+# compiled-packs-match-source, template compilation, and the pure-logic unit
+# tests. Runs against the COMMITTED packs (it does NOT rebuild first) so it
+# catches a source edit that wasn't rebuilt and committed.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dev dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Validate (manifest, packs, templates)
+        run: npm run validate
+
+      - name: Unit tests
+        run: npm test

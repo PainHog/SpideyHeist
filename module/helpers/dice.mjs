@@ -9,6 +9,7 @@
 
 import { HEISTY } from "../config.mjs";
 import { HeistyAlert } from "./alert.mjs";
+import { SUCCESS_FACE, countSuccesses, classifyResult, classifyBotch, alertForResult } from "../logic/rules.mjs";
 
 const renderTemplate = (path, data) => foundry.applications.handlebars.renderTemplate(path, data);
 
@@ -57,7 +58,7 @@ export const HeistyDice = {
     const pool = Math.max(0, entry.pool);
     const roll = await this._rollPool(pool || 1);
     const faces = this._readFaces(roll);
-    const successes = faces.filter(f => f.success).length;
+    const successes = countSuccesses(faces.map(f => f.result));
     const content = await renderTemplate("systems/heisty-spideys/templates/chat/threat-card.hbs", {
       actorName: actor.name,
       actorImg: actor.img,
@@ -98,9 +99,9 @@ export const HeistyDice = {
 
     const roll = await this._rollPool(pool);
     const faces = this._readFaces(roll);
-    const successes = faces.filter(f => f.success).length;
-    const resultKey = this._classify(successes, difficulty);
-    const suggested = this._alertSuggestion(resultKey);
+    const successes = countSuccesses(faces.map(f => f.result));
+    const resultKey = classifyResult(successes, difficulty);
+    const suggested = alertForResult(resultKey);
     const res = HEISTY.results[resultKey];
 
     const content = await renderTemplate("systems/heisty-spideys/templates/chat/roll-card.hbs", {
@@ -133,10 +134,9 @@ export const HeistyDice = {
   async _botch(actor, cfg, ctx) {
     const roll = await this._rollPool(1);
     const die = roll.dice[0].results[0].result;
-    const isBotch = die <= 3;
-    const resultKey = isBotch ? "botch" : "cleanfail";
+    const resultKey = classifyBotch(die);
     const res = HEISTY.results[resultKey];
-    const suggested = this._alertSuggestion(resultKey);
+    const suggested = alertForResult(resultKey);
 
     const content = await renderTemplate("systems/heisty-spideys/templates/chat/roll-card.hbs", {
       actorName: actor.name,
@@ -221,21 +221,8 @@ export const HeistyDice = {
     const die = roll.dice[0];
     return die.results.filter(r => r.active !== false).map(r => ({
       result: r.result,
-      success: r.result >= 4
+      success: r.result >= SUCCESS_FACE
     }));
-  },
-
-  /** Classify a result against its Difficulty. */
-  _classify(successes, difficulty) {
-    if (successes <= 0) return "failure";
-    if (successes >= difficulty * 2) return "critical";
-    if (successes >= difficulty) return "success";
-    return "partial";
-  },
-
-  /** The suggested Alert change for a result (the ST always has the final say). */
-  _alertSuggestion(resultKey) {
-    return HEISTY.results[resultKey]?.alert ?? 0;
   },
 
   /* -------------------------------------------- */

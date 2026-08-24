@@ -25,7 +25,7 @@ The official companion game system for **Heisty Spideys, First Edition** — bui
 
 ## Playing
 
-- **Build a spider:** open the **Actors** sidebar and click **🕷 Build a Spider**, or run the macro `game.heistySpideys.openBuilder()`. Walk the steps; the builder won't let you finish an illegal build. Hit **Create Spider** and the finished sheet opens.
+- **Build a spider:** click **🕷 Build a Spider** at the bottom of the **Actors** sidebar, or the **spider tool** in the canvas toolbar, or run the macro `game.heistySpideys.openBuilder()`. Walk the steps; the builder won't let you finish an illegal build. Hit **Create Spider** and the finished sheet opens.
   - *Players and permissions:* Foundry doesn't grant players the "Create New Actors" permission by default. This system handles that automatically — when a player finishes the builder, the request is passed to the **online Storyteller (GM)**, who creates the spider and hands ownership back to the player (no action needed on the GM's part). If you'd rather let players create actors directly, turn on **Game Settings → Configure Permissions → Create New Actors** for the Player role. Either way works; if no GM is online, the player is told to try again when one is.
 - **Roll:** on the sheet, click a Skill name (Attribute + Skill) or an Attribute's die. Set the Difficulty (Successes needed) and any bonus/penalty dice; Vitality and the Alert are applied automatically. Results post a themed card to chat.
 - **Run the Alert:** as Storyteller, use the floating **Alert** meter (drag it anywhere) or the ±1/±2 buttons on any roll card. Set the location's Alert **Limit** to pick its difficulty (Easy 10 · Standard 8 · Hard 6 · Absurd 4 · Legendary 2).
@@ -33,14 +33,17 @@ The official companion game system for **Heisty Spideys, First Edition** — bui
 
 ## Developing / building
 
-The compendiums ship pre-compiled. To edit content, change the source JSON in `src/packs/` and rebuild the LevelDB packs:
+The compendiums ship pre-compiled. To edit content, change the source JSON in `src/packs/` and rebuild the LevelDB packs, then validate:
 
 ```bash
-npm install          # installs classic-level (dev dependency)
-npm run build:packs  # src/packs/*.json  ->  packs/*  (LevelDB)
+npm install          # dev deps: classic-level, handlebars
+npm run build:packs  # src/packs/*.json  ->  packs/*  (LevelDB)  — commit the result
+npm run validate     # manifest, pack integrity, compiled-matches-source, templates
+npm test             # pure-logic unit tests (node:test)
+npm run check        # validate + test (run before every commit)
 ```
 
-Deterministic 16-character ids are derived from each entry's `key`, so rebuilds are stable. If a pack ever ships empty, the system auto-imports the bundled source on first load (GM only); you can also force it from the console with `game.heistySpideys.importContent(true)`.
+Deterministic 16-character ids are derived from each entry's `key`, so rebuilds are stable, and the build fails loudly on any id collision. **Always rebuild and commit `packs/` after editing source** — the system ships as a ZIP with no build step on the user's server, and CI (`.github/workflows/ci.yml`) fails if the committed packs don't match source. The pure engine/build math lives in `module/logic/rules.mjs` (Foundry-free, unit-tested). If a pack ever ships empty, the system auto-imports the bundled source on first load (GM only); you can also force it from the console with `game.heistySpideys.importContent(true)`.
 
 ### Project layout
 

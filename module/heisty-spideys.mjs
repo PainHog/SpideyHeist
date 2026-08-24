@@ -17,6 +17,7 @@ import { HeistyAlert, AlertMeter, registerAlertSettings } from "./helpers/alert.
 import { CharacterBuilder } from "./apps/character-builder.mjs";
 import { importContent, autoImportContent } from "./helpers/content.mjs";
 import { registerSocket } from "./helpers/socket.mjs";
+import { migrateWorld } from "./helpers/migration.mjs";
 
 /* -------------------------------------------- */
 /*  Init                                        */
@@ -99,12 +100,8 @@ Hooks.once("ready", async function () {
   ui.heistyAlert = new AlertMeter();
   ui.heistyAlert.render();
 
-  // One-time migration bookkeeping.
-  if (game.user.isGM) {
-    const current = game.system.version;
-    const last = game.settings.get(HEISTY.id, "systemMigrationVersion");
-    if (!last) await game.settings.set(HEISTY.id, "systemMigrationVersion", current);
-  }
+  // Version-keyed, GM-only, idempotent world migration.
+  await migrateWorld();
 
   console.log("Heisty Spideys | The crew is in position.");
 });
@@ -113,9 +110,11 @@ Hooks.once("ready", async function () {
 /*  Character Builder launch button             */
 /* -------------------------------------------- */
 
+// Launcher #1: a "Build a Spider" button at the BOTTOM of the Actors directory
+// (its footer) — never injected into the sidebar header, which breaks v13's
+// flex layout. Shown to everyone; players who lack ACTOR_CREATE are handled by
+// the GM socket proxy when they finish the builder.
 Hooks.on("renderActorDirectory", (app, html) => {
-  // Shown to everyone: players who lack ACTOR_CREATE are handled by the GM
-  // socket proxy when they finish the builder.
   const root = html instanceof HTMLElement ? html : html?.[0];
   if (!root || root.querySelector(".heisty-build-spider")) return;
 
@@ -125,11 +124,38 @@ Hooks.on("renderActorDirectory", (app, html) => {
   btn.innerHTML = `<i class="fa-solid fa-spider"></i> Build a Spider`;
   btn.addEventListener("click", () => game.heistySpideys.openBuilder());
 
-  const header = root.querySelector(".directory-header .header-actions")
-    ?? root.querySelector(".directory-header")
-    ?? root.querySelector(".header-actions");
-  if (header) header.appendChild(btn);
-  else root.prepend(btn);
+  const footer = root.querySelector(".directory-footer")
+    ?? root.querySelector(".action-buttons");
+  if (footer) footer.appendChild(btn);
+  else root.appendChild(btn); // block element at the bottom — never in the header flex
+});
+
+// Launcher #2: a scene-control tool. The hook payload is an ARRAY in v12 and a
+// keyed OBJECT in v13+, so support both.
+Hooks.on("getSceneControlButtons", controls => {
+  const open = () => game.heistySpideys?.openBuilder?.();
+  const tool = {
+    name: "heisty-build-spider",
+    title: "Build a Spider",
+    icon: "fa-solid fa-spider",
+    button: true,
+    visible: true,
+    onClick: open,
+    onChange: open
+  };
+
+  if (Array.isArray(controls)) {
+    // v12: array of groups, each with a tools array.
+    const group = controls.find(c => c.name === "token") ?? controls[0];
+    if (group?.tools && !group.tools.some(t => t.name === tool.name)) group.tools.push(tool);
+  } else if (controls && typeof controls === "object") {
+    // v13+: object keyed by group, tools keyed by name.
+    const group = controls.tokens ?? Object.values(controls)[0];
+    if (group?.tools && !(tool.name in group.tools)) {
+      tool.order = Object.keys(group.tools).length;
+      group.tools[tool.name] = tool;
+    }
+  }
 });
 
 /* -------------------------------------------- */

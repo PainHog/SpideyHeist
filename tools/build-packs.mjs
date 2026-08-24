@@ -5,46 +5,17 @@
  * LevelDB compendium packs in packs/. Deterministic 16-char ids are derived from
  * each entry's `key`, so rebuilds are stable and re-runnable.
  *
- * Usage:  node tools/build-packs.mjs
+ * Usage:  node tools/build-packs.mjs   |   node tools/build-packs.mjs --clean
  *
  * Key format (from the foundryvtt-cli source):
- *   Primary doc:     !<collection>!<id>
- *   Embedded doc:    !<collection>.<embedded>!<parentId>.<childId>
+ *   Primary doc:  !<collection>!<id>
+ *   Embedded doc: !<collection>.<embedded>!<parentId>.<childId>
  */
 
 import { ClassicLevel } from "classic-level";
-import { createHash } from "node:crypto";
-import { readFileSync, rmSync, mkdirSync, existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SRC = join(ROOT, "src", "packs");
-const OUT = join(ROOT, "packs");
-
-/** Pack definitions: source file → output pack, document class & subtype. */
-const PACKS = [
-  { file: "species", out: "species", collection: "items", type: "Item", subtype: "species" },
-  { file: "roles", out: "roles", collection: "items", type: "Item", subtype: "role" },
-  { file: "perks", out: "perks", collection: "items", type: "Item", subtype: "perk" },
-  { file: "flaws", out: "flaws", collection: "items", type: "Item", subtype: "flaw" },
-  { file: "gadgets", out: "gadgets", collection: "items", type: "Item", subtype: "gadget" },
-  { file: "creatures", out: "creatures", collection: "actors", type: "Actor", subtype: "threat" },
-  { file: "heists", out: "heists", collection: "journal", type: "JournalEntry", subtype: null },
-  { file: "rules", out: "rules", collection: "journal", type: "JournalEntry", subtype: null }
-];
-
-/** Deterministic 16-char alphanumeric id from a namespace + key. */
-function makeId(...parts) {
-  const hex = createHash("sha256").update(parts.join("::")).digest("hex");
-  // sha256 hex is [0-9a-f]; first 16 chars are a valid Foundry id.
-  return hex.slice(0, 16);
-}
-
-function readSource(file) {
-  const path = join(SRC, `${file}.json`);
-  return JSON.parse(readFileSync(path, "utf8"));
-}
+import { rmSync, mkdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import { OUT, PACKS, makeId, readSource } from "./pack-config.mjs";
 
 async function buildPack(def) {
   const outPath = join(OUT, def.out);
@@ -62,20 +33,11 @@ async function buildPack(def) {
     const sort = (i + 1) * 100;
 
     if (def.type === "JournalEntry") {
-      // Parent entry — embedded pages are written under their own keys, not inline.
-      const entry = {
-        _id: id,
-        name: raw.name,
-        flags: {},
-        sort,
-        ownership: { default: 0 }
-      };
-      batch.put(`!journal!${id}`, entry);
+      batch.put(`!journal!${id}`, { _id: id, name: raw.name, flags: {}, sort, ownership: { default: 0 } });
       count++;
-
       (raw.pages ?? []).forEach((page, p) => {
         const pid = makeId(def.out, raw.key, page.key ?? String(p));
-        const pageDoc = {
+        batch.put(`!journal.pages!${id}.${pid}`, {
           _id: pid,
           name: page.name,
           type: page.type ?? "text",
@@ -84,8 +46,7 @@ async function buildPack(def) {
           sort: (p + 1) * 100,
           ownership: { default: -1 },
           flags: {}
-        };
-        batch.put(`!journal.pages!${id}.${pid}`, pageDoc);
+        });
         pageCount++;
       });
     } else {
@@ -124,14 +85,12 @@ async function buildPack(def) {
 function scanForDuplicateIds() {
   const seen = new Map();
   for (const def of PACKS) {
-    const raws = readSource(def.file);
-    raws.forEach(raw => {
+    readSource(def.file).forEach(raw => {
       const check = (id, where) => {
         if (seen.has(id)) throw new Error(`Duplicate id ${id}: ${where} collides with ${seen.get(id)}`);
         seen.set(id, where);
       };
-      const id = makeId(def.out, raw.key);
-      check(id, `${def.out}::${raw.key}`);
+      check(makeId(def.out, raw.key), `${def.out}::${raw.key}`);
       (raw.pages ?? []).forEach((page, p) =>
         check(makeId(def.out, raw.key, page.key ?? String(p)), `${def.out}::${raw.key}#${page.key ?? p}`));
     });

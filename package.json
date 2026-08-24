@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "build:packs": "node tools/build-packs.mjs",
-    "clean:packs": "node tools/build-packs.mjs --clean"
+    "clean:packs": "node tools/build-packs.mjs --clean",
+    "validate": "node tools/validate.mjs",
+    "test": "node --test",
+    "check": "npm run validate && npm test"
   },
   "devDependencies": {
     "classic-level": "^1.4.1",

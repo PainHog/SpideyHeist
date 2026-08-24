@@ -2,6 +2,17 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.1.0] — Hardening: tests, CI, and a safer launcher
+
+### Added
+- **Unit-tested pure logic.** The dice math (Successes, result classification, Botch, Alert suggestion) and the builder point-buy math now live in a Foundry-free `module/logic/rules.mjs`, verified by `node:test` (`npm test`) without a live Foundry.
+- **Validator + CI.** `npm run validate` checks manifest sanity, pack id integrity, that the compiled packs match source semantically, and that every template compiles with only registered helpers. A GitHub Actions CI workflow runs it plus the tests on every push.
+- **World-migration framework.** A version-keyed, GM-only, idempotent migration runner (`module/helpers/migration.mjs`) is now in place for any future schema changes.
+
+### Changed
+- **Character Builder launcher moved off the sidebar header** (which can break Foundry v13's flex layout). It's now at the bottom of the Actors directory, plus a spider tool in the canvas toolbar (`getSceneControlButtons`, supporting both the v12 array and v13 object shapes).
+- Build tooling now shares a single pack-config module, so the builder and validator can't drift.
+
 ## [1.0.2] — Movable Alert meter
 
 ### Changed
