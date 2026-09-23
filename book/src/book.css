@@ -1,0 +1,420 @@
+/* ==========================================================================
+   HEISTY SPIDEYS — Rulebook print stylesheet
+   US Letter, printed by Chromium with native CSS paged media.
+   Palette matches the Foundry system (plum & silk, gold, oxblood on cream).
+   ========================================================================== */
+
+:root {
+  --plum: #5f2470;
+  --plum-deep: #3a1348;
+  --plum-soft: #7b3a8e;
+  --cream: #f6efdd;
+  --parch: #eaddbe;
+  --parch-edge: #d9c69a;
+  --ink: #2a1c30;
+  --ink-soft: #574364;
+  --gold: #b8892a;
+  --gold-deep: #8a6116;
+  --gold-bright: #f0cf6b;
+  --ox: #7a2231;
+  --ox-bright: #b2364a;
+  --good: #2f7d4f;
+
+  --display: "Fraunces", Georgia, serif;
+  --text: "Alegreya", Georgia, serif;
+  --sans: "Alegreya Sans", "Segoe UI", sans-serif;
+}
+
+/* ------------------------------------------------------------ pages ----- */
+@page {
+  size: 8.5in 11in;
+  margin: 0.72in 0.68in 0.78in 0.68in;
+  background: var(--cream);
+  @bottom-center {
+    content: "Heisty Spideys  ·  " counter(page);
+    font-family: "Alegreya Sans", sans-serif;
+    font-size: 8pt;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7a6a;
+    vertical-align: top;
+    padding-top: 0.22in;
+  }
+}
+@page cover { margin: 0; background: var(--plum-deep); @bottom-center { content: none; } }
+@page part  { margin: 0; background: var(--plum-deep); @bottom-center { content: none; } }
+@page toc   { @bottom-center { content: none; } }
+
+html { background: var(--cream); }
+body {
+  margin: 0;
+  font-family: var(--text);
+  font-size: 10.4pt;
+  line-height: 1.36;
+  color: var(--ink);
+  font-variant-numeric: lining-nums proportional-nums;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  orphans: 3;
+  widows: 3;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+
+/* invisible, zero-size page locators for the TOC pass */
+.pdf-marker { position: absolute; font-size: 4pt; line-height: 1; color: rgba(0,0,0,.02); white-space: nowrap; }
+
+/* ------------------------------------------------------------ art ------- */
+figure.art { margin: 0; }
+figure.art svg { display: block; width: 100%; height: auto; }
+.art-missing {
+  display: grid; place-items: center; min-height: 0.9in;
+  border: 1.5px dashed var(--ox); color: var(--ox); font: 700 9pt var(--sans);
+  background: repeating-linear-gradient(45deg, transparent 0 8px, rgba(122,34,49,.06) 8px 16px);
+}
+
+/* ------------------------------------------------------------ cover ----- */
+.cover {
+  page: cover;
+  position: relative;
+  width: 8.5in; height: 11in;
+  overflow: hidden;
+  break-after: page;
+  color: var(--cream);
+  background: var(--plum-deep);
+}
+.cover .cover-art { position: absolute; inset: 0; }
+.cover .cover-art svg { width: 8.5in; height: 11in; }
+.cover-inner, .cover > :not(figure) { position: relative; z-index: 1; }
+.cover h1.cover-title {
+  margin: 0.8in 0 0;
+  text-align: center;
+  font: 900 64pt/0.9 var(--display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  text-shadow: 0 4px 0 var(--plum-deep), 0 0 22px rgba(0,0,0,.55);
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+}
+.cover .cover-subtitle {
+  margin: 0.14in auto 0; max-width: 6in; text-align: center;
+  font: italic 600 15pt/1.3 var(--display); color: var(--cream);
+  text-shadow: 0 1px 8px rgba(0,0,0,.7);
+}
+.cover .cover-tagline {
+  margin: 0.1in auto 0; max-width: 4.6in; text-align: center;
+  font: 500 10.5pt/1.4 var(--sans); color: var(--parch);
+  text-shadow: 0 1px 6px rgba(0,0,0,.8);
+}
+.cover .cover-edition {
+  position: absolute; left: 0; right: 0; bottom: 0.5in; margin: 0; text-align: center;
+  font: 800 11pt var(--sans); letter-spacing: 0.45em; text-transform: uppercase; color: var(--gold-bright);
+  text-shadow: 0 1px 6px rgba(0,0,0,.8);
+}
+
+/* chapter 1 epigraph */
+.epigraph {
+  column-span: all;
+  margin: 0 0.4in 0.14in;
+  text-align: center;
+  font: italic 500 11pt/1.45 var(--display);
+  color: var(--ink-soft);
+}
+
+/* ------------------------------------------------------------ toc ------- */
+.toc { page: toc; break-after: page; position: relative; }
+.toc .toc-art { position: absolute; top: -0.25in; left: -0.3in; width: 1.5in; opacity: .8; }
+.toc h2 {
+  margin: 0.1in 0 0.25in; text-align: center;
+  font: 900 26pt var(--display); color: var(--plum-deep);
+}
+.toc-list { list-style: none; margin: 0 auto; padding: 0; max-width: 5.6in; }
+.toc-list a { display: flex; align-items: baseline; gap: 6px; color: inherit; text-decoration: none; }
+.toc-list .toc-title { flex: 0 1 auto; }
+.toc-list a::after { content: ""; order: 2; flex: 1 1 auto; border-bottom: 1.2px dotted var(--parch-edge); transform: translateY(-3px); }
+.toc-list .toc-page { order: 3; font: 700 10.5pt var(--sans); color: var(--plum); font-variant-numeric: lining-nums; }
+.toc-part { margin: 0.2in 0 0.06in; }
+.toc-part a { font: 800 11pt var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--ox); }
+.toc-part .toc-label { color: var(--gold-deep); }
+.toc-chapter, .toc-sheet { margin: 0.035in 0; font-size: 10.8pt; }
+.toc-chapter .toc-label { flex: 0 0 0.95in; font: 600 8.5pt var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--gold-deep); }
+.toc-sheet { margin-top: 0.16in; font-weight: 700; }
+.toc-sheet .toc-label { flex: 0 0 0.95in; }
+
+/* ------------------------------------------------------------ part pages */
+.part {
+  page: part;
+  break-before: page; break-after: page;
+  width: 8.5in; height: 11in;
+  box-sizing: border-box;
+  padding: 2.3in 0.9in 0;
+  text-align: center;
+  color: var(--cream);
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(123,58,142,.55), transparent 60%),
+    var(--plum-deep);
+}
+.part-kicker { margin: 0; font: 800 12pt var(--sans); letter-spacing: .45em; text-transform: uppercase; color: var(--gold-bright); }
+.part h1 { margin: 0.12in 0 0.18in; font: 900 42pt/1 var(--display); color: var(--cream); }
+.part-lede { margin: 0 auto 0.2in; max-width: 4.8in; font: italic 13pt/1.4 var(--display); color: var(--parch); }
+.part .part-art { margin: 0.45in auto 0; width: 6.4in; }
+
+/* ------------------------------------------------------------ chapters -- */
+.chapter {
+  break-before: page;
+  columns: 2;
+  column-gap: 0.3in;
+  column-fill: balance;
+}
+.chapter-head { column-span: all; margin: 0 0 0.16in; position: relative; }
+.chapter-head .chapter-art {
+  margin: 0 0 0.08in;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1.5px solid var(--parch-edge);
+  box-shadow: 0 2px 0 var(--parch-edge);
+  max-height: 2.35in;
+}
+.chapter-num {
+  margin: 0; font: 800 9pt var(--sans); letter-spacing: .35em; text-transform: uppercase; color: var(--gold-deep);
+}
+.chapter-head h2 {
+  margin: 0.02in 0 0; padding-bottom: 0.07in;
+  font: 900 25pt/1.05 var(--display); color: var(--plum-deep);
+  border-bottom: 2.5px solid var(--gold);
+}
+
+h3 {
+  margin: 0.16in 0 0.05in;
+  font: 800 13.5pt/1.15 var(--display);
+  color: var(--plum);
+  break-after: avoid;
+}
+h4 {
+  margin: 0.1in 0 0.03in;
+  font: 800 9.4pt/1.2 var(--sans);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ox);
+  break-after: avoid;
+}
+p { margin: 0 0 0.075in; }
+p + p { text-indent: 0; }
+strong { font-weight: 800; color: var(--plum-deep); }
+em { font-style: italic; }
+ul, ol { margin: 0.02in 0 0.09in; padding-left: 0.2in; }
+li { margin: 0 0 0.035in; }
+li::marker { color: var(--gold-deep); }
+
+/* drop cap */
+p.opener::first-letter {
+  float: left;
+  font: 900 40pt/0.82 var(--display);
+  color: var(--plum);
+  margin: 0.03in 0.07in 0 0;
+  padding: 0.02in 0.04in 0 0;
+  text-shadow: 2px 2px 0 var(--gold-bright);
+}
+p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-weight: 700; }
+
+/* ------------------------------------------------------------ boxes ----- */
+.box {
+  break-inside: avoid;
+  margin: 0.08in 0 0.12in;
+  padding: 0.09in 0.12in 0.05in;
+  border-radius: 5px;
+  background: var(--parch);
+  border: 1px solid var(--parch-edge);
+  font-size: 9.8pt;
+  line-height: 1.33;
+}
+.box h4 { margin: 0 0 0.05in; }
+.box > :last-child { margin-bottom: 0.04in; }
+.box.rule {
+  background: var(--plum-deep); color: var(--cream); border: none;
+  box-shadow: inset 0 0 0 2px var(--gold), 0 2px 0 var(--gold-deep);
+}
+.box.rule h4 { color: var(--gold-bright); }
+.box.rule strong { color: var(--gold-bright); }
+.box.example { background: #fbf6ea; border: 1.5px dashed var(--gold); }
+.box.example h4 { color: var(--gold-deep); }
+.box.st { border-top: 5px solid var(--ox); background: #f2e2d6; }
+.box.st h4 { color: var(--ox); }
+.box.designer { border-left: 5px solid var(--gold); background: #f4ead0; }
+.box.designer h4 { color: var(--gold-deep); }
+.box.list { border-left: 5px solid var(--plum); }
+.box.list h4 { color: var(--plum); }
+
+/* ------------------------------------------------------------ tables ---- */
+.tbl {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.06in 0 0.13in;
+  font: 9pt/1.28 var(--sans);
+  font-variant-numeric: lining-nums;
+  border: 1px solid var(--parch-edge);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.tbl.wide { column-span: all; }
+.tbl thead { display: table-header-group; }
+.tbl th {
+  background: var(--plum-deep); color: var(--cream);
+  font: 800 8pt/1.2 var(--sans); letter-spacing: .08em; text-transform: uppercase;
+  text-align: left; padding: 0.045in 0.06in;
+}
+.tbl td { padding: 0.04in 0.06in; vertical-align: top; border-top: 1px solid rgba(217,198,154,.7); }
+.tbl tbody tr:nth-child(even) td { background: rgba(234,221,190,.55); }
+.tbl tr { break-inside: avoid; }
+.tbl td:first-child { font-weight: 700; color: var(--plum-deep); }
+.tbl td.num, .tbl th.num { text-align: center; white-space: nowrap; }
+.tbl.perks td:first-child { width: 28%; }
+.tbl.qr td:first-child { width: 24%; }
+
+/* ------------------------------------------------------------ entries --- */
+.entry {
+  break-inside: avoid-column;
+  position: relative;
+  margin: 0.06in 0 0.16in;
+  padding-top: 0.06in;
+  border-top: 1.5px solid var(--parch-edge);
+}
+.entry h3 { margin-top: 0.02in; }
+.entry .portrait, .entry .badge {
+  float: right;
+  width: 1.2in;
+  margin: 0 0 0.04in 0.08in;
+  shape-outside: circle(50%);
+}
+.entry .badge { width: 1.05in; }
+.entry .ability, .entry .signature {
+  clear: both;
+  break-inside: avoid;
+  margin: 0.06in 0 0.08in;
+  padding: 0.08in 0.11in 0.03in;
+  background: var(--plum-deep);
+  color: var(--cream);
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1.5px var(--gold);
+  font-size: 9.8pt;
+}
+.entry .ability h4, .entry .signature h4 { color: var(--gold-bright); margin-top: 0; }
+.entry .ability strong, .entry .signature strong { color: var(--gold-bright); }
+.entry .ability ul, .entry .signature ul { padding-left: 0.16in; }
+.entry .ability li::marker, .entry .signature li::marker { color: var(--gold-bright); }
+.statline {
+  clear: both;
+  font: 600 9.2pt/1.3 var(--sans);
+  padding: 0.05in 0.08in;
+  background: var(--parch);
+  border-radius: 4px;
+  border-left: 4px solid var(--gold);
+}
+.statline strong { color: var(--ox); }
+.sep { color: var(--gold); padding: 0 0.04in; }
+.quote { font: italic 500 10.5pt/1.35 var(--display); color: var(--ink-soft); }
+.role .tbl.perks { clear: both; }
+
+/* ------------------------------------------------------------ statblocks  */
+.statblock {
+  break-inside: avoid;
+  column-span: all;
+  margin: 0.1in 0 0.16in;
+  padding: 0 0.14in 0.08in;
+  background: #fbf6ea;
+  border: 1.5px solid var(--ox);
+  border-radius: 6px;
+  box-shadow: 0 2px 0 rgba(122,34,49,.35);
+  overflow: hidden;
+  font-size: 9.8pt;
+}
+.statblock h3 {
+  margin: 0 -0.14in 0.07in;
+  padding: 0.06in 0.14in;
+  background: var(--ox);
+  color: var(--cream);
+  font-size: 13pt;
+}
+.statblock .epithet { display: block; font: italic 600 9.4pt var(--display); color: var(--gold-bright); }
+.statblock .creature { float: right; width: 1.75in; margin: 0 0 0.06in 0.14in; }
+.statblock dl { margin: 0 0 0.05in; }
+.statblock dl.stats { display: flex; flex-wrap: wrap; gap: 0.04in 0.18in; font: 9pt var(--sans); }
+.statblock dl.stats dt { font-weight: 800; color: var(--ox); text-transform: uppercase; letter-spacing: .05em; font-size: 7.8pt; }
+.statblock dl.stats dt::after { content: ""; }
+.statblock dl.stats dd { margin: 0 0.12in 0 0.04in; font-weight: 600; }
+.statblock .pools {
+  font: 800 9.6pt var(--sans); color: var(--plum-deep);
+  padding: 0.04in 0.08in; background: var(--parch); border-radius: 4px; display: inline-block;
+}
+.statblock dl.traits dt { float: left; clear: left; margin-right: 0.05in; font: 800 9pt var(--sans); color: var(--ox); }
+.statblock dl.traits dt::after { content: ":"; }
+.statblock dl.traits dd { margin: 0 0 0.04in; }
+
+/* ------------------------------------------------------------ heists ---- */
+.heist {
+  margin: 0.08in 0 0.18in;
+  padding-top: 0.06in;
+  border-top: 2.5px solid var(--gold);
+}
+.heist h3 { font-size: 14.5pt; color: var(--plum-deep); }
+.heist .tag {
+  display: inline-block; vertical-align: 2px;
+  margin-left: 0.05in; padding: 0.01in 0.08in;
+  border-radius: 20px; background: var(--ox); color: var(--cream);
+  font: 800 7.6pt var(--sans); letter-spacing: .1em; text-transform: uppercase;
+}
+.heist-meta { font: 600 9.2pt var(--sans); padding: 0.05in 0.08in; background: var(--parch); border-radius: 4px; }
+.heist-meta strong { color: var(--ox); }
+figure.map { break-inside: avoid; margin: 0.06in 0 0.1in; }
+figure.map figcaption, figure.diagram figcaption { font: italic 8.6pt/1.3 var(--sans); color: var(--ink-soft); margin-top: 0.04in; }
+figure.diagram { break-inside: avoid; margin: 0.04in 0 0.12in; }
+
+.signoff {
+  column-span: all;
+  margin: 0.2in 0 0;
+  text-align: center;
+  font: italic 700 13pt var(--display);
+  color: var(--plum);
+}
+
+/* ------------------------------------------------------------ sheet ----- */
+.sheet {
+  break-before: page;
+  font-family: var(--sans);
+  font-size: 10pt;
+}
+.sheet h2 {
+  margin: 0 0 0.04in;
+  font: 900 26pt var(--display);
+  color: var(--plum-deep);
+  border-bottom: 2.5px solid var(--gold);
+}
+.sheet .blank {
+  display: inline-block;
+  min-width: 1.6in;
+  border-bottom: 1.3px solid var(--ink);
+  height: 1em;
+  vertical-align: -0.15em;
+}
+.sheet .box-check {
+  display: inline-block; width: 0.13in; height: 0.13in; margin: 0 0.04in 0 0.1in;
+  border: 1.4px solid var(--ink); border-radius: 2px; vertical-align: -0.02in;
+}
+.sheet .pip {
+  display: inline-block; width: 0.17in; height: 0.17in; margin: 0 0.02in;
+  border: 1.5px solid var(--gold); border-radius: 50%; vertical-align: -0.04in;
+}
+.sheet .field, .sheet p { margin: 0.1in 0; }
+.sheet table { width: 100%; border-collapse: collapse; margin: 0.06in 0 0.12in; }
+.sheet th {
+  font: 800 8pt var(--sans); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--cream); background: var(--plum-deep); padding: 0.04in; text-align: center;
+}
+.sheet td {
+  height: 0.42in; border: 1.3px solid var(--parch-edge); background: #fffaf0; text-align: center;
+}
+
+/* ------------------------------------------------------------ misc ------ */
+a { color: inherit; text-decoration: none; }
+hr { border: none; height: 0; margin: 0.1in 0; }

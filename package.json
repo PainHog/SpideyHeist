@@ -9,10 +9,16 @@
     "clean:packs": "node tools/build-packs.mjs --clean",
     "validate": "node tools/validate.mjs",
     "test": "node --test",
-    "check": "npm run validate && npm test"
+    "check": "npm run validate && npm test",
+    "build:book": "node book/build.mjs"
   },
   "devDependencies": {
+    "@fontsource/alegreya": "^5.3.0",
+    "@fontsource/alegreya-sans": "^5.3.0",
+    "@fontsource/fraunces": "^5.3.0",
     "@foundryvtt/foundryvtt-cli": "^3.0.4",
-    "handlebars": "^4.7.9"
+    "handlebars": "^4.7.9",
+    "pdfjs-dist": "^4.10.38",
+    "playwright-core": "^1.56.1"
   }
 }

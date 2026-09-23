@@ -19,3 +19,7 @@ dist/
 packs/**/LOCK
 packs/**/LOG
 packs/**/LOG.old
+
+# Book build intermediates
+book/dist/*
+!book/dist/*.pdf
