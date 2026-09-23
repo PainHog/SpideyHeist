@@ -239,7 +239,7 @@ export const HeistyDice = {
     // v14 replaced "roll modes" with message visibility modes (core.messageMode);
     // applyMode() with no mode uses the player's current chat selector.
     // applyRollMode is the v13 path (deprecated in v14, removed in v16).
-    if (typeof ChatMessage.applyMode === "function") ChatMessage.applyMode(msgData);
+    if (typeof ChatMessage.applyMode === "function") Object.assign(msgData, ChatMessage.applyMode(msgData));
     else ChatMessage.applyRollMode(msgData, game.settings.get("core", "rollMode"));
     return ChatMessage.create(msgData);
   },

@@ -53,11 +53,12 @@
    root (declared `scrollable: [""]`) must be allowed to shrink (min-height:0)
    and must own the overflow, or long content clips instead of scrolling. */
 .heisty-spideys .window-content { min-height: 0; }
-.heisty-spideys .window-content > * { min-height: 0; }
+.heisty-spideys .window-content > * { min-height: 0; flex: 0 0 auto; } /* header/nav never squash */
 .heisty-spideys .heisty-tab,
 .heisty-spideys .threat-body,
-.heisty-spideys .item-body-content {
-  flex: 1 1 auto;
+.heisty-spideys .item-body-content,
+.heisty-spideys .builder-step {
+  flex: 1 1 0;
   min-height: 0;
   overflow: hidden auto;
   scrollbar-gutter: stable;
@@ -331,7 +332,7 @@
 .heisty-spideys .step-chip:hover { background: rgba(255,255,255,0.18); color: var(--hs-cream); }
 .heisty-spideys .step-chip.active { background: var(--hs-cream); color: var(--hs-plum-deep); border-color: var(--hs-gold-bright); }
 
-.heisty-spideys .builder-step { padding: 16px; overflow-y: auto; flex: 1 1 auto; }
+.heisty-spideys .builder-step { padding: 16px; }
 .heisty-spideys .step-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .heisty-spideys .step-head h2 { font-size: 1.4rem; }
 .heisty-spideys .step-blurb { font-size: 0.86rem; color: var(--hs-ink-soft); margin-bottom: 14px; line-height: 1.45; }

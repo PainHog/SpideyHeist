@@ -61,7 +61,8 @@ async function handleCreateRequest(payload) {
   });
   try {
     const requester = game.users.get(payload.userId);
-    if (!requester) throw new Error(`Unknown requesting user ${payload.userId}`);
+    // The sender picks payload.userId, so only honour a real, connected user.
+    if (!requester?.active) throw new Error(`Unknown or offline requesting user ${payload.userId}`);
     // The GM creates on a player's behalf, so accept only what the builder sends:
     // a spider, owned by the requester, not placed in a folder of their choosing.
     const data = foundry.utils.deepClone(payload.data ?? {});
@@ -84,15 +85,23 @@ async function handleCreateRequest(payload) {
 
 /** Requester side: the GM created it — open the (now-verified) sheet. */
 function handleCreated(payload) {
-  if (payload.userId !== game.user.id) return;
+  // Only acks for a request THIS client made (random id) count — and success is
+  // judged by the server-synced world, not the message: the actor must exist
+  // and be ours.
+  if (payload.userId !== game.user.id || !pending.has(payload.requestId)) return;
   clearPending(payload.requestId);
-  ui.notifications?.info("Your spider joined the crew!");
-  game.actors.get(payload.actorId)?.sheet?.render({ force: true });
+  const actor = game.actors.get(payload.actorId);
+  if (actor?.isOwner) {
+    ui.notifications?.info("Your spider joined the crew!");
+    actor.sheet?.render({ force: true });
+  } else {
+    ui.notifications?.warn("The Storyteller reported your spider was created, but it isn't in your Actors list yet — check with them.");
+  }
 }
 
 /** Requester side: the GM's client couldn't create it. */
 function handleFailed(payload) {
-  if (payload.userId !== game.user.id) return;
+  if (payload.userId !== game.user.id || !pending.has(payload.requestId)) return;
   clearPending(payload.requestId);
   ui.notifications?.error("The Storyteller's client couldn't create your spider — ask them to build it, or to enable “Create New Actors.”");
 }

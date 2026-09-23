@@ -45,7 +45,9 @@ const manifest = JSON.parse(readFileSync(join(ROOT, "system.json"), "utf8"));
 
 /** Provenance stamped on every document. */
 const STATS = {
-  coreVersion: "14.368",
+  // Oldest core whose schema this data fits: v13 refuses to import documents
+  // stamped with a newer core, and v14 migrates up from here.
+  coreVersion: "13.351",
   systemId: manifest.id,
   systemVersion: manifest.version,
   createdTime: null,

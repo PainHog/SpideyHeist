@@ -2,7 +2,7 @@
 
   {{#*inline "editor"}}
     {{#if @root.editable}}
-    <prose-mirror name="system.{{field}}" toggled document-uuid="{{@root.document.uuid}}"
+    <prose-mirror name="system.{{field}}" toggled data-document-uuid="{{@root.document.uuid}}"
                   value="{{value}}">{{{enriched}}}</prose-mirror>
     {{else}}
     <div class="prose">{{{enriched}}}</div>

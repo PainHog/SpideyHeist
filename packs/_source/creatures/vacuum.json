@@ -3,7 +3,7 @@
   "name": "Vacuum",
   "img": "systems/heisty-spideys/assets/icons/vacuum.svg",
   "system": {
-    "threatLevel": "Low&ndash;Medium",
+    "threatLevel": "Low–Medium",
     "alertContribution": "+1 per round in pursuit",
     "speed": {
       "value": 4
