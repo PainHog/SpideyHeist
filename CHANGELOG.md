@@ -2,6 +2,30 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.3.0] — Foundry v14 audit (verified on 14.368)
+
+A full audit against the newest Foundry release (v14.368, "Version 14 Stable 10"), run by independent agents across the manifest, packs, templates, CSS and all JavaScript.
+
+### Fixed
+- **Compendium journals opened empty.** The Heists and Rules Reference pages were stored in the packs but never attached to their journals, so Foundry showed blank entries. Packs are now compiled with Foundry's **official `@foundryvtt/foundryvtt-cli`** (the same tool first-party systems use), and every journal carries its pages. The validator now reads a copy of each pack back through the official extractor and fails if any page is detached.
+- **Roll data could wipe a spider's stats.** `getRollData()` wrote into the actor's live data (core calls it for initiative and `/r` rolls), which replaced Skills and Silk with bare numbers. Skill rolls then lost their skill dice, and the next Silk ± click saved Silk as 0. It now works on a copy; a regression test proves the actor is untouched.
+- **Dark UI mode broke the sheets.** v13+ dark mode flipped core form colours under the parchment art and turned window titles plum-on-plum. All our windows (and the Alert HUD) now pin the light theme, and heading styles no longer reach the window title bar.
+- **Styles no longer leak onto Foundry's own UI.** In v14, system CSS outranks all core styles, so generic rules like `.panel`, `.field`, `.tab` and `.die` could restyle core windows. Every selector is now scoped to the system's own elements.
+- **Long sheets scroll instead of clipping** (the scroll chain now reaches each sheet section).
+- **Rich-text editors** (`<prose-mirror>`) use the correct v14 markup, so they open as a toggleable editor tied to the right document.
+- **Build a Spider could open twice.** The scene-control tool now uses only the v14 `onChange` callback, and a second click brings the open builder forward instead of discarding a build in progress. Pressing Enter in the builder no longer submits the form.
+- **Roll visibility uses v14's message modes** (`ChatMessage.applyMode`); the deprecated roll-mode API is used only on v13.
+- **Portrait editing uses Foundry's built-in image picker**, which respects permissions and v14's FilePicker options.
+- **Readability:** raised contrast on gold badges, the Rattled chip, Stirring/Active Alert flashes, missed dice, and the header's stat notes.
+- Heist and rules journal titles show real punctuation (e.g. "—", "&") instead of HTML entity codes.
+
+### Security
+- The GM-side "create a spider for a player" relay now only creates **spider** actors, owned by the requesting player alone, and ignores any folder or id the request supplies.
+
+### Changed
+- Manifest: declares `"type": "system"`; verified on **14.368**; compendium permissions spell out every role; the default grid is square with equidistant diagonals; the unused secondary token bar is removed.
+- Pack build/validate: `tools/verify-packs.mjs` removed (it modified the committed packs by opening them). Validation now never touches the committed LevelDB files.
+
 ## [1.2.0] — Multiplayer & robustness lessons
 
 Hardening from another VTT project's field notes on the GM↔player seam.

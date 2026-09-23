@@ -1,11 +1,12 @@
 {
   "id": "heisty-spideys",
+  "type": "system",
   "title": "Heisty Spideys",
   "description": "A tabletop roleplaying game of eight-legged larceny. Roll a handful of d6s, count every 4, 5, or 6 as a Success, and try not to get vacuumed. The official companion system for Heisty Spideys, First Edition.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "compatibility": {
     "minimum": "13",
-    "verified": "14"
+    "verified": "14.368"
   },
   "authors": [
     {
@@ -60,7 +61,7 @@
       "path": "packs/species",
       "type": "Item",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "OBSERVER", "TRUSTED": "OBSERVER", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     },
     {
       "name": "roles",
@@ -68,7 +69,7 @@
       "path": "packs/roles",
       "type": "Item",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "OBSERVER", "TRUSTED": "OBSERVER", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     },
     {
       "name": "perks",
@@ -76,7 +77,7 @@
       "path": "packs/perks",
       "type": "Item",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "OBSERVER", "TRUSTED": "OBSERVER", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     },
     {
       "name": "flaws",
@@ -84,7 +85,7 @@
       "path": "packs/flaws",
       "type": "Item",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "OBSERVER", "TRUSTED": "OBSERVER", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     },
     {
       "name": "gadgets",
@@ -92,7 +93,7 @@
       "path": "packs/gadgets",
       "type": "Item",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "OBSERVER", "TRUSTED": "OBSERVER", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     },
     {
       "name": "creatures",
@@ -100,7 +101,7 @@
       "path": "packs/creatures",
       "type": "Actor",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "NONE", "TRUSTED": "NONE", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     },
     {
       "name": "heists",
@@ -108,7 +109,7 @@
       "path": "packs/heists",
       "type": "JournalEntry",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "NONE", "TRUSTED": "NONE", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     },
     {
       "name": "rules",
@@ -116,7 +117,7 @@
       "path": "packs/rules",
       "type": "JournalEntry",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "OBSERVER", "TRUSTED": "OBSERVER", "ASSISTANT": "OWNER", "GAMEMASTER": "OWNER" }
     }
   ],
   "packFolders": [
@@ -128,11 +129,12 @@
     }
   ],
   "grid": {
+    "type": 1,
     "distance": 1,
-    "units": "sq"
+    "units": "sq",
+    "diagonals": 0
   },
   "primaryTokenAttribute": "silk",
-  "secondaryTokenAttribute": "",
   "socket": true,
   "url": "https://github.com/PainHog/SpideyHeist",
   "bugs": "https://github.com/PainHog/SpideyHeist/issues",
