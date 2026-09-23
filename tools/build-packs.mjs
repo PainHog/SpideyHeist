@@ -2,90 +2,31 @@
  * HEISTY SPIDEYS — Compendium Pack Builder
  * ----------------------------------------
  * Compiles the per-document source JSON in packs/_source/<name>/ into Foundry
- * VTT v13/v14 LevelDB compendium packs in packs/<name>/. Deterministic 16-char
- * ids are derived from each document's `key`, so rebuilds are stable.
+ * LevelDB compendium packs in packs/<name>/ using Foundry's OFFICIAL
+ * @foundryvtt/foundryvtt-cli `compilePack` — the same writer Foundry's own
+ * systems use — so the on-disk format (including embedded-document hierarchy,
+ * e.g. a JournalEntry's `pages: [ids]`) is exactly what Foundry expects.
+ *
+ * Our source stays human-friendly (a `key` slug, no ids); this script turns
+ * each doc into a CLI-ready document with a deterministic 16-char `_id`, a
+ * `_key`, `_stats`, and inline embedded pages, stages them outside the repo,
+ * then compiles.
  *
  * Usage:  node tools/build-packs.mjs   |   node tools/build-packs.mjs --clean
- *
- * Key format (from the foundryvtt-cli source):
- *   Primary doc:  !<collection>!<id>
- *   Embedded doc: !<collection>.<embedded>!<parentId>.<childId>
  */
 
-import { ClassicLevel } from "classic-level";
-import { rmSync, mkdirSync, existsSync } from "node:fs";
+import { compilePack } from "@foundryvtt/foundryvtt-cli";
+import { rmSync, mkdirSync, mkdtempSync, writeFileSync, existsSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { OUT, PACKS, makeId, readSource } from "./pack-config.mjs";
-
-async function buildPack(def) {
-  const outPath = join(OUT, def.out);
-  if (existsSync(outPath)) rmSync(outPath, { recursive: true, force: true });
-  mkdirSync(outPath, { recursive: true });
-
-  const db = new ClassicLevel(outPath, { keyEncoding: "utf8", valueEncoding: "json" });
-  const batch = db.batch();
-  const raws = readSource(def.file);
-  let count = 0;
-  let pageCount = 0;
-
-  raws.forEach((raw, i) => {
-    const id = makeId(def.out, raw.key);
-    const sort = (i + 1) * 100;
-
-    if (def.type === "JournalEntry") {
-      batch.put(`!journal!${id}`, { _id: id, name: raw.name, flags: {}, sort, ownership: { default: 0 } });
-      count++;
-      (raw.pages ?? []).forEach((page, p) => {
-        const pid = makeId(def.out, raw.key, page.key ?? String(p));
-        batch.put(`!journal.pages!${id}.${pid}`, {
-          _id: pid,
-          name: page.name,
-          type: page.type ?? "text",
-          title: page.title ?? { show: true, level: 1 },
-          text: page.text ?? { format: 1, content: "" },
-          sort: (p + 1) * 100,
-          ownership: { default: -1 },
-          flags: {}
-        });
-        pageCount++;
-      });
-    } else {
-      const doc = {
-        _id: id,
-        name: raw.name,
-        type: def.subtype,
-        img: raw.img,
-        system: raw.system ?? {},
-        effects: [],
-        flags: {},
-        sort,
-        ownership: { default: 0 }
-      };
-      // Threats track no player resource, so disable the token's default
-      // (silk) bar to avoid an empty bar rendering over creature tokens.
-      if (def.type === "Actor") {
-        doc.items = [];
-        doc.prototypeToken = { bar1: { attribute: "" }, bar2: { attribute: "" } };
-      }
-      batch.put(`!${def.collection}!${id}`, doc);
-      count++;
-    }
-  });
-
-  await batch.write();
-  // Flush the write-ahead log into stable .ldb sstables for a clean, shippable pack.
-  try { await db.compactRange("!", "￿"); } catch (e) { /* older bindings: WAL ships instead */ }
-  await db.close();
-  const extra = pageCount ? ` (+${pageCount} pages)` : "";
-  console.log(`  ✓ ${def.out.padEnd(10)} ${String(count).padStart(3)} docs${extra}`);
-  return count;
-}
+import { OUT, PACKS, makeId, readSource, toCliDoc } from "./pack-config.mjs";
 
 /** Fail loudly if any two source entries would produce the same document id. */
 function scanForDuplicateIds() {
   const seen = new Map();
   for (const def of PACKS) {
     readSource(def.file).forEach(raw => {
+      if (!raw.key) throw new Error(`A document in ${def.file} has no "key".`);
       const check = (id, where) => {
         if (seen.has(id)) throw new Error(`Duplicate id ${id}: ${where} collides with ${seen.get(id)}`);
         seen.set(id, where);
@@ -98,18 +39,42 @@ function scanForDuplicateIds() {
   console.log(`  id scan: ${seen.size} unique ids, no collisions.`);
 }
 
+async function buildPack(def, stagingRoot) {
+  const staging = join(stagingRoot, def.out);
+  mkdirSync(staging, { recursive: true });
+  const raws = readSource(def.file);
+  let pages = 0;
+  raws.forEach((raw, i) => {
+    const doc = toCliDoc(def, raw, i);
+    pages += doc.pages?.length ?? 0;
+    writeFileSync(join(staging, `${raw.key}.json`), JSON.stringify(doc, null, 2));
+  });
+
+  const outPath = join(OUT, def.out);
+  if (existsSync(outPath)) rmSync(outPath, { recursive: true, force: true });
+  await compilePack(staging, outPath, { log: false });
+
+  const extra = pages ? ` (+${pages} pages)` : "";
+  console.log(`  ✓ ${def.out.padEnd(10)} ${String(raws.length).padStart(3)} docs${extra}`);
+  return raws.length;
+}
+
 async function main() {
   if (process.argv.includes("--clean")) {
-    if (existsSync(OUT)) rmSync(OUT, { recursive: true, force: true });
-    console.log("Cleaned packs/.");
+    for (const def of PACKS) rmSync(join(OUT, def.out), { recursive: true, force: true });
+    console.log("Cleaned compiled packs.");
     return;
   }
-  mkdirSync(OUT, { recursive: true });
-  console.log("Building Heisty Spideys compendium packs…");
+  console.log("Building Heisty Spideys compendium packs (official foundryvtt-cli)…");
   scanForDuplicateIds();
-  let total = 0;
-  for (const def of PACKS) total += await buildPack(def);
-  console.log(`Done. ${total} primary documents across ${PACKS.length} packs.`);
+  const stagingRoot = mkdtempSync(join(tmpdir(), "heisty-packs-"));
+  try {
+    let total = 0;
+    for (const def of PACKS) total += await buildPack(def, stagingRoot);
+    console.log(`Done. ${total} primary documents across ${PACKS.length} packs.`);
+  } finally {
+    rmSync(stagingRoot, { recursive: true, force: true });
+  }
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
