@@ -33,7 +33,9 @@ Hooks.once("init", function () {
     CharacterBuilder,
     openBuilder: () => {
       try {
-        return Promise.resolve(new CharacterBuilder().render(true)).catch(err => {
+        // Reuse the open builder (fixed id) so a second click never discards a build in progress.
+        const app = foundry.applications.instances.get(CharacterBuilder.DEFAULT_OPTIONS.id) ?? new CharacterBuilder();
+        return Promise.resolve(app.render({ force: true })).catch(err => {
           console.error("Heisty Spideys | Character Builder failed to render:", err);
           ui.notifications?.error("The Character Builder hit an error — press F12 and check the console.");
         });
@@ -116,38 +118,27 @@ Hooks.on("renderActorDirectory", (app, html) => {
   btn.innerHTML = `<i class="fa-solid fa-spider"></i> Build a Spider`;
   btn.addEventListener("click", () => game.heistySpideys.openBuilder());
 
-  const footer = root.querySelector(".directory-footer")
+  const footer = root.querySelector('[data-application-part="footer"]')
+    ?? root.querySelector(".directory-footer")
     ?? root.querySelector(".action-buttons");
   if (footer) footer.appendChild(btn);
   else root.appendChild(btn); // block element at the bottom — never in the header flex
 });
 
-// Launcher #2: a scene-control tool. The hook payload is an ARRAY in v12 and a
-// keyed OBJECT in v13+, so support both.
+// Launcher #2: a scene-control tool. v13+ passes controls as an object keyed by
+// group, with tools keyed by name; a `button` tool fires onChange when clicked.
 Hooks.on("getSceneControlButtons", controls => {
-  const open = () => game.heistySpideys?.openBuilder?.();
-  const tool = {
+  const group = controls?.tokens;
+  if (!group?.tools || ("heisty-build-spider" in group.tools)) return;
+  group.tools["heisty-build-spider"] = {
     name: "heisty-build-spider",
     title: "Build a Spider",
     icon: "fa-solid fa-spider",
+    order: Object.keys(group.tools).length,
     button: true,
     visible: true,
-    onClick: open,
-    onChange: open
+    onChange: () => game.heistySpideys?.openBuilder?.()
   };
-
-  if (Array.isArray(controls)) {
-    // v12: array of groups, each with a tools array.
-    const group = controls.find(c => c.name === "token") ?? controls[0];
-    if (group?.tools && !group.tools.some(t => t.name === tool.name)) group.tools.push(tool);
-  } else if (controls && typeof controls === "object") {
-    // v13+: object keyed by group, tools keyed by name.
-    const group = controls.tokens ?? Object.values(controls)[0];
-    if (group?.tools && !(tool.name in group.tools)) {
-      tool.order = Object.keys(group.tools).length;
-      group.tools[tool.name] = tool;
-    }
-  }
 });
 
 /* -------------------------------------------- */

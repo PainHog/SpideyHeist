@@ -60,14 +60,22 @@ async function handleCreateRequest(payload) {
     userId: payload.userId, requestId: payload.requestId, ...extra
   });
   try {
+    const requester = game.users.get(payload.userId);
+    if (!requester) throw new Error(`Unknown requesting user ${payload.userId}`);
+    // The GM creates on a player's behalf, so accept only what the builder sends:
+    // a spider, owned by the requester, not placed in a folder of their choosing.
     const data = foundry.utils.deepClone(payload.data ?? {});
-    data.ownership = Object.assign(data.ownership ?? {}, {
-      [payload.userId]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
-    });
+    if (data.type !== "spider") throw new Error(`Refusing to proxy-create actor type "${data.type}"`);
+    delete data._id;
+    delete data.folder;
+    data.ownership = {
+      default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+      [requester.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
+    };
     const actor = await Actor.create(data);
     if (!actor) throw new Error("Actor.create returned nothing");
     reply({ action: "spiderCreated", actorId: actor.id });
-    if (payload.userId === game.user.id) actor.sheet?.render(true);
+    if (payload.userId === game.user.id) actor.sheet?.render({ force: true });
   } catch (err) {
     console.error("Heisty Spideys | GM proxy failed to create spider:", err);
     reply({ action: "spiderFailed" });
@@ -79,7 +87,7 @@ function handleCreated(payload) {
   if (payload.userId !== game.user.id) return;
   clearPending(payload.requestId);
   ui.notifications?.info("Your spider joined the crew!");
-  game.actors.get(payload.actorId)?.sheet?.render(true);
+  game.actors.get(payload.actorId)?.sheet?.render({ force: true });
 }
 
 /** Requester side: the GM's client couldn't create it. */

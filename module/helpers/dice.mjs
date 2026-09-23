@@ -189,7 +189,7 @@ export const HeistyDice = {
 
     const data = await foundry.applications.api.DialogV2.input({
       window: { title: `${cfg.label} Check`, icon: "fa-solid fa-dice-d6" },
-      classes: ["heisty-spideys", "heisty-roll-dialog"],
+      classes: ["heisty-spideys", "themed", "theme-light", "heisty-roll-dialog"],
       position: { width: 400 },
       content,
       ok: { label: "Roll the Pool", icon: "fa-solid fa-dice" },
@@ -236,19 +236,12 @@ export const HeistyDice = {
       content,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER
     };
-    const apply = ChatMessage.applyRollMode ?? ChatMessage.applyMode;
-    if (apply) apply.call(ChatMessage, msgData, this._currentRollMode());
+    // v14 replaced "roll modes" with message visibility modes (core.messageMode);
+    // applyMode() with no mode uses the player's current chat selector.
+    // applyRollMode is the v13 path (deprecated in v14, removed in v16).
+    if (typeof ChatMessage.applyMode === "function") ChatMessage.applyMode(msgData);
+    else ChatMessage.applyRollMode(msgData, game.settings.get("core", "rollMode"));
     return ChatMessage.create(msgData);
-  },
-
-  _currentRollMode() {
-    for (const key of ["rollMode", "messageMode"]) {
-      try {
-        const v = game.settings.get("core", key);
-        if (v !== undefined && v !== null) return v;
-      } catch (e) { /* not that key */ }
-    }
-    return "publicroll";
   },
 
   /** Wire the Alert buttons on posted roll cards — GM only; hidden for players. */

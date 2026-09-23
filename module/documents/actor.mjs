@@ -10,15 +10,19 @@ import { HeistyDice } from "../helpers/dice.mjs";
 
 export class HeistyActor extends Actor {
 
-  /** Flatten attributes and skills so formulas can use @body, @skills.stealth, etc. */
+  /**
+   * Flatten attributes and skills so formulas can use @body, @skills.stealth, etc.
+   * Core's getRollData returns the LIVE system model (used for initiative and /r
+   * commands), so work on a shallow copy — writing to it would corrupt the actor.
+   */
   getRollData() {
-    const data = super.getRollData();
+    const data = { ...super.getRollData() };
     if (this.type === "spider") {
-      for (const [k, a] of Object.entries(this.system.attributes ?? {})) data[k] = a.value;
-      data.skills = {};
-      for (const [k, s] of Object.entries(this.system.skills ?? {})) data.skills[k] = s.value;
-      data.silk = this.system.silk?.value ?? 0;
-      data.vit = this.system.vitality?.penalty ?? 0;
+      const sys = this.system;
+      for (const [k, a] of Object.entries(sys.attributes ?? {})) data[k] = a.value;
+      data.skills = Object.fromEntries(Object.entries(sys.skills ?? {}).map(([k, s]) => [k, s.value]));
+      data.silk = sys.silk?.value ?? 0;
+      data.vit = sys.vitality?.penalty ?? 0;
     }
     return data;
   }

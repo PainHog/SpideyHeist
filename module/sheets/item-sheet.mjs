@@ -28,12 +28,11 @@ const HTML_FIELDS = {
 export class HeistyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   static DEFAULT_OPTIONS = {
-    classes: ["heisty-spideys", "sheet", "item"],
+    classes: ["heisty-spideys", "themed", "theme-light", "sheet", "item"],
     position: { width: 560, height: 620 },
     window: { resizable: true, icon: "fa-solid fa-scroll" },
     form: { submitOnChange: true, closeOnSubmit: false },
     actions: {
-      editImage: HeistyItemSheet.#onEditImage
     }
   };
 
@@ -66,12 +65,4 @@ export class HeistyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     return context;
   }
 
-  static async #onEditImage(event, target) {
-    const fp = new foundry.applications.apps.FilePicker.implementation({
-      type: "image",
-      current: this.item.img,
-      callback: path => this.item.update({ img: path })
-    });
-    return fp.browse();
-  }
 }

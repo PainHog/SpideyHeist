@@ -113,7 +113,7 @@ export class AlertMeter {
     if (!this.el) {
       this.el = document.createElement("section");
       this.el.id = "heisty-alert-meter";
-      this.el.className = "heisty-spideys";
+      this.el.className = "heisty-spideys themed theme-light"; // the parchment art is light-only
       document.body.appendChild(this.el);
       this.#applySavedPosition();
     }

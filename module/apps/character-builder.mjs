@@ -43,8 +43,11 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
 
   static DEFAULT_OPTIONS = {
     id: "heisty-character-builder",
-    classes: ["heisty-spideys", "heisty-builder"],
+    classes: ["heisty-spideys", "themed", "theme-light", "heisty-builder"],
     tag: "form",
+    // Pressing Enter in the name field submits the <form>; state is kept live via
+    // listeners, so submission is a no-op (never closes, never reloads).
+    form: { handler: () => {}, submitOnChange: false, closeOnSubmit: false },
     window: {
       title: "Build a Spider",
       icon: "fa-solid fa-spider",
@@ -488,7 +491,7 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       if (actor) {
         ui.notifications?.info(`${actor.name} has joined the crew.`);
         await this.close();
-        actor.sheet?.render(true);
+        actor.sheet?.render({ force: true });
         return;
       }
       // Direct create was refused — fall through to the Storyteller relay.

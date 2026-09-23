@@ -21,7 +21,9 @@ const enrich = (html, doc) => {
 export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static DEFAULT_OPTIONS = {
-    classes: ["heisty-spideys", "sheet", "actor", "spider"],
+    // The parchment/ink art is designed light-only: pin the light theme so v13+ dark
+    // UI mode never flips core form colours underneath it.
+    classes: ["heisty-spideys", "themed", "theme-light", "sheet", "actor", "spider"],
     position: { width: 760, height: 780 },
     window: { resizable: true, icon: "fa-solid fa-spider" },
     form: { submitOnChange: true, closeOnSubmit: false },
@@ -30,7 +32,6 @@ export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       rollAttribute: SpiderSheet.#onRollAttribute,
       setVitality: SpiderSheet.#onSetVitality,
       silkAdjust: SpiderSheet.#onSilkAdjust,
-      editImage: SpiderSheet.#onEditImage,
       itemEdit: SpiderSheet.#onItemEdit,
       itemDelete: SpiderSheet.#onItemDelete,
       itemCreate: SpiderSheet.#onItemCreate
@@ -140,19 +141,10 @@ export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     await this.actor.update({ "system.silk.value": next });
   }
 
-  static async #onEditImage(event, target) {
-    const current = this.actor.img;
-    const fp = new foundry.applications.apps.FilePicker.implementation({
-      type: "image",
-      current,
-      callback: path => this.actor.update({ img: path })
-    });
-    return fp.browse();
-  }
 
   static #onItemEdit(event, target) {
     const id = target.closest("[data-item-id]")?.dataset.itemId;
-    this.actor.items.get(id)?.sheet.render(true);
+    this.actor.items.get(id)?.sheet.render({ force: true });
   }
   static async #onItemDelete(event, target) {
     const id = target.closest("[data-item-id]")?.dataset.itemId;
@@ -171,6 +163,6 @@ export class SpiderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const created = await this.actor.createEmbeddedDocuments("Item", [{
       name: `New ${HEISTY.itemTypes[type] ?? "Item"}`, type
     }]);
-    created[0]?.sheet.render(true);
+    created[0]?.sheet.render({ force: true });
   }
 }

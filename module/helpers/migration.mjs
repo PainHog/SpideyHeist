@@ -21,8 +21,11 @@ import { HEISTY } from "../config.mjs";
  *       for (const actor of game.actors) {
  *         const src = actor._source;              // pre-migration shape
  *         if (src.system?.oldField === undefined) continue;
- *         await actor.update({ "system.newField": src.system.oldField,
- *                              "system.-=oldField": null });
+ *         // Deleting a key: v14 uses the `_del` (ForcedDeletion) operator; the
+ *         // "-=" key form is deprecated there but is the only form v13 knows.
+ *         const del = globalThis._del !== undefined
+ *           ? { "system.oldField": _del } : { "system.-=oldField": null };
+ *         await actor.update({ "system.newField": src.system.oldField, ...del });
  *       }
  *     }
  *   }

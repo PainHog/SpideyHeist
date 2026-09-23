@@ -20,7 +20,7 @@ const enrich = (html, doc) => {
 export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static DEFAULT_OPTIONS = {
-    classes: ["heisty-spideys", "sheet", "actor", "threat"],
+    classes: ["heisty-spideys", "themed", "theme-light", "sheet", "actor", "threat"],
     position: { width: 620, height: 700 },
     window: { resizable: true, icon: "fa-solid fa-cat" },
     form: { submitOnChange: true, closeOnSubmit: false },
@@ -28,7 +28,6 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       rollThreat: ThreatSheet.#onRollThreat,
       rollAdd: ThreatSheet.#onRollAdd,
       rollRemove: ThreatSheet.#onRollRemove,
-      editImage: ThreatSheet.#onEditImage
     }
   };
 
@@ -69,13 +68,5 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const rolls = foundry.utils.deepClone(this.actor.system.rolls ?? []);
     rolls.splice(Number(target.dataset.index), 1);
     await this.actor.update({ "system.rolls": rolls });
-  }
-  static async #onEditImage(event, target) {
-    const fp = new foundry.applications.apps.FilePicker.implementation({
-      type: "image",
-      current: this.actor.img,
-      callback: path => this.actor.update({ img: path })
-    });
-    return fp.browse();
   }
 }
