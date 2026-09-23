@@ -163,6 +163,18 @@ async function printPdf(browser, html, out) {
   const p = await browser.newPage();
   await p.goto(pathToFileURL(tmp).href, { waitUntil: "load" });
   await p.evaluate(() => document.fonts.ready);
+  // Chromium silently shrinks EVERY page when any element is wider than the
+  // paper. Refuse to print instead, naming the culprits.
+  await p.setViewportSize({ width: 816, height: 1056 }); // 8.5in × 11in at 96dpi
+  await p.emulateMedia({ media: "print" });
+  const wide = await p.evaluate(() => {
+    const W = document.documentElement.clientWidth;
+    return [...document.querySelectorAll("body *")]
+      .filter(el => el.getBoundingClientRect().right > W + 1)
+      .slice(0, 8)
+      .map(el => `${el.tagName.toLowerCase()}.${el.getAttribute("class") ?? ""} "${(el.textContent ?? "").trim().slice(0, 40)}"`);
+  });
+  if (wide.length) throw new Error(`content wider than the page (Chromium would shrink every page):\n  ${wide.join("\n  ")}`);
   await p.pdf({ path: out, preferCSSPageSize: true, printBackground: true, tagged: true, outline: true });
   await p.close();
 }
