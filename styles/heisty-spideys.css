@@ -47,6 +47,11 @@
   padding: 0;
 }
 .heisty-spideys .window-content > * { color: var(--hs-ink); }
+/* AppV2 scroll chain: let flex children shrink so scrollable PARTS actually
+   scroll instead of clipping. Never set overflow/flex-direction on the part
+   root ([data-application-part]) itself — that fights the template's layout. */
+.heisty-spideys .window-content { min-height: 0; }
+.heisty-spideys .window-content > * { min-height: 0; }
 
 .heisty-spideys h1, .heisty-spideys h2, .heisty-spideys h3, .heisty-spideys h4 {
   font-family: var(--hs-font-display);

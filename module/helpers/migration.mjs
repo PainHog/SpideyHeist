@@ -32,8 +32,9 @@ const MIGRATIONS = [];
 const isNewer = (a, b) => foundry.utils.isNewerVersion(a, b);
 
 export async function migrateWorld() {
-  if (!game.user.isGM) return;
-
+  // Gate to the SINGLE active GM — not just any GM — so two GMs loading at once
+  // can't both run a document-creating migration.
+  if (game.users.activeGM?.id !== game.user.id) return;
   const current = game.system.version;
   const last = game.settings.get(HEISTY.id, "systemMigrationVersion");
 

@@ -43,7 +43,7 @@ npm test             # pure-logic unit tests (node:test)
 npm run check        # validate + test (run before every commit)
 ```
 
-Deterministic 16-character ids are derived from each document's `key`, so rebuilds are stable, and the build fails loudly on any id collision. **Always rebuild and commit `packs/<name>/` after editing source** — the system ships as a ZIP with no build step on the user's server, and CI (`.github/workflows/ci.yml`) fails if the committed packs don't match source. The pure engine/build math lives in `module/logic/rules.mjs` (Foundry-free, unit-tested).
+Deterministic 16-character ids are derived from each document's `key`, so rebuilds are stable, and the build fails loudly on any id collision. **Always rebuild and commit `packs/<name>/` after editing source** — the system ships as a ZIP with no build step on the user's server, and CI (`.github/workflows/ci.yml`) fails if the committed packs don't match source. The pure engine/build math lives in `module/logic/rules.mjs` (Foundry-free, unit-tested). Before shipping anything that touches the GM↔player seam, run the two-client smoke test in [`TESTING.md`](TESTING.md).
 
 ### Project layout
 

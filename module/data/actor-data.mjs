@@ -58,9 +58,10 @@ export class SpiderData extends foundry.abstract.TypeDataModel {
   }
 
   prepareDerivedData() {
-    // Starting Silk Points = WIT + NERVE (using final Attribute values).
+    // Starting Silk Points = WIT + NERVE (derived). We never mutate the stored
+    // silk.value here — the +/- control clamps it on write; recomputing stored,
+    // spendable state in derived data risks losing it.
     this.silk.max = this.attributes.wit.value + this.attributes.nerve.value;
-    this.silk.value = Math.min(this.silk.value, this.silk.max);
 
     // Resolve the Vitality state into its mechanical effects.
     const v = HEISTY.vitality[this.vitality.state] ?? HEISTY.vitality.unharmed;

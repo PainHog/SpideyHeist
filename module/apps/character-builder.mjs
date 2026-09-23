@@ -476,31 +476,41 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       items: embedded
     };
 
-    // GMs (and players granted "Create New Actors") create directly.
-    if (game.user.can("ACTOR_CREATE")) {
-      let actor;
+    // Try a DIRECT create first and let the server be the authority — don't
+    // pre-guess permission and route around it. Only relay on genuine refusal.
+    if (this.#canCreateActor()) {
+      let actor = null;
       try {
         actor = await Actor.create(actorData);
       } catch (err) {
-        console.error("Heisty Spideys | Failed to create spider:", err);
-        ui.notifications?.error("Something went wrong creating the spider — check the console.");
+        console.error("Heisty Spideys | Direct spider creation failed:", err);
+      }
+      if (actor) {
+        ui.notifications?.info(`${actor.name} has joined the crew.`);
+        await this.close();
+        actor.sheet?.render(true);
         return;
       }
-      ui.notifications?.info(`${actor.name} has joined the crew.`);
-      await this.close();
-      actor.sheet?.render(true);
-      return;
+      // Direct create was refused — fall through to the Storyteller relay.
     }
 
-    // Players without that permission ask the active Storyteller to finalize it.
+    // Relay to the active Storyteller. We can't verify from here, so we say
+    // "pending", never "done"; the GM's ack (or its absence) is the truth.
     if (!game.users?.activeGM) {
       ui.notifications?.error(
         "No Storyteller is online to bring your spider in. Ask your GM to enable “Create New Actors,” or try again once they're connected."
       );
       return;
     }
-    requestSpiderCreation(actorData);
-    ui.notifications?.info(`Sent ${name} to the Storyteller to bring into the crew…`);
+    requestSpiderCreation(actorData, { name });
+    ui.notifications?.info(`Sent “${name}” to the Storyteller — pending their confirmation…`);
     await this.close();
+  }
+
+  /** Best-effort "can this user create actors" — used only to skip a doomed
+   *  direct attempt; the server still enforces permission either way. */
+  #canCreateActor() {
+    const u = game.user;
+    return !!(u?.isGM || u?.hasPermission?.("ACTOR_CREATE") || u?.can?.("ACTOR_CREATE"));
   }
 }

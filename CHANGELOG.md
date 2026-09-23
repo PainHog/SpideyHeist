@@ -2,6 +2,20 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.2.0] — Multiplayer & robustness lessons
+
+Hardening from another VTT project's field notes on the GM↔player seam.
+
+### Fixed
+- **Never claim a multiplayer action succeeded optimistically.** The builder no longer pre-guesses `ACTOR_CREATE` and routes around it (which can misdetect permitted players). It now *attempts* the direct create and only relays to the Storyteller on genuine refusal. The relay says **"pending"**, not "done", carries a request id, and warns the player if no confirmation arrives (sockets aren't delivered to offline users).
+- **Secret data no longer travels to players.** The **Creature Compendium** and the **Five Ready-to-Run Heists** (which hold the "unknown obstacle" twists) are now GM-only; players can't browse the Storyteller's surprises. Player-facing content (Species, Roles, Perks, Flaws, Gadgets, Rules) stays visible.
+- **Migrations are gated to the single active GM**, not any GM, so two GMs loading at once can't double-run a document-creating migration.
+- **Store vs derive:** `prepareDerivedData` no longer mutates the stored `silk.value` (the +/- control clamps it on write instead).
+- **AppV2 scroll chain:** added the `min-height:0` chain so fixed-height sheets scroll instead of clipping, without setting overflow/flex on the part root.
+
+### Added
+- `TESTING.md` — a two-client GM↔player smoke-test checklist to run before shipping multiplayer changes.
+
 ## [1.1.1] — One-file-per-document pack sources
 
 ### Changed

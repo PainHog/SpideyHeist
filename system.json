@@ -2,7 +2,7 @@
   "id": "heisty-spideys",
   "title": "Heisty Spideys",
   "description": "A tabletop roleplaying game of eight-legged larceny. Roll a handful of d6s, count every 4, 5, or 6 as a Success, and try not to get vacuumed. The official companion system for Heisty Spideys, First Edition.",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -100,7 +100,7 @@
       "path": "packs/creatures",
       "type": "Actor",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
     },
     {
       "name": "heists",
@@ -108,7 +108,7 @@
       "path": "packs/heists",
       "type": "JournalEntry",
       "system": "heisty-spideys",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
     },
     {
       "name": "rules",
