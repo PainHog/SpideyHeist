@@ -28,7 +28,7 @@
     <div class="panel threat-field">
       <h3 class="panel-title">{{label}}</h3>
       {{#if @root.editable}}
-      <prose-mirror name="system.{{field}}" button="true" editable="true" toggled="false"
+      <prose-mirror name="system.{{field}}" toggled document-uuid="{{@root.document.uuid}}"
                     value="{{value}}">{{{enriched}}}</prose-mirror>
       {{else}}
       <div class="prose">{{{enriched}}}</div>

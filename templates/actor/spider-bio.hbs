@@ -3,7 +3,7 @@
   <div class="panel">
     <h3 class="panel-title">Biography</h3>
     {{#if editable}}
-    <prose-mirror name="system.biography" button="true" editable="true" toggled="false"
+    <prose-mirror name="system.biography" toggled document-uuid="{{actor.uuid}}"
                   value="{{system.biography}}">{{{enrichedBio}}}</prose-mirror>
     {{else}}
     <div class="prose">{{{enrichedBio}}}</div>
@@ -13,7 +13,7 @@
   <div class="panel">
     <h3 class="panel-title">The Waiting Web <span class="panel-sub">your backup spider, ready to draw</span></h3>
     {{#if editable}}
-    <prose-mirror name="system.details.waitingWeb" button="true" editable="true" toggled="false"
+    <prose-mirror name="system.details.waitingWeb" toggled document-uuid="{{actor.uuid}}"
                   value="{{system.details.waitingWeb}}">{{{enrichedWaitingWeb}}}</prose-mirror>
     {{else}}
     <div class="prose">{{{enrichedWaitingWeb}}}</div>
@@ -23,7 +23,7 @@
   <div class="panel">
     <h3 class="panel-title">Notes</h3>
     {{#if editable}}
-    <prose-mirror name="system.details.notes" button="true" editable="true" toggled="false"
+    <prose-mirror name="system.details.notes" toggled document-uuid="{{actor.uuid}}"
                   value="{{system.details.notes}}">{{{enrichedNotes}}}</prose-mirror>
     {{else}}
     <div class="prose">{{{enrichedNotes}}}</div>
