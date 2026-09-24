@@ -200,11 +200,12 @@ export function spot_crew_huddle() {
   // pass 2: back spiders' forelegs (on the blueprint) and bodies, drawn over the box
   for (const b of back) { const lo = legs(b.x, b.y, bs, b.f, bk(b)); s += bsp(b, noLegs({ R0: lo.R0, L0: lo.L0 })); }
 
-  // a spent match lying on the floor in front
-  s += shadow(300, GY + 22, 64, 4, .25);
-  s += `<path d="M246 ${GY + 20}L344 ${GY + 16}" stroke="${C.ink}" stroke-width="8" stroke-linecap="round"/><path d="M248 ${GY + 20}L342 ${GY + 16}" stroke="${C.parch}" stroke-width="4.5" stroke-linecap="round"/>`;
-  s += `<ellipse cx="348" cy="${GY + 16}" rx="9" ry="6" fill="${C.deep}" stroke="${C.ink}" stroke-width="1.8"/>`;
-  s += `<path d="M352 ${GY + 8}q-4 -8 2 -14M346 ${GY + 6}q5 -10 -1 -18" stroke="${C.soft}" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/>`;
+  // a spent match lying on the floor boards left of the box (wholly on the floor plane, behind the
+  // front line: nothing lies on the hatching below the floor line)
+  s += shadow(122, 293, 42, 3.5, .25);
+  s += `<path d="M86 292L148 288" stroke="${C.ink}" stroke-width="8" stroke-linecap="round"/><path d="M88 292L146 288" stroke="${C.parch}" stroke-width="4.5" stroke-linecap="round"/>`;
+  s += `<ellipse cx="152" cy="288" rx="8" ry="5.4" fill="${C.deep}" stroke="${C.ink}" stroke-width="1.8"/>`;
+  s += `<path d="M155 281q-4 -8 2 -14M149 279q5 -10 -1 -18" stroke="${C.soft}" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/>`;
 
   // side spiders on the floor, forelegs up on the table edge
   const fs = .82;
@@ -249,7 +250,7 @@ export function spot_cat_nap() {
   }
   // a ball of yarn with its loose end trailing on the floor (front left)
   {
-    const x = 62, y = 420, r = 24;
+    const x = 62, y = 404, r = 24; // bottom (y + r = 428) on the floor, above the front line GY = 436
     s += shadow(x + 4, y + r - 2, 30, 5, .3);
     s += line(`M${x + 18} ${y + r - 4}q30 6 40 -2t36 4`, 2.4, C.good);
     s += `<circle cx="${x}" cy="${y}" r="${r}" fill="${C.good}" stroke="${C.ink}" stroke-width="2.4"/>`;
@@ -501,13 +502,13 @@ export function spot_jar_rescue() {
     const onStick = x => { const t = (x - F[0]) / u[0]; return at(t)[1] - 3.5; };
     // crewmate A on the tin lid, hauling the lever down with both forelegs hooked over it
     {
-      const x = 368, xl = x - 11, xr = x + 11;
+      const x = 384, xl = x - 11, xr = x + 11; // all six standing feet inside the lid's top ellipse
       s += shadow(x + 4, gy, 38, 4, .25);
       s += sp({ ...standOn(x, gy, sc, { L0: [xl, onStick(xl)], R0: [xr, onStick(xr)] }, { L0: [x - 30, onStick(xl) - 4], R0: [x + 28, onStick(xr) - 4] }), look: [-.6, -.8], mouth: "flat", brow: "down", mark: "stripe" });
     }
     // crewmate B standing on the long end of the lever, all eight feet gripping it, weighing it down
     {
-      const x = 470, sp4 = [9, 20, 31, 40], f = {}, k = {};
+      const x = 464, sp4 = [9, 20, 31, 40], f = {}, k = {};
       for (let i = 0; i < 4; i++) {
         f["R" + i] = [x + sp4[i], onStick(x + sp4[i]) + 1]; f["L" + i] = [x - sp4[i], onStick(x - sp4[i]) + 1];
         k["R" + i] = [x + sp4[i] * .7 + 6, onStick(x) - 30 + i * 5]; k["L" + i] = [x - sp4[i] * .7 - 6, onStick(x) - 30 + i * 5];
@@ -516,13 +517,14 @@ export function spot_jar_rescue() {
       s += sp({ x, y, s: sc, legOverride: legs(x, y, sc, f, k), look: [-1, .5], mouth: "grin", brow: "down", mark: "chevron", hat: "goggles" });
       gyB = y;
     }
-    s += line(`M504 ${n(gyB - 14)}l6 8M500 ${n(gyB + 4)}l8 4`, 2, C.ink, ` opacity=".55"`);
+    s += line(`M498 ${n(gyB - 14)}l6 8M494 ${n(gyB + 4)}l8 4`, 2, C.ink, ` opacity=".55"`);
   }
   // a spoon lying flat on the table (left)
-  s += shadow(66, 388, 44, 4, .25);
-  s += `<path d="M34 392L80 384" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M34 392L80 384" stroke="${C.soft}" stroke-width="3.6" stroke-linecap="round"/>`;
-  s += `<ellipse cx="96" cy="381" rx="18" ry="6.5" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2" transform="rotate(-8 96 381)"/>`;
-  s += `<ellipse cx="96" cy="380" rx="11" ry="3.4" fill="${C.edge}" opacity=".6" transform="rotate(-8 96 380)"/>`;
+  // (kept clear of the tabletop's faded left end, so the whole spoon lies on visible table)
+  s += shadow(106, 388, 44, 4, .25);
+  s += `<path d="M74 392L120 384" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M74 392L120 384" stroke="${C.soft}" stroke-width="3.6" stroke-linecap="round"/>`;
+  s += `<ellipse cx="136" cy="381" rx="18" ry="6.5" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2" transform="rotate(-8 136 381)"/>`;
+  s += `<ellipse cx="136" cy="380" rx="11" ry="3.4" fill="${C.edge}" opacity=".6" transform="rotate(-8 136 380)"/>`;
   return V("Two spiders on a cookie tin lever the lid off a jar to free a trapped crewmate", `<g transform="translate(0 -14)">${s}</g>`);
 }
 
@@ -678,7 +680,7 @@ export function spot_lockpick() {
   // the spider on the plinth ledge beside the lock, working two bent pins with its forelegs
   const ky = (280 + BOT - 8) / 2;
   {
-    const sc = 1.02, x = 372, gy = PLT + 2;
+    const sc = 1.02, x = 372, gy = PLT - 2; // feet on the ledge's top strip (BOT..PLT), not its front face
     // tension pin: short end in the bottom of the keyhole, bent to run right to the second left leg
     const tw = `M${300} ${ky + 10}v5H${340}`;
     // pick: hooked tip in the top of the keyhole, shaft up-right to the first left leg, round head
@@ -693,7 +695,8 @@ export function spot_lockpick() {
   }
   // a ring lying flat on the dresser top (right), and a perfume bottle
   s += shadow(530, 392, 16, 4, .25) + `<ellipse cx="530" cy="388" rx="14" ry="5" fill="none" stroke="${C.ink}" stroke-width="5"/><ellipse cx="530" cy="388" rx="14" ry="5" fill="none" stroke="${C.goldB}" stroke-width="2.4"/>`;
-  s += `<path d="M524 382l6 -8 6 8z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  // its stone sits on the band at the back, pointing outward (away from us), so it is foreshortened
+  s += `<path d="M524 383.5l3 -3.4h6l3 3.4-6 2.6z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4" stroke-linejoin="round"/>`;
   s += shadow(78, 380, 26, 5, .25);
   s += `<path d="M58 378V338q0 -8 8 -8h24q8 0 8 8V378q-20 5 -40 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" opacity=".95"/>`;
   s += `<path d="M62 346h32v26q-16 4 -32 0z" fill="${C.gold}" opacity=".5"/>`;

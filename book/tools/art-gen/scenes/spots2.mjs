@@ -44,7 +44,7 @@ function floor(P, y, x0 = 40, x1 = 560, o = {}) {
 
 // A tabletop seen from slightly above: a lit top band (fading back into the page) over an inked front edge.
 function tabletop(P, y, x0, x1, o = {}) {
-  const { depth = 70, thick = 16, top = C.parch, edge = C.edge, grain = true, fadeTop = true } = o;
+  const { depth = 70, thick = 16, top = C.parch, edge = C.edge, grain = true, fadeTop = true, fade = .16 } = o;
   let c = `<rect x="${x0}" y="${y - depth}" width="${x1 - x0}" height="${depth}" fill="${top}"/>`;
   if (grain) {
     const R = rng(depth * 7 + x0);
@@ -58,7 +58,7 @@ function tabletop(P, y, x0, x1, o = {}) {
   c += `<rect x="${x0}" y="${y}" width="${x1 - x0}" height="${thick}" fill="${edge}"/>`;
   c += `<path d="M${x0} ${y}H${x1}M${x0} ${y + thick}H${x1}" stroke="${C.ink}" stroke-width="2.6"/>`;
   c += `<path d="M${x0} ${y + thick + 4}H${x1}" stroke="${C.ink}" stroke-width="7" opacity=".12"/>`;
-  return faded(`${P}-tt`, x0, x1, c, fadeTop ? { top: [y - depth, y - depth * .45] } : {});
+  return faded(`${P}-tt`, x0, x1, c, fadeTop ? { top: [y - depth, y - depth * .45], edge: fade } : { edge: fade });
 }
 
 // A room corner seen from low down: wall fading up into the page, a skirting board,
@@ -178,11 +178,13 @@ export function spot_dice_push() {
   const P = "sdp";
   let s = glow(P, 300, 240, 295, 205);
   const TY = 386;
-  s += tabletop(P, TY, 40, 560, { depth: 190, thick: 22, top: C.parch, edge: C.gold });
+  s += tabletop(P, TY, 30, 570, { depth: 190, thick: 22, top: C.parch, edge: C.gold, fade: .1 });
   // a score pad lying flat at the back left, with a pencil lying across it; its depth edge
   // recedes along the same vector as the die's top face (58,-44), so both share one table plane
   {
-    const o = [44, 330], a = [98, -3], b = [50, -38];
+    // (kept inside the table's opaque span, so its left corner is not where the table fades out, and
+    // clear of the die: its back-right corner stops short of the die's left edge, x = 190)
+    const o = [62, 330], a = [80, -3], b = [42, -32];
     s += `<path d="M${pts([add(o, [4, 5]), add(add(o, a), [4, 5]), add(add(add(o, a), b), [4, 5]), add(add(o, b), [4, 5])])}z" fill="${C.ink}" opacity=".2"/>`;
     s += `<path d="M${pts([o, add(o, a), add(add(o, a), b), add(o, b)])}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
     s += `<g transform="${mat(add(o, b), a, [-b[0], -b[1]])}">`;
@@ -192,7 +194,7 @@ export function spot_dice_push() {
     s += `<path d="M.06 .1H.94" stroke="${C.ink}" stroke-width="1.6"${NS}/><path d="M.7 .16V.94" stroke="${C.edge}" stroke-width="1.4"${NS}/>`;
     s += `<path d="M.76 .5l.04 .08l.08 -.2" stroke="${C.good}" stroke-width="2" fill="none"${NS}/></g>`;
     // the pencil lies wholly on the pad (both ends inside the pad outline), never overhanging
-    s += pencil([72, 321], [164, 300], 10);
+    s += pencil([86, 321], [162, 303], 10);
   }
   // the die, resting flat on the table, being shoved to the left
   const dx = 262, yb = 352, sz = 144, D = [58, -44];
@@ -278,7 +280,7 @@ export function spot_lookout_sill() {
   s += `<circle cx="80" cy="${rodY + 1}" r="7" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/><circle cx="468" cy="${rodY + 1}" r="7" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
   // the curtain: hung from rings on the rod, drawn back to the left, hem just clearing the sill
   {
-    const x0 = 94, x1 = 196, top = rodY + 8, hem = 296;
+    const x0 = 114, x1 = 196, top = rodY + 8, hem = 296; // x0 clear of the left bracket (94..110): no ring passes through it
     const folds = 5, fw = (x1 - x0) / folds;
     let edgeTop = `M${x0} ${top}`, hemPath = "";
     for (let i = 0; i < folds; i++) hemPath += `q${n(fw / 2)} ${i % 2 ? -8 : 8} ${n(fw)} 0`;
@@ -614,7 +616,8 @@ export function spot_debrief() {
   // the third, standing on top of the pile, thimble raised high
   {
     const x = 300, gy = pb - ph - 10, sc = .82;
-    const feet = { L0: [x - 16, gy + 2], L1: [x - 34, gy + 6], L2: [x - 48, gy + 16], L3: [x - 58, gy + 28], R2: [x + 46, gy + 16], R3: [x + 58, gy + 28] };
+    // each foot placed inside a crumb's outline on the pile's surface (checked against the crumb polygons)
+    const feet = { L0: [x - 16, gy + 2], L1: [x - 34, gy + 9], L2: [x - 48, gy + 19], L3: [x - 54, gy + 33], R2: [x + 44, gy + 18], R3: [x + 56, gy + 33] };
     const [o] = toast({ x, gy, s: sc, feet, k0: [x + 20, gy - 88], k1: [x + 52, gy - 50], face: { look: [0, -1], mouth: "big", brow: "up", mark: "star", hat: "goggles" } }, [x + 38, gy - 66], "R");
     s += o;
   }
