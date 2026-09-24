@@ -314,27 +314,307 @@ export function spot_lookout_sill() {
   }
   // the lookout: standing on the sill, spyglass to its right eye, trained up at the moon
   {
-    const x = 262, gy = 322, sc = .92, y = gy - 26 * sc;
+    const x = 258, gy = 323, sc = 1.1, y = gy - 26 * sc, k = sc / .92;
     // spyglass: eyepiece against the rim of the right eye, three telescoping brass tubes, aimed at the moon
     const ex = x + 5.6 * sc + 3.2, ey = y - .2 * sc - 4;
     const deg = -58, ang = deg * Math.PI / 180, u = [Math.cos(ang), Math.sin(ang)], p = [-u[1], u[0]];
-    const at = t => add([ex, ey], u, t);
-    const T1 = add(at(68), p, 8), T2 = add(at(38), p, 6.5); // where the forefeet grip (tube's right flank)
-    const st = standOn(x, gy, sc, { R0: T1, R1: T2 }, { R0: [x + 48, y - 70], R1: [x + 44, y - 34] });
+    const at = t => add([ex, ey], u, t * k);
+    const T1 = add(at(68), p, 8 * k), T2 = add(at(38), p, 6.5 * k); // where the forefeet grip (tube's right flank)
+    const st = standOn(x, gy, sc, { R0: T1, R1: T2 }, { R0: [x + 56, y - 78], R1: [x + 50, y - 38] });
     // the left eye screwed shut, as you do at an eyepiece
-    const wink = `<circle cx="-5.6" cy="-.2" r="5.6" fill="${C.plum}"/><path d="M-10.4 -.4q4.8 3.2 9.6 0" stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+    const wink = `<circle cx="-5.6" cy="-.2" r="5.1" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.3"/><path d="M-10.7 -.2a5.1 5.1 0 0 1 10.2 0q-5.1 3.4 -10.2 0z" fill="${C.plum}" stroke="${C.ink}" stroke-width="1.5" stroke-linejoin="round"/>`;
     s += shadow(x, gy, 58, 5, .28);
     s += sp({ ...st, look: [.6, -1], mouth: "smirk", brow: "down", mark: "dots", over: wink, rimOp: .9 });
-    const seg = (t0, t1, r0, fill) => { const A = at(t0), B = at(t1); return `<path d="M${pts([add(A, p, r0), add(B, p, r0), add(B, p, -r0), add(A, p, -r0)])}z" fill="${fill}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`; };
-    const ring = (t, r0) => { const A = at(t); return line(`M${pts([add(A, p, r0 + 1), add(A, p, -r0 - 1)])}`, 4.5, C.ink) + line(`M${pts([add(A, p, r0), add(A, p, -r0)])}`, 2.4, C.soft); };
+    const seg = (t0, t1, r0, fill) => { const A = at(t0), B = at(t1); r0 *= k; return `<path d="M${pts([add(A, p, r0), add(B, p, r0), add(B, p, -r0), add(A, p, -r0)])}z" fill="${fill}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`; };
+    const ring = (t, r0) => { const A = at(t); r0 *= k; return line(`M${pts([add(A, p, r0 + 1), add(A, p, -r0 - 1)])}`, 4.5, C.ink) + line(`M${pts([add(A, p, r0), add(A, p, -r0)])}`, 2.4, C.soft); };
     s += seg(0, 24, 4, C.gold) + seg(22, 50, 5.5, C.goldB) + seg(48, 84, 7.5, C.gold);
     s += ring(1, 4.2) + ring(24, 4.2) + ring(50, 5.6) + ring(84, 7.6);
     const O = at(86);
-    s += `<ellipse cx="${n(O[0])}" cy="${n(O[1])}" rx="3.2" ry="7.6" transform="rotate(${deg} ${n(O[0])} ${n(O[1])})" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.6"/>`;
+    s += `<ellipse cx="${n(O[0])}" cy="${n(O[1])}" rx="${n(3.2 * k)}" ry="${n(7.6 * k)}" transform="rotate(${deg} ${n(O[0])} ${n(O[1])})" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.6"/>`;
     s += line(`M${pts([add(at(54), p, -3.5), add(at(80), p, -5)])}`, 1.6, C.cream, ` opacity=".8"`);
     // forefeet curled round the tube
     const curl = (T, r0) => { const a = add(T, p, 0), b = add(at(0), p, 0); const tipIn = add(add(T, p, -r0 * 1.7), u, -2); return legPath(`M${n(T[0])} ${n(T[1])}Q${n(T[0] + p[0] * -r0 * .4 + u[0] * 6)} ${n(T[1] + p[1] * -r0 * .4 + u[1] * 6)} ${n(tipIn[0])} ${n(tipIn[1])}`, sc); };
-    s += curl(T1, 7.5) + curl(T2, 5.5);
+    s += curl(T1, 7.5 * k) + curl(T2, 5.5 * k);
   }
   return V("A lookout spider on a night-time window sill peers at the moon through a tiny spyglass", `<g transform="translate(0 34)">${s}</g>`);
+}
+
+// ================================================================
+// 10. Dust bunny: a spider in a dust-bunny disguise shuffles along the skirting board
+// ================================================================
+// A fluffy ball of dust: centre cx,cy, radii rx,ry; wisps round the edge and fibres inside.
+function fluff(seed, cx, cy, rx, ry, o = {}) {
+  const { fill = C.cream, fibre = C.soft, ears = false, flatBottom = false } = o;
+  const R = rng(seed), N = Math.max(12, Math.round((rx + ry) / 5)), P = [], Q = [];
+  const flat = y => flatBottom && y > cy + ry * .8 ? cy + ry * .8 + (y - cy - ry * .8) * .2 : y;
+  for (let i = 0; i < N; i++) {
+    const a = (i + R() * .3) / N * Math.PI * 2, j = .94 + R() * .08;
+    P.push([cx + Math.cos(a) * rx * j, flat(cy + Math.sin(a) * ry * j)]);
+    const a2 = (i + .5) / N * Math.PI * 2, j2 = 1.1 + R() * .1;
+    Q.push([cx + Math.cos(a2) * rx * j2, flat(cy + Math.sin(a2) * ry * j2)]);
+  }
+  let d = `M${n(P[0][0])} ${n(P[0][1])}`;
+  for (let i = 0; i < N; i++) { const q = Q[i], p = P[(i + 1) % N]; d += `Q${n(q[0])} ${n(q[1])} ${n(p[0])} ${n(p[1])}`; }
+  let s = "";
+  if (ears) {
+    // two floppy fluff tufts on top: it is a dust *bunny*
+    for (const [dx, lean] of [[-rx * .3, -14], [rx * .16, 10]]) {
+      const bx = cx + dx, by = cy - ry * .78;
+      s += `<path d="M${n(bx - 10)} ${n(by + 8)}q${n(lean - 8)} -40 ${n(lean + 1)} -60q14 4 ${n(-lean * .3 + 9)} 60z" fill="${fill}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+      s += line(`M${n(bx - 2)} ${n(by)}q${n(lean * .5)} -24 ${n(lean + 1)} -48`, 1.3, fibre, ` opacity=".7"`);
+    }
+  }
+  s += `<path d="${d}z" fill="${fill}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+  s += stipple(seed + 3, cx, cy + ry * .1, rx * .85, ry * .8, Math.round(rx * ry / 18), 1, C.soft, .22);
+  // stray wisps curling off the edge
+  let w = "";
+  for (let i = 0; i < N; i++) {
+    if (R() < .45) continue;
+    const q = Q[i], a = Math.atan2((q[1] - cy) / ry, (q[0] - cx) / rx), L = 5 + R() * 7;
+    if (flatBottom && q[1] > cy + ry * .6) continue;
+    const t = [q[0] + Math.cos(a) * L, q[1] + Math.sin(a) * L];
+    w += `M${n(q[0] - Math.cos(a) * 2)} ${n(q[1] - Math.sin(a) * 2)}Q${n(t[0] + Math.sin(a) * 5)} ${n(t[1] - Math.cos(a) * 5)} ${n(t[0])} ${n(t[1])}q${n(-Math.sin(a) * 3)} ${n(Math.cos(a) * 3)} ${n(-Math.cos(a) * 3)} ${n(-Math.sin(a) * 3)}`;
+  }
+  s += line(w, 1.3, C.ink, ` opacity=".75"`);
+  // inner fibres: loose curls
+  let f = "";
+  for (let i = 0; i < Math.round(rx * ry / 110) + 4; i++) {
+    const t = R() * Math.PI * 2, u = Math.sqrt(R()) * .78, x = cx + Math.cos(t) * rx * u, y = cy + Math.sin(t) * ry * u, L = 7 + R() * 10;
+    f += `M${n(x)} ${n(y)}q${n(L * .5)} ${n(-5 + R() * 3)} ${n(L)} ${n(-1 + R() * 4)}q${n(3)} ${n(2)} ${n(1)} ${n(5)}`;
+  }
+  s += line(f, 1.3, fibre, ` opacity=".5"`);
+  s += `<ellipse cx="${n(cx - rx * .3)}" cy="${n(cy - ry * .42)}" rx="${n(rx * .32)}" ry="${n(ry * .18)}" fill="#fff" opacity=".45"/>`;
+  return s;
+}
+
+export function spot_dust_bunny() {
+  const P = "sdb";
+  let s = glow(P, 300, 235, 295, 205);
+  const SK = 252, GY = 404;
+  s += room(P, { sk: SK, skH: 44, gy: GY, wallH: 140 });
+  s += floor(P, GY, 24, 576);
+  // a wall socket above the skirting, and a plug's lead running down behind the skirting top
+  {
+    const x = 468, y = 150;
+    s += `<rect x="${x - 26}" y="${y - 26}" width="52" height="52" rx="6" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4"/>`;
+    s += `<rect x="${x - 20}" y="${y - 20}" width="40" height="40" rx="4" fill="none" stroke="${C.edge}" stroke-width="1.6"/>`;
+    s += `<path d="M${x - 9} ${y - 8}v8M${x + 9} ${y - 8}v8" stroke="${C.ink}" stroke-width="3.4" stroke-linecap="round"/><circle cx="${x}" cy="${y + 9}" r="2.6" fill="${C.ink}"/>`;
+    s += `<circle cx="${x}" cy="${y - 19}" r="1.6" fill="${C.soft}"/><circle cx="${x}" cy="${y + 19}" r="1.6" fill="${C.soft}"/>`;
+  }
+  // real dust bunnies lying against the skirting ahead: the disguise fits right in
+  s += shadow(452, SK + 20, 30, 4, .22) + fluff(7, 450, SK + 8, 26, 15, { flatBottom: true });
+  s += shadow(520, SK + 16, 18, 3, .2) + fluff(9, 518, SK + 8, 15, 10, { flatBottom: true });
+  // a lost button lying flat on the boards, and a hairpin
+  {
+    const x = 150, y = 384;
+    s += shadow(x + 2, y - 3, 22, 5, .25);
+    s += `<path d="M${x - 20} ${y - 9}v4a20 7 0 0 0 40 0v-4z" fill="${C.ox}" stroke="${C.ink}" stroke-width="1.8"/>`.replace(C.ox, C.plum);
+    s += `<ellipse cx="${x}" cy="${y - 9}" rx="20" ry="7" fill="${C.soft}" stroke="${C.ink}" stroke-width="1.8"/>`;
+    s += `<ellipse cx="${x}" cy="${y - 9}" rx="14" ry="4.6" fill="none" stroke="${C.plum}" stroke-width="1.4"/>`;
+    for (const [dx, dy] of [[-4, -1.4], [4, -1.4], [-4, 1.4], [4, 1.4]]) s += `<ellipse cx="${x + dx}" cy="${y - 9 + dy}" rx="1.8" ry="1" fill="${C.ink}"/>`;
+    s += shadow(506, GY - 10, 38, 3, .22) + line(`M470 ${GY - 16}l62 -6q6 0 6 4t-6 4l-60 4`, 2.2, C.plum);
+  }
+  // the disguised spider, mid-shuffle to the right
+  const cx = 292, gy = 330, rx = 80, ry = 52, cy = gy - ry * .8 - 7;
+  // track of scuffed dust behind it, and shuffle lines
+  s += line(`M40 ${gy - 2}q14 -4 28 0t28 0 28 0 28 0`, 2, C.soft, ` opacity=".45"`);
+  s += line(`M110 ${gy - 50}h-40M118 ${gy - 30}h-56M104 ${gy - 70}h-24`, 3, C.ink, ` opacity=".5"`);
+  s += shadow(cx + 6, gy, rx * 1.6, 8, .28);
+  // eight legs poke out under the fluff: 4 a side, knees up at the flanks, feet planted in step
+  {
+    const H = [[.9, -.1], [.92, .2], [.86, .46], [.72, .66]], K = [[1.08, -.66], [1.24, -.34], [1.38, -.04], [1.48, .28]], F = [1.12, 1.3, 1.48, 1.64];
+    const footY = { R: [gy - 3, gy, gy - 2, gy + 2], L: [gy, gy - 3, gy + 1, gy - 1] };
+    let d = "";
+    for (const m of [1, -1]) for (let i = 0; i < 4; i++) {
+      const h = [cx + m * rx * H[i][0], cy + ry * H[i][1]], k = [cx + m * rx * K[i][0], cy + ry * K[i][1]], f = [cx + m * rx * F[i], footY[m > 0 ? "R" : "L"][i]];
+      const mid = [k[0] + (f[0] - k[0]) * .55 + m * 3, k[1] + (f[1] - k[1]) * .55];
+      d += `M${n(h[0] - m * 16)} ${n(h[1])}L${n(k[0])} ${n(k[1])}L${n(mid[0])} ${n(mid[1])}L${n(f[0])} ${n(f[1])}`;
+    }
+    s += line(d, 4.4 * 1.2 + 5, C.goldB, ` opacity=".5"`) + line(d, 4.4 * 1.2, C.ink) + line(d, 2.2 * 1.2, C.plum);
+  }
+  s += fluff(12, cx, cy, rx, ry, { ears: true, flatBottom: true });
+  // a peep-hole in the fluff: two wary eyes looking the way it is going
+  {
+    const ex = cx + 18, ey = cy + 4;
+    s += `<ellipse cx="${ex}" cy="${ey}" rx="22" ry="12" fill="${C.deep}" stroke="${C.ink}" stroke-width="1.8"/>`;
+    for (const dx of [-8, 8]) {
+      s += `<circle cx="${ex + dx}" cy="${ey}" r="6.4" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.3"/><circle cx="${ex + dx + 2.4}" cy="${ey + .4}" r="3.6" fill="${C.ink}"/><circle cx="${ex + dx + 3.4}" cy="${ey - 1}" r="1.3" fill="${C.goldB}"/>`;
+    }
+    s += line(`M${ex - 20} ${ey - 9}q10 -6 20 -3M${ex + 20} ${ey - 9}q-10 -6 -20 -3`, 1.6, C.soft, ` opacity=".8"`);
+  }
+  return V("A spider disguised as a dust bunny shuffles along the skirting board", s);
+}
+
+// ================================================================
+// 11. Alarm freeze: a spider frozen mid-step under a flashing wall beacon
+// ================================================================
+// The same spider drawn flat in ink, for a cast shadow (colours all to ink).
+const inkOnly = svgStr => svgStr.replace(/#[0-9a-fA-F]{6}/g, C.ink);
+
+export function spot_alarm_freeze() {
+  const P = "saf";
+  let s = glow(P, 300, 235, 295, 210);
+  const SK = 282, GY = 412;
+  s += room(P, { sk: SK, skH: 44, gy: GY, wallH: 200 });
+  s += floor(P, GY, 24, 576);
+  // the beacon: a red dome on a base, standing on a wall bracket (plate screwed to the wall, arm out)
+  const Lx = 176, Ly = 150; // centre of the dome
+  // red wash and rays thrown by the lamp
+  s += `<defs><radialGradient id="${P}-red" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="${C.oxB}" stop-opacity=".42"/><stop offset=".5" stop-color="${C.oxB}" stop-opacity=".14"/><stop offset="1" stop-color="${C.oxB}" stop-opacity="0"/></radialGradient></defs>`;
+  s += `<ellipse cx="${Lx}" cy="${Ly + 10}" rx="170" ry="150" fill="url(#${P}-red)"/>`;
+  {
+    let d = "";
+    for (const a0 of [-160, -120, -80, -40, 0, 30, 58, 84]) {
+      const a = a0 * Math.PI / 180, w = .09, R0 = 34, R1 = 230;
+      const p = (ang, r) => [Lx + Math.cos(ang) * r, Ly + Math.sin(ang) * r];
+      d += `M${pts([p(a - w * .4, R0), p(a - w, R1), p(a + w, R1), p(a + w * .4, R0)])}z`;
+    }
+    s += `<defs><radialGradient id="${P}-rg" gradientUnits="userSpaceOnUse" cx="${Lx}" cy="${Ly}" r="140"><stop offset=".25" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>` +
+      `<mask id="${P}-rm2" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="450"><rect x="0" y="0" width="600" height="450" fill="url(#${P}-rg)"/></mask></defs>`;
+    s += `<g mask="url(#${P}-rm2)"><path d="${d}" fill="${C.oxB}" opacity=".2"/></g>`;
+    let f = "";
+    for (const a0 of [-150, -110, -70, -30, 10]) { const a = a0 * Math.PI / 180; f += `M${n(Lx + Math.cos(a) * 36)} ${n(Ly + Math.sin(a) * 36)}L${n(Lx + Math.cos(a) * 54)} ${n(Ly + Math.sin(a) * 54)}`; }
+    s += line(f, 4, C.oxB) ;
+  }
+  // bracket: a plate screwed to the wall, its arm out under the lamp's base (shadow on the wall below)
+  s += `<path d="M${Lx - 20} ${Ly + 26}h40l6 10h-52z" fill="${C.ink}" opacity=".18"/>`;
+  s += `<rect x="${Lx - 20}" y="${Ly + 14}" width="40" height="44" rx="3" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<circle cx="${Lx}" cy="${Ly + 36}" r="2.6" fill="${C.edge}" stroke="${C.ink}" stroke-width="1"/><circle cx="${Lx}" cy="${Ly + 50}" r="2.6" fill="${C.edge}" stroke="${C.ink}" stroke-width="1"/>`;
+  s += `<path d="M${Lx - 34} ${Ly + 26}h68l-6 -8h-56z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  // its cable: out of the base, clipped down the wall, into the skirting
+  {
+    const d = `M${Lx + 26} ${Ly + 14}q14 0 14 16V${SK - 44}`;
+    s += line(d, 5, C.ink) + line(d, 2, C.plum);
+    for (const yy of [Ly + 52, Ly + 78]) s += `<path d="M${Lx + 34} ${yy}h12" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/><path d="M${Lx + 34} ${yy}h12" stroke="${C.cream}" stroke-width="1.6" stroke-linecap="round"/>`;
+  }
+  // lamp base and dome with a wire guard
+  s += `<path d="M${Lx - 26} ${Ly + 18}v-10h52v10z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<path d="M${Lx - 22} ${Ly + 8}v-12a22 26 0 0 1 44 0v12z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += `<path d="M${Lx - 12} ${Ly - 4}q0 -14 10 -18" stroke="${C.cream}" stroke-width="4" fill="none" stroke-linecap="round" opacity=".85"/>`;
+  s += `<ellipse cx="${Lx}" cy="${Ly - 2}" rx="12" ry="10" fill="${C.goldB}" opacity=".45"/>`;
+  s += line(`M${Lx} ${Ly - 30}V${Ly + 8}M${Lx - 22} ${Ly - 2}h44M${Lx - 14} ${Ly - 22}q-4 16 -4 30M${Lx + 14} ${Ly - 22}q4 16 4 30`, 1.8, C.ink);
+  s += `<circle cx="${Lx}" cy="${Ly - 32}" r="3" fill="${C.plum}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  // the motion sensor that caught it: a little box screwed high on the wall, its sweep marked in dashes
+  {
+    const x = 486, y = 128;
+    s += line(`M${x - 8} ${y + 20}L${318 - 70} ${370}M${x} ${y + 22}L${318 + 70} 372`, 1.6, C.ink, ` opacity=".35" stroke-dasharray="6 6"`);
+    s += `<path d="M${x - 22} ${y - 14}h44v22q-22 16 -44 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
+    s += `<path d="M${x - 14} ${y + 10}q14 18 28 0z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2"/>`;
+    s += `<circle cx="${x + 5}" cy="${y + 14}" r="2" fill="${C.oxB}"/>`;
+    s += `<circle cx="${x - 14}" cy="${y - 6}" r="1.8" fill="${C.soft}"/><circle cx="${x + 14}" cy="${y - 6}" r="1.8" fill="${C.soft}"/>`;
+  }
+  // the prize they were heading for: a cookie on the floor, far left
+  s += flatCookie(96, 388, 30, 6, true);
+  // the spider, frozen with one leg in the air
+  {
+    const x = 318, gy = 374, sc = 1.2;
+    const st = standOn(x, gy, sc, { L1: [x - 88 * sc, gy - 44] }, { L1: [x - 56 * sc, gy - 104] });
+    const body = { ...st, look: [-.8, -1], mouth: "o", brow: "up", mark: "chevron" };
+    // its shadow, thrown along the floor away from the lamp (down and to the right)
+    const c = -.9, d = -.34;
+    s += `<g transform="matrix(1 0 ${c} ${d} ${n(-c * gy)} ${n(gy * (1 - d))})" opacity=".22">${inkOnly(spider({ ...body, rim: null }))}</g>`;
+    s += sp({ ...body, rim: C.oxB, rimOp: .5 });
+    // shock lines
+    s += line(`M${x - 64} ${gy - 86}l-10 -10M${x - 30} ${gy - 106}l-4 -14M${x + 12} ${gy - 110}l2 -14M${x + 52} ${gy - 98}l8 -10`, 2.4, C.ink, ` opacity=".7"`);
+    s += drop(x + 70, gy - 60, 3.4) + line(`M${x - 118} ${gy - 30}l-8 4M${x - 116} ${gy - 16}l-10 0`, 2, C.ink, ` opacity=".55"`);
+  }
+  return V("A spider freezes mid-step under a flashing red alarm beacon", s);
+}
+
+// ================================================================
+// 12. Debrief: three spiders toast with thimbles round a pile of cookie crumbs
+// ================================================================
+// One cookie crumb: an irregular baked chunk, with a lit facet and maybe a chocolate chip.
+function crumb(R, x, y, r) {
+  const k = 5 + Math.floor(R() * 3), P = [];
+  for (let i = 0; i < k; i++) { const a = (i + R() * .5) / k * Math.PI * 2; const rr = r * (.75 + R() * .4); P.push([x + Math.cos(a) * rr, y + Math.sin(a) * rr * .8]); }
+  let s = `<path d="M${pts(P)}z" fill="${C.gold}" stroke="${C.ink}" stroke-width="${n(Math.max(1.1, r * .12))}" stroke-linejoin="round"/>`;
+  s += `<path d="M${pts([P[k - 1], P[0], [x, y]])}z" fill="${C.goldB}" opacity=".55"/>`;
+  if (R() < .35) s += `<ellipse cx="${n(x + r * .2)}" cy="${n(y + r * .15)}" rx="${n(r * .28)}" ry="${n(r * .2)}" fill="${C.deep}"/>`;
+  return s;
+}
+// A thimble used as a cup: domed base, dimpled sides, open rim on top with something golden in it.
+// x = centre, yb = bottom of the dome. Returns [svg, rimY].
+function thimbleCup(x, yb, w = 26, h = 30) {
+  const top = yb - h, rx = w / 2, bw = w * .42;
+  let s = `<path d="M${n(x - rx)} ${n(top)}L${n(x - bw)} ${n(yb - 6)}Q${n(x)} ${n(yb + 4)} ${n(x + bw)} ${n(yb - 6)}L${n(x + rx)} ${n(top)}z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+  let d = "";
+  for (let r = 0; r < 4; r++) for (let c = -2; c <= 2; c++) {
+    const yy = top + 7 + r * 5.6, ww = rx - (rx - bw) * (yy - top) / (h - 6);
+    const xx = x + c * ww * .36 + (r % 2 ? ww * .18 : 0);
+    if (Math.abs(xx - x) < ww - 3) d += `M${n(xx)} ${n(yy)}h.01`;
+  }
+  s += `<path d="${d}" stroke="${C.soft}" stroke-width="2.2" stroke-linecap="round"/>`;
+  s += `<path d="M${n(x - rx + 4)} ${n(top + 5)}L${n(x - bw + 3)} ${n(yb - 8)}" stroke="${C.cream}" stroke-width="2.4" stroke-linecap="round" opacity=".8"/>`;
+  s += `<ellipse cx="${n(x)}" cy="${n(top)}" rx="${n(rx + 1.5)}" ry="${n(w * .17)}" fill="${C.soft}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += `<ellipse cx="${n(x)}" cy="${n(top + .6)}" rx="${n(rx - 2)}" ry="${n(w * .12)}" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1"/>`;
+  return [s, top];
+}
+
+export function spot_debrief() {
+  const P = "sde";
+  let s = glow(P, 300, 235, 295, 210);
+  const TY = 396;
+  s += tabletop(P, TY, 26, 574, { depth: 210, thick: 22, top: C.parch, edge: C.gold });
+  const R = rng(21);
+  // a bitten cookie at the back: what is left of the score
+  s += flatCookie(470, 262, 40, 4, true);
+  // a candle stub in a bottle cap, lighting the party (back left)
+  {
+    const cx = 120, cyB = 262;
+    s += `<ellipse cx="${cx}" cy="${cyB - 44}" rx="60" ry="54" fill="${C.goldB}" opacity=".2"/>`;
+    s += shadow(cx + 4, cyB, 24, 4, .3);
+    s += `<path d="M${cx - 18} ${cyB - 9}v7q18 6 36 0v-7" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
+    s += `<ellipse cx="${cx}" cy="${cyB - 9}" rx="18" ry="5" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2"/>`;
+    s += `<path d="M${cx - 6} ${cyB - 9}V${cyB - 38}q6 -2.4 12 0V${cyB - 9}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.8"/>`;
+    s += `<path d="M${cx} ${cyB - 39}v-4" stroke="${C.ink}" stroke-width="1.5"/>`;
+    s += `<path d="M${cx} ${cyB - 62}q7 9 4 15q-4 4 -8 0q-3 -6 4 -15z" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.5"/>`;
+  }
+  // the crumb pile: back (upper) crumbs first, front crumbs last
+  const px = 300, pb = 350, pw = 96, ph = 70;
+  s += shadow(px + 6, pb - 2, pw + 16, 12, .3);
+  const rows = 7; let pile = "";
+  for (let rI = rows - 1; rI >= 0; rI--) {
+    const t = rI / (rows - 1), yy = pb - 8 - t * ph, half = pw * (1 - t * .82);
+    const cnt = Math.max(1, Math.round(half / 11));
+    for (let c = 0; c < cnt; c++) {
+      const xx = px - half + (2 * half) * (cnt === 1 ? .5 : c / (cnt - 1)) + (R() - .5) * 8;
+      pile += crumb(R, xx, yy + (R() - .5) * 4, 9 + R() * 5);
+    }
+  }
+  s += pile;
+  // scattered crumbs lying on the table
+  for (const [x, y, r] of [[196, 372, 5], [228, 380, 4], [398, 376, 5], [420, 384, 3.5], [360, 384, 4], [250, 360, 3.5]]) s += shadow(x + 1, y + r * .6, r * 1.2, r * .4, .25) + crumb(R, x, y, r);
+  // spider helper: a thimble held up in a foreleg, second leg steadying its base
+  const toast = (o, cup, side) => {
+    const m = side === "R" ? 1 : -1, [tx, tb] = cup;
+    const [cs, top] = thimbleCup(tx, tb);
+    const grip = [tx - m * 12, tb - 16], under = [tx - m * 2, tb + 2];
+    const st = standOn(o.x, o.gy, o.s, { [side + "0"]: grip, [side + "1"]: under, ...(o.feet || {}) }, { [side + "0"]: o.k0, [side + "1"]: o.k1, ...(o.knees || {}) });
+    let out = shadow(o.x + 2, o.gy, 62 * o.s, 5, .28) + sp({ ...st, ...o.face }) + cs;
+    out += legPath(`M${n(grip[0])} ${n(grip[1] + 4)}q${n(m * 6)} -2 ${n(m * 9)} -9`, o.s);
+    return [out, top];
+  };
+  // left crewmate on the table, toasting to the right
+  {
+    const x = 160, gy = 376, sc = .95;
+    const [o] = toast({ x, gy, s: sc, k0: [x + 18, gy - 100], k1: [x + 52, gy - 50], face: { look: [1, -.6], mouth: "big", brow: "up", mark: "chevron", hat: "fedora" } }, [x + 40, gy - 76], "R");
+    s += o;
+  }
+  // right crewmate on the table, toasting to the left
+  {
+    const x = 440, gy = 378, sc = .95;
+    const [o] = toast({ x, gy, s: sc, k0: [x - 18, gy - 100], k1: [x - 52, gy - 50], face: { look: [-1, -.6], mouth: "grin", brow: "up", mark: "dots" } }, [x - 40, gy - 76], "L");
+    s += o;
+  }
+  // the third, standing on top of the pile, thimble raised high
+  {
+    const x = 300, gy = pb - ph - 10, sc = .82;
+    const feet = { L0: [x - 16, gy + 2], L1: [x - 34, gy + 6], L2: [x - 48, gy + 16], L3: [x - 58, gy + 28], R2: [x + 46, gy + 16], R3: [x + 58, gy + 28] };
+    const [o] = toast({ x, gy, s: sc, feet, k0: [x + 20, gy - 88], k1: [x + 52, gy - 50], face: { look: [0, -1], mouth: "big", brow: "up", mark: "star", hat: "goggles" } }, [x + 38, gy - 66], "R");
+    s += o;
+  }
+  // cheers: little bursts round the raised cups
+  s += line(`M188 262l-6 -10M204 256l2 -12M396 256l-2 -12M412 262l6 -10M330 186l4 -12M346 192l10 -8`, 2.2, C.ink, ` opacity=".55"`);
+  return V("Three spiders toast with thimbles round a pile of cookie crumbs", s);
 }

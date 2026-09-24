@@ -180,9 +180,14 @@ export function map_cookie() {
     s += line(pl, 1, C.gold, ` opacity=".7"`);
     s += `<rect x="${x}" y="${y + cs - 10}" width="10" height="10" fill="${C.ink}"/><rect x="${x + 4 * cs - 10}" y="${y + cs - 10}" width="10" height="10" fill="${C.ink}"/>`;
     s += `<path d="M${x + 10} ${y + cs - 5}H${x + 4 * cs - 10}" stroke="${C.gold}" stroke-width="3"/>`;
-    s += `<path d="M${x + 12} ${y + cs - 8}L${x + 60} ${y + 8}" stroke="${C.plum}" stroke-width="8" stroke-linecap="round"/><path d="M${x + 12} ${y + cs - 8}L${x + 60} ${y + 8}" stroke="${C.ink}" stroke-width="1.6" stroke-linecap="round"/>`;
-    const L = Math.hypot(48, cs - 16); // hinge (x+12, y+cs-8) to leaf tip (x+60, y+8)
-    s += `<path d="M${x + 60} ${y + 8}A${n(L)} ${n(L)} 0 0 1 ${n(x + 12 + L)} ${y + cs - 8}" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="3 4"/>`; }
+    // a double door filling the whole 4-square opening: each leaf is hinged on its jamb, swung
+    // open into the room, with its dashed swing arc back to the closed position along the wall
+    const yb = y + cs - 5, Lf = 2 * cs - 10, a = 70 * Math.PI / 180;
+    for (const [hx, dir] of [[x + 10, 1], [x + 4 * cs - 10, -1]]) {
+      const tx = hx + dir * Lf * Math.cos(a), ty = yb - Lf * Math.sin(a);
+      s += `<path d="M${hx} ${yb}L${n(tx)} ${n(ty)}" stroke="${C.plum}" stroke-width="8" stroke-linecap="round"/><path d="M${hx} ${yb}L${n(tx)} ${n(ty)}" stroke="${C.ink}" stroke-width="1.6" stroke-linecap="round"/>`;
+      s += `<path d="M${n(tx)} ${n(ty)}A${Lf} ${Lf} 0 0 ${dir > 0 ? 1 : 0} ${hx + dir * Lf} ${yb}" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="3 4"/>`;
+    } }
   // outer frame
   s += `<rect x="${m}" y="${m}" width="${W * cs}" height="${H * cs}" fill="none" stroke="${C.ink}" stroke-width="3.4"/>`;
   return svg(`0 0 ${W * cs + 2 * m} ${H * cs + 2 * m}`, "Heist 1 sample map: a 16 by 7 grid with the vent, counter, cabinet, cat's bed and door", s);
@@ -200,13 +205,14 @@ export function orn_divider() {
 
 export function orn_corner() {
   let s = "";
-  s += cobweb(0, 0, 196, 0, 90, 7, 6, C.ink, 1.1, .55);
-  // dew drops on the strands
+  // the web is anchored in the page corner, inset a hair so the edge strands print at full width
+  s += cobweb(1, 1, 195, 0, 90, 7, 6, C.ink, 1.1, .55);
+  // dew drops on the inner strands only (never cut in half by the page edge)
   const R = rng(12);
-  for (let i = 0; i < 10; i++) { const a = (Math.floor(R() * 7) / 6) * Math.PI / 2, r = 36 + R() * 140; s += `<circle cx="${n(Math.cos(a) * r)}" cy="${n(Math.sin(a) * r)}" r="${n(1.8 + R() * 1.4)}" fill="${C.goldB}" stroke="${C.gold}" stroke-width=".8"/>`; }
+  for (let i = 0; i < 10; i++) { const a = ((1 + Math.floor(R() * 5)) / 6) * Math.PI / 2, r = 36 + R() * 140; s += `<circle cx="${n(1 + Math.cos(a) * r)}" cy="${n(1 + Math.sin(a) * r)}" r="${n(1.8 + R() * 1.4)}" fill="${C.goldB}" stroke="${C.gold}" stroke-width=".8"/>`; }
   // tiny spider dropping from the web on a gold thread
-  s += `<path d="M124 71.6V${n(138 - 39 * .38 + .6)}" stroke="${C.gold}" stroke-width="1.4"/><circle cx="124" cy="71.6" r="2" fill="${C.gold}"/>`;
-  s += spider({ x: 124, y: 138, s: .38, pose: "dangle", mark: "chevron", look: [0, .4], mouth: "grin" });
+  s += `<path d="M125 72.6V${n(139 - 39 * .38 + .6)}" stroke="${C.gold}" stroke-width="1.4"/><circle cx="125" cy="72.6" r="2" fill="${C.gold}"/>`;
+  s += spider({ x: 125, y: 139, s: .38, pose: "dangle", mark: "chevron", look: [0, .4], mouth: "grin" });
   return svg("0 0 200 200", "Cobweb corner flourish", s);
 }
 

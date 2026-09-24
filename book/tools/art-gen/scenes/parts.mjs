@@ -28,10 +28,9 @@ export function part_one() {
   s += `<defs><linearGradient id="${P}-lamp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.goldB}" stop-opacity=".55"/><stop offset="1" stop-color="${C.goldB}" stop-opacity="0"/></linearGradient></defs>`;
   // lamp light cone
   s += `<path d="M396 58L180 372H720L504 58z" fill="url(#${P}-lamp)" opacity=".7"/>`;
-  // tabletop edge
-  s += `<path d="M40 372H860" stroke="${C.ink}" stroke-width="3" stroke-linecap="round"/>`;
-  let hd = ""; for (let x = 60; x < 850; x += 12) hd += `M${x} 378l-8 10`;
-  s += line(hd, 1.3, C.ink, ` opacity=".3"`);
+  // the table's wooden front edge: a solid band, so the table still reads on the near-black part page
+  s += `<rect x="40" y="372" width="820" height="16" rx="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += line("M46 376H854", 2.2, C.goldB, ` opacity=".8"`) + line("M120 382q40 -3 80 0M380 383q50 2 100 -1M640 382q40 -2 80 1", 1.2, C.ink, ` opacity=".4"`);
   // the blueprint (a perspective sheet), deep plum with cream lines
   const bp = "M230 196L672 196L742 350L160 350Z";
   s += `<path d="M228 204L674 204L748 358L154 358Z" fill="${C.ink}" opacity=".25"/>`;
@@ -100,7 +99,7 @@ export function part_one() {
   s += `<path d="M392 60q58 -44 116 0z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/><path d="M406 54q16 -12 38 -13" stroke="${C.soft}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M396 60h108" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>`;
   s += `<ellipse cx="450" cy="62" rx="30" ry="6" fill="${C.goldB}"/>`;
-  s += line("M450 40V0", 4);
+  s += line("M450 40V0", 6, C.soft) + line("M450 40V0", 3);   // cord (a graphite edge keeps it visible on the dark page)
 
   s += sparkle(600, 236 - 30, 7) + sparkle(250, 180, 5) + sparkle(820, 200, 4);
   return svg("0 0 900 420", "The crew plans the job around a blueprint", s);
@@ -109,16 +108,16 @@ export function part_one() {
 export function part_two() {
   const P = "p2";
   let s = stage(P, { w: 900, h: 420, ground: false });
-  // ground
-  s += line("M60 388H840", 3);
-  let hd = ""; for (let x = 76; x < 836; x += 12) hd += `M${x} 394l-8 10`;
-  s += line(hd, 1.3, C.ink, ` opacity=".3"`);
+  // ground: a solid strip of lawn-edge and path, so house and trees visibly stand on it (the part page is near-black)
+  s += `<rect x="50" y="388" width="800" height="14" rx="3" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += line("M56 391.5H844", 2, C.edge, ` opacity=".7"`);
   // house shell
   const L = 210, R = 690, T = 150, M = 270, B = 388;
   // charcoal slate roof (signal red is kept for danger)
-  s += `<path d="M${L - 30} ${T + 6}L450 26L${R + 30} ${T + 6}Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
+  s += `<path d="M${L - 30} ${T + 6}L450 26L${R + 30} ${T + 6}Z" fill="${C.soft}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
   let sh = ""; for (let i = 0; i < 5; i++) sh += `M${n(450 - (i + 1) * 50)} ${n(26 + (i + 1) * 25.6)}H${n(450 + (i + 1) * 50)}`;
-  s += line(sh, 1.8, C.soft);
+  s += line(sh, 1.8, C.plum);
+  s += line(`M${L - 22} ${T + 1}L450 34L${R + 22} ${T + 1}`, 2, C.edge, ` opacity=".6"`);   // moonlit ridge edges
   // attic with vent + chimney
   s += `<rect x="560" y="40" width="34" height="60" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><rect x="554" y="34" width="46" height="12" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
   s += line("M560 58h34M560 76h34M577 46v12M570 58v18M586 76v24", 1.4, C.ink, ` opacity=".45"`);
@@ -216,8 +215,8 @@ export function part_two() {
   const pin = (x, y) => `<path d="M${x} ${y}q-10 -12 -10 -20a10 10 0 0 1 20 0q0 8 -10 20z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x}" cy="${y - 20}" r="3.6" fill="${C.cream}"/>`;
   s += pin(258, 190) + pin(540, 280) + pin(376, 336) + pin(434, 362);
   // a garden, trees either side for charm
-  s += `<path d="M110 388v-60" stroke="${C.ink}" stroke-width="6"/><circle cx="110" cy="300" r="40" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/><path d="M92 290q10 -14 26 -12" stroke="${C.goldB}" opacity=".5" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-  s += `<path d="M790 388v-44" stroke="${C.ink}" stroke-width="6"/><circle cx="790" cy="324" r="30" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += line("M110 388v-60", 9) + line("M110 388v-60", 4.5, C.gold) + `<circle cx="110" cy="300" r="40" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/><path d="M92 290q10 -14 26 -12" stroke="${C.goldB}" opacity=".5" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  s += line("M790 388v-44", 9) + line("M790 388v-44", 4.5, C.gold) + `<circle cx="790" cy="324" r="30" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<circle cx="800" cy="70" r="26" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="792" cy="64" r="5" fill="${C.parch}"/>`;
   s += sparkle(140, 80, 6) + sparkle(740, 120, 4) + sparkle(90, 170, 3.5);
   return svg("0 0 900 420", "A dollhouse cutaway of a location, with its threats marked", s);

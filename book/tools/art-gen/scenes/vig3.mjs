@@ -110,7 +110,7 @@ export function ch_phases() {
   // pips above each stone mark the order
   xs.forEach((x, i) => { for (let k = 0; k <= i; k++) s += `<circle cx="${x - i * 6 + k * 12}" cy="${y - 72}" r="4" fill="${C.plum}"/>`; });
   // 1 the Score: an envelope with a wax seal
-  { const x = xs[0]; s += `<rect x="${x - 32}" y="${y - 22}" width="64" height="44" rx="3" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.8"/><path d="M${x - 32} ${y - 22}l32 26 32 -26" fill="none" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/><circle cx="${x}" cy="${y + 4}" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/>`; }
+  { const x = xs[0]; s += `<rect x="${x - 32}" y="${y - 22}" width="64" height="44" rx="3" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.8"/><path d="M${x - 32} ${y - 22}l32 26 32 -26" fill="none" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/><circle cx="${x}" cy="${y + 4}" r="9" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x}" cy="${y + 4}" r="4.5" fill="none" stroke="${C.goldB}" stroke-width="1.6"/>`; }
   // 2 Planning: a rolled blueprint and pencil
   { const x = xs[1]; s += `<rect x="${x - 34}" y="${y - 20}" width="60" height="40" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.8"/>`;
     s += line(`M${x - 26} ${y + 8}q14 -22 30 -6t14 -10`, 2.4, C.goldB, ` stroke-dasharray="2 5"`) + `<path d="M${x + 12} ${y - 14}l8 8M${x + 20} ${y - 14}l-8 8" stroke="${C.goldB}" stroke-width="3.4" stroke-linecap="round"/>`;
@@ -209,7 +209,7 @@ export function ch_heists() {
     s += `<rect x="${x - 66}" y="${GY - 124}" width="132" height="112" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.6"/>`;
     // books glimpsed between columns
     const R = rng(3); let bk = "";
-    for (let bx = x - 60; bx < x + 60; bx += 7) { const h = 16 + R() * 10; bk += `<rect x="${bx}" y="${n(GY - 52 - h)}" width="6" height="${n(h)}" fill="${[C.ox, C.gold, C.good, C.soft][Math.floor(R() * 4)]}"/>`; }
+    for (let bx = x - 60; bx < x + 60; bx += 7) { const h = 16 + R() * 10; bk += `<rect x="${bx}" y="${n(GY - 52 - h)}" width="6" height="${n(h)}" fill="${[C.plum, C.gold, C.good, C.soft][Math.floor(R() * 4)]}"/>`; }
     s += bk + line(`M${x - 66} ${GY - 52}h132`, 2.4, C.gold);
     for (let c = 0; c < 5; c++) s += `<rect x="${x - 62 + c * 30}" y="${GY - 124}" width="14" height="112" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4"/>`;
     s += `<rect x="${x - 82}" y="${GY - 12}" width="164" height="12" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.6"/>`;

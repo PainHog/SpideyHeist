@@ -129,11 +129,15 @@ export function ch_vitality() {
     over: `<path d="M-18 -30l36 10M-19 -20l37 7" stroke="${C.cream}" stroke-width="5"/><path d="M-18 -30l36 10M-19 -20l37 7" stroke="${C.ink}" stroke-width="1" opacity=".3"/><rect x="-14" y="-12" width="12" height="6" rx="1.5" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.3" transform="rotate(-24 -8 -9)"/><rect x="6" y="-32" width="16" height="8" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4" transform="rotate(30 14 -28)"/>` });
   s += `<path d="M322 ${GY - 54}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   // vacuum floor nozzle from the right, sucking everything in
-  const tube = "M934 30C844 36 794 90 784 180";
+  // the hose runs on past the right edge of the page box (the chapter-art box is wider than
+  // the 3:1 viewBox, so it must reach well beyond x 900 or its cut end would show)
+  const hp = [[1200, 22], [880, 22], [796, 80], [784, 180]];
+  const tube = `M${hp[0]}C${hp[1]} ${hp[2]} ${hp[3]}`;
   s += `<path d="${tube}" stroke="${C.ink}" stroke-width="42" fill="none"/><path d="${tube}" stroke="${C.plum}" stroke-width="34" fill="none"/>`;
-  let rib = ""; for (let t = 0.08; t < 1; t += .1) { const u = 1 - t; const x = u*u*u*934 + 3*u*u*t*844 + 3*u*t*t*794 + t*t*t*784, y = u*u*u*30 + 3*u*u*t*36 + 3*u*t*t*90 + t*t*t*180; rib += `M${n(x - 15)} ${n(y - 6)}l30 12`; }
+  const bz = (t, k) => { const u = 1 - t; return u * u * u * hp[0][k] + 3 * u * u * t * hp[1][k] + 3 * u * t * t * hp[2][k] + t * t * t * hp[3][k]; };
+  let rib = ""; for (let t = 0.04; t < .97; t += .045) { const x = bz(t, 0), y = bz(t, 1), dx = bz(t + .01, 0) - x, dy = bz(t + .01, 1) - y, L = Math.hypot(dx, dy), nx = -dy / L * 16, ny = dx / L * 16; rib += `M${n(x - nx)} ${n(y - ny)}L${n(x + nx)} ${n(y + ny)}`; }
   s += line(rib, 2.2, C.deep);
-  s += line("M904 40q-60 10 -90 70", 4, C.soft);
+  s += line("M960 30C870 34 818 70 808 120", 4, C.soft);
   s += `<rect x="762" y="168" width="44" height="30" rx="6" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<path d="M666 246V214q0 -18 18 -18h180q18 0 18 18v32z" fill="${C.soft}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
   s += line("M684 210h170", 3, C.cream, ` opacity=".35"`);
@@ -320,7 +324,8 @@ export const hand = (x, y, sc = 1) => {
   // draw fingers individually so their overlaps keep an ink edge
   let fing = "";
   for (const [pp, w] of [...fingers].reverse()) fing += line(P(pp), w + 5, C.ink) + line(P(pp), w, C.parch);
-  const sleeve = `<path d="M-14 -84L60 -170L170 -120L96 -60Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>` +
+  // the sleeve runs up and out through the TOP of the frame (never ends in mid-air)
+  const sleeve = `<path d="M-14 -84L40 -260L200 -260L96 -60Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>` +
     `<path d="M-16 -78Q40 -110 100 -60" stroke="${C.ink}" stroke-width="16" fill="none" stroke-linecap="round"/><path d="M-16 -78Q40 -110 100 -60" stroke="${C.soft}" stroke-width="10" fill="none" stroke-linecap="round"/>`;
   const det = line("M20 -52q10 -4 16 2M44 -52q8 -2 14 4M-8 -40q-6 -2 -8 4", 2, C.ink, ` opacity=".5"`) + line("M10 -84q24 -8 50 -4", 3, C.cream, ` opacity=".7"`);
   const nail = `<path d="M-2 -12q-4 -8 2 -10q4 4 -2 10z" fill="${C.cream}"/>`;

@@ -219,7 +219,7 @@ export function tin(x, y0, w, h, o = {}) {
   // follows the tin's curvature, with squiggle "lettering"
   const ly0 = top + h * .38, ly1 = top + h * .68, lx = rx * .62;
   s += `<path d="M${n(x - lx)} ${n(ly0 + ry * .55)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + lx)} ${n(ly0 + ry * .55)}V${n(ly1 + ry * .55)}A${n(rx)} ${n(ry)} 0 0 1 ${n(x - lx)} ${n(ly1 + ry * .55)}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="${n(sw * .7)}"/>`;
-  s += `<path d="M${n(x - lx * .6)} ${n((ly0 + ly1) / 2 + ry * .75)}q${n(lx * .3)} -3 ${n(lx * .6)} 0t${n(lx * .6)} 0M${n(x - lx * .4)} ${n((ly0 + ly1) / 2 + ry * .75 + h * .09)}q${n(lx * .2)} -2 ${n(lx * .4)} 0t${n(lx * .4)} 0" stroke="${C.ox}" stroke-width="${n(Math.max(1.2, sw * .6))}" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M${n(x - lx * .6)} ${n((ly0 + ly1) / 2 + ry * .75)}q${n(lx * .3)} -3 ${n(lx * .6)} 0t${n(lx * .6)} 0M${n(x - lx * .4)} ${n((ly0 + ly1) / 2 + ry * .75 + h * .09)}q${n(lx * .2)} -2 ${n(lx * .4)} 0t${n(lx * .4)} 0" stroke="${C.plum}" stroke-width="${n(Math.max(1.2, sw * .6))}" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M${n(x - rx * .72)} ${n(top + ry + 2)}V${n(y - 2)}" stroke="${C.cream}" stroke-width="${n(w * .07)}" opacity=".9" stroke-linecap="round"/>`;
   s += `<path d="M${n(x + rx * .72)} ${n(top + ry + 2)}V${n(y)}" stroke="${C.ink}" stroke-width="${n(w * .08)}" opacity=".15"/>`;
   if (open) {

@@ -306,5 +306,7 @@ export function cover() {
   /* ------------------------------------------------ framing vignette */
   s += `<defs><radialGradient id="${P}-vig" cx="50%" cy="58%" r="75%"><stop offset=".55" stop-color="${C.ink}" stop-opacity="0"/><stop offset="1" stop-color="${C.ink}" stop-opacity=".55"/></radialGradient></defs>`;
   s += `<rect width="612" height="792" fill="url(#${P}-vig)"/>`;
+  // nothing may spill outside the page (grout lines, the counter overhang): clip to the frame
+  s = `<clipPath id="${P}-frame"><rect width="612" height="792"/></clipPath><g clip-path="url(#${P}-frame)">${s}</g>`;
   return svg("0 0 612 792", "A crew of spiders abseils toward a glass cookie jar on a kitchen shelf while the cat sleeps on the counter", s);
 }
