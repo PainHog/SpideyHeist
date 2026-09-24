@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { ART } from "./lib.mjs";
-const mods = ["./cover.mjs", "./parts.mjs", "./vig1.mjs", "./vig2.mjs", "./vig3.mjs", "./diagrams.mjs", "./spots.mjs"];
+const mods = ["./cover.mjs", "./parts.mjs", "./vig1.mjs", "./vig2.mjs", "./vig3.mjs", "./diagrams.mjs", "./spots.mjs", "./spots2.mjs"];
 const map = {};
 const PIECE = /^(cover|part_|ch_|map_|dice_|alert_|vitality_|orn_|spot_)/;
 for (const m of mods) {
