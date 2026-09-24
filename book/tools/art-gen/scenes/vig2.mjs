@@ -67,11 +67,13 @@ const gauge = (P, x, y, r, a, ghosts = []) => {
 
 export function ch_alert() {
   const P = "cal";
-  let s = stage(P);
+  let s = stage(P, { gw: .94 });
   // alarm beacon (left)
   s += `<defs><radialGradient id="${P}-r"><stop offset="0" stop-color="${C.oxB}" stop-opacity=".55"/><stop offset="1" stop-color="${C.oxB}" stop-opacity="0"/></radialGradient></defs>`;
   s += `<ellipse cx="220" cy="150" rx="150" ry="110" fill="url(#${P}-r)"/>`;
-  s += `<path d="M220 150L60 80L60 150z" fill="${C.oxB}" opacity=".22"/><path d="M220 150L380 96L380 170z" fill="${C.oxB}" opacity=".22"/>`;
+  // the rotating beams fade out with distance (no hard cut-off edge)
+  s += `<defs><linearGradient id="${P}-bl" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="${C.oxB}" stop-opacity=".3"/><stop offset="1" stop-color="${C.oxB}" stop-opacity="0"/></linearGradient><linearGradient id="${P}-br" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${C.oxB}" stop-opacity=".3"/><stop offset="1" stop-color="${C.oxB}" stop-opacity="0"/></linearGradient></defs>`;
+  s += `<path d="M220 150L40 72L40 152z" fill="url(#${P}-bl)"/><path d="M220 150L420 84L420 178z" fill="url(#${P}-br)"/>`;
   s += `<rect x="176" y="${GY - 36}" width="88" height="36" rx="4" fill="${C.ink}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<path d="M184 ${GY - 36}v-60a36 36 0 0 1 72 0v60z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3.2"/>`;
   s += line(`M184 ${GY - 70}h72M184 ${GY - 52}h72`, 2.4, C.ox);
@@ -88,7 +90,7 @@ export function ch_alert() {
   s += spider({ x: 776, y: GY - 33.8, s: 1.3, look: [-1, -.4], mouth: "worried", brow: "worried", mark: "dots",
     legOverride: { L0: [[-9, -6], [-24, -18], [-34, -8]], L1: [[-12, -2], [-30, -6], [-38, 6]] } });
   // a bead of sweat on the side of its head
-  s += `<path d="M795.5 ${GY - 40}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  s += `<path d="M800 ${GY - 50}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   return V("An alarm light flashing and a meter swinging into the red", s);
 }
 
@@ -105,7 +107,7 @@ export const jar = (x, y, w, h, lidOff = false) => {
 
 export function ch_vitality() {
   const P = "cv2";
-  let s = stage(P);
+  let s = stage(P, { gw: .98 });   // the vacuum head rests on the floor, so the floor runs under it
   // bandage roll unspooling (left)
   s += shadow(150, GY, 60, 6);
   // the unrolled bandage lies flat on the floor, running out from under the roll
@@ -123,8 +125,9 @@ export function ch_vitality() {
   s += `<path d="M507 ${GY - 14}v6q53 18 106 0v-6" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/><ellipse cx="560" cy="${GY - 14}" rx="53" ry="9" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
   // bandaged spider nervously next to the jar
   s += spider({ x: 290, y: GY - 37.7, s: 1.45, look: [1, .5], mouth: "worried", brow: "worried", mark: "stripe",
-    over: `<path d="M-16 -12l32 10M-16 -4l32 10" stroke="${C.cream}" stroke-width="5"/><path d="M-16 -12l32 10M-16 -4l32 10" stroke="${C.ink}" stroke-width="1" opacity=".3"/><rect x="6" y="-32" width="16" height="8" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4" transform="rotate(30 14 -28)"/>` });
-  s += `<path d="M312 ${GY - 44}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+        // bandages wrap the abdomen and a plaster sits on the head, clear of the eyes
+    over: `<path d="M-18 -30l36 10M-19 -20l37 7" stroke="${C.cream}" stroke-width="5"/><path d="M-18 -30l36 10M-19 -20l37 7" stroke="${C.ink}" stroke-width="1" opacity=".3"/><rect x="-14" y="-12" width="12" height="6" rx="1.5" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.3" transform="rotate(-24 -8 -9)"/><rect x="6" y="-32" width="16" height="8" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4" transform="rotate(30 14 -28)"/>` });
+  s += `<path d="M322 ${GY - 54}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   // vacuum floor nozzle from the right, sucking everything in
   const tube = "M934 30C844 36 794 90 784 180";
   s += `<path d="${tube}" stroke="${C.ink}" stroke-width="42" fill="none"/><path d="${tube}" stroke="${C.plum}" stroke-width="34" fill="none"/>`;
@@ -135,7 +138,7 @@ export function ch_vitality() {
   s += `<path d="M666 246V214q0 -18 18 -18h180q18 0 18 18v32z" fill="${C.soft}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
   s += line("M684 210h170", 3, C.cream, ` opacity=".35"`);
   s += `<rect x="660" y="244" width="228" height="10" rx="3" fill="${C.ink}"/>`;
-  let br = ""; for (let x = 666; x < 884; x += 6) br += `M${x} 254v7`; s += line(br, 1.6, C.gold);
+  let br = ""; for (let x = 666; x < 884; x += 6) br += `M${x} 254v7`; s += line(br, 1.6, C.soft);
   s += `<circle cx="870" cy="252" r="8" fill="${C.ink}"/><circle cx="870" cy="252" r="3" fill="${C.edge}"/>`;
   // suction lines
   s += line("M618 222q22 -1 40 4M622 196q22 4 36 16M622 238q16 -1 32 -2", 2.6, C.ink, ` stroke-dasharray="10 8" opacity=".55"`);
@@ -174,7 +177,7 @@ export function ch_heist() {
   s += spider({ x: 118, y: 284 - 31.2, s: 1.2, look: [1, -.4], mask: true, mouth: "smirk", mark: "chevron", rim: C.cream, rimOp: .5,
     legOverride: { R0: [[9, -6], [26, -20], [48, -34]] } });
   // pushpins
-  for (const [x, y] of [[112, 58], [788, 58]]) s += `<circle cx="${x}" cy="${y}" r="8" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="${x - 2}" cy="${y - 2}" r="2.4" fill="${C.cream}"/>`;
+  for (const [x, y] of [[112, 58], [788, 58]]) s += `<circle cx="${x}" cy="${y}" r="8" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="${x - 2}" cy="${y - 2}" r="2.4" fill="${C.cream}"/>`;
   return V("A blueprint with the five phases of a heist marked along the route", s);
 }
 
@@ -330,9 +333,13 @@ export function ch_running() {
   s += `<defs><linearGradient id="${P}-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.goldB}" stop-opacity=".6"/><stop offset="1" stop-color="${C.goldB}" stop-opacity="0"/></linearGradient></defs>`;
   // lamp at top-left
   s += line("M274 0V38", 4);
-  s += `<path d="M226 58q48 -44 96 0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/><ellipse cx="274" cy="59" rx="24" ry="5" fill="${C.goldB}"/>`;
+  s += `<path d="M226 58q48 -44 96 0z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/><path d="M240 50q14 -16 34 -18" stroke="${C.soft}" stroke-width="3.4" fill="none" stroke-linecap="round"/><ellipse cx="274" cy="59" rx="24" ry="5" fill="${C.goldB}"/>`;
   // the miniature room: an open box diorama in perspective
   const fl = "M160 250L260 190H600L700 250Z";
+  // the diorama sits on the Storyteller's table: a tabletop line and a soft contact shadow
+  s += `<ellipse cx="436" cy="272" rx="300" ry="9" fill="${C.ink}" opacity=".2"/>`;
+  s += line("M70 272H830", 2.6);
+  { let d = ""; for (let xx = 84; xx < 826; xx += 11) d += `M${xx} 277l-7 9`; s += line(d, 1.3, C.ink, ` opacity=".3"`); }
   s += `<path d="M160 250L260 190V70L160 120Z" fill="${C.edge}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   s += `<path d="M260 190V70H600V190Z" fill="${C.parch}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   s += `<path d="${fl}" fill="${C.gold}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
@@ -342,7 +349,7 @@ export function ch_running() {
   // wallpaper dots, a window, a tiny table & rug
   s += stipple(4, 430, 130, 160, 50, 70, 1.4, C.gold, .45);
   s += `<rect x="300" y="92" width="70" height="56" fill="${C.deep}" stroke="${C.ink}" stroke-width="3"/><path d="M335 92v56M300 120h70" stroke="${C.plum}" stroke-width="4"/><circle cx="352" cy="106" r="6" fill="${C.cream}"/>`;
-  s += `<ellipse cx="430" cy="224" rx="90" ry="14" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<ellipse cx="430" cy="224" rx="90" ry="14" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/><ellipse cx="430" cy="224" rx="78" ry="10" fill="none" stroke="${C.edge}" stroke-width="3"/>`;
   s += `<rect x="480" y="160" width="80" height="10" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.4"/><path d="M488 170v34M552 170v34" stroke="${C.ink}" stroke-width="4"/>`;
   s += tin(520, 160, 26, 18, { sw: 1.8 });
   s += `<path d="M232 60L120 262H500L316 60z" fill="url(#${P}-l)" opacity=".75"/>`;
@@ -390,11 +397,12 @@ export function ch_location() {
   // Route B (plum, dashed): straight up over the furniture, past the cat
   s += line(`M${c(.5, 4)}Q${X(4)} ${Y(4)} ${X(6)} ${Y(3)}L${X(8)} ${Y(3.6)}Q${X(11)} ${Y(1.2)} ${X(14)} ${Y(3)}L${X(18)} ${Y(3)}L${X(19)} ${Y(4)}Q${X(20.5)} ${Y(4.6)} ${X(20.5)} ${Y(5.4)}`, 4, C.plum, ` stroke-dasharray="12 7"`);
   // the fork: spider scratching its head at the start
-  s += shadow(72, 288, 54, 5);
-  s += spider({ x: 72, y: 288 - 28.6, s: 1.1, look: [1, -.6], mouth: "flat", brow: "worried", mark: "stripe",
-    legOverride: { R0: [[9, -6], [20, -30], [6, -20]] } });
-  s += `<path d="M86 196q-2 -12 8 -14q8 0 8 8q0 6 -6 8v6" fill="none" stroke="${C.ink}" stroke-width="2.6" stroke-linecap="round"/><circle cx="96" cy="212" r="2" fill="${C.ink}"/>`;
+  s += shadow(88, 288, 54, 5);
+  // one front leg raised to scratch the side of its head
+  s += spider({ x: 88, y: 288 - 28.6, s: 1.1, look: [1, -.6], mouth: "flat", brow: "worried", mark: "stripe",
+    legOverride: { R0: [[9, -6], [30, -30], [17, -8]] } });
+  s += `<path d="M58 190q-2 -12 8 -14q8 0 8 8q0 6 -6 8v6" fill="none" stroke="${C.ink}" stroke-width="2.6" stroke-linecap="round"/><circle cx="68" cy="206" r="2" fill="${C.ink}"/>`;
   // pushpins hold the plan to the wall
-  for (const [px, py] of [[x0 + 12, y0 + 12], [x0 + cols * cw - 12, y0 + 12]]) s += `<circle cx="${px}" cy="${py}" r="7" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${px - 2}" cy="${py - 2}" r="2" fill="${C.cream}"/>`;
+  for (const [px, py] of [[x0 + 12, y0 + 12], [x0 + cols * cw - 12, y0 + 12]]) s += `<circle cx="${px}" cy="${py}" r="7" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${px - 2}" cy="${py - 2}" r="2" fill="${C.cream}"/>`;
   return V("A gridded floor plan with two possible routes", s);
 }

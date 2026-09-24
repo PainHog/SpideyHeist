@@ -90,8 +90,9 @@ export function vitality_track() {
   s += `<path d="M${xs[1] + 15.5} ${cy + 7}q-4 8 0 11q4 -3 0 -11z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   // 3 Hurt: bandages, a leg in a sling, limping
   s += spider({ x: xs[2] - 4, y: cy + 14, s: 1, mouth: "flat", brow: "worried", look: [0, .4], mark: "chevron",
-    legOverride: { R0: [[9, -6], [20, -6], [14, 10]] },
-    over: band("M-12 -30l24 12", 5) + `<rect x="5" y="-12" width="12" height="6" rx="1.5" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2" transform="rotate(25 11 -9)"/>` });
+    // R0 is held up in a sling; R1 tucks the matchstick crutch under it at the crossbar
+    legOverride: { R0: [[9, -6], [27, -4], [21, 14]], R1: [[12, -2], [26, -26], [34, -18]] },
+    over: band("M-12 -30l24 12", 5) + band("M22 -9l7 8", 5) + `<rect x="5" y="-12" width="12" height="6" rx="1.5" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2" transform="rotate(25 11 -9)"/>` });
   // a matchstick crutch under the limping side
   s += `<path d="M${xs[2] + 40} ${cy + 39}L${xs[2] + 30} ${cy - 4}" stroke="${C.ink}" stroke-width="6.5" stroke-linecap="round"/><path d="M${xs[2] + 40} ${cy + 39}L${xs[2] + 30} ${cy - 4}" stroke="${C.gold}" stroke-width="3.5" stroke-linecap="round"/>`;
   s += `<path d="M${xs[2] + 22} ${cy - 4}h16" stroke="${C.ink}" stroke-width="6" stroke-linecap="round"/><path d="M${xs[2] + 22} ${cy - 4}h16" stroke="${C.gold}" stroke-width="3" stroke-linecap="round"/>`;

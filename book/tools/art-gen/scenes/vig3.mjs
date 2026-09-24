@@ -6,7 +6,7 @@ const GY = 262;
 
 export function ch_obstacles() {
   const P = "cob";
-  let s = stage(P);
+  let s = stage(P, { gw: .98 });   // the trap and both counters stand on the floor
   // --- glue trap (left)
   s += `<path d="M70 ${GY}L100 ${GY - 30}H300L290 ${GY}Z" fill="${C.edge}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   s += `<path d="M96 ${GY - 6}L116 ${GY - 25}H284L276 ${GY - 6}Z" fill="${C.goldB}" stroke="${C.gold}" stroke-width="2"/>`;
@@ -29,6 +29,8 @@ export function ch_obstacles() {
     s += `<circle cx="366" cy="${y}" r="4" fill="${C.oxB}"/>`;
   }
   s += `<rect x="342" y="${GY - 110}" width="24" height="12" rx="2" fill="${C.ink}"/><rect x="342" y="${GY - 66}" width="24" height="12" rx="2" fill="${C.ink}"/>`;
+  // matching receivers on the far post catch the two lower beams
+  s += `<rect x="534" y="${GY - 110}" width="24" height="12" rx="2" fill="${C.ink}"/><rect x="534" y="${GY - 66}" width="24" height="12" rx="2" fill="${C.ink}"/>`;
   // spider doing the limbo under the lowest beam
   s += shadow(450, GY, 70, 5);
   s += spider({ x: 450, y: GY - 18, s: 1, look: [0, -1], mouth: "o", brow: "up", mark: "chevron", abd: [0, -12, 18, 10],
@@ -85,7 +87,9 @@ export function ch_creatures() {
   s += line(`M${vx + 8} ${GY - 150}q12 -10 30 -6`, 3, C.soft);
   s += line(`M${vx - 60} ${GY - 14}l-18 -4M${vx - 60} ${GY - 4}h-22`, 2.4, C.ink, ` opacity=".5"`);
   // a child's hand reaching down from the top right
-  s += `<g opacity="1">` + hand(724, 176, 1.3).replace(new RegExp(C.parch, "g"), sil).replace(new RegExp(C.cream, "g"), C.soft).replace(new RegExp(C.plum, "g"), C.ox).replace(new RegExp(C.soft + '" stroke-width="10"', "g"), C.oxB + '" stroke-width="10"') + `</g>`;
+  // (a dark silhouette, so its outlines are drawn in graphite: every finger and the thumb stay countable)
+  s += `<g>` + hand(724, 176, 1.3).replace(new RegExp(C.ink, "g"), "#INK").replace(new RegExp(C.parch, "g"), sil).replace(new RegExp(C.cream, "g"), C.soft)
+    .replace(new RegExp(C.soft + '" stroke-width="10"', "g"), C.edge + '" stroke-width="10"').replace(/#INK/g, C.soft) + `</g>`;
   // the tiny spider in the middle of it all
   s += spider({ x: 470, y: GY - 20.8, s: .8, look: [-1, -1], mouth: "worried", brow: "worried", mark: "dots", rim: C.cream, rimOp: .9 });
   s += `<path d="M482 ${GY - 26}q3 6 0 9q-3 -3 0 -9z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2"/>`;
@@ -101,25 +105,32 @@ export function ch_phases() {
   for (let i = 1; i < 5; i++) d += `Q${(xs[i - 1] + xs[i]) / 2} ${i % 2 ? y + 70 : y - 70} ${xs[i]} ${y}`;
   s += line(d, 3, C.gold, ` stroke-dasharray="2 9"`);
   for (let i = 0; i < 4; i++) { const mx = (xs[i] + xs[i + 1]) / 2, my = i % 2 === 0 ? y + 35 : y - 35; s += `<path d="M${mx - 7} ${my - 7}l10 7-10 7" stroke="${C.gold}" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`; }
-  xs.forEach(x => { s += shadow(x + 6, y + 60, 50, 6); s += `<circle cx="${x}" cy="${y}" r="56" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/><circle cx="${x}" cy="${y}" r="48" fill="none" stroke="${C.edge}" stroke-width="3"/>`; });
+  // flat badges (a drop shadow, like the Vitality track), not objects standing on a floor
+  xs.forEach(x => { s += `<circle cx="${x + 3}" cy="${y + 5}" r="56" fill="${C.ink}" opacity=".12"/>`; s += `<circle cx="${x}" cy="${y}" r="56" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/><circle cx="${x}" cy="${y}" r="48" fill="none" stroke="${C.edge}" stroke-width="3"/>`; });
   // pips above each stone mark the order
   xs.forEach((x, i) => { for (let k = 0; k <= i; k++) s += `<circle cx="${x - i * 6 + k * 12}" cy="${y - 72}" r="4" fill="${C.plum}"/>`; });
   // 1 the Score: an envelope with a wax seal
   { const x = xs[0]; s += `<rect x="${x - 32}" y="${y - 22}" width="64" height="44" rx="3" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.8"/><path d="M${x - 32} ${y - 22}l32 26 32 -26" fill="none" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/><circle cx="${x}" cy="${y + 4}" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/>`; }
   // 2 Planning: a rolled blueprint and pencil
   { const x = xs[1]; s += `<rect x="${x - 34}" y="${y - 20}" width="60" height="40" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.8"/>`;
-    s += line(`M${x - 26} ${y + 8}q14 -22 30 -6t14 -10`, 2.4, C.goldB, ` stroke-dasharray="2 5"`) + `<path d="M${x + 12} ${y - 14}l8 8M${x + 20} ${y - 14}l-8 8" stroke="${C.oxB}" stroke-width="3" stroke-linecap="round"/>`;
+    s += line(`M${x - 26} ${y + 8}q14 -22 30 -6t14 -10`, 2.4, C.goldB, ` stroke-dasharray="2 5"`) + `<path d="M${x + 12} ${y - 14}l8 8M${x + 20} ${y - 14}l-8 8" stroke="${C.goldB}" stroke-width="3.4" stroke-linecap="round"/>`;
     s += `<ellipse cx="${x + 30}" cy="${y}" rx="8" ry="22" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.8"/>`; }
   // 3 the Heist: a cookie, grabbed
   { const x = xs[2]; s += cookie(x, y + 2, 28, 5, true); s += sparkle(x + 28, y - 26, 7); }
-  // 4 the Escape: a spider zipping down a line toward an exit
-  { const x = xs[3]; s += line(`M${x - 26} ${y - 40.5}L${x + 30.9} ${y + 36.7}`, 2, C.gold);
-    // hangs below the line, abdomen tip (spinnerets) clipped to it by a short thread; slides down to the right
-    s += spider({ x: x - 21, y: y + 13, s: .62, r: 54, look: [1, 1], mouth: "big", brow: "up", mark: "stripe", pose: "tuck", thread: 4 });
+  // 4 the Escape: a spider zipping down a line toward the exit. It hangs straight down from the
+  // line on a short thread from its spinnerets; motion ticks trail behind it (up the line).
+  { const x = xs[3], a = [x - 26, y - 40.5], b = [x + 30.9, y + 36.7];
+    s += line(`M${a[0]} ${a[1]}L${b[0]} ${b[1]}`, 2.2, C.gold);
+    s += `<circle cx="${a[0]}" cy="${a[1]}" r="2.6" fill="${C.ink}"/><circle cx="${n(b[0])}" cy="${n(b[1])}" r="2.6" fill="${C.ink}"/>`;
+    const t = .12, px = a[0] + (b[0] - a[0]) * t, py = a[1] + (b[1] - a[1]) * t, sc = .45, sy = py + 12 + 39 * sc;
+    s += line(`M${n(px)} ${n(py)}V${n(py + 13)}`, 1.4, C.gold);
+    s += spider({ x: n(px), y: n(sy), s: sc, look: [1, 1], mouth: "big", brow: "up", mark: "stripe", pose: "tuck" });
+    s += line(`M${x - 34} ${y - 8}l-8 -4M${x - 32} ${y + 4}l-9 0`, 2, C.ink, ` opacity=".45"`);
+    s += `<path d="M${x + 14} ${y + 26}l10 0 0 -10" stroke="${C.gold}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(8 ${x + 24} ${y + 26})"/>`;
   }
   // 5 the Debrief: a loot sack and two thimble toasts
   { const x = xs[4]; s += `<path d="M${x - 26} ${y + 28}q-10 -30 12 -42l-6 -10h20l-6 10q24 12 12 42z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/>`;
-    s += line(`M${x - 12} ${y - 14}h20`, 3, C.ox) + `<circle cx="${x - 10}" cy="${y + 8}" r="6" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.6"/>`;
+    s += line(`M${x - 12} ${y - 14}h20`, 3, C.plum) + `<circle cx="${x - 10}" cy="${y + 8}" r="6" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.6"/>`;
     s += `<path d="M${x + 16} ${y + 26}l-2 -24h16l-2 24z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/><path d="M${x + 34} ${y + 26}l-2 -24h16l-2 24z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
     s += sparkle(x + 30, y - 12, 6); }
   return V("Five steps from the briefing to the getaway", s);
@@ -154,7 +165,7 @@ export function ch_alert_play() {
     legOverride: { L0: [[-9, -6], [-26, -18], [-34, -26]], L1: [[-12, -2], [-30, -12], [-36, -22]] } }).replace(/translate\(([^ ]+) ([^)]+)\)/, "translate($1 $2)");
   // a Storyteller's die nudging the Alert up, and an ox alarm dot
   s += shadow(166, GY, 42, 5) + die3d(160, GY - 30, 60, 6, { hot: true, glint: true });
-  s += line("M200 160q20 -30 40 -24", 2.4, C.ink, ` stroke-dasharray="3 6" opacity=".6"`);
+  s += line("M188 170q8 -40 30 -48", 2.4, C.ink, ` stroke-dasharray="3 6" opacity=".6"`) + line("M210 118l9 4-6 8", 2.4, C.ink, ` opacity=".6"`);
   s += `<circle cx="720" cy="80" r="16" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3"/><circle cx="720" cy="80" r="30" fill="${C.oxB}" opacity=".18"/>`;
   s += line("M720 40v-14M752 56l10 -8M688 56l-10 -8M760 84h14", 3, C.oxB);
   s += `<rect x="710" y="96" width="20" height="10" fill="${C.ink}"/><path d="M720 106V${GY}" stroke="${C.ink}" stroke-width="5"/>`;
@@ -164,12 +175,13 @@ export function ch_alert_play() {
 
 export function ch_heists() {
   const P = "chs";
-  let s = stage(P);
+  let s = stage(P, { gw: .98 });   // every building stands on the street line
   const win = (x, y, w, h, lit = true) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${lit ? C.goldB : C.deep}" stroke="${C.ink}" stroke-width="2.2"/>`;
   // house
   { const x = 110; s += `<rect x="${x - 58}" y="${GY - 100}" width="116" height="100" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/>`;
-    s += `<path d="M${x - 72} ${GY - 96}L${x} ${GY - 160}L${x + 72} ${GY - 96}Z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
-    s += `<rect x="${x + 26}" y="${GY - 160}" width="18" height="42" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.4"/>`;
+    s += `<path d="M${x - 72} ${GY - 96}L${x} ${GY - 160}L${x + 72} ${GY - 96}Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+    s += line(`M${x - 50} ${GY - 110}H${x + 50}M${x - 28} ${GY - 128}H${x + 28}`, 1.6, C.soft);
+    s += `<rect x="${x + 26}" y="${GY - 160}" width="18" height="42" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4"/>`;
     s += `<rect x="${x - 14}" y="${GY - 54}" width="28" height="54" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/><circle cx="${x + 8}" cy="${GY - 26}" r="2.6" fill="${C.gold}"/>`;
     s += win(x - 48, GY - 82, 26, 24) + win(x + 22, GY - 82, 26, 24, false);
     s += `<circle cx="${x}" cy="${GY - 118}" r="10" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x}" cy="${GY - 118}" r="4" fill="${C.goldB}"/>`; }
@@ -178,7 +190,7 @@ export function ch_heists() {
     s += `<rect x="${x - 56}" y="${GY - 208}" width="112" height="12" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
     for (let r = 0; r < 6; r++) for (let c = 0; c < 3; c++) s += win(x - 38 + c * 28, GY - 188 + r * 26, 20, 16, (r * 3 + c) % 4 === 1);
     s += `<rect x="${x - 16}" y="${GY - 30}" width="32" height="30" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/>`;
-    s += line(`M${x} ${GY - 208}v-20`, 3) + `<circle cx="${x}" cy="${GY - 230}" r="3.6" fill="${C.oxB}"/>`; }
+    s += line(`M${x + 36} ${GY - 208}v-20`, 3) + `<circle cx="${x + 36}" cy="${GY - 230}" r="3.6" fill="${C.oxB}"/>`; }
   // pet store: awning + fishbowl
   { const x = 450; s += `<rect x="${x - 64}" y="${GY - 120}" width="128" height="120" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/>`;
     s += `<rect x="${x - 70}" y="${GY - 134}" width="140" height="18" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
@@ -203,9 +215,10 @@ export function ch_heists() {
     s += `<rect x="${x - 82}" y="${GY - 12}" width="164" height="12" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.6"/>`;
     s += `<circle cx="${x}" cy="${GY - 152}" r="8" fill="${C.cream}" stroke="${C.ink}" stroke-width="2"/>` + line(`M${x} ${GY - 152}v-5M${x} ${GY - 152}h4`, 1.6); }
   // restaurant: awning + plate sign + cloche in window
-  { const x = 800; s += `<rect x="${x - 60}" y="${GY - 118}" width="120" height="118" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3"/>`;
-    let stripes = ""; for (let k = 0; k < 6; k++) stripes += `<path d="M${x - 66 + k * 22} ${GY - 110}h22l-4 22h-22z" fill="${k % 2 ? C.cream : C.ox}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
-    s += `<rect x="${x - 66}" y="${GY - 122}" width="132" height="12" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.4"/>` + stripes;
+  { const x = 800; s += `<rect x="${x - 60}" y="${GY - 118}" width="120" height="118" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/>`;
+    s += line(`M${x - 60} ${GY - 20}h120M${x - 60} ${GY - 40}h52M${x - 60} ${GY - 60}h10`, 1.4, C.edge);
+    let stripes = ""; for (let k = 0; k < 6; k++) stripes += `<path d="M${x - 66 + k * 22} ${GY - 110}h22l-4 22h-22z" fill="${k % 2 ? C.cream : C.plum}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+    s += `<rect x="${x - 66}" y="${GY - 122}" width="132" height="12" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.4"/>` + stripes;
     s += `<rect x="${x - 50}" y="${GY - 76}" width="60" height="44" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.4"/>`;
     s += `<path d="M${x - 38} ${GY - 42}q0 -22 18 -22t18 22z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x - 20}" cy="${GY - 66}" r="2.6" fill="${C.ink}"/><path d="M${x - 42} ${GY - 42}h44" stroke="${C.ink}" stroke-width="2.6"/>`;
     s += `<rect x="${x + 18}" y="${GY - 64}" width="30" height="64" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/>`;
@@ -214,7 +227,7 @@ export function ch_heists() {
     s += `<circle cx="${x}" cy="${GY - 144}" r="16" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="${x}" cy="${GY - 144}" r="9" fill="none" stroke="${C.edge}" stroke-width="2"/>`;
     s += line(`M${x - 24} ${GY - 152}V${GY - 122}M${x + 24} ${GY - 152}V${GY - 122}`, 3) + line(`M${x - 28} ${GY - 152}v8M${x - 20} ${GY - 152}v8`, 1.6); }
   // a tiny spider on the office roof, looking out over the job board
-  s += spider({ x: 246, y: GY - 208 - 13, s: .5, look: [1, 0], mouth: "smirk", mark: "dots", pose: "stand" });
+  s += spider({ x: 262, y: GY - 208 - 13, s: .5, look: [1, 0], mouth: "smirk", mark: "dots", pose: "stand" });
   s += sparkle(540, 70, 6) + sparkle(160, 80, 4) + sparkle(730, 90, 5);
   return V("Five tiny locations: a house, an office, a pet store, a library and a restaurant", s);
 }
@@ -222,11 +235,12 @@ export function ch_heists() {
 export function ch_tables() {
   const P = "ctb";
   let s = stage(P);
+  s += `<g transform="translate(0 -12)">`;   // the hanging scroll, raised so its bottom roller is clearly off the floor
   // scroll with six entries, each keyed to a d6 face
   s += `<path d="M300 44H640V244H300Z" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
   s += hatch(`${P}-sc`, `<rect x="300" y="44" width="340" height="200"/>`, 300, 44, 640, 244, 9, 80, C.edge, 1, .6);
   // the scroll hangs from a cord on a nail (off the top of the frame); the weighted bottom roller hangs clear of the floor
-  s += line("M286 41L470 0L654 41", 2.2, C.ox);
+  s += line("M286 41L470 12L654 41", 2.4, C.plum);
   s += `<rect x="286" y="30" width="368" height="22" rx="11" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/><circle cx="286" cy="41" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><circle cx="654" cy="41" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<rect x="286" y="236" width="368" height="22" rx="11" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/><circle cx="286" cy="247" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><circle cx="654" cy="247" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<path d="M314 ${70 + 3 * 28 - 14}h318v28H314z" fill="${C.goldB}" opacity=".4"/>`;
@@ -239,6 +253,7 @@ export function ch_tables() {
     let d = `M356 ${y + 2}`; const L = 130 + R() * 120; for (let x = 0; x < L; x += 12) d += `q3 ${-6 - R() * 4} 6 0t6 0`;
     s += line(d, 2.2, i === 3 ? C.plum : C.ink, i === 3 ? "" : ` opacity=".7"`);
   }
+  s += `</g>`;
   // dice on the left
   s += shadow(150, GY, 44, 5) + shadow(226, GY, 34, 4);
   s += die3d(140, GY - 32, 64, 4, { hot: true, glint: true });
@@ -267,7 +282,7 @@ export function ch_quickref() {
   s += `<g transform="rotate(-4 450 140)">`;
   s += `<rect x="300" y="52" width="300" height="180" fill="${C.ink}" opacity=".22" transform="translate(6 7)"/>`;
   s += `<rect x="300" y="52" width="300" height="180" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += line("M300 84H600", 2.4, C.oxB);
+  s += line("M300 84H600", 2.4, C.gold);
   let rl = ""; for (let y = 108; y < 232; y += 22) rl += `M300 ${y}H600`; s += line(rl, 1.2, C.soft, ` opacity=".45"`);
   // mini icons + squiggles on the lines
   s += `<rect x="318" y="92" width="16" height="16" rx="3" fill="${C.plum}" stroke="${C.ink}" stroke-width="1.6"/><circle cx="322.5" cy="96.5" r="1.6" fill="${C.goldB}"/><circle cx="329.5" cy="103.5" r="1.6" fill="${C.goldB}"/><circle cx="326" cy="100" r="1.6" fill="${C.goldB}"/>`;
@@ -281,9 +296,9 @@ export function ch_quickref() {
   s += `</g>`;
   // thumbtack
   s += `<ellipse cx="452" cy="72" rx="15" ry="5" fill="${C.ink}" opacity=".3"/>`;
-  s += `<path d="M444 56h14l4 12h-22z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
-  s += `<ellipse cx="451" cy="54" rx="13" ry="7" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.4"/><ellipse cx="447" cy="52" rx="4" ry="2" fill="${C.cream}" opacity=".8"/>`;
-  s += `<ellipse cx="451" cy="68" rx="14" ry="4" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<path d="M444 56h14l4 12h-22z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  s += `<ellipse cx="451" cy="54" rx="13" ry="7" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.4"/><ellipse cx="447" cy="52" rx="4" ry="2" fill="${C.cream}" opacity=".8"/>`;
+  s += `<ellipse cx="451" cy="68" rx="14" ry="4" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.2"/>`;
   // spider on the cork, reading the card
   s += spider({ x: 652, y: 176, s: .95, look: [-1, -.3], mouth: "smirk", mark: "chevron", brow: "up", rim: C.cream, rimOp: .6,
     legOverride: { L0: [[-9, -6], [-22, -22], [-38, -30]] } });
