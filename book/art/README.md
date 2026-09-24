@@ -2,22 +2,24 @@
 
 All art is hand-built SVG, inlined at build time wherever the chapters say
 `<figure class="art" data-art="NAME">`. The house style is storybook heist-noir:
-confident ink linework over flat fills, the same palette as the Foundry system.
+confident ink linework over flat fills, in the **heist-noir** palette shared with the Foundry system
+(charcoal and near-black, signal red for danger, gold for loot and light, on warm paper).
+Every piece must pass `ART-CHECKLIST.md`.
 Every SVG has a `viewBox` and **no** fixed width or height; the CSS sizes it.
 
 | Token | Hex | Use |
 |---|---|---|
-| plum | `#5f2470` | primary fill, spider bodies |
-| plum-deep | `#3a1348` | shadows, night sky, dark bands |
-| plum-soft | `#7b3a8e` | highlights on plum |
-| cream | `#f6efdd` | page, light fills |
-| parchment | `#eaddbe` | secondary light fill |
-| parch-edge | `#d9c69a` | soft lines on light |
-| ink | `#2a1c30` | linework, text |
+| plum *(charcoal)* | `#36343a` | primary fill, spider bodies |
+| plum-deep *(near-black)* | `#1f1d22` | shadows, night sky, dark bands |
+| plum-soft *(graphite)* | `#5a5660` | highlights on charcoal |
+| cream | `#f3eee4` | page, light fills |
+| parchment | `#e6dccb` | secondary light fill |
+| parch-edge | `#cdbfa4` | soft lines on light |
+| ink | `#141216` | linework, text |
 | gold | `#b8892a` | accents, silk, loot |
 | gold-bright | `#f0cf6b` | glints, eyes, highlights |
-| ox | `#7a2231` | danger, alert, threat |
-| ox-bright | `#b2364a` | alarms |
+| ox *(signal red, dark)* | `#8f1d1d` | danger, alert, threat |
+| ox-bright *(signal red)* | `#d13a2f` | alarms |
 | good | `#2f7d4f` | calm/safe (sparingly) |
 
 ## Catalogue
@@ -65,3 +67,8 @@ Every SVG has a `viewBox` and **no** fixed width or height; the CSS sizes it.
 - `orn-divider`: a horizontal section divider (very wide, thin)
 - `orn-corner`: a cobweb corner flourish (square; the top-left corner, CSS flips it)
 - `orn-spider`: a tiny dangling spider on a thread (tall, narrow)
+
+**Spot illustrations** (fill end-of-chapter space; ~4:3, placed automatically by the build)
+- `spot-crew-huddle`, `spot-cat-nap`, `spot-vacuum-ride`, `spot-jar-rescue`, `spot-silk-swing`,
+  `spot-lockpick`, `spot-loot-haul`, `spot-dice-push`, `spot-lookout-sill`, `spot-dust-bunny`,
+  `spot-alarm-freeze`, `spot-debrief`, `spot-map-board`, `spot-couch-sneak`

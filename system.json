@@ -124,7 +124,7 @@
     {
       "name": "Heisty Spideys",
       "sorting": "m",
-      "color": "#5f2470",
+      "color": "#36343a",
       "packs": ["species", "roles", "perks", "flaws", "gadgets", "creatures", "heists", "rules"]
     }
   ],

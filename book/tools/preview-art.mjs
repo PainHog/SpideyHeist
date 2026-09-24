@@ -28,11 +28,11 @@ for (const name of list) {
     const e = d.querySelector("parsererror"); return e ? e.textContent.slice(0, 200) : null;
   }, svg);
   if (err) { console.error(`✗ ${name}: ${err}`); bad++; continue; }
-  await page.setContent(`<body style="margin:0;background:#f6efdd;display:grid;place-items:center;min-height:100vh">
+  await page.setContent(`<body style="margin:0;background:#f3eee4;display:grid;place-items:center;min-height:100vh">
     <div id="a" style="width:800px;max-height:860px">${svg}</div></body>`);
   await page.evaluate(() => { const s = document.querySelector("#a svg"); s.style.width = "100%"; s.style.height = "auto"; s.style.maxHeight = "860px"; });
   await page.locator("#a").screenshot({ path: join(outDir, `${name}.png`) });
-  cells.push(`<figure style="margin:0;background:#f6efdd;padding:6px;border:1px solid #d9c69a"><div style="height:200px;display:grid;place-items:center">${svg.replace(/<svg/, '<svg style="max-width:100%;max-height:200px;width:auto;height:auto"')}</div><figcaption style="font:12px sans-serif;text-align:center">${name}</figcaption></figure>`);
+  cells.push(`<figure style="margin:0;background:#f3eee4;padding:6px;border:1px solid #cdbfa4"><div style="height:200px;display:grid;place-items:center">${svg.replace(/<svg/, '<svg style="max-width:100%;max-height:200px;width:auto;height:auto"')}</div><figcaption style="font:12px sans-serif;text-align:center">${name}</figcaption></figure>`);
   console.log(`✓ ${name}`);
 }
 if (cells.length) {

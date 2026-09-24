@@ -148,11 +148,58 @@ const fonts = [
 
 /* ---------------------------------------------------------------- page -- */
 const css = readFileSync(join(SRC, "book.css"), "utf8");
-function page(pages, markers) {
+
+/*
+ * Spot illustrations fill the space a chapter leaves empty on its last page.
+ * Pass 1 prints an end-of-chapter marker; its height on the page tells us how much
+ * room is left, and a spot sized to fit is placed there (never enough to move a page).
+ * Each chapter lists spots in order of preference; the first not yet used wins.
+ */
+const SPOTS = {
+  "ch-01": ["spot-crew-huddle", "spot-debrief"], "ch-02": ["spot-dice-push"],
+  "ch-03": ["spot-silk-swing", "spot-vacuum-ride"], "ch-04": ["spot-lookout-sill", "spot-dust-bunny"],
+  "ch-05": ["spot-dust-bunny", "spot-lockpick"], "ch-06": ["spot-lockpick", "spot-loot-haul"],
+  "ch-07": ["spot-map-board", "spot-crew-huddle"], "ch-08": ["spot-jar-rescue", "spot-silk-swing"],
+  "ch-09": ["spot-alarm-freeze"], "ch-10": ["spot-jar-rescue", "spot-cat-nap"],
+  "ch-11": ["spot-loot-haul", "spot-debrief"], "ch-12": ["spot-silk-swing", "spot-lockpick"],
+  "ch-13": ["spot-couch-sneak"], "ch-14": ["spot-map-board"], "ch-15": ["spot-vacuum-ride", "spot-alarm-freeze"],
+  "ch-16": ["spot-cat-nap"], "ch-17": ["spot-crew-huddle"], "ch-18": ["spot-alarm-freeze", "spot-couch-sneak"],
+  "ch-19": ["spot-loot-haul", "spot-cat-nap"], "ch-20": ["spot-dice-push"], "ch-21": ["spot-debrief"],
+};
+const PT_PER_IN = 72;
+const BOTTOM_LIMIT_PT = 0.78 * PT_PER_IN;   // @page bottom margin: content must end above this
+const MIN_SPOT_IN = 1.5, MAX_SPOT_IN = 5.3, SAFETY_IN = 0.2, MIN_GAP_IN = 0.22;  // 5.3in = 4:3 art at full text width
+
+function planSpots(ends) {
+  const used = new Set(), plan = {};
+  for (const [id, { freeIn }] of Object.entries(ends)) {
+    const prefs = SPOTS[id];
+    const room = freeIn - SAFETY_IN;
+    if (!prefs || room - MIN_GAP_IN < MIN_SPOT_IN) continue;
+    const art = prefs.find(a => !used.has(a) && existsSync(join(ART, `${a}.svg`))) ?? prefs.find(a => existsSync(join(ART, `${a}.svg`)));
+    if (!art) continue;
+    used.add(art);
+    const h = +Math.min(MAX_SPOT_IN, room - MIN_GAP_IN).toFixed(2);
+    // centre the art in the space left (never closer than MIN_GAP_IN to the text)
+    const top = +Math.max(MIN_GAP_IN, (room - h) / 2).toFixed(2);
+    plan[id] = { art, h, top };
+  }
+  return plan;
+}
+
+function page(pages, markers, spots = {}) {
   let content = body;
   const cover = content.match(/<section class="cover"[\s\S]*?<\/section>/);
   const toc = inlineArt(tocHtml(pages));
   content = cover ? content.replace(cover[0], cover[0] + "\n" + toc) : toc + content;
+  // end of each chapter: a spot illustration (if planned) and, in marker passes, an end marker
+  content = content.replace(/(<section class="chapter[^"]*" id="([^"]+)"[^>]*>)([\s\S]*?)(<\/section>)(?=\s*(?:<!--|<section|$))/g,
+    (m, open, id, inner, close) => {
+      const sp = spots[id];
+      const fig = sp ? `<figure class="art tailpiece" data-art="${sp.art}" style="height:${sp.h}in;margin-top:${sp.top}in"></figure>` : "";
+      const end = markers ? `<div class="end-marker"><span>@@end-${id}@@</span></div>` : "";
+      return `${open}${inner}${fig ? inlineArt(fig) : ""}${end}${close}`;
+    });
   if (markers) {
     content = content.replace(/(<section class="(?:part|chapter|sheet)[^"]*" id="([^"]+)"[^>]*>)/g,
       (_, open, id) => `${open}<span class="pdf-marker">@@${id}@@</span>`);
@@ -197,34 +244,62 @@ async function printPdf(browser, html, out) {
 async function pageMap(pdfPath) {
   const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
   const doc = await pdfjs.getDocument({ data: new Uint8Array(readFileSync(pdfPath)), verbosity: 0 }).promise;
-  const found = {};
+  const found = {}, ends = {};
   for (let i = 1; i <= doc.numPages; i++) {
-    const text = (await (await doc.getPage(i)).getTextContent()).items.map(t => t.str).join("");
-    for (const m of text.matchAll(/@@([\w-]+)@@/g)) if (!(m[1] in found)) found[m[1]] = i;
+    const items = (await (await doc.getPage(i)).getTextContent()).items;
+    const text = items.map(t => t.str).join("");
+    for (const m of text.matchAll(/@@([\w-]+)@@/g)) {
+      if (m[1].startsWith("end-")) continue;
+      if (!(m[1] in found)) found[m[1]] = i;
+    }
+    for (const it of items) {
+      const m = it.str.match(/@@end-([\w-]+)@@/);
+      if (!m) continue;
+      // baseline y (from the page bottom); the marker's top edge is ~4pt above it
+      const topPt = it.transform[5] + 4;
+      ends[m[1]] = { page: i, freeIn: Math.max(0, (topPt - BOTTOM_LIMIT_PT) / PT_PER_IN) };
+    }
   }
-  return { found, pages: doc.numPages };
+  return { found, ends, pages: doc.numPages };
 }
 
 mkdirSync(DIST, { recursive: true });
 const browser = await chromium.launch({ executablePath: CHROME });
 try {
+  // Pass 1: where does everything land, and how much room is left after each chapter?
   const pass1 = join(DIST, ".pass1.pdf");
   await printPdf(browser, page(null, true), pass1);
-  const { found } = await pageMap(pass1);
-  const missing = entries.filter(e => !(e.id in found)).map(e => e.id);
+  const p1 = await pageMap(pass1);
+  const missing = entries.filter(e => !(e.id in p1.found)).map(e => e.id);
   if (missing.length) throw new Error(`could not locate on any page: ${missing.join(", ")}`);
 
-  const html = page(found, false);
+  // Pass 2: place spot illustrations; drop any that would move a page, and re-check.
+  let spots = planSpots(p1.ends);
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const pass2 = join(DIST, ".pass2.pdf");
+    await printPdf(browser, page(p1.found, true, spots), pass2);
+    const p2 = await pageMap(pass2);
+    const moved = Object.keys(spots).filter(id => p2.ends[id]?.page !== p1.ends[id]?.page);
+    const shifted = entries.filter(e => p2.found[e.id] !== p1.found[e.id]).map(e => e.id);
+    if (!moved.length && !shifted.length && p2.pages === p1.pages) break;
+    if (attempt === 3) throw new Error(`spot illustrations keep moving pages: ${[...moved, ...shifted].join(", ")}`);
+    for (const id of moved) delete spots[id];
+    if (shifted.length && !moved.length) spots = {};
+  }
+
+  const html = page(p1.found, false, spots);
   writeFileSync(join(DIST, "heisty-spideys.html"), html);
   const out = join(DIST, `Heisty_Spideys_v${VERSION}.pdf`);
   await printPdf(browser, html, out);
   const { pages } = await pageMap(out);
-
-  // Pass 2 must paginate identically (markers take no space): verify it.
-  const check = await pageMap(pass1);
-  console.log(`Built ${relative(ROOT, out)} — ${pages} pages (pass 1: ${check.pages}).`);
-  if (pages !== check.pages) throw new Error("pass 1 and pass 2 paginated differently — TOC numbers may be wrong");
-  for (const e of entries) console.log(`  p${String(found[e.id]).padStart(3)}  ${e.label ? e.label + " — " : ""}${e.title}`);
+  console.log(`Built ${relative(ROOT, out)} — ${pages} pages (pass 1: ${p1.pages}).`);
+  if (pages !== p1.pages) throw new Error("pass 1 and the final pass paginated differently — TOC numbers may be wrong");
+  for (const e of entries) {
+    const sp = spots[e.id];
+    console.log(`  p${String(p1.found[e.id]).padStart(3)}  ${e.label ? e.label + " — " : ""}${e.title}${sp ? `   [+ ${sp.art} ${sp.h}in]` : ""}`);
+  }
+  const gaps = Object.entries(p1.ends).filter(([id, v]) => !spots[id] && v.freeIn > 3).map(([id, v]) => `${id} (${v.freeIn.toFixed(1)}in free)`);
+  if (gaps.length) console.warn(`  ! large gaps with no spot: ${gaps.join(", ")}`);
   for (const w of warn) console.warn(`  ! ${w}`);
 } finally {
   await browser.close();

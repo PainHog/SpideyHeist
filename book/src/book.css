@@ -5,19 +5,19 @@
    ========================================================================== */
 
 :root {
-  --plum: #5f2470;
-  --plum-deep: #3a1348;
-  --plum-soft: #7b3a8e;
-  --cream: #f6efdd;
-  --parch: #eaddbe;
-  --parch-edge: #d9c69a;
-  --ink: #2a1c30;
-  --ink-soft: #574364;
+  --plum: #36343a;
+  --plum-deep: #1f1d22;
+  --plum-soft: #5a5660;
+  --cream: #f3eee4;
+  --parch: #e6dccb;
+  --parch-edge: #cdbfa4;
+  --ink: #141216;
+  --ink-soft: #57525a;
   --gold: #b8892a;
   --gold-deep: #8a6116;
   --gold-bright: #f0cf6b;
-  --ox: #7a2231;
-  --ox-bright: #b2364a;
+  --ox: #8f1d1d;
+  --ox-bright: #d13a2f;
   --good: #2f7d4f;
 
   --display: "Fraunces", Georgia, serif;
@@ -70,7 +70,7 @@ figure.art svg { display: block; width: 100%; height: auto; }
 .art-missing {
   display: grid; place-items: center; min-height: 0.9in;
   border: 1.5px dashed var(--ox); color: var(--ox); font: 700 9pt var(--sans);
-  background: repeating-linear-gradient(45deg, transparent 0 8px, rgba(122,34,49,.06) 8px 16px);
+  background: repeating-linear-gradient(45deg, transparent 0 8px, rgba(143,29,29,.06) 8px 16px);
 }
 
 /* ------------------------------------------------------------ cover ----- */
@@ -87,11 +87,11 @@ figure.art svg { display: block; width: 100%; height: auto; }
 /* scrim under the lettering (text-shadow would be printed as duplicate text) */
 .cover::before {
   content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3.4in; z-index: 1;
-  background: linear-gradient(to bottom, rgba(34,10,44,.78), rgba(34,10,44,.45) 70%, transparent);
+  background: linear-gradient(to bottom, rgba(16,14,18,.78), rgba(16,14,18,.45) 70%, transparent);
 }
 .cover::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.3in; z-index: 1;
-  background: linear-gradient(to top, rgba(34,10,44,.8), transparent);
+  background: linear-gradient(to top, rgba(16,14,18,.8), transparent);
 }
 .cover .cover-art svg { width: 8.5in; height: 11in; }
 .cover-inner, .cover > :not(figure) { position: relative; z-index: 2; }
@@ -156,7 +156,7 @@ figure.art svg { display: block; width: 100%; height: auto; }
   text-align: center;
   color: var(--cream);
   background:
-    radial-gradient(ellipse at 50% 30%, rgba(123,58,142,.55), transparent 60%),
+    radial-gradient(ellipse at 50% 30%, rgba(90,86,96,.55), transparent 60%),
     var(--plum-deep);
 }
 .part-kicker { margin: 0; font: 800 12pt var(--sans); letter-spacing: .45em; text-transform: uppercase; color: var(--gold-bright); }
@@ -270,8 +270,8 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
   font: 800 8pt/1.2 var(--sans); letter-spacing: .08em; text-transform: uppercase;
   text-align: left; padding: 0.045in 0.06in;
 }
-.tbl td { padding: 0.04in 0.06in; vertical-align: top; border-top: 1px solid rgba(217,198,154,.7); }
-.tbl tbody tr:nth-child(even) td { background: rgba(234,221,190,.55); }
+.tbl td { padding: 0.04in 0.06in; vertical-align: top; border-top: 1px solid rgba(205,191,164,.7); }
+.tbl tbody tr:nth-child(even) td { background: rgba(230,220,203,.55); }
 .tbl tr { break-inside: avoid; }
 .tbl td:first-child { font-weight: 700; color: var(--plum-deep); }
 .tbl td.num, .tbl th.num { text-align: center; white-space: nowrap; }
@@ -280,7 +280,9 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
 
 /* ------------------------------------------------------------ entries --- */
 .entry {
-  break-inside: avoid-column;
+  /* entries may flow across columns/pages (their boxes and table rows stay whole);
+     forcing whole entries to jump left near-empty pages */
+  break-inside: auto;
   position: relative;
   margin: 0.06in 0 0.16in;
   padding-top: 0.06in;
@@ -331,7 +333,7 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
   background: #fbf6ea;
   border: 1.5px solid var(--ox);
   border-radius: 6px;
-  box-shadow: 0 2px 0 rgba(122,34,49,.35);
+  box-shadow: 0 2px 0 rgba(143,29,29,.35);
   overflow: hidden;
   font-size: 9.8pt;
 }
@@ -449,3 +451,14 @@ hr { border: none; height: 0; margin: 0.1in 0; }
 /* heading + first block, bound together at build time */
 .keep { break-inside: avoid; }
 .keep > :last-child { margin-bottom: 0.075in; }
+
+/* end-of-chapter measurement marker (build passes only) */
+.end-marker { column-span: all; height: 0; margin: 0; position: relative; }
+.end-marker span { position: absolute; top: 0; left: 0; font-size: 4pt; line-height: 1; color: rgba(0,0,0,.02); white-space: nowrap; }
+
+/* spot illustration filling the space left at a chapter's end (height set by the build) */
+figure.tailpiece { column-span: all; margin: 0.22in auto 0; display: flex; justify-content: center; break-inside: avoid; }
+figure.tailpiece svg { height: 100%; width: auto; max-width: 100%; }
+
+.entry > h3, .entry > .quote { break-after: avoid; }
+.entry .statline { break-inside: avoid; }
