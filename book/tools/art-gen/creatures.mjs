@@ -344,8 +344,9 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   setPrefix("cr-snake");
   const v = oval();
   let body = v.bg + `<g clip-path="${v.clip}">`;
-  // the table the tank stands on
-  body += path("M0 300 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 300], [480, 300], C.ink, 3) + strokes([[40, 360, 150, 360], [200, 382, 300, 382]], C.gold, 2);
+  // the table the tank stands on: its far edge (y=288) lies behind the tank's back-bottom corners
+  // (y=296), so the whole footprint of the tank is on the tabletop
+  body += path("M0 288 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 288], [480, 288], C.ink, 3) + strokes([[40, 360, 150, 360], [200, 382, 300, 382]], C.gold, 2);
   // tank: front glass x -10..372, y 70..330; the right side recedes by (+32,-20)
   const F = { l: -10, r: 364, t: 76, b: 330 }, D = [40, -34];
   body += shadow(200, 336, 230, 8, C.ink, 0.22);
@@ -410,8 +411,12 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   const v = oval();
   let body = v.bg + `<g clip-path="${v.clip}">`;
   // side table the cage stands on
-  body += path("M0 336 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 336], [480, 336], C.ink, 3);
-  const CG = { l: 40, r: 324, top: -10, tray: 312 };
+  // (the table's far edge, y=318, is well behind the front of the cage's tray, y=336, so the tray's
+  // whole footprint is on the tabletop)
+  body += path("M0 318 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 318], [480, 318], C.ink, 3);
+  // cage width is a whole number of 22-unit bar spacings, so there is a corner bar at each side
+  // for the perch and the cross ring to be fixed into
+  const CG = { l: 40, r: 326, top: -10, tray: 312 };
   body += shadow(182, 344, 160, 7, C.ink, 0.25);
   // back bars (behind the bird), seen through the cage
   { let d = ""; for (let x = CG.l + 11; x < CG.r; x += 22) d += `M${x} ${CG.top} V${CG.tray}`; body += path(d, "none", C.gold, 2, ` opacity="0.45"`); }
@@ -451,7 +456,7 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   }
   // front bars (in front of the bird and perch), cross rings, and the base tray on the table
   { let d = ""; for (let x = CG.l; x <= CG.r; x += 22) d += `M${x} ${CG.top} V${CG.tray}`; body += path(d, "none", C.ink, 5) + path(d, "none", C.gold, 2.6); }
-  body += path(`M${CG.l - 4} 150 H${CG.r + 4}`, "none", C.ink, 7) + path(`M${CG.l - 4} 150 H${CG.r + 4}`, "none", C.gold, 4);
+  body += path(`M${CG.l - 3} 150 H${CG.r + 3}`, "none", C.ink, 7) + path(`M${CG.l - 3} 150 H${CG.r + 3}`, "none", C.gold, 4);
   body += path(`M${CG.l - 10} ${CG.tray} H${CG.r + 10} V${CG.tray + 24} H${CG.l - 10} Z`, C.plum, C.ink, 3.5) + path(`M${CG.l - 10} ${CG.tray + 6} H${CG.r + 10}`, "none", C.soft, 3);
   // squawk: sound arcs spreading from the open beak toward the right
   for (const r of [24, 40, 56]) body += path(`M${r1(290 + r * Math.cos(-0.5))} ${r1(106 + r * Math.sin(-0.5))} A${r} ${r} 0 0 1 ${r1(290 + r * Math.cos(0.55))} ${r1(106 + r * Math.sin(0.55))}`, "none", C.ink, 3.5);
@@ -477,8 +482,9 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path("M0 250 H480 V400 H0 Z", `url(#${fg})`, "none", 0) + line([0, 250], [480, 250], C.ink, 3);
   body += strokes([[0, 290, 480, 290], [150, 250, 120, 290], [360, 250, 380, 290], [0, 350, 480, 350], [120, 290, 90, 350], [380, 290, 410, 350]], C.ink, 2, ` opacity="0.35"`);
   // corrugated drain hose lying along the back of the floor
-  body += path("M0 236 Q240 226 480 240", "none", C.ink, 22) + path("M0 236 Q240 226 480 240", "none", C.edge, 16);
-  { let d = ""; for (let x = 8; x < 480; x += 14) { const t = x / 480, y = (1 - t) * (1 - t) * 236 + 2 * t * (1 - t) * 226 + t * t * 240; d += `M${x} ${r1(y - 7)} v14`; } body += path(d, "none", C.gold, 2); }
+  // (its underside, centre + 11, is on the floor just in front of the back edge at y=250, not hovering)
+  body += path("M0 245 Q240 237 480 249", "none", C.ink, 22) + path("M0 245 Q240 237 480 249", "none", C.edge, 16);
+  { let d = ""; for (let x = 8; x < 480; x += 14) { const t = x / 480, y = (1 - t) * (1 - t) * 245 + 2 * t * (1 - t) * 237 + t * t * 249; d += `M${x} ${r1(y - 7)} v14`; } body += path(d, "none", C.gold, 2); }
   // the dishwasher's underside and its levelling foot (a threaded post down to a pad on the floor)
   body += path("M0 0 H480 V46 H0 Z", C.ink, "none", 0) + path("M0 46 H480", "none", C.edge, 4) + path("M0 38 H480", "none", C.soft, 2, ` opacity="0.6"`);
   for (const x of [70, 170, 300, 410]) body += circ(x, 28, 4, C.edge, C.ink, 1.5);
@@ -625,10 +631,24 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path(bowl, C.cream, "none", 0, ` opacity="0.35"`);
   body += path(`M0 ${WL} H480 V400 H0 Z`, C.cream, "none", 0, ` opacity="0.55"`) + path(`M0 ${WL} H480 V400 H0 Z`, C.good, "none", 0, ` opacity="0.08"`);
   body += ell(bc[0], WL, hw(WL), 12, C.cream, C.ink, 2, ` opacity="0.6"`);
-  // gravel resting on the bottom, and a plant rooted in it
-  { const Rg = rng(8); let g = ""; const cols = [C.gold, C.cream, C.plum, C.edge, C.soft];
-    for (let i = 0; i < 46; i++) { const x = bc[0] - hw(BASE) - 20 + Rg() * (2 * hw(BASE) + 40), y = BASE - 4 - Rg() * 18 * (1 - Math.abs(x - bc[0]) / 140); g += circ(x, y, 3.5 + Rg() * 3, cols[i % 5], C.ink, 1.5); } body += g; }
-  body += path("M150 316 Q142 270 156 226 M150 300 Q128 280 124 256 M152 276 Q172 256 176 236", "none", C.ink, 7) + path("M150 316 Q142 270 156 226 M150 300 Q128 280 124 256 M152 276 Q172 256 176 236", "none", C.good, 4);
+  // a plant rooted in the gravel (its stem base is buried by the pebbles drawn over it), then the gravel,
+  // packed in rows: the bottom row rests on the bowl's flat bottom / curved glass, and each pebble of a
+  // higher row is dropped into the notch between two pebbles of the row below, so every one is supported
+  { const P = "M176 324 Q168 270 182 226 M176 300 Q154 280 150 256 M178 276 Q198 256 202 236"; body += path(P, "none", C.ink, 7) + path(P, "none", C.good, 4); }
+  { const Rg = rng(8); let g = ""; const cols = [C.gold, C.cream, C.plum, C.edge, C.soft], placed = [];
+    const floorY = x => Math.abs(x - bc[0]) <= hw(BASE) ? BASE : bc[1] + Math.sqrt(Math.max(0, (R - 2) ** 2 - (x - bc[0]) ** 2));
+    const sp = 10.6, L0 = bc[0] - hw(BASE) - 10, R0 = bc[0] + hw(BASE) + 10; // sp > 2 x the largest radius: neighbours in a row never overlap
+    let i = 0;
+    for (let k = 0; k < 4; k++) {
+      // each row starts 1.5 spacings further in, so its pebbles sit over the gaps of the row below
+      for (let x0 = L0 + k * sp * 1.5; x0 <= R0 - k * sp * 1.5 + 0.01; x0 += sp) {
+        const x = x0, r = 3.9 + Rg() * 1.3;
+        let y = Math.min(floorY(x - r * 0.7), floorY(x), floorY(x + r * 0.7)) - r - 0.8;
+        for (const q of placed) { const dx = Math.abs(x - q.x), rr = r + q.r; if (dx < rr) y = Math.min(y, q.y - Math.sqrt(rr * rr - dx * dx)); }
+        placed.push({ x, y, r }); g += circ(x, y, r, cols[i++ % 5], C.ink, 1.5);
+      }
+    }
+    body += g; }
   // --- the goldfish, near the surface, tilted up toward the spider on the rim
   const fx = 238, fy = 196, fa = -20;
   let fish = "";
