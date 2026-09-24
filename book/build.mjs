@@ -207,6 +207,7 @@ function planSpots(ends) {
 // Print-on-demand overrides: grow every page by the bleed, push margins in by the
 // same amount, and let full-bleed pages (covers, part pages) fill the larger sheet.
 const PRINT_CSS = `
+:root { --page-mt: ${0.72 + BLEED_IN}in; --page-ml: ${0.68 + BLEED_IN}in; }
 @page { size: ${8.5 + 2 * BLEED_IN}in ${11 + 2 * BLEED_IN}in; margin: ${0.72 + BLEED_IN}in ${0.68 + BLEED_IN}in ${0.78 + BLEED_IN}in ${0.68 + BLEED_IN}in; }
 @page cover { margin: 0; } @page part { margin: 0; } @page back { margin: 0; } @page sheet { margin: ${0.5 + BLEED_IN}in; }
 .cover, .part, .back-cover { width: ${8.5 + 2 * BLEED_IN}in; height: ${11 + 2 * BLEED_IN}in; }
