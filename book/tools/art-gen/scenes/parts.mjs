@@ -26,6 +26,11 @@ export function part_one() {
   const P = "p1";
   let s = stage(P, { w: 900, h: 420, ground: false });
   s += `<defs><linearGradient id="${P}-lamp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.goldB}" stop-opacity=".55"/><stop offset="1" stop-color="${C.goldB}" stop-opacity="0"/></linearGradient></defs>`;
+  // the table top the blueprint lies on, in perspective: its far edge behind the back row,
+  // its near edge meeting the wooden front edge below (so the sheet rests on something)
+  s += `<path d="M150 168H750L852 372H48Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+  s += line("M150 168H750", 2, C.soft, ` opacity=".9"`);
+  s += line("M118 232q120 -3 230 1M560 230q90 2 190 -1M84 300q70 -2 140 1M700 298q60 2 120 0M70 340q60 2 110 -1M740 342q40 -2 80 1", 1.4, C.soft, ` opacity=".7"`);
   // lamp light cone
   s += `<path d="M396 58L180 372H720L504 58z" fill="url(#${P}-lamp)" opacity=".7"/>`;
   // the table's wooden front edge: a solid band, so the table still reads on the near-black part page

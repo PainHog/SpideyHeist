@@ -239,8 +239,9 @@ export function cover() {
   }
   s += units;
   s += hatch(`${P}-cb`, `<rect x="0" y="${cy + 12}" width="612" height="150"/>`, 0, cy, 612, 792, 8, 70, C.ink, 1.1, .25);
-  // tea towel folded over the oven handle: the fold wraps the top of the bar
-  const tx = 360;
+  // tea towel folded over the oven handle: the fold wraps the top of the bar. It hangs at the
+  // bar's right end, clear of the centred "First Edition" line printed over the oven door.
+  const tx = 390;
   s += `<path d="M${tx} ${barY - 4}q0 -6 7 -6h36q7 0 7 6l4 64q-29 8 -58 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
   s += `<path d="M${tx + 1} ${barY - 3}h48" stroke="${C.edge}" stroke-width="2.2" opacity=".9"/>`;       // fold crease over the bar
   s += line(`M${tx - 1} ${barY + 42}h54M${tx - 1} ${barY + 50}h55`, 3, C.plum);

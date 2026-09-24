@@ -128,7 +128,7 @@ figure.art svg { display: block; width: 100%; height: auto; }
 
 /* ------------------------------------------------------------ toc ------- */
 .toc { page: toc; break-after: page; position: relative; }
-.toc .toc-art { position: absolute; top: -0.25in; left: -0.3in; width: 1.5in; opacity: .8; }
+.toc .toc-art { position: absolute; top: -0.36in; left: -0.36in; width: 1.12in; opacity: .8; }
 .toc h2 {
   margin: 0.1in 0 0.25in; text-align: center;
   font: 900 26pt var(--display); color: var(--plum-deep);
@@ -137,13 +137,13 @@ figure.art svg { display: block; width: 100%; height: auto; }
 .toc-list a { display: flex; align-items: baseline; gap: 6px; color: inherit; text-decoration: none; }
 .toc-list .toc-title { flex: 0 1 auto; }
 .toc-list a::after { content: ""; order: 2; flex: 1 1 auto; border-bottom: 1.2px dotted var(--parch-edge); transform: translateY(-3px); }
-.toc-list .toc-page { order: 3; font: 700 10.5pt var(--sans); color: var(--plum); font-variant-numeric: lining-nums; }
-.toc-part { margin: 0.2in 0 0.06in; }
+.toc-list .toc-page { order: 3; font: 700 10.5pt var(--sans); letter-spacing: 0; color: var(--plum); font-variant-numeric: lining-nums; }
+.toc-part { margin: 0.3in 0 0.1in; }
 .toc-part a { font: 800 11pt var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--ox); }
 .toc-part .toc-label { color: var(--gold-deep); }
-.toc-chapter, .toc-sheet { margin: 0.035in 0; font-size: 10.8pt; }
+.toc-chapter, .toc-sheet { margin: 0.068in 0; font-size: 10.8pt; }
 .toc-chapter .toc-label { flex: 0 0 0.95in; font: 600 8.5pt var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--gold-deep); }
-.toc-sheet { margin-top: 0.16in; font-weight: 700; }
+.toc-sheet { margin-top: 0.24in; font-weight: 700; }
 .toc-sheet .toc-label { flex: 0 0 0.95in; }
 
 /* ------------------------------------------------------------ part pages */
@@ -152,17 +152,18 @@ figure.art svg { display: block; width: 100%; height: auto; }
   break-before: page; break-after: page;
   width: 8.5in; height: 11in;
   box-sizing: border-box;
-  padding: 2.3in 0.9in 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 0.9in 0.5in;
   text-align: center;
   color: var(--cream);
   background:
-    radial-gradient(ellipse at 50% 30%, rgba(90,86,96,.55), transparent 60%),
+    radial-gradient(ellipse at 50% 42%, rgba(90,86,96,.55), transparent 62%),
     var(--plum-deep);
 }
 .part-kicker { margin: 0; font: 800 12pt var(--sans); letter-spacing: .45em; text-transform: uppercase; color: var(--gold-bright); }
 .part h1 { margin: 0.12in 0 0.18in; font: 900 42pt/1 var(--display); color: var(--cream); }
 .part-lede { margin: 0 auto 0.2in; max-width: 4.8in; font: italic 13pt/1.4 var(--display); color: var(--parch); }
-.part .part-art { margin: 0.45in auto 0; width: 6.4in; }
+.part .part-art { margin: 0.5in auto 0; width: 6.7in; }
 
 /* ------------------------------------------------------------ chapters -- */
 .chapter {
@@ -275,6 +276,8 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
 .tbl tr { break-inside: avoid; }
 .tbl td:first-child { font-weight: 700; color: var(--plum-deep); }
 .tbl td.num, .tbl th.num { text-align: center; white-space: nowrap; }
+/* a chapter whose three obstacle tables must share one page (ch 15): a hair less row padding */
+.tight-tables .tbl td { padding-top: 0.028in; padding-bottom: 0.028in; }
 .tbl.perks td:first-child { width: 28%; }
 .tbl.qr td:first-child { width: 24%; }
 
@@ -347,10 +350,11 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
 .statblock .epithet { display: block; font: italic 600 9.4pt var(--display); color: var(--gold-bright); }
 .statblock .creature { float: right; width: 1.75in; margin: 0 0 0.06in 0.14in; }
 .statblock dl { margin: 0 0 0.05in; }
-.statblock dl.stats { display: flex; flex-wrap: wrap; gap: 0.04in 0.18in; font: 9pt var(--sans); }
+.statblock dl.stats { display: flex; flex-wrap: wrap; gap: 0.04in 0.24in; font: 9pt var(--sans); }
+.statblock dl.stats > div { display: flex; align-items: baseline; gap: 0.07in; }
 .statblock dl.stats dt { font-weight: 800; color: var(--ox); text-transform: uppercase; letter-spacing: .05em; font-size: 7.8pt; }
 .statblock dl.stats dt::after { content: ""; }
-.statblock dl.stats dd { margin: 0 0.12in 0 0.04in; font-weight: 600; }
+.statblock dl.stats dd { margin: 0; font-weight: 600; }
 .statblock .pools {
   font: 800 9.6pt var(--sans); color: var(--plum-deep);
   padding: 0.04in 0.08in; background: var(--parch); border-radius: 4px; display: inline-block;
@@ -377,6 +381,8 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
 figure.map { break-inside: avoid; margin: 0.06in 0 0.1in; }
 figure.map figcaption, figure.diagram figcaption { font: italic 8.6pt/1.3 var(--sans); color: var(--ink-soft); margin-top: 0.04in; }
 figure.diagram { break-inside: avoid; margin: 0.04in 0 0.12in; }
+
+.chapter p.span-all { column-span: all; }
 
 .signoff {
   column-span: all;
@@ -451,6 +457,8 @@ hr { border: none; height: 0; margin: 0.1in 0; }
 /* heading + first block, bound together at build time */
 .keep { break-inside: avoid; }
 .keep > :last-child { margin-bottom: 0.075in; }
+/* a full-width table kept with its heading: the pair spans both columns together */
+.keep:has(> .tbl.wide) { column-span: all; }
 
 /* end-of-chapter measurement marker (build passes only) */
 .end-marker { column-span: all; height: 0; margin: 0; position: relative; }

@@ -252,8 +252,11 @@ const S = STAND_R;
   body += path("M20 214 H380 V236 H20 Z", C.ink, "none", 0, ` opacity="0.08"`);
   body += path("M20 236 H380 V322 H20 Z", C.edge, C.ink, 3) + strokes([[44, 262, 130, 262], [210, 300, 330, 300], [300, 250, 370, 250]], C.gold, 2);
   body += path("M20 322 H380 V340 H20 Z", C.gold, C.ink, 3);
-  // chalked exit arrow on the wall, pointing out of the window
-  body += path("M132 92 H200 V74 L244 106 L200 138 V120 H132 Z", C.glint, C.ink, 3.5) + path("M142 106 H196", "none", C.gold, 3);
+  // an exit-arrow sign screwed to the wall, pointing out of the window (a thin plate with a
+  // contact shadow on the wall and a screw at each end, so it reads as mounted, not floating)
+  body += path("M136 98 H204 V80 L248 112 L204 144 V126 H136 Z", C.ink, "none", 0, ` opacity="0.14"`);
+  body += path("M132 92 H200 V74 L244 106 L200 138 V120 H132 Z", C.glint, C.ink, 3.5) + path("M150 106 H196", "none", C.gold, 3);
+  body += circ(141, 106, 3.6, C.edge, C.ink, 1.6) + circ(222, 106, 3.6, C.edge, C.ink, 1.6);
   // getaway dragline: anchored on the wall, running to the spinnerets at the abdomen tip
   // (hidden behind the body in this front view); it sags a little under its own weight
   { const [sx, sy] = toWorld(WT, [0, -62 - 44]); body += path(`M62 178 Q${r1((62 + sx) / 2)} ${r1(Math.max(178, sy) + 18)} ${r1(sx)} ${r1(sy)}`, "none", C.gold, 2.5, ` stroke-dasharray="2 5"`) + circ(62, 178, 4, C.gold, C.ink, 2); }

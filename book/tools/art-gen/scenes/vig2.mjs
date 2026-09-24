@@ -265,10 +265,12 @@ export function ch_gadgets() {
   const tip = d => line(d, 4.4, C.ink) + line(d, 2.2, C.plum);
   const grip = (t, dx, dy) => { const x0 = kx - 12 - Math.sqrt(1 - t * t) * kry, y0 = ky + t * kr; return tip(`M${n(x0 - 3)} ${n(y0 - 1)}l${dx} ${dy}`); };
   s += grip(-.7, 9, 3) + grip(.5, 9, -1);
-  // a dried pea bounces off the shield: ping!
-  s += `<circle cx="${kx + 80}" cy="${ky - 42}" r="7" fill="${C.good}" stroke="${C.ink}" stroke-width="2"/><circle cx="${kx + 78}" cy="${ky - 44}" r="2" fill="${C.cream}" opacity=".7"/>`;
+  // a dried pea has just bounced off the shield (ping!) and come to rest on the floor in front of it:
+  // the dotted hop runs from the shield face down to where it lies, with its contact shadow
   s += line(`M${kx + 40} ${ky - 6}l14 -4M${kx + 36} ${ky - 20}l12 -10M${kx + 42} ${ky + 8}l14 2`, 2.4, C.ink, ` opacity=".6"`);
-  s += line(`M${kx + 42} ${ky - 18}Q${kx + 60} ${ky - 46} ${kx + 72} ${ky - 44}`, 1.8, C.ink, ` stroke-dasharray="2 5" opacity=".55"`);
+  s += line(`M${kx + 38} ${ky - 10}Q${kx + 58} ${ky - 40} ${kx + 70} ${GY - 16}`, 1.8, C.ink, ` stroke-dasharray="2 5" opacity=".55"`);
+  s += shadow(kx + 76, GY, 9, 2, .3);
+  s += `<circle cx="${kx + 76}" cy="${GY - 7}" r="7" fill="${C.good}" stroke="${C.ink}" stroke-width="2"/><circle cx="${kx + 74}" cy="${GY - 9}" r="2" fill="${C.cream}" opacity=".7"/>`;
 
   // ---- 3. RUBBER-BAND LAUNCHER: a forked twig planted in a cork block; a rubber band is wrapped
   // round the tip of each arm and its leather pouch, cupping a cookie, is hauled back by a spider

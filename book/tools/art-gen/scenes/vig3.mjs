@@ -239,8 +239,9 @@ export function ch_tables() {
   // scroll with six entries, each keyed to a d6 face
   s += `<path d="M300 44H640V244H300Z" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
   s += hatch(`${P}-sc`, `<rect x="300" y="44" width="340" height="200"/>`, 300, 44, 640, 244, 9, 80, C.edge, 1, .6);
-  // the scroll hangs from a cord on a nail (off the top of the frame); the weighted bottom roller hangs clear of the floor
-  s += line("M286 41L470 12L654 41", 2.4, C.plum);
+  // the scroll hangs from a cord on a nail in the wall; the weighted bottom roller hangs clear of the floor
+  s += line("M286 41L470 24L654 41", 2.4, C.plum);
+  s += `<circle cx="470" cy="22" r="4.5" fill="${C.soft}" stroke="${C.ink}" stroke-width="1.8"/>`;   // the nail it hangs from
   s += `<rect x="286" y="30" width="368" height="22" rx="11" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/><circle cx="286" cy="41" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><circle cx="654" cy="41" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<rect x="286" y="236" width="368" height="22" rx="11" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/><circle cx="286" cy="247" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><circle cx="654" cy="247" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<path d="M314 ${70 + 3 * 28 - 14}h318v28H314z" fill="${C.goldB}" opacity=".4"/>`;

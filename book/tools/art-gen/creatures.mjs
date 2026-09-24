@@ -191,32 +191,38 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   setPrefix("cr-kid");
   const v = oval();
   let body = v.bg + `<g clip-path="${v.clip}">`;
-  // the enormous face filling the left side
-  // the face is so close that its centre (nose, other eye) lies beyond the left edge of the frame
-  body += circ(-50, 170, 330, C.parch, C.ink, 4);
-  body += path("M-40 20 Q60 -30 180 10 Q140 30 120 60 Q60 40 -40 60 Z", C.gold, C.ink, 3.5);
-  body += path("M60 28 q30 -6 60 4 M10 40 q30 -8 60 0", "none", C.glint, 3);
-  // eyebrow raised
-  body += path("M40 88 Q130 42 214 86", "none", C.gold, 12) + path("M40 88 Q130 42 214 86", "none", C.ink, 2, ` opacity="0.3"`);
-  // giant delighted eye
-  const ex = 128, ey = 150, k = uid("eye");
-  body += path(`M${ex - 100} ${ey} Q${ex} ${ey - 88} ${ex + 100} ${ey} Q${ex} ${ey + 70} ${ex - 100} ${ey} Z`, C.cream, C.ink, 4);
-  body += `<clipPath id="${k}"><path d="M${ex - 100} ${ey} Q${ex} ${ey - 88} ${ex + 100} ${ey} Q${ex} ${ey + 70} ${ex - 100} ${ey} Z"/></clipPath><g clip-path="url(#${k})">`;
-  body += circ(ex + 22, ey - 2, 46, C.good, C.ink, 3) + circ(ex + 22, ey - 2, 30, C.ink);
-  let rays = ""; for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; rays += `M${r1(ex + 22 + Math.cos(a) * 32)} ${r1(ey - 2 + Math.sin(a) * 32)} L${r1(ex + 22 + Math.cos(a) * 44)} ${r1(ey - 2 + Math.sin(a) * 44)}`; }
-  body += path(rays, "none", C.ink, 1.6, ` opacity="0.5"`);
-  body += circ(ex + 8, ey - 16, 12, C.cream) + circ(ex + 38, ey + 12, 5, C.cream) + star(ex + 36, ey - 18, 5, C.glint, 1.2);
-  body += path(`M${ex - 100} ${ey} Q${ex} ${ey - 88} ${ex + 100} ${ey} L${ex + 110} ${ey - 70} L${ex - 110} ${ey - 70} Z`, C.parch, "none", 0, ` opacity="0"`);
-  body += `</g>`;
-  body += path(`M${ex - 100} ${ey} Q${ex} ${ey - 88} ${ex + 100} ${ey}`, "none", C.ink, 6);
-  body += path(`M${ex - 70} ${ey - 34} l-10 -18 M${ex - 40} ${ey - 48} l-4 -20 M${ex - 6} ${ey - 54} l2 -20 M${ex + 30} ${ey - 50} l8 -18 M${ex + 64} ${ey - 36} l12 -14`, "none", C.ink, 4);
-  // blushing freckled cheek and a gap-toothed grin at the edge
-  body += ell(120, 256, 56, 26, C.oxb, C.ink, 0, ` opacity="0.35"`);
-  for (const [x, y] of [[96, 248], [112, 258], [130, 246], [146, 260], [104, 268]]) body += circ(x, y, 2.6, C.gold);
-  // the right-hand end of a wide grin, running off the left edge with the rest of the face
-  body += path("M-20 300 Q110 330 206 284 Q214 330 170 352 Q80 386 -20 350 Z", C.deep, C.ink, 3.5) +
-    path("M-20 306 Q110 334 196 294 L200 306 Q150 334 118 336 L114 324 L96 326 L98 338 Q40 336 -20 326 Z", C.cream, C.ink, 2) +
-    path("M60 366 Q120 346 176 346 Q150 366 110 372 Q84 374 60 366 Z", C.oxb, C.ink, 2);
+  // the whole face, close up but entirely in frame: both eyes, nose and grin visible, gazing
+  // at the jar held up beside it (only the ear and chin run out of the oval, clearly continuing)
+  const fx = 150, fy = 214;
+  body += path(`M${fx - 70} 400 L${fx - 60} ${fy + 120} L${fx + 60} ${fy + 120} L${fx + 70} 400 Z`, C.parch, C.ink, 3.5);   // neck
+  body += ell(fx - 158, fy + 6, 26, 40, C.parch, C.ink, 3.5);                                                   // left ear
+  body += ell(fx, fy, 160, 168, C.parch, C.ink, 4);                                                            // face
+  // hair: a gold fringe over the forehead
+  body += path(`M${fx - 164} ${fy - 20} Q${fx - 170} ${fy - 190} ${fx} ${fy - 186} Q${fx + 170} ${fy - 190} ${fx + 164} ${fy - 20} Q${fx + 150} ${fy - 96} ${fx + 96} ${fy - 104} L${fx + 80} ${fy - 80} L${fx + 58} ${fy - 106} L${fx + 30} ${fy - 82} L${fx + 6} ${fy - 110} L${fx - 22} ${fy - 84} L${fx - 50} ${fy - 108} L${fx - 76} ${fy - 82} L${fx - 104} ${fy - 104} Q${fx - 150} ${fy - 96} ${fx - 164} ${fy - 20} Z`, C.gold, C.ink, 3.5);
+  body += path(`M${fx - 110} ${fy - 150} q50 -26 110 -22 M${fx - 130} ${fy - 118} q40 -30 90 -34`, "none", C.glint, 3);
+  // two wide delighted eyes, both looking right at the jar
+  const eye = (ex, ey) => {
+    const k = uid("eye"), d = `M${ex - 44} ${ey} Q${ex} ${ey - 42} ${ex + 44} ${ey} Q${ex} ${ey + 34} ${ex - 44} ${ey} Z`;
+    let e = path(d, C.cream, C.ink, 3.5) + `<clipPath id="${k}"><path d="${d}"/></clipPath><g clip-path="url(#${k})">`;
+    e += circ(ex + 12, ey - 1, 22, C.good, C.ink, 2.5) + circ(ex + 12, ey - 1, 13, C.ink);
+    e += circ(ex + 5, ey - 8, 6, C.cream) + circ(ex + 19, ey + 6, 2.6, C.cream) + `</g>`;
+    e += path(`M${ex - 44} ${ey} Q${ex} ${ey - 42} ${ex + 44} ${ey}`, "none", C.ink, 5);
+    e += path(`M${ex - 30} ${ey - 18} l-7 -11 M${ex - 12} ${ey - 24} l-3 -12 M${ex + 8} ${ey - 25} l1 -12 M${ex + 26} ${ey - 20} l5 -10`, "none", C.ink, 3);
+    return e;
+  };
+  body += eye(fx - 58, fy - 20) + eye(fx + 62, fy - 20);
+  // eyebrows raised in delight
+  body += path(`M${fx - 104} ${fy - 72} Q${fx - 60} ${fy - 96} ${fx - 16} ${fy - 74} M${fx + 18} ${fy - 74} Q${fx + 64} ${fy - 98} ${fx + 108} ${fy - 70}`, "none", C.gold, 9) +
+    path(`M${fx - 104} ${fy - 72} Q${fx - 60} ${fy - 96} ${fx - 16} ${fy - 74} M${fx + 18} ${fy - 74} Q${fx + 64} ${fy - 98} ${fx + 108} ${fy - 70}`, "none", C.ink, 2, ` opacity="0.3"`);
+  // button nose
+  body += path(`M${fx} ${fy + 14} q-14 22 2 30 q12 4 18 -6`, "none", C.ink, 3.5);
+  // blushing freckled cheeks
+  body += ell(fx - 100, fy + 46, 34, 18, C.oxb, C.ink, 0, ` opacity="0.35"`) + ell(fx + 104, fy + 46, 34, 18, C.oxb, C.ink, 0, ` opacity="0.35"`);
+  for (const [x, y] of [[-116, 40], [-100, 50], [-84, 40], [88, 40], [104, 50], [120, 40]]) body += circ(fx + x, fy + y, 2.6, C.gold);
+  // a wide gap-toothed grin
+  body += path(`M${fx - 84} ${fy + 72} Q${fx} ${fy + 96} ${fx + 86} ${fy + 70} Q${fx + 80} ${fy + 134} ${fx} ${fy + 138} Q${fx - 78} ${fy + 134} ${fx - 84} ${fy + 72} Z`, C.deep, C.ink, 3.5);
+  body += path(`M${fx - 78} ${fy + 80} Q${fx} ${fy + 100} ${fx + 80} ${fy + 78} L${fx + 76} ${fy + 94} Q${fx + 30} ${fy + 108} ${fx + 10} ${fy + 108} L${fx + 8} ${fy + 96} L${fx - 10} ${fy + 96} L${fx - 12} ${fy + 108} Q${fx - 44} ${fy + 106} ${fx - 76} ${fy + 94} Z`, C.cream, C.ink, 2);
+  body += path(`M${fx - 44} ${fy + 128} Q${fx} ${fy + 112} ${fx + 46} ${fy + 126} Q${fx} ${fy + 140} ${fx - 44} ${fy + 128} Z`, C.oxb, C.ink, 2);
   body += `</g>` + v.ring;
   // the jar
   const jx = 340, jy = 226, jk = uid("jar");
@@ -250,7 +256,7 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   }
   body += path(`M${jx - 110} ${jy + 150} q20 -8 36 0`, "none", C.edge, 4);
   body += star(430, 90, 9) + star(456, 128, 5) + star(250, 60, 6);
-  save("creature-child", VB, "The Child: a giant delighted eye and a grabby hand clutching a jar with air holes, one grumpy spider inside", body);
+  save("creature-child", VB, "The Child: a delighted face, both eyes on a jar with air holes held up in a grabby hand, one grumpy spider inside", body);
 }
 
 // ---------------- guard spider ----------------

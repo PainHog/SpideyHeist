@@ -179,9 +179,10 @@ export function spot_dice_push() {
   let s = glow(P, 300, 240, 295, 205);
   const TY = 386;
   s += tabletop(P, TY, 40, 560, { depth: 190, thick: 22, top: C.parch, edge: C.gold });
-  // a score pad lying flat at the back left, with a pencil lying across it
+  // a score pad lying flat at the back left, with a pencil lying across it; its depth edge
+  // recedes along the same vector as the die's top face (58,-44), so both share one table plane
   {
-    const o = [50, 324], a = [96, -4], b = [32, -56];
+    const o = [44, 330], a = [98, -3], b = [50, -38];
     s += `<path d="M${pts([add(o, [4, 5]), add(add(o, a), [4, 5]), add(add(add(o, a), b), [4, 5]), add(add(o, b), [4, 5])])}z" fill="${C.ink}" opacity=".2"/>`;
     s += `<path d="M${pts([o, add(o, a), add(add(o, a), b), add(o, b)])}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
     s += `<g transform="${mat(add(o, b), a, [-b[0], -b[1]])}">`;
@@ -190,7 +191,7 @@ export function spot_dice_push() {
     s += `<path d="${d}" stroke="${C.soft}" stroke-width="1.4" fill="none"${NS}/>`;
     s += `<path d="M.06 .1H.94" stroke="${C.ink}" stroke-width="1.6"${NS}/><path d="M.7 .16V.94" stroke="${C.edge}" stroke-width="1.4"${NS}/>`;
     s += `<path d="M.76 .5l.04 .08l.08 -.2" stroke="${C.good}" stroke-width="2" fill="none"${NS}/></g>`;
-    s += pencil([66, 340], [170, 310], 10);
+    s += pencil([60, 342], [176, 314], 10);
   }
   // the die, resting flat on the table, being shoved to the left
   const dx = 262, yb = 352, sz = 144, D = [58, -44];

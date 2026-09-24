@@ -55,6 +55,8 @@ under "Applied in v4.2". Never add rules, numbers, names or flavour text.
 </table>
 ```
 `class="num"` centres a numeric column cell. Tables may break across pages; the header repeats.
+Add `flow` to let a short table split across the two columns, or `nosplit` to keep a table whole
+with its heading (use sparingly — a large unsplittable table can leave a gap).
 
 ## Species / Roles / Creatures
 

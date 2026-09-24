@@ -1,7 +1,7 @@
 import { C, n, svg, spider, tin, cookie, sparkle, stipple, hatch, rng, line, shadow, cobweb, pipsFor } from "./lib.mjs";
 import { jar } from "./vig2.mjs";
 
-const FONT = `font-family="Georgia, serif"`;
+const FONT = `font-family="'Alegreya Sans', 'Segoe UI', sans-serif"`;   // the book's caption face (embedded in the PDF)
 const text = (x, y, str, size = 16, o = {}) => {
   const { fill = C.ink, weight = "normal", anchor = "middle", style = "" } = o;
   return `<text x="${n(x)}" y="${n(y)}" ${FONT} font-size="${size}" font-weight="${weight}" fill="${fill}" text-anchor="${anchor}"${style ? ` font-style="${style}"` : ""}>${str}</text>`;
@@ -52,11 +52,11 @@ export function alert_track() {
   for (const [a, b, lab, c] of bands) {
     const xa = X(a) + 2, xb = X(b) + cw - 2;
     s += `<path d="M${xa} ${by - 6}v8H${xb}v-8" fill="none" stroke="${c}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
-    s += text((xa + xb) / 2, by + 26, lab, 18, { weight: "bold", fill: c === C.gold ? C.ink : c });
+    s += text((xa + xb) / 2, by + 27, lab, 21, { weight: "bold", fill: c === C.gold ? C.ink : c });
   }
   // Lockdown continues to the Limit: show the arrow under the badge
   s += `<path d="M${bcx - 70} ${by - 6}v8H${bcx + 70}v-8" fill="none" stroke="${C.ox}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
-  s += text(bcx, by + 26, "Full Alert (at the Limit)", 16, { weight: "bold", fill: C.ox });
+  s += text(bcx, by + 27, "Full Alert (at the Limit)", 18, { weight: "bold", fill: C.ox });
   // heading rule: the Alert rises this way
   s += `<path d="M${x0} 30H${X(10) + 150}" stroke="${C.edge}" stroke-width="2"/><path d="M${X(10) + 138} 22l14 8-14 8" fill="none" stroke="${C.edge}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
   s += `<circle cx="${x0}" cy="30" r="4" fill="${C.edge}"/>`;
@@ -111,7 +111,7 @@ export function vitality_track() {
   s += `<path d="M-40 0h80" stroke="${C.ink}" stroke-width="3" stroke-linecap="round"/>`;
   s += `</g>`;
   // labels
-  xs.forEach((x, i) => s += text(x, cy + R + 36, labels[i], i === 2 ? 17 : 19, { weight: "bold", fill: i === 4 ? C.ink : i === 1 ? C.ink : ring[i] }));
+  xs.forEach((x, i) => s += text(x, cy + R + 36, labels[i], i === 2 ? 20 : 22, { weight: "bold", fill: i === 4 ? C.ink : i === 1 ? C.ink : ring[i] }));
   return svg("0 0 900 210", "The Vitality track: Unharmed, Rattled −1, Hurt −2 · ½ Speed, Critical −3, Out", s);
 }
 

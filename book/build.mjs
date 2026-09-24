@@ -88,10 +88,14 @@ body = body.replace(/<table class="tbl([^"]*)">([\s\S]*?)<\/table>/g, (m, cls, i
 // not reliably honour `break-after: avoid`, so bind an h3/h4 to its next block
 // in an unbreakable wrapper — only when that block is short enough that
 // moving it whole can't leave a large gap (no wide tables, ≤ 8 rows/items).
+// Markup can override per table: class "flow" lets a short table split across the
+// columns (so it doesn't leave a column-high hole beside it), class "nosplit" keeps a
+// longer table whole with its heading (so it never strands a row or two on its own).
 body = body.replace(
   /(<h[34]\b[^>]*>[\s\S]*?<\/h[34]>)(\s*)(<(p|table|aside|ul|ol)\b([^>]*)>[\s\S]*?<\/\4>)/g,
   (m, head, ws, block, tag, attrs) => {
-    if (tag === "table" && (/\bwide\b/.test(attrs) || (block.match(/<tr\b/g) ?? []).length > 9)) return m;
+    if (tag === "table" && /\bnosplit\b/.test(attrs)) return `<div class="keep">${head}${ws}${block}</div>`;
+    if (tag === "table" && (/\b(wide|flow)\b/.test(attrs) || (block.match(/<tr\b/g) ?? []).length > 9)) return m;
     if ((tag === "ul" || tag === "ol") && (block.match(/<li\b/g) ?? []).length > 6) return m;
     if (tag === "p" && block.length > 900) return m;
     return `<div class="keep">${head}${ws}${block}</div>`;
@@ -157,12 +161,14 @@ const css = readFileSync(join(SRC, "book.css"), "utf8");
  */
 const SPOTS = {
   "ch-01": ["spot-crew-huddle"], "ch-02": ["spot-dice-push"], "ch-03": ["spot-silk-swing"],
-  "ch-04": ["spot-lookout-sill"], "ch-05": ["spot-dust-bunny"], "ch-06": ["spot-lockpick"],
-  "ch-07": ["spot-map-board"], "ch-08": ["spot-jar-rescue"], "ch-09": ["spot-alarm-freeze"],
-  "ch-10": ["spot-cat-nap"], "ch-11": ["spot-loot-haul"], "ch-12": ["spot-silk-swing"],
-  "ch-13": ["spot-couch-sneak"], "ch-14": ["spot-map-board"], "ch-15": ["spot-vacuum-ride"],
-  "ch-16": ["spot-couch-sneak"], "ch-17": ["spot-crew-huddle"], "ch-18": ["spot-lookout-sill"],
-  "ch-19": ["spot-map-board"], "ch-20": ["spot-dice-push"], "ch-21": ["spot-debrief"],
+  "ch-05": ["spot-dust-bunny"], "ch-06": ["spot-lockpick"], "ch-09": ["spot-alarm-freeze"],
+  "ch-10": ["spot-jar-rescue"], "ch-11": ["spot-loot-haul"], "ch-16": ["spot-couch-sneak"],
+  "ch-18": ["spot-lookout-sill"], "ch-19": ["spot-map-board"], "ch-20": ["spot-vacuum-ride"],
+  "ch-21": ["spot-debrief"],
+  // chapters that normally end with too little room for a spot; if a layout change ever
+  // leaves them a gap, the spare piece (or any other unused one) fills it
+  "ch-04": ["spot-cat-nap"], "ch-07": ["spot-cat-nap"], "ch-08": ["spot-cat-nap"], "ch-12": ["spot-cat-nap"],
+  "ch-13": ["spot-cat-nap"], "ch-14": ["spot-cat-nap"], "ch-15": ["spot-cat-nap"], "ch-17": ["spot-cat-nap"],
 };
 const PT_PER_IN = 72;
 const BOTTOM_LIMIT_PT = 0.78 * PT_PER_IN;   // @page bottom margin: content must end above this
@@ -175,14 +181,14 @@ function planSpots(ends) {
     const prefs = SPOTS[id];
     const room = freeIn - SAFETY_IN;
     if (!prefs || room - MIN_GAP_IN < MIN_SPOT_IN) continue;
-    // preferred spots first, then any spot not used yet, and only then a repeat
+    // preferred spots first, then any spot not used yet; never a repeat (the same
+    // illustration twice in one book reads as a mistake)
     const all = [...new Set(Object.values(SPOTS).flat())];
     const have = a => existsSync(join(ART, `${a}.svg`));
-    // don't take a spot a later chapter prefers; repeat our own before stealing one
+    // don't take a spot a later chapter prefers
     const later = new Set(order.slice(idx + 1).flatMap(k => SPOTS[k] ?? []));
     const art = prefs.find(a => !used.has(a) && have(a))
-      ?? all.find(a => !used.has(a) && have(a) && !later.has(a))
-      ?? prefs.find(have);
+      ?? all.find(a => !used.has(a) && have(a) && !later.has(a));
     if (!art) continue;
     used.add(art);
     const h = +Math.min(MAX_SPOT_IN, room - MIN_GAP_IN).toFixed(2);

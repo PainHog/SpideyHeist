@@ -7,6 +7,14 @@ const GY = 262;
 export function ch_welcome() {
   const P = "cw";
   let s = stage(P);
+  // a kitchen: tiled splashback down to the counter's back edge, the counter top in front
+  s += kitWall(P, { pegs: false, tiles: true });
+  { // a wall socket on the splashback, and a tea towel hanging from a rail screwed to the wall
+    s += `<rect x="330" y="150" width="34" height="40" rx="4" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2"/><path d="M342 164v8M352 164v8" stroke="${C.ink}" stroke-width="2.4" stroke-linecap="round"/><circle cx="347" cy="180" r="2.4" fill="${C.ink}"/>`;
+    s += `<rect x="728" y="84" width="8" height="12" fill="${C.soft}" stroke="${C.ink}" stroke-width="1.6"/><rect x="796" y="84" width="8" height="12" fill="${C.soft}" stroke="${C.ink}" stroke-width="1.6"/>`;
+    s += line("M722 92H810", 6, C.ink) + line("M722 92H810", 3, C.edge);
+    s += `<path d="M742 88h40v74q-20 6 -40 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>` + line("M742 138h40M742 146h40", 3, C.plum);
+  }
   // a box the spider stands on (left)
   s += `<path d="M150 ${GY}V196h120v${GY - 196}" fill="${C.edge}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   s += hatch(`${P}-bx`, `<rect x="150" y="196" width="120" height="66"/>`, 150, 196, 270, 262, 8, 60, C.ink, 1.2, .3);
@@ -145,13 +153,51 @@ export function ch_species() {
   s += spider({ x: 758, y: 262 - 25.7 * .86, s: .86, ...sil, abd: [0, -16, 22, 12], mouth: "smirk", pose: "sprawl", brow: "down",
     legOverride: { R2: [[13, 3], [42, -6], [56, 25.7]], L2: [[-13, 3], [-42, -6], [-56, 25.7]], R3: [[10, 7], [34, 0], [42, 25.7]], L3: [[-10, 7], [-34, 0], [-42, 25.7]] } });
   // line-up numbers painted on the front of the plinth
-  [141, 250, 380, 514, 645, 758].forEach((x, i) => s += `<rect x="${x - 9}" y="264" width="18" height="11" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/><text x="${x}" y="273.2" font-family="Georgia, serif" font-size="10" font-weight="bold" fill="${C.ink}" text-anchor="middle">${i + 1}</text>`);
+  [141, 250, 380, 514, 645, 758].forEach((x, i) => s += `<rect x="${x - 9}" y="264" width="18" height="11" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/><text x="${x}" y="273.2" font-family="'Alegreya Sans', sans-serif" font-size="10" font-weight="bold" fill="${C.ink}" text-anchor="middle">${i + 1}</text>`);
   return V("A line-up of spider silhouettes of different shapes", s);
+}
+
+// A back wall for a vignette: fades out to the sides and the top so it sits in the stage glow.
+// Draws the wall from y0 down to the skirting at yS, a skirting board, and a floor band to the ground line.
+function kitWall(P, o = {}) {
+  const { x0 = 44, x1 = 856, y0 = 16, yS = 222, gy = GY, pegs = true, tiles = false } = o;
+  let c = `<rect x="${x0}" y="${y0}" width="${x1 - x0}" height="${yS - y0}" fill="${C.parch}"/>`;
+  if (tiles) { let d = ""; for (let y = yS - 40; y > y0; y -= 40) d += `M${x0} ${y}H${x1}`; for (let x = x0 + 20; x < x1; x += 40) d += `M${x} ${y0}V${yS}`; c += line(d, 1.6, C.edge); }
+  if (pegs) { let d = ""; for (let y = y0 + 22; y < yS - 10; y += 22) for (let x = x0 + 14; x < x1; x += 22) d += `M${x} ${y}h.01`; c += `<path d="${d}" stroke="${C.soft}" stroke-width="4.4" stroke-linecap="round" opacity=".35"/>`; }
+  c += `<rect x="${x0}" y="${yS}" width="${x1 - x0}" height="12" fill="${C.edge}"/>` + line(`M${x0} ${yS}H${x1}M${x0} ${yS + 12}H${x1}`, 2, C.ink, ` opacity=".6"`);
+  c += `<rect x="${x0}" y="${yS + 12}" width="${x1 - x0}" height="${gy - yS - 12}" fill="${C.edge}" opacity=".4"/>`;
+  const m = `<linearGradient id="${P}-wx" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".14" stop-color="#fff"/><stop offset=".86" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
+    `<linearGradient id="${P}-wy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000"/><stop offset=".45" stop-color="#000" stop-opacity="0"/></linearGradient>` +
+    `<mask id="${P}-wm" maskUnits="userSpaceOnUse" x="${x0}" y="${y0}" width="${x1 - x0}" height="${gy - y0}"><rect x="${x0}" y="${y0}" width="${x1 - x0}" height="${gy - y0}" fill="url(#${P}-wx)"/><rect x="${x0}" y="${y0}" width="${x1 - x0}" height="${gy - y0}" fill="url(#${P}-wy)"/></mask>`;
+  return `<defs>${m}</defs><g mask="url(#${P}-wm)">${c}</g>`;
+}
+// a peg-board hook: a peg in the board with a J-hook; returns the point things hang from
+function pegHook(x, y) {
+  return `<circle cx="${x}" cy="${y}" r="4" fill="${C.plum}" stroke="${C.ink}" stroke-width="1.6"/>` +
+    line(`M${x} ${y}v14q0 8 8 8`, 3.4, C.ink) + line(`M${x} ${y}v14q0 8 8 8`, 1.4, C.soft);
 }
 
 export function ch_roles() {
   const P = "cr";
   let s = stage(P);
+  // the crew's kit wall: a peg-board above the skirting, with two spare tools hung on hooks
+  s += kitWall(P);
+  { // a coil of gold silk line hanging from a peg
+    const x = 168, y = 70;
+    s += pegHook(x, y);
+    s += `<ellipse cx="${x + 4}" cy="${y + 46}" rx="20" ry="26" fill="none" stroke="${C.ink}" stroke-width="5.4"/><ellipse cx="${x + 4}" cy="${y + 46}" rx="20" ry="26" fill="none" stroke="${C.gold}" stroke-width="3"/>`;
+    s += `<ellipse cx="${x + 5}" cy="${y + 47}" rx="15" ry="21" fill="none" stroke="${C.ink}" stroke-width="4.6"/><ellipse cx="${x + 5}" cy="${y + 47}" rx="15" ry="21" fill="none" stroke="${C.goldB}" stroke-width="2.4"/>`;
+    s += line(`M${x + 8} ${y + 22}q-4 -4 -4 0`, 2.4, C.ink);
+    s += line(`M${x - 12} ${y + 66}q-4 16 4 26`, 4.4, C.ink) + line(`M${x - 12} ${y + 66}q-4 16 4 26`, 2.2, C.gold);
+  }
+  { // a paperclip grappling hook hanging by its ring, its line tied on and coiled below
+    const x = 612, y = 58;
+    s += pegHook(x, y);
+    const hk = `M${x + 8} ${y + 22}v44M${x + 8} ${y + 66}q-18 -2 -20 -18M${x + 8} ${y + 66}q18 -2 20 -18`;
+    s += line(hk, 5.4, C.ink) + line(hk, 2.6, C.edge);
+    s += `<circle cx="${x + 8}" cy="${y + 26}" r="5" fill="none" stroke="${C.ink}" stroke-width="2.6"/>`;
+    s += line(`M${x + 8} ${y + 31}q14 10 6 28`, 1.8, C.gold);
+  }
   const xs = [110, 225, 340, 450, 565, 680, 800];
   xs.forEach(x => s += shadow(x, GY, 44, 6));
   // 1 bow tie (Face)
@@ -254,14 +300,26 @@ export function ch_attributes() {
 export function ch_builder() {
   const P = "cb";
   let s = stage(P, { ground: false });
-  // the desk top (seen from above, receding) and its front edge
-  s += `<path d="M70 14H830L860 282H40z" fill="${C.edge}" opacity=".45"/>`;
-  s += line("M160 60q200 -6 380 2M120 150q260 4 520 -2M90 230q300 -6 700 2", 1.2, C.gold, ` opacity=".5"`);
+  // the desk top in perspective (one eye level for everything: the die and the mug show
+  // the same shallow top face) and its wooden front edge
+  s += `<path d="M112 150H788L860 282H40z" fill="${C.edge}" opacity=".5"/>`;
+  s += line("M112 150H788", 2, C.ink, ` opacity=".45"`);
+  s += line("M150 176q200 -3 380 1M100 214q260 3 520 -1M70 252q300 -4 700 2", 1.2, C.gold, ` opacity=".5"`);
   s += `<path d="M40 282H860V300H40z" fill="${C.gold}" opacity=".35"/>`;
   s += line("M40 282H860", 3);
-  // the sheet, tilted
-  s += `<g transform="rotate(-5 450 150)">`;
-  s += `<rect x="286" y="36" width="330" height="236" fill="${C.ink}" opacity=".2" transform="translate(6 6)"/>`;
+  // a desk lamp standing at the back of the desk, its light falling on the sheet
+  s += `<path d="M296 66L232 252H566L354 73z" fill="${C.goldB}" opacity=".22"/>`;
+  s += shadow(206, 160, 34, 4, .25);
+  s += `<path d="M178 160q0 -10 28 -10t28 10z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += line("M206 152L236 70L318 44", 7, C.ink) + line("M206 152L236 70L318 44", 3.4, C.soft);
+  s += `<circle cx="236" cy="70" r="5" fill="${C.plum}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += `<path d="M300 30l58 10l-10 34l-66 -8z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += `<path d="M294 64l58 8" stroke="${C.goldB}" stroke-width="5" stroke-linecap="round"/>`;
+  // the sheet lying flat on the desk: the upright sheet design mapped onto the desk plane
+  // (a 330x236 sheet whose corners land at 320,168 / 640,161 / 270,264 / 590,257)
+  const M = "matrix(0.9697 -0.0212 -0.2119 0.4110 50.2 156.1)";
+  s += `<g transform="${M}">`;
+  s += `<rect x="286" y="36" width="330" height="236" fill="${C.ink}" opacity=".2" transform="translate(8 8)"/>`;
   s += `<rect x="286" y="36" width="330" height="236" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
   // portrait box with a sketched spider
   s += `<rect x="304" y="54" width="92" height="92" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.2"/>`;
@@ -279,20 +337,20 @@ export function ch_builder() {
   for (let k = 0; k < 5; k++) s += `<rect x="${470 + k * 26}" y="164" width="20" height="20" rx="3" fill="${k === 0 ? C.good : C.cream}" stroke="${C.ink}" stroke-width="1.8"/>`;
   s += line("M470 208h128M470 226h96M470 244h112", 1.6, C.ink, ` opacity=".45"`);
   s += `</g>`;
-  // the pencil lies on the desk, its tip resting on the sheet by the line it just drew; eraser crumbs, a die
-  s += line("M560 236L728 204", 10, C.ink, ` opacity=".2"`);
-  s += pencil(728, 196, 560, 228, 12);
-  s += line("M540 236q10 4 20 0", 2, C.ink, ` opacity=".6"`);
-  s += `<ellipse cx="640" cy="264" rx="3" ry="1.8" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/><ellipse cx="652" cy="267" rx="2.2" ry="1.3" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/><ellipse cx="630" cy="269" rx="2.4" ry="1.4" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/>`;
-  s += shadow(208, 262, 34, 5) + die3d(200, 237, 50, 6, { hot: true });
-  // spider peeking over the desk (right), holding the eraser
-  s += shadow(770, 262, 70, 6) + shadow(695, 264, 22, 3);
-  s += `<rect x="678" y="244" width="34" height="20" rx="4" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/><path d="M682 250h14" stroke="${C.edge}" stroke-width="2.4" stroke-linecap="round"/>`;
-  s += spider({ x: 770, y: 226, s: 1.4, look: [-1, -.2], mouth: "grin", brow: "up", hat: "fedora", mark: "dots",
+  // the pencil lies flat across the sheet's corner and the desk, by the line it just drew; eraser crumbs
+  s += line("M586 246L716 262", 9, C.ink, ` opacity=".18"`);
+  s += pencil(716, 256, 572, 238, 12);
+  s += line("M548 244q10 3 20 0", 2, C.ink, ` opacity=".6"`);
+  s += `<ellipse cx="640" cy="270" rx="3" ry="1.4" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/><ellipse cx="652" cy="273" rx="2.2" ry="1.1" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/><ellipse cx="628" cy="274" rx="2.4" ry="1.2" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/>`;
+  s += shadow(208, 266, 34, 5) + die3d(200, 241, 50, 6, { hot: true });
+  // spider at the right of the desk, holding the eraser down on the desk
+  s += shadow(770, 266, 70, 6) + shadow(695, 268, 22, 3);
+  s += `<rect x="678" y="248" width="34" height="20" rx="4" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/><path d="M682 254h14" stroke="${C.edge}" stroke-width="2.4" stroke-linecap="round"/>`;
+  s += spider({ x: 770, y: 230, s: 1.4, look: [-1, -.2], mouth: "grin", brow: "up", hat: "fedora", mark: "dots",
     legOverride: { L0: [[-9, -6], [-30, -18], [-47, 14]] } });
   // a thimble mug
-  s += shadow(142, 262, 30, 4);
-  s += `<path d="M120 262v-44h44v44z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6"/><path d="M164 226q14 0 14 12t-14 12" fill="none" stroke="${C.ink}" stroke-width="2.6"/><path d="M120 234h44" stroke="${C.plum}" stroke-width="5"/>`;
-  s += line("M132 208q-6 -12 2 -22M148 208q-6 -12 2 -22", 2, C.ink, ` opacity=".4"`);
-  return V("A spider's character sheet on a desk, with a pencil", s);
+  s += shadow(122, 268, 30, 4);
+  s += `<path d="M100 268v-44h44v44z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6"/><path d="M144 232q14 0 14 12t-14 12" fill="none" stroke="${C.ink}" stroke-width="2.6"/><path d="M100 240h44" stroke="${C.plum}" stroke-width="5"/>`;
+  s += line("M112 214q-6 -12 2 -22M128 214q-6 -12 2 -22", 2, C.ink, ` opacity=".4"`);
+  return V("A spider's character sheet lying on a desk under a lamp, with a pencil", s);
 }
