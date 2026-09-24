@@ -123,8 +123,8 @@ export function map_cookie() {
     "#.....~~~~~~...#",
     "#..............#",
     "#....K.........#",
-    "#.........DDDD.#",
-    "################",
+    "#..............#",
+    "##########DDDD##",
   ];
   const cs = 50, m = 20, W = 16, H = 7;
   if (rows.some(r => r.length !== W)) throw new Error("map row length");
@@ -157,7 +157,9 @@ export function map_cookie() {
   for (let r = 0; r <= H; r++) gd += `M${m} ${Y(r)}H${X(W)}`;
   s += line(gd, 1.3, C.ink, ` opacity=".35"`);
   // room outline (inner wall edge)
-  s += `<path d="M${X(1)} ${Y(1)}H${X(15)}V${Y(6)}H${X(1)}Z" fill="none" stroke="${C.ink}" stroke-width="3"/>`;
+  // (broken at the doorway, which is a real opening cut through the bottom wall)
+  s += `<path d="M${X(10)} ${Y(6)}H${X(1)}V${Y(1)}H${X(15)}V${Y(6)}H${X(14)}" fill="none" stroke="${C.ink}" stroke-width="3"/>`;
+  s += line(`M${X(10)} ${Y(6)}V${Y(7)}M${X(14)} ${Y(6)}V${Y(7)}`, 3);   // the opening's jambs (cut wall ends)
   // counter: 6-square run (two rows deep per the legend), wood edge
   s += `<rect x="${X(6)}" y="${Y(1)}" width="${6 * cs}" height="${2 * cs}" fill="none" stroke="${C.ink}" stroke-width="3"/>`;
   s += line(`M${X(6) + 4} ${Y(3) - 5}H${X(12) - 4}`, 3, C.plum);
@@ -175,15 +177,13 @@ export function map_cookie() {
   // cat's bed K at (5,4)
   { const x = X(5), y = Y(4), cx = x + 25, cy = y + 25; s += `<circle cx="${cx}" cy="${cy}" r="20" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6"/><circle cx="${cx}" cy="${cy}" r="12" fill="${C.oxB}" stroke="${C.ink}" stroke-width="1.8"/>`;
     s += `<circle cx="${cx}" cy="${cy + 2}" r="3.4" fill="${C.cream}"/><circle cx="${cx - 5}" cy="${cy - 4}" r="1.8" fill="${C.cream}"/><circle cx="${cx}" cy="${cy - 6}" r="1.8" fill="${C.cream}"/><circle cx="${cx + 5}" cy="${cy - 4}" r="1.8" fill="${C.cream}"/>`; }
-  // doorway D at (10..13,5): threshold boards, jamb posts and the open door's swing
-  { const x = X(10), y = Y(5); let pl = ""; for (let k = 1; k < 16; k++) pl += `M${x + k * 12.5} ${y + 2}v${cs - 4}`;
+  // doorway D at (10..13,6): an opening through the bottom wall with threshold boards, and a double
+  // door filling the whole 4-square opening. Each leaf is hinged at the room-side corner of its jamb
+  // and swung open into the room, with its dashed swing arc back to the closed position.
+  { const x = X(10), y = Y(6); let pl = ""; for (let k = 1; k < 16; k++) pl += `M${x + k * 12.5} ${y + 2}v${cs - 4}`;
     s += line(pl, 1, C.gold, ` opacity=".7"`);
-    s += `<rect x="${x}" y="${y + cs - 10}" width="10" height="10" fill="${C.ink}"/><rect x="${x + 4 * cs - 10}" y="${y + cs - 10}" width="10" height="10" fill="${C.ink}"/>`;
-    s += `<path d="M${x + 10} ${y + cs - 5}H${x + 4 * cs - 10}" stroke="${C.gold}" stroke-width="3"/>`;
-    // a double door filling the whole 4-square opening: each leaf is hinged on its jamb, swung
-    // open into the room, with its dashed swing arc back to the closed position along the wall
-    const yb = y + cs - 5, Lf = 2 * cs - 10, a = 70 * Math.PI / 180;
-    for (const [hx, dir] of [[x + 10, 1], [x + 4 * cs - 10, -1]]) {
+    const yb = y, Lf = 2 * cs, a = 70 * Math.PI / 180;
+    for (const [hx, dir] of [[x, 1], [x + 4 * cs, -1]]) {
       const tx = hx + dir * Lf * Math.cos(a), ty = yb - Lf * Math.sin(a);
       s += `<path d="M${hx} ${yb}L${n(tx)} ${n(ty)}" stroke="${C.plum}" stroke-width="8" stroke-linecap="round"/><path d="M${hx} ${yb}L${n(tx)} ${n(ty)}" stroke="${C.ink}" stroke-width="1.6" stroke-linecap="round"/>`;
       s += `<path d="M${n(tx)} ${n(ty)}A${Lf} ${Lf} 0 0 ${dir > 0 ? 1 : 0} ${hx + dir * Lf} ${yb}" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="3 4"/>`;

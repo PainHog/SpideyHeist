@@ -1,5 +1,6 @@
 import { C, n, svg, spider, tin, cookie, flatCookie, sparkle, stipple, hatch, rng, line, shadow, stage, die3d, pipsFor } from "./lib.mjs";
 import { hand } from "./vig2.mjs";
+import { kitWall } from "./vig1.mjs";
 
 const V = (title, body) => svg("0 0 900 300", title, body);
 const GY = 262;
@@ -133,7 +134,8 @@ export function ch_phases() {
   }
   // 5 the Debrief: a loot sack and two thimble toasts
   { const x = xs[4]; s += `<path d="M${x - 26} ${y + 28}q-10 -30 12 -42l-6 -10h20l-6 10q24 12 12 42z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/>`;
-    s += line(`M${x - 12} ${y - 14}h20`, 3, C.plum) + `<circle cx="${x - 10}" cy="${y + 8}" r="6" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.6"/>`;
+    // the drawstring ties round the neck (x-14..x-6) and its loose end droops, not sticking out stiffly
+    s += line(`M${x - 16} ${y - 14}h12q3 4 1 10`, 3, C.plum) + `<circle cx="${x - 10}" cy="${y + 8}" r="6" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.6"/>`;
     s += `<path d="M${x + 16} ${y + 26}l-2 -24h16l-2 24z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/><path d="M${x + 34} ${y + 26}l-2 -24h16l-2 24z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
     s += sparkle(x + 30, y - 12, 6); }
   return V("Five steps from the briefing to the getaway", s);
@@ -143,7 +145,8 @@ export function ch_alert_play() {
   const P = "cap";
   let s = stage(P);
   // wide VU-style meter panel
-  const cx = 450, cy = 250, R = 190;
+  // the needle pivots on the gold hub pin (GY-24): the dial's arcs are centred on that same point
+  const cx = 450, cy = GY - 24, R = 190;
   s += `<rect x="226" y="36" width="448" height="${GY - 36}" rx="14" fill="${C.plum}" stroke="${C.ink}" stroke-width="3.2"/>`;
   s += `<rect x="244" y="52" width="412" height="${GY - 72}" rx="8" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<clipPath id="${P}-face"><rect x="244" y="52" width="412" height="${GY - 72}" rx="8"/></clipPath><g clip-path="url(#${P}-face)">`;
@@ -164,8 +167,14 @@ export function ch_alert_play() {
   s += `<path d="M${cx - 40} ${GY - 20}a40 40 0 0 1 80 0z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/><circle cx="${cx}" cy="${GY - 24}" r="8" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.4"/>`;
   s += `<circle cx="${n(a1[0] + 6)}" cy="${n(a1[1] + 2)}" r="0"/>`;
   // spider clinging to the needle tip, hauling it back down
-  s += spider({ x: n(p[0] + 34), y: n(p[1] + 26), s: 1.05, r: 28, look: [-1, -.2], mouth: "worried", brow: "worried", mark: "chevron",
-    legOverride: { L0: [[-9, -6], [-26, -18], [-34, -26]], L1: [[-12, -2], [-30, -12], [-36, -22]] } }).replace(/translate\(([^ ]+) ([^)]+)\)/, "translate($1 $2)");
+  // its two front left feet grip the needle just below the tip (points on the needle mapped into the
+  // spider's rotated, scaled frame); the rest of its feet cling to the dial face behind
+  const spX = p[0] + 34, spY = p[1] + 26, spR = 28 * Math.PI / 180, spS = 1.05;
+  const ua = ang(tn) * Math.PI / 180, u = [Math.sin(ua), -Math.cos(ua)];
+  const onNeedle = back => { const dx = p[0] - u[0] * back - spX, dy = p[1] - u[1] * back - spY;
+    return [(dx * Math.cos(spR) + dy * Math.sin(spR)) / spS, (-dx * Math.sin(spR) + dy * Math.cos(spR)) / spS]; };
+  s += spider({ x: n(spX), y: n(spY), s: spS, r: 28, look: [-1, -.2], mouth: "worried", brow: "worried", mark: "chevron",
+    legOverride: { L0: [[-9, -6], [-26, -22], onNeedle(4)], L1: [[-12, -2], [-30, -12], onNeedle(16)] } });
   // a Storyteller's die nudging the Alert up, and an ox alarm dot
   s += shadow(166, GY, 42, 5) + die3d(160, GY - 30, 60, 6, { hot: true, glint: true });
   s += line("M188 170q8 -40 30 -48", 2.4, C.ink, ` stroke-dasharray="3 6" opacity=".6"`) + line("M210 118l9 4-6 8", 2.4, C.ink, ` opacity=".6"`);
@@ -238,6 +247,7 @@ export function ch_heists() {
 export function ch_tables() {
   const P = "ctb";
   let s = stage(P);
+  s += kitWall(P, { pegs: false });   // the wall the scroll's nail is driven into
   s += `<g transform="translate(0 -12)">`;   // the hanging scroll, raised so its bottom roller is clearly off the floor
   // scroll with six entries, each keyed to a d6 face
   s += `<path d="M300 44H640V244H300Z" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
