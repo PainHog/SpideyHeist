@@ -86,13 +86,13 @@ const VB = "0 0 400 400";
     arch(roots[0], footAt(6, 142), 34),   // I  down-right
     arch(roots[1], footAt(4, 150), 34),   // II right
     arch(roots[2], footAt(3, 150), 16),   // III up-right
-    arch([22, -24], footAt(2, 168), -20),   // IV up
+    arch([22, -24], footAt(2, 160), -20),   // IV up (feet kept clear of the cameo ring)
   ];
   const LL = [
     arch([-30, 8], footAt(12, 142), -34),
     arch([-36, 0], footAt(14, 150), -34),
     arch([-36, -8], footAt(15, 150), -16),
-    arch([-22, -24], footAt(16, 168), 20),
+    arch([-22, -24], footAt(16, 160), 20),
   ];
   // right leg I holds a plumb-bob instead of a radial
   RL[0] = [[30, 8], [66, -2], [92, 30], [96, 62]];
