@@ -84,6 +84,19 @@ body = body.replace(/<table class="tbl([^"]*)">([\s\S]*?)<\/table>/g, (m, cls, i
   return cols >= 4 && !/\bwide\b/.test(cls) ? `<table class="tbl${cls} wide">${inner}</table>` : m;
 });
 
+// Keep headings with what follows. Chromium's multi-column fragmentation does
+// not reliably honour `break-after: avoid`, so bind an h3/h4 to its next block
+// in an unbreakable wrapper — only when that block is short enough that
+// moving it whole can't leave a large gap (no wide tables, ≤ 8 rows/items).
+body = body.replace(
+  /(<h[34]\b[^>]*>[\s\S]*?<\/h[34]>)(\s*)(<(p|table|aside|ul|ol)\b([^>]*)>[\s\S]*?<\/\4>)/g,
+  (m, head, ws, block, tag, attrs) => {
+    if (tag === "table" && (/\bwide\b/.test(attrs) || (block.match(/<tr\b/g) ?? []).length > 9)) return m;
+    if ((tag === "ul" || tag === "ol") && (block.match(/<li\b/g) ?? []).length > 6) return m;
+    if (tag === "p" && block.length > 900) return m;
+    return `<div class="keep">${head}${ws}${block}</div>`;
+  });
+
 body = inlineArt(body);
 
 /* ------------------------------------------------------------------ toc -- */
@@ -169,8 +182,10 @@ async function printPdf(browser, html, out) {
   await p.emulateMedia({ media: "print" });
   const wide = await p.evaluate(() => {
     const W = document.documentElement.clientWidth;
+    if (document.documentElement.scrollWidth <= W + 1) return [];
+    // Shapes inside an <svg> are clipped by it, so only name HTML boxes and svg roots.
     return [...document.querySelectorAll("body *")]
-      .filter(el => el.getBoundingClientRect().right > W + 1)
+      .filter(el => !el.ownerSVGElement && el.getBoundingClientRect().right > W + 1)
       .slice(0, 8)
       .map(el => `${el.tagName.toLowerCase()}.${el.getAttribute("class") ?? ""} "${(el.textContent ?? "").trim().slice(0, 40)}"`);
   });

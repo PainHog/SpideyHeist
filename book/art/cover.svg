@@ -2,7 +2,7 @@
 <title>A crew of spiders abseils toward a blue-lidded cookie tin while the cat sleeps</title>
 <defs>
 <linearGradient id="cv-wall" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#2a1c30"/><stop offset=".34" stop-color="#3a1348"/><stop offset="1" stop-color="#4a1a5c"/>
+  <stop offset="0" stop-color="#2a1c30"/><stop offset=".34" stop-color="#3a1348"/><stop offset="1" stop-color="#5f2470"/>
 </linearGradient>
 <linearGradient id="cv-sky" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0" stop-color="#3a1348"/><stop offset="1" stop-color="#7b3a8e"/>

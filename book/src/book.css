@@ -49,8 +49,8 @@ html { background: var(--cream); }
 body {
   margin: 0;
   font-family: var(--text);
-  font-size: 10.4pt;
-  line-height: 1.36;
+  font-size: 10.2pt;
+  line-height: 1.34;
   color: var(--ink);
   font-variant-numeric: lining-nums proportional-nums;
   hyphens: auto;
@@ -84,32 +84,37 @@ figure.art svg { display: block; width: 100%; height: auto; }
   background: var(--plum-deep);
 }
 .cover .cover-art { position: absolute; inset: 0; }
+/* scrim under the lettering (text-shadow would be printed as duplicate text) */
+.cover::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3.4in; z-index: 1;
+  background: linear-gradient(to bottom, rgba(34,10,44,.78), rgba(34,10,44,.45) 70%, transparent);
+}
+.cover::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.3in; z-index: 1;
+  background: linear-gradient(to top, rgba(34,10,44,.8), transparent);
+}
 .cover .cover-art svg { width: 8.5in; height: 11in; }
-.cover-inner, .cover > :not(figure) { position: relative; z-index: 1; }
+.cover-inner, .cover > :not(figure) { position: relative; z-index: 2; }
 .cover h1.cover-title {
   margin: 0.8in 0 0;
   text-align: center;
-  font: 900 64pt/0.9 var(--display);
+  font: 900 54pt/0.9 var(--display);
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--gold-bright);
-  text-shadow: 0 4px 0 var(--plum-deep), 0 0 22px rgba(0,0,0,.55);
   font-variation-settings: "SOFT" 100, "WONK" 1;
 }
 .cover .cover-subtitle {
   margin: 0.14in auto 0; max-width: 6in; text-align: center;
   font: italic 600 15pt/1.3 var(--display); color: var(--cream);
-  text-shadow: 0 1px 8px rgba(0,0,0,.7);
 }
 .cover .cover-tagline {
   margin: 0.1in auto 0; max-width: 4.6in; text-align: center;
   font: 500 10.5pt/1.4 var(--sans); color: var(--parch);
-  text-shadow: 0 1px 6px rgba(0,0,0,.8);
 }
 .cover .cover-edition {
-  position: absolute; left: 0; right: 0; bottom: 0.5in; margin: 0; text-align: center;
+  position: absolute; left: 0; right: 0; bottom: 0.5in; margin: 0; text-align: center; z-index: 2;
   font: 800 11pt var(--sans); letter-spacing: 0.45em; text-transform: uppercase; color: var(--gold-bright);
-  text-shadow: 0 1px 6px rgba(0,0,0,.8);
 }
 
 /* chapter 1 epigraph */
@@ -173,8 +178,10 @@ figure.art svg { display: block; width: 100%; height: auto; }
   overflow: hidden;
   border: 1.5px solid var(--parch-edge);
   box-shadow: 0 2px 0 var(--parch-edge);
-  max-height: 2.35in;
+  height: 1.8in;
+  background: #f3e9d2;
 }
+.chapter-head .chapter-art svg { width: 100%; height: 100%; }
 .chapter-num {
   margin: 0; font: 800 9pt var(--sans); letter-spacing: .35em; text-transform: uppercase; color: var(--gold-deep);
 }
@@ -213,7 +220,6 @@ p.opener::first-letter {
   color: var(--plum);
   margin: 0.03in 0.07in 0 0;
   padding: 0.02in 0.04in 0 0;
-  text-shadow: 2px 2px 0 var(--gold-bright);
 }
 p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-weight: 700; }
 
@@ -439,3 +445,7 @@ figure.diagram { break-inside: avoid; margin: 0.04in 0 0.12in; }
 /* ------------------------------------------------------------ misc ------ */
 a { color: inherit; text-decoration: none; }
 hr { border: none; height: 0; margin: 0.1in 0; }
+
+/* heading + first block, bound together at build time */
+.keep { break-inside: avoid; }
+.keep > :last-child { margin-bottom: 0.075in; }
