@@ -555,7 +555,7 @@ export function spot_debrief() {
   const P = "sde";
   let s = glow(P, 300, 235, 295, 210);
   const TY = 396;
-  s += tabletop(P, TY, 26, 574, { depth: 210, thick: 22, top: C.parch, edge: C.gold });
+  s += tabletop(P, TY, 40, 560, { depth: 210, thick: 22, top: C.parch, edge: C.gold });
   const R = rng(21);
   // a bitten cookie at the back: what is left of the score
   s += flatCookie(470, 262, 40, 4, true);
@@ -589,7 +589,7 @@ export function spot_debrief() {
   const toast = (o, cup, side) => {
     const m = side === "R" ? 1 : -1, [tx, tb] = cup;
     const [cs, top] = thimbleCup(tx, tb);
-    const grip = [tx - m * 12, tb - 16], under = [tx - m * 2, tb + 2];
+    const grip = [tx - m * 12, tb - 16], under = [tx - m * 2, tb - 2];
     const st = standOn(o.x, o.gy, o.s, { [side + "0"]: grip, [side + "1"]: under, ...(o.feet || {}) }, { [side + "0"]: o.k0, [side + "1"]: o.k1, ...(o.knees || {}) });
     let out = shadow(o.x + 2, o.gy, 62 * o.s, 5, .28) + sp({ ...st, ...o.face }) + cs;
     out += legPath(`M${n(grip[0])} ${n(grip[1] + 4)}q${n(m * 6)} -2 ${n(m * 9)} -9`, o.s);
@@ -598,7 +598,7 @@ export function spot_debrief() {
   // left crewmate on the table, toasting to the right
   {
     const x = 160, gy = 376, sc = .95;
-    const [o] = toast({ x, gy, s: sc, k0: [x + 18, gy - 100], k1: [x + 52, gy - 50], face: { look: [1, -.6], mouth: "big", brow: "up", mark: "chevron", hat: "fedora" } }, [x + 40, gy - 76], "R");
+    const [o] = toast({ x, gy, s: sc, k0: [x + 18, gy - 100], k1: [x + 52, gy - 50], face: { look: [1, -.6], mouth: "big", brow: "up", mark: "chevron" } }, [x + 40, gy - 76], "R");
     s += o;
   }
   // right crewmate on the table, toasting to the left
@@ -615,6 +615,6 @@ export function spot_debrief() {
     s += o;
   }
   // cheers: little bursts round the raised cups
-  s += line(`M188 262l-6 -10M204 256l2 -12M396 256l-2 -12M412 262l6 -10M330 186l4 -12M346 192l10 -8`, 2.2, C.ink, ` opacity=".55"`);
-  return V("Three spiders toast with thimbles round a pile of cookie crumbs", s);
+  s += line(`M188 262l-6 -10M204 256l2 -12M396 256l-2 -12M412 262l6 -10M318 166l-6 -10M358 168l9 -8`, 2.2, C.ink, ` opacity=".55"`);
+  return V("Three spiders toast with thimbles round a pile of cookie crumbs", `<g transform="translate(300 262) scale(1.1) translate(-300 -290)">${s}</g>`);
 }
