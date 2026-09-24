@@ -132,7 +132,7 @@ function pencil(a, b, w = 11) {
   s += `<path d="M${pts([at(e + f, -1), at(L - cone, -1), at(L - cone, 1), at(e + f, 1)])}z" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.6"/>`;
   s += line(`M${pts([at(e + f + 2, -.2), at(L - cone - 2, -.2)])}`, 1.2, C.goldB);
   s += `<path d="M${pts([at(L - cone, -1), b, at(L - cone, 1)])}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="1.6" stroke-linejoin="round"/>`;
-  s += `<path d="M${pts([at(L - cone * .35, -.35), b, at(L - cone * .35, .35)])}z" fill="${C.ink}"/>`;
+  s += `<path d="M${pts([at(L - cone * .42, -.45), b, at(L - cone * .42, .45)])}z" fill="${C.ink}"/>`;
   return s;
 }
 
@@ -181,7 +181,7 @@ export function spot_dice_push() {
   s += tabletop(P, TY, 40, 560, { depth: 190, thick: 22, top: C.parch, edge: C.gold });
   // a score pad lying flat at the back left, with a pencil lying across it
   {
-    const o = [34, 322], a = [112, -4], b = [38, -62];
+    const o = [50, 324], a = [96, -4], b = [32, -56];
     s += `<path d="M${pts([add(o, [4, 5]), add(add(o, a), [4, 5]), add(add(add(o, a), b), [4, 5]), add(add(o, b), [4, 5])])}z" fill="${C.ink}" opacity=".2"/>`;
     s += `<path d="M${pts([o, add(o, a), add(add(o, a), b), add(o, b)])}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
     s += `<g transform="${mat(add(o, b), a, [-b[0], -b[1]])}">`;
@@ -190,7 +190,7 @@ export function spot_dice_push() {
     s += `<path d="${d}" stroke="${C.soft}" stroke-width="1.4" fill="none"${NS}/>`;
     s += `<path d="M.06 .1H.94" stroke="${C.ink}" stroke-width="1.6"${NS}/><path d="M.7 .16V.94" stroke="${C.edge}" stroke-width="1.4"${NS}/>`;
     s += `<path d="M.76 .5l.04 .08l.08 -.2" stroke="${C.good}" stroke-width="2" fill="none"${NS}/></g>`;
-    s += pencil([48, 338], [166, 304], 10);
+    s += pencil([66, 340], [170, 310], 10);
   }
   // the die, resting flat on the table, being shoved to the left
   const dx = 262, yb = 352, sz = 144, D = [58, -44];
@@ -223,7 +223,7 @@ export function spot_dice_push() {
     s += line(`M${x + 44} ${y - 50}q8 -6 16 -2M${x + 64} ${y - 36}q8 -2 12 4`, 1.8, C.ink, ` opacity=".5"`);
   }
   // a coin lying flat at the front right: the stake
-  s += flatCoin(528, 380, 17) + sparkle(548, 350, 6);
+  s += flatCoin(500, 380, 16) + sparkle(518, 354, 6);
   return V("A spider leans into a die bigger than itself and shoves it across the table", `<g transform="translate(300 292) scale(1.1) translate(-300 -300)">${s}</g>`);
 }
 
@@ -406,13 +406,15 @@ export function spot_dust_bunny() {
   s += shadow(520, SK + 16, 18, 3, .2) + fluff(9, 518, SK + 8, 15, 10, { flatBottom: true });
   // a lost button lying flat on the boards, and a hairpin
   {
-    const x = 150, y = 384;
+    const x = 176, y = 384;
     s += shadow(x + 2, y - 3, 22, 5, .25);
     s += `<path d="M${x - 20} ${y - 9}v4a20 7 0 0 0 40 0v-4z" fill="${C.ox}" stroke="${C.ink}" stroke-width="1.8"/>`.replace(C.ox, C.plum);
     s += `<ellipse cx="${x}" cy="${y - 9}" rx="20" ry="7" fill="${C.soft}" stroke="${C.ink}" stroke-width="1.8"/>`;
     s += `<ellipse cx="${x}" cy="${y - 9}" rx="14" ry="4.6" fill="none" stroke="${C.plum}" stroke-width="1.4"/>`;
     for (const [dx, dy] of [[-4, -1.4], [4, -1.4], [-4, 1.4], [4, 1.4]]) s += `<ellipse cx="${x + dx}" cy="${y - 9 + dy}" rx="1.8" ry="1" fill="${C.ink}"/>`;
-    s += shadow(506, GY - 10, 38, 3, .22) + line(`M470 ${GY - 16}l62 -6q6 0 6 4t-6 4l-60 4`, 2.2, C.plum);
+    s += shadow(92, GY - 10, 36, 3, .22) + line(`M58 ${GY - 14}l62 -6q6 0 6 4t-6 4l-60 4`, 2.2, C.plum);
+    // the prize ahead: half a cookie someone dropped
+    s += flatCookie(500, 382, 28, 9, true);
   }
   // the disguised spider, mid-shuffle to the right
   const cx = 292, gy = 330, rx = 80, ry = 52, cy = gy - ry * .8 - 7;
@@ -746,10 +748,10 @@ export function spot_couch_sneak() {
   s += floor(P, GY, 24, 576);
   // ---- the couch (continues off to the left; its right end, arm and leg in view) ----
   const X0 = 20, AX0 = 452, AX1 = 548; // couch left (faded), arm span
-  const backT = 8, seatT = 92, seatF = 110, cushB = 186, baseB = 292;
+  const backT = 44, seatT = 120, seatF = 138, cushB = 208, baseB = 292;
   let cc = "";
   // backrest cushions, fading up into the page
-  cc += `<rect x="${X0}" y="${backT}" width="${AX0 - X0}" height="${seatT - backT + 6}" fill="${C.plum}"/>`;
+  cc += `<rect x="${X0}" y="${backT}" width="${AX0 + 60 - X0}" height="${seatT - backT + 6}" fill="${C.plum}"/>`;
   cc += `<path d="M${X0 + 150} ${backT + 10}q-6 40 0 ${seatT - backT - 10}M${X0 + 320} ${backT + 10}q6 40 0 ${seatT - backT - 10}" stroke="${C.ink}" stroke-width="2.4" fill="none"/>`;
   cc += line(`M${X0 + 180} ${backT + 30}q60 -10 120 0`, 5, C.soft, ` opacity=".7"`);
   // seat cushion: top band then front face with piping
@@ -765,9 +767,9 @@ export function spot_couch_sneak() {
   cc += line(`M${X0} ${cushB + 8}H${AX0}`, 3, C.soft, ` opacity=".6"`);
   // the dark gap under the couch, and a left leg lost in the fade
   cc += `<rect x="${X0}" y="${baseB}" width="${AX1 - X0}" height="${FL - baseB}" fill="${C.deep}" opacity=".55"/>`;
-  s += faded(`${P}-cc`, X0, 600, cc, { edge: .22, top: [backT, backT + 60] });
+  s += faded(`${P}-cc`, X0, 640, cc, { edge: .2, top: [backT, backT + 44] });
   // the coin they are after, lying flat in the shadow under the couch
-  s += flatCoin(382, FL - 6, 15) + sparkle(400, FL - 26, 5.5);
+  s += flatCoin(170, FL - 6, 15) + sparkle(188, FL - 26, 5.5);
   // right arm of the couch: a rolled arm, front face
   {
     s += `<path d="M${AX0} ${baseB}V${seatT - 20}q0 -44 48 -44t48 44V${baseB}z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/>`;
@@ -785,47 +787,79 @@ export function spot_couch_sneak() {
   s += leg(AX1 - 26);
   // ---- the sleeper's right arm draped over the cushion, hand hanging, back of the hand to us ----
   {
-    const hx = 262; // centre line of the forearm
-    // sleeve on the seat top and over the front edge (pyjama stripes)
-    s += `<path d="M${hx - 26} ${seatT - 4}q26 -8 52 0v${seatF - seatT + 34}q-26 8 -52 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
-    s += line(`M${hx - 12} ${seatT - 6}v${seatF - seatT + 36}M${hx + 6} ${seatT - 7}v${seatF - seatT + 38}M${hx + 20} ${seatT - 5}v${seatF - seatT + 34}`, 2.4, C.edge);
-    s += line(`M${hx - 26} ${seatF - 2}q26 7 52 0`, 2, C.ink, ` opacity=".5"`);
-    // forearm and wrist hanging straight down the cushion front
-    const wy = 176;
-    s += `<path d="M${hx - 20} ${seatF + 28}L${hx - 18} ${wy}h36L${hx + 20} ${seatF + 28}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
-    s += `<path d="M${hx - 26} ${seatF + 28}q26 8 52 0v10q-26 8 -52 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2"/>`;
-    // back of the hand
-    const hb = wy + 44;
-    s += `<path d="M${hx - 18} ${wy - 2}Q${hx - 26} ${hb - 16} ${hx - 23} ${hb}H${hx + 23}Q${hx + 24} ${hb - 16} ${hx + 18} ${wy - 2}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
-    // thumb: on OUR right for a right hand seen from the back, hanging relaxed beside the index finger
-    const thumb = `M${hx + 18} ${wy + 8}Q${hx + 32} ${wy + 26} ${hx + 30} ${wy + 50}`;
-    s += line(thumb, 17, C.ink) + line(thumb, 12.5, C.parch);
-    s += `<path d="M${hx + 26} ${wy + 46}q4 -6 7 0" stroke="${C.ink}" stroke-width="1.4" fill="none"/>`;
-    // four fingers, relaxed and slightly curled: index (right) to little finger (left)
-    const fingers = [
-      [hx + 16, 52, 3], [hx + 5, 60, 1], [hx - 6, 56, -1], [hx - 16, 44, -3],
-    ];
-    for (const [fx, L, lean] of fingers) {
-      const d = `M${fx} ${hb - 8}Q${fx + lean} ${hb + L * .6} ${fx + lean * 2 - 2} ${hb + L}`;
-      s += line(d, 13.5, C.ink) + line(d, 9.5, C.parch);
-      s += `<path d="M${fx + lean * 2 - 5} ${hb + L - 3}q3 4 6 0" stroke="${C.ink}" stroke-width="1.2" fill="none"/>`;
-      s += line(`M${fx + lean * .8 - 3} ${hb + L * .45}h5`, 1.2, C.ink, ` opacity=".5"`);
+    const hx = 346; // centre line of the forearm
+    // pillow on the seat against the arm of the couch, and the sleeper's head on it (lying on their back,
+    // face turned up: a profile, so one closed eye), body under a blanket stretching away to the left
+    s += `<path d="M384 ${seatT + 16}q-6 -30 8 -34q34 -6 60 2q10 16 2 34q-36 8 -70 -2z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    s += line(`M396 ${seatT - 8}q20 6 44 -2`, 1.8, C.edge);
+    {
+      const H = [424, seatT - 36];
+      let h = `<path d="M-4 -24C-18 -24 -24 -16 -23 -7L-31 3L-24 7Q-26 9 -24 11Q-25 14 -22 16Q-24 22 -14 24Q-4 26 8 22A25 25 0 1 0 -4 -24z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+      h += `<path d="M-18 -18Q-6 -30 10 -22Q26 -12 22 8Q18 20 8 22Q14 8 8 -4Q0 -14 -18 -18z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+      h += `<ellipse cx="4" cy="3" rx="5.5" ry="7.5" fill="${C.parch}" stroke="${C.ink}" stroke-width="1.8"/><path d="M5.5 -1q-3.5 4 0 8" stroke="${C.ink}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`;
+      h += `<path d="M-19 -5q5 4 10 0" fill="none" stroke="${C.ink}" stroke-width="2" stroke-linecap="round"/><path d="M-17 -3l-2 3M-14 -2l-1 3.4M-11 -3l0 3" stroke="${C.ink}" stroke-width="1.2" stroke-linecap="round"/>`;
+      h += `<path d="M-21 -11q5 -3 10 -1" fill="none" stroke="${C.ink}" stroke-width="1.6" stroke-linecap="round"/>`;
+      h += `<ellipse cx="-23.5" cy="12.5" rx="2" ry="2.6" fill="${C.ink}"/>`;
+      s += `<g transform="translate(${H[0]} ${H[1]}) rotate(90) scale(1.12)">${h}</g>`;
     }
-    // re-cover the finger roots with the back of the hand, knuckle bumps and tendons
-    s += `<path d="M${hx - 22} ${hb - 16}H${hx + 22}V${hb - 4}q-22 4 -44 0z" fill="${C.parch}"/>`;
-    s += `<path d="M${hx - 22} ${hb - 4}q5 3 11 0q5 3 11 0q5 3 11 0q5 3 11 0" stroke="${C.ink}" stroke-width="1.6" fill="none"/>`;
-    s += line(`M${hx - 8} ${wy + 8}l-4 26M${hx + 2} ${wy + 8}v26M${hx + 11} ${wy + 8}l3 24`, 1.2, C.edge);
-    s += line(`M${hx - 20} ${wy + 6}q-3 16 -1 28`, 3, C.cream, ` opacity=".7"`);
+    // blanket: a long mound over the sleeper, its hem hanging over the seat's front edge
+    {
+      const top = [[14, seatT - 40], [90, seatT - 50], [170, seatT - 44], [250, seatT - 56], [320, seatT - 58], [378, seatT - 64], [402, seatT - 46]];
+      let d = `M${top[0][0]} ${seatF + 14}V${top[0][1]}`;
+      for (let i = 0; i < top.length - 1; i++) { // Catmull-Rom through the points
+        const p0 = top[Math.max(0, i - 1)], p1 = top[i], p2 = top[i + 1], p3 = top[Math.min(top.length - 1, i + 2)];
+        d += `C${n(p1[0] + (p2[0] - p0[0]) / 6)} ${n(p1[1] + (p2[1] - p0[1]) / 6)} ${n(p2[0] - (p3[0] - p1[0]) / 6)} ${n(p2[1] - (p3[1] - p1[1]) / 6)} ${p2[0]} ${p2[1]}`;
+      }
+      d += `Q412 ${seatT - 20} 406 ${seatF + 14}`;
+      for (let x = 406; x > 20; x -= 48) d += `q-12 8 -24 3t-24 -1`;
+      d += "z";
+      let bl = `<path d="${d}" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+      bl += `<clipPath id="${P}-bl"><path d="${d}"/></clipPath><g clip-path="url(#${P}-bl)">`;
+      let g = ""; for (let x = 60; x < 420; x += 64) g += `M${x} ${seatT - 80}V${seatF + 30}`;
+      bl += line(g, 4, C.edge) + line(`M14 ${seatT - 20}H420M14 ${seatF - 2}H420`, 4, C.edge);
+      bl += line(`M150 ${seatT - 40}q14 20 6 54M280 ${seatT - 50}q12 24 2 64`, 2, C.ink, ` opacity=".3"`);
+      bl += `</g>`;
+      s += faded(`${P}-blk`, 20, 700, bl, { edge: .16 });
+    }
+    // sleeve: out from under the blanket's hem, over the seat's front edge
+    const cuffY = seatF + 34;
+    s += `<path d="M${hx - 25} ${cuffY}V${seatF + 4}h50V${cuffY}z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    s += line(`M${hx - 12} ${seatF + 6}V${cuffY}M${hx + 2} ${seatF + 6}V${cuffY}M${hx + 15} ${seatF + 6}V${cuffY}`, 2.4, C.plum, ` opacity=".6"`);
+    s += `<path d="M${hx - 30} ${seatF + 10}q8 -6 16 -2t16 0 16 -2 16 2" fill="none" stroke="${C.ink}" stroke-width="2"/>`;
+    s += `<path d="M${hx - 30} ${seatF + 10}q8 -6 16 -2t16 0 16 -2 16 2v-10h-64z" fill="${C.cream}"/>`;
+    // forearm and wrist hanging straight down the cushion front
+    const wy = cuffY + 40;
+    s += `<path d="M${hx - 19} ${cuffY}L${hx - 17} ${wy + 4}h34L${hx + 19} ${cuffY}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    s += `<path d="M${hx - 26} ${cuffY - 8}q26 7 52 0v10q-26 7 -52 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2"/>`;
+    // back of the hand
+    const hb = wy + 46;
+    // thumb first (behind the hand's edge): on OUR right for a right hand seen from the back, hanging relaxed by the index finger
+    const thumb = `M${hx + 14} ${wy + 12}Q${hx + 31} ${wy + 22} ${hx + 30} ${wy + 50}`;
+    s += line(thumb, 15.5, C.ink) + line(thumb, 11, C.parch);
+    s += `<path d="M${hx + 26} ${wy + 49}q4 -5 8 0" stroke="${C.ink}" stroke-width="1.3" fill="none"/>`;
+    // four fingers, relaxed, hanging with a slight curl: index (our right) to little finger (our left)
+    const fingers = [[hx + 15, 38, 2.5], [hx + 5, 46, 1], [hx - 5, 42, -.5], [hx - 15, 32, -2.5]];
+    for (const [fx, L, lean] of fingers) {
+      const d = `M${fx} ${hb - 10}Q${n(fx + lean)} ${n(hb + L * .55)} ${n(fx + lean * 2.4 - 1.5)} ${hb + L}`;
+      s += line(d, 13, C.ink) + line(d, 9, C.parch);
+      s += line(`M${n(fx + lean * 1.2 - 3)} ${n(hb + L * .5)}q3 1.5 6 0`, 1.1, C.ink, ` opacity=".55"`);
+    }
+    const handD = `M${hx - 17} ${wy - 2}Q${hx - 25} ${hb - 18} ${hx - 22} ${hb - 2}q22 6 44 0Q${hx + 23} ${hb - 18} ${hx + 17} ${wy - 2}z`;
+    s += `<path d="${handD}" fill="${C.parch}"/>`;
+    s += line(`M${hx - 17} ${wy - 2}Q${hx - 25} ${hb - 18} ${hx - 22} ${hb - 2}M${hx + 17} ${wy - 2}Q${hx + 23} ${hb - 18} ${hx + 22} ${hb - 2}`, 2.4, C.ink);
+    s += `<path d="M${hx - 20} ${hb - 3}q5 3 10 0M${hx - 10} ${hb - 1}q5 3 10 0M${hx} ${hb - 1}q5 3 10 0M${hx + 10} ${hb - 2}q5 3 10 0" stroke="${C.ink}" stroke-width="1.3" fill="none" opacity=".6"/>`;
+    s += line(`M${hx - 9} ${wy + 10}l-4 24M${hx + 1} ${wy + 10}v25M${hx + 10} ${wy + 10}l3 23`, 1.2, C.edge);
+    s += line(`M${hx - 19} ${wy + 8}q-3 14 -1 24`, 3, C.cream, ` opacity=".8"`);
   }
   // Zzz drifting up from the sleeper, off beyond the backrest
-  s += Zz(132, 70, 14) + Zz(104, 44, 20) + Zz(68, 14 + 4, 26);
+  s += Zz(448, 56, 9) + Zz(466, 43, 11) + Zz(488, 29, 14);
   // ---- the spider, tiptoeing along the floor beneath the hand ----
   {
-    const x = 250, gy = 392, sc = .82, y = gy - 34;
+    const x = 330, gy = 392, sc = .82, y = gy - 34;
     const feet = { R0: [x + 16, gy], L0: [x - 14, gy], R1: [x + 34, gy - 14], L1: [x - 30, gy], R2: [x + 44, gy], L2: [x - 46, gy - 12], R3: [x + 56, gy], L3: [x - 56, gy] };
     const knees = { R0: [x + 22, y - 26], L0: [x - 22, y - 26], R1: [x + 38, y - 28], L1: [x - 36, y - 24], R2: [x + 48, y - 16], L2: [x - 50, y - 20], R3: [x + 60, y - 6], L3: [x - 60, y - 6] };
     s += shadow(x + 2, gy, 48, 5, .28);
-    s += sp({ x, y, s: sc, legOverride: legs(x, y, sc, feet, knees), look: [.3, -1], mouth: "worried", brow: "worried", mark: "chevron" });
+    s += sp({ x, y, s: sc, legOverride: legs(x, y, sc, feet, knees), look: [.2, -1], mouth: "worried", brow: "worried", mark: "chevron" });
     s += line(`M${x + 60} ${gy - 30}q6 -8 12 0M${x - 64} ${gy - 26}q6 -8 12 0`, 1.8, C.ink, ` opacity=".5"`);
   }
   return V("A spider tiptoes along the floor beneath a sleeping person's hand dangling off the couch", s);
