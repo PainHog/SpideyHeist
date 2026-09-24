@@ -46,11 +46,12 @@ export function stipple(seed, cx, cy, rx, ry, count, r = 1, fill = C.ink, op = 0
 // Local frame: cephalothorax centred at 0,0 (rx 14.5, ry 12.5); abdomen behind/above.
 // Legs are [attach, knee, foot] for the right side, mirrored for the left.
 export const POSES = {
+  // every foot on the same ground line (y 26): nothing hovers
   stand: [
     [[9, -6], [20, -24], [17, 26]],
     [[12, -2], [34, -22], [36, 26]],
-    [[13, 3], [46, -12], [54, 24]],
-    [[10, 7], [46, 2], [64, 16]],
+    [[13, 3], [46, -12], [54, 26]],
+    [[10, 7], [48, -2], [64, 26]],
   ],
   dangle: [
     [[9, -6], [22, -12], [14, 22]],
@@ -65,10 +66,10 @@ export const POSES = {
     [[10, 7], [32, 16], [42, 32]],
   ],
   tuck: [
-    [[9, -6], [18, -16], [14, 16]],
+    [[9, -6], [18, -16], [14, 18]],
     [[12, -2], [26, -14], [26, 18]],
     [[13, 3], [30, -6], [36, 18]],
-    [[10, 7], [28, 4], [40, 16]],
+    [[10, 7], [30, 0], [40, 18]],
   ],
 };
 

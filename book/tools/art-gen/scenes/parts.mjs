@@ -144,7 +144,7 @@ export function part_two() {
   s += `<circle cx="253" cy="211" r="2.6" fill="${C.ink}"/><circle cx="264" cy="211" r="2.6" fill="${C.ink}"/><ellipse cx="258" cy="219" rx="2.4" ry="2" fill="${C.ink}"/>`;
   // sight cone from the child
   s += `<path d="M270 212L440 170L440 250Z" fill="${C.oxB}" opacity=".16"/>`;
-  s += `<rect x="370" y="236" width="24" height="20" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><rect x="394" y="244" width="18" height="12" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<rect x="370" y="244" width="24" height="20" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><rect x="394" y="252" width="18" height="12" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.2"/>`;
   s += `<path d="M300 170h40v30h-40z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="330" cy="180" r="4" fill="${C.goldB}"/>`;
 
   // --- upstairs right: office with the memory stick
@@ -154,16 +154,18 @@ export function part_two() {
   s += line("M532 194h30M532 202h40M532 210h22", 2, C.goldB, ` opacity=".7"`);
   s += `<path d="M546 222h14v-6h-14z" fill="${C.ink}"/>`;
   // glowing memory stick
-  s += `<circle cx="612" cy="214" r="18" fill="${C.goldB}" opacity=".3"/>`;
-  s += `<rect x="602" y="208" width="22" height="10" rx="2" fill="${C.plum}" stroke="${C.ink}" stroke-width="2"/><rect x="596" y="210" width="7" height="6" fill="${C.edge}" stroke="${C.ink}" stroke-width="1.4"/>`;
-  s += sparkle(626, 198, 6);
+  s += `<circle cx="612" cy="216" r="18" fill="${C.goldB}" opacity=".3"/>`;
+  s += `<rect x="602" y="212" width="22" height="10" rx="2" fill="${C.plum}" stroke="${C.ink}" stroke-width="2"/><rect x="596" y="214" width="7" height="6" fill="${C.edge}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  s += sparkle(626, 202, 6);
   // office chair
   s += `<path d="M656 196v40h-26" fill="none" stroke="${C.ink}" stroke-width="5" stroke-linecap="round"/>`;
+  s += line("M643 236v20M630 258h26", 4) + `<circle cx="632" cy="261" r="3" fill="${C.ink}"/><circle cx="654" cy="261" r="3" fill="${C.ink}"/>`;
 
   // --- downstairs left: living room with the dog
   s += `<ellipse cx="310" cy="376" rx="84" ry="10" fill="${C.ox}" opacity=".5"/>`;
-  s += `<path d="M226 360q-4 -40 16 -44h40q16 0 16 20v24z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += `<rect x="220" y="340" width="100" height="28" rx="8" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += line("M230 372v14M310 372v14", 5);
+  s += `<path d="M226 364q-4 -40 16 -44h40q16 0 16 20v24z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += `<rect x="220" y="346" width="100" height="28" rx="8" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6"/>`;
   // sleeping dog
   s += `<path d="M300 378q-4 -30 36 -32q38 -2 46 20q2 12 -6 12z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8"/>`;
   s += `<circle cx="376" cy="356" r="16" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8"/>`;
@@ -173,11 +175,12 @@ export function part_two() {
   s += `<path d="M398 334q4 -6 10 -6M404 324q4 -6 10 -6" stroke="${C.ink}" stroke-width="2" fill="none" opacity=".5"/>`;
   // stairs connecting the floors (in the living room)
   // --- downstairs right: kitchen with the tin
-  s += `<rect x="440" y="330" width="240" height="58" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += `<rect x="434" y="322" width="252" height="10" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += line("M500 340v40M560 340v40M620 340v40", 2, C.ink, ` opacity=".6"`);
-  s += `<circle cx="492" cy="360" r="3" fill="${C.gold}"/><circle cx="568" cy="360" r="3" fill="${C.gold}"/><circle cx="612" cy="360" r="3" fill="${C.gold}"/>`;
+  s += `<rect x="462" y="330" width="218" height="58" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += `<rect x="456" y="322" width="230" height="10" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += line("M516 340v40M572 340v40M626 340v40", 2, C.ink, ` opacity=".6"`);
+  s += `<circle cx="506" cy="360" r="3" fill="${C.gold}"/><circle cx="582" cy="360" r="3" fill="${C.gold}"/><circle cx="616" cy="360" r="3" fill="${C.gold}"/>`;
   // upper cabinet with the tin
+  s += `<path d="M596 309v14q0 -10 10 -14zM664 309v14q0 -10 -10 -14z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
   s += `<rect x="580" y="300" width="96" height="9" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.4"/>`;
   s += tin(640, 300, 30, 20, { glow: true, sw: 2 });
   s += sparkle(664, 282, 5);
@@ -189,14 +192,14 @@ export function part_two() {
   s += `<path d="M470 316q-24 -4 -22 -30" stroke="${C.ink}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M470 316q-24 -4 -22 -30" stroke="${C.deep}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M552 300L680 262L680 330Z" fill="${C.oxB}" opacity=".14"/>`;
   // robot vacuum rolling in the hall
-  s += `<ellipse cx="420" cy="378" rx="22" ry="8" fill="${C.ink}"/><path d="M398 372q22 -14 44 0v4q-22 8 -44 0z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="420" cy="368" r="2.6" fill="${C.oxB}"/>`;
+  s += `<ellipse cx="434" cy="381" rx="18" ry="6" fill="${C.ink}"/><path d="M416 376q18 -12 36 0v4q-18 7 -36 0z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="434" cy="372" r="2.4" fill="${C.oxB}"/>`;
 
   // the crew's route: from the roof vent down to the tin (dotted gold)
-  s += line("M450 132C450 160 472 176 472 200C472 244 420 250 436 290C446 308 560 300 612 298", 4, C.gold, ` stroke-dasharray="1 9"`);
-  s += spider({ x: 450, y: 118, s: .55, mask: true, look: [0, 1], pose: "dangle", rim: C.cream, rimOp: .8 });
+  s += line("M450 150C452 166 468 172 470 196C472 244 432 250 440 290C448 312 560 302 612 298", 4, C.gold, ` stroke-dasharray="1 9"`);
+  s += spider({ x: 450, y: 134, s: .55, mask: true, look: [0, 1], pose: "dangle", rim: C.cream, rimOp: .8, thread: 12, threadColor: C.goldB });
   // storyteller's threat markers: little ox pins over each threat
   const pin = (x, y) => `<path d="M${x} ${y}q-10 -12 -10 -20a10 10 0 0 1 20 0q0 8 -10 20z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x}" cy="${y - 20}" r="3.6" fill="${C.cream}"/>`;
-  s += pin(258, 190) + pin(540, 280) + pin(376, 336) + pin(420, 358);
+  s += pin(258, 190) + pin(540, 280) + pin(376, 336) + pin(434, 362);
   // a garden, trees either side for charm
   s += `<path d="M110 388v-60" stroke="${C.ink}" stroke-width="6"/><circle cx="110" cy="300" r="40" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/><path d="M92 290q10 -14 26 -12" stroke="${C.goldB}" opacity=".5" stroke-width="4" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M790 388v-44" stroke="${C.ink}" stroke-width="6"/><circle cx="790" cy="324" r="30" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/>`;

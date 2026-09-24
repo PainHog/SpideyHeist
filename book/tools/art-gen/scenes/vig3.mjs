@@ -1,4 +1,4 @@
-import { C, n, svg, spider, tin, cookie, sparkle, stipple, hatch, rng, line, shadow, stage, die3d, pipsFor } from "./lib.mjs";
+import { C, n, svg, spider, tin, cookie, flatCookie, sparkle, stipple, hatch, rng, line, shadow, stage, die3d, pipsFor } from "./lib.mjs";
 import { hand } from "./vig2.mjs";
 
 const V = (title, body) => svg("0 0 900 300", title, body);
@@ -13,11 +13,12 @@ export function ch_obstacles() {
   s += line(`M130 ${GY - 16}q20 -4 40 0M200 ${GY - 12}q30 -4 60 -2`, 2.4, C.cream, ` opacity=".9"`);
   s += `<path d="M70 ${GY}H290v8H70z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.4"/>`;
   // a stuck crumb and a spider tugging its stuck foot free
-  s += cookie(250, GY - 18, 10, 3);
-  s += spider({ x: 180, y: 186, s: 1.25, look: [-.6, 1], mouth: "worried", brow: "worried", mark: "dots",
-    legOverride: { R2: [[13, 3], [34, 20], [30, 58]], R3: [[10, 7], [36, 24], [44, 60]] } });
-  s += line(`M218 ${GY - 16}q2 -14 -2 -24M231 ${GY - 14}q4 -12 -4 -22`, 1.6, C.gold);
-  s += line("M120 130q-12 -6 -18 -18M110 150l-18 -2", 2.4, C.ink, ` opacity=".5"`);
+  s += flatCookie(258, GY - 10, 9, 3, false, { shade: false });
+  // the spider stands on the trap; its back leg is lifted, stringing glue up with it
+  s += spider({ x: 180, y: GY - 36, s: 1, look: [-.6, 1], mouth: "worried", brow: "worried", mark: "dots",
+    legOverride: { R3: [[10, 7], [40, -8], [48, 8]] } });
+  s += line(`M228 ${GY - 28}q4 10 -2 18M228 ${GY - 28}q10 8 8 16M228 ${GY - 28}q-6 10 -12 14`, 1.6, C.gold);
+  s += line("M126 186q-12 -6 -18 -18M116 204l-18 -2", 2.4, C.ink, ` opacity=".5"`);
   // --- motion sensor beam (middle)
   s += `<rect x="352" y="${GY - 170}" width="14" height="170" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<rect x="534" y="${GY - 170}" width="14" height="170" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
@@ -29,15 +30,22 @@ export function ch_obstacles() {
   }
   s += `<rect x="342" y="${GY - 110}" width="24" height="12" rx="2" fill="${C.ink}"/><rect x="342" y="${GY - 66}" width="24" height="12" rx="2" fill="${C.ink}"/>`;
   // spider doing the limbo under the lowest beam
-  s += spider({ x: 450, y: 232, s: 1.05, r: -12, look: [0, -1], mouth: "o", brow: "up", mark: "chevron", pose: "sprawl", abd: [0, -18, 18, 13] });
+  s += shadow(450, GY, 70, 5);
+  s += spider({ x: 450, y: GY - 18, s: 1, look: [0, -1], mouth: "o", brow: "up", mark: "chevron", abd: [0, -12, 18, 10],
+    legOverride: {
+      R0: [[9, -6], [22, -16], [30, 18]], L0: [[-9, -6], [-22, -16], [-30, 18]],
+      R1: [[12, -2], [38, -14], [48, 18]], L1: [[-12, -2], [-38, -14], [-48, 18]],
+      R2: [[13, 3], [52, -10], [64, 18]], L2: [[-13, 3], [-52, -10], [-64, 18]],
+      R3: [[10, 7], [58, -4], [76, 18]], L3: [[-10, 7], [-58, -4], [-76, 18]] } });
   // --- gap between counters (right)
-  s += `<rect x="600" y="160" width="100" height="${GY - 160}" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += `<rect x="780" y="160" width="100" height="${GY - 160}" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += `<rect x="594" y="150" width="110" height="14" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/><rect x="776" y="150" width="110" height="14" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += hatch(`${P}-gap`, `<rect x="700" y="164" width="80" height="${GY - 164}"/>`, 700, 164, 780, GY, 7, 70, C.ink, 1.4, .5);
-  s += `<circle cx="660" cy="200" r="4" fill="${C.gold}"/><circle cx="820" cy="200" r="4" fill="${C.gold}"/>`;
-  s += line("M640 150Q720 30 820 146", 2.4, C.ink, ` stroke-dasharray="3 8" opacity=".55"`);
-  s += spider({ x: 736, y: 84, s: 1.05, r: 20, look: [1, .6], mouth: "big", brow: "up", mark: "stripe", pose: "sprawl" });
+  s += `<rect x="600" y="124" width="100" height="${GY - 124}" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<rect x="780" y="124" width="100" height="${GY - 124}" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<rect x="594" y="114" width="110" height="14" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/><rect x="776" y="114" width="110" height="14" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += hatch(`${P}-gap`, `<rect x="700" y="128" width="80" height="${GY - 128}"/>`, 700, 128, 780, GY, 7, 70, C.ink, 1.4, .5);
+  s += line("M612 150h76M792 150h76", 2, C.ink, ` opacity=".5"`) + `<circle cx="650" cy="168" r="4" fill="${C.gold}"/><circle cx="830" cy="168" r="4" fill="${C.gold}"/>`;
+  // mid-leap: the dotted arc runs from the take-off edge to the landing edge, through the spider
+  s += line("M660 112Q736 16 822 110", 2.4, C.ink, ` stroke-dasharray="3 8" opacity=".55"`);
+  s += spider({ x: 741, y: 64, s: 1, r: 20, look: [1, .6], mouth: "big", brow: "up", mark: "stripe", pose: "sprawl" });
   return V("Obstacles: a glue trap, a motion-sensor beam and a gap between counters", s);
 }
 
@@ -50,6 +58,9 @@ export function ch_creatures() {
   s += `<path d="M210 ${GY - 4}q50 4 40 -40q-6 -20 12 -26" stroke="${C.ink}" stroke-width="16" fill="none" stroke-linecap="round"/><path d="M210 ${GY - 4}q50 4 40 -40q-6 -20 12 -26" stroke="${sil}" stroke-width="10" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M160 ${GY - 142}q6 -8 12 0q-6 5 -12 0zM186 ${GY - 142}q6 -8 12 0q-6 5 -12 0z" fill="${C.goldB}"/><ellipse cx="166" cy="${GY - 142}" rx="1.3" ry="3.2" fill="${C.ink}"/><ellipse cx="192" cy="${GY - 142}" rx="1.3" ry="3.2" fill="${C.ink}"/>`;
   s += line(`M152 ${GY - 128}l-24 -2M152 ${GY - 124}l-22 6M206 ${GY - 128}l24 -2M206 ${GY - 124}l22 6`, 1.4, C.soft);
+  // the two front legs of a sitting cat, paws on the floor
+  s += line(`M164 ${GY - 96}V${GY - 8}M190 ${GY - 96}V${GY - 8}`, 2.2, C.ink, ` opacity=".7"`);
+  s += `<path d="M150 ${GY}q0 -12 14 -12t14 12zM178 ${GY}q0 -12 14 -12t14 12z" fill="${sil}" stroke="${C.ink}" stroke-width="2.4"/>`;
   // dog, sitting, tongue out
   const dx = 360;
   s += `<path d="M${dx - 60} ${GY}C${dx - 70} ${GY - 50} ${dx - 40} ${GY - 110} ${dx - 10} ${GY - 120}L${dx - 30} ${GY - 150}C${dx - 30} ${GY - 196} ${dx + 40} ${GY - 200} ${dx + 50} ${GY - 160}L${dx + 86} ${GY - 150}Q${dx + 96} ${GY - 130} ${dx + 70} ${GY - 122}L${dx + 40} ${GY - 120}C${dx + 50} ${GY - 80} ${dx + 60} ${GY - 40} ${dx + 50} ${GY}Z" fill="${sil}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
@@ -58,6 +69,10 @@ export function ch_creatures() {
   s += `<path d="M${dx + 56} ${GY - 124}q4 20 14 18q8 -2 2 -20z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2"/>`;
   s += `<circle cx="${dx + 30}" cy="${GY - 164}" r="6" fill="${C.goldB}"/><circle cx="${dx + 31}" cy="${GY - 164}" r="3" fill="${C.ink}"/>`;
   s += `<rect x="${dx - 22}" y="${GY - 124}" width="60" height="9" rx="4" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2" transform="rotate(8 ${dx} ${GY - 120})"/><circle cx="${dx + 10}" cy="${GY - 108}" r="5" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.6"/>`;
+  // front legs: straight down from the chest to the paws (the far leg a touch behind)
+  s += `<path d="M${dx + 14} ${GY - 92}V${GY}h20V${GY - 96}z" fill="${sil}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += `<path d="M${dx + 32} ${GY - 100}V${GY}h22q4 -10 -4 -12V${GY - 104}z" fill="${sil}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += line(`M${dx + 40} ${GY - 6}v6M${dx + 46} ${GY - 6}v6M${dx + 22} ${GY - 6}v6`, 1.6, C.soft);
   s += `<path d="M${dx - 62} ${GY - 10}q-30 -10 -24 -40" stroke="${C.ink}" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M${dx - 62} ${GY - 10}q-30 -10 -24 -40" stroke="${sil}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
   // upright vacuum
   const vx = 570;
@@ -72,8 +87,8 @@ export function ch_creatures() {
   // a child's hand reaching down from the top right
   s += `<g opacity="1">` + hand(724, 176, 1.3).replace(new RegExp(C.parch, "g"), sil).replace(new RegExp(C.cream, "g"), C.soft).replace(new RegExp(C.plum, "g"), C.ox).replace(new RegExp(C.soft + '" stroke-width="10"', "g"), C.oxB + '" stroke-width="10"') + `</g>`;
   // the tiny spider in the middle of it all
-  s += spider({ x: 470, y: 238, s: .8, look: [-1, -1], mouth: "worried", brow: "worried", mark: "dots", rim: C.cream, rimOp: .9 });
-  s += `<path d="M486 214q3 6 0 9q-3 -3 0 -9z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2"/>`;
+  s += spider({ x: 470, y: GY - 20.8, s: .8, look: [-1, -1], mouth: "worried", brow: "worried", mark: "dots", rim: C.cream, rimOp: .9 });
+  s += `<path d="M482 ${GY - 26}q3 6 0 9q-3 -3 0 -9z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2"/>`;
   return V("Silhouettes of a cat, a dog, a vacuum and a child's hand", s);
 }
 
@@ -98,13 +113,14 @@ export function ch_phases() {
   // 3 the Heist: a cookie, grabbed
   { const x = xs[2]; s += cookie(x, y + 2, 28, 5, true); s += sparkle(x + 28, y - 26, 7); }
   // 4 the Escape: a spider zipping down a line toward an exit
-  { const x = xs[3]; s += line(`M${x - 30} ${y - 46}L${x + 26} ${y + 30}`, 2, C.gold);
-    s += spider({ x: x + 2, y: y + 6, s: .72, r: -36, look: [1, 1], mouth: "big", brow: "up", mark: "stripe", pose: "tuck" });
-    s += line(`M${x - 34} ${y + 10}l-12 4M${x - 30} ${y + 24}l-14 2`, 2.4, C.ink, ` opacity=".5"`); }
+  { const x = xs[3]; s += line(`M${x - 26} ${y - 40.5}L${x + 30.9} ${y + 36.7}`, 2, C.gold);
+    // hangs below the line, abdomen tip (spinnerets) clipped to it by a short thread; slides down to the right
+    s += spider({ x: x - 21, y: y + 13, s: .62, r: 54, look: [1, 1], mouth: "big", brow: "up", mark: "stripe", pose: "tuck", thread: 4 });
+  }
   // 5 the Debrief: a loot sack and two thimble toasts
   { const x = xs[4]; s += `<path d="M${x - 26} ${y + 28}q-10 -30 12 -42l-6 -10h20l-6 10q24 12 12 42z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/>`;
     s += line(`M${x - 12} ${y - 14}h20`, 3, C.ox) + `<circle cx="${x - 10}" cy="${y + 8}" r="6" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.6"/>`;
-    s += `<path d="M${x + 16} ${y + 26}l-2 -24h16l-2 24z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/><path d="M${x + 30} ${y + 24}l2 -22h14l-2 22z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round" transform="rotate(12 ${x + 38} ${y + 14})"/>`;
+    s += `<path d="M${x + 16} ${y + 26}l-2 -24h16l-2 24z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/><path d="M${x + 34} ${y + 26}l-2 -24h16l-2 24z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
     s += sparkle(x + 30, y - 12, 6); }
   return V("Five steps from the briefing to the getaway", s);
 }
@@ -137,11 +153,12 @@ export function ch_alert_play() {
   s += spider({ x: n(p[0] + 34), y: n(p[1] + 26), s: 1.05, r: 28, look: [-1, -.2], mouth: "worried", brow: "worried", mark: "chevron",
     legOverride: { L0: [[-9, -6], [-26, -18], [-34, -26]], L1: [[-12, -2], [-30, -12], [-36, -22]] } }).replace(/translate\(([^ ]+) ([^)]+)\)/, "translate($1 $2)");
   // a Storyteller's die nudging the Alert up, and an ox alarm dot
-  s += die3d(160, 222, 60, 6, { r: -12, hot: true, glint: true });
+  s += shadow(166, GY, 42, 5) + die3d(160, GY - 30, 60, 6, { hot: true, glint: true });
   s += line("M200 160q20 -30 40 -24", 2.4, C.ink, ` stroke-dasharray="3 6" opacity=".6"`);
   s += `<circle cx="720" cy="80" r="16" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3"/><circle cx="720" cy="80" r="30" fill="${C.oxB}" opacity=".18"/>`;
   s += line("M720 40v-14M752 56l10 -8M688 56l-10 -8M760 84h14", 3, C.oxB);
   s += `<rect x="710" y="96" width="20" height="10" fill="${C.ink}"/><path d="M720 106V${GY}" stroke="${C.ink}" stroke-width="5"/>`;
+  s += `<path d="M704 ${GY}q0 -10 16 -10t16 10z" fill="${C.ink}"/>`;
   return V("An Alert meter with its needle climbing", s);
 }
 
@@ -152,7 +169,7 @@ export function ch_heists() {
   // house
   { const x = 110; s += `<rect x="${x - 58}" y="${GY - 100}" width="116" height="100" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/>`;
     s += `<path d="M${x - 72} ${GY - 96}L${x} ${GY - 160}L${x + 72} ${GY - 96}Z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
-    s += `<rect x="${x + 26}" y="${GY - 160}" width="18" height="36" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.4"/>`;
+    s += `<rect x="${x + 26}" y="${GY - 160}" width="18" height="42" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.4"/>`;
     s += `<rect x="${x - 14}" y="${GY - 54}" width="28" height="54" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/><circle cx="${x + 8}" cy="${GY - 26}" r="2.6" fill="${C.gold}"/>`;
     s += win(x - 48, GY - 82, 26, 24) + win(x + 22, GY - 82, 26, 24, false);
     s += `<circle cx="${x}" cy="${GY - 118}" r="10" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x}" cy="${GY - 118}" r="4" fill="${C.goldB}"/>`; }
@@ -169,7 +186,7 @@ export function ch_heists() {
     let stripes = ""; for (let k = 0; k < 7; k++) stripes += `<path d="M${x - 70 + k * 20} ${GY - 116}h20v14a10 10 0 0 1 -20 0z" fill="${k % 2 ? C.cream : C.good}" stroke="${C.ink}" stroke-width="2"/>`;
     s += stripes;
     s += `<rect x="${x - 54}" y="${GY - 88}" width="64" height="52" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4"/>`;
-    s += `<circle cx="${x - 22}" cy="${GY - 58}" r="17" fill="${C.cream}" fill-opacity=".8" stroke="${C.ink}" stroke-width="2.2"/><path d="M${x - 30} ${GY - 58}q6 -6 12 0q-6 6 -12 0zM${x - 18} ${GY - 58}l6 -5v10z" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.4"/>`;
+    s += `<circle cx="${x - 22}" cy="${GY - 53}" r="17" fill="${C.cream}" fill-opacity=".8" stroke="${C.ink}" stroke-width="2.2"/><path d="M${x - 30} ${GY - 53}q6 -6 12 0q-6 6 -12 0zM${x - 18} ${GY - 53}l6 -5v10z" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.4"/>`;
     s += `<rect x="${x + 20}" y="${GY - 60}" width="30" height="60" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.4"/>`;
     s += `<path d="M${x - 10} ${GY - 110}q0 -10 8 -10q8 0 8 10" fill="none" stroke="${C.ink}" stroke-width="0"/>`;
     // paw print sign
@@ -192,11 +209,12 @@ export function ch_heists() {
     s += `<rect x="${x - 50}" y="${GY - 76}" width="60" height="44" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.4"/>`;
     s += `<path d="M${x - 38} ${GY - 42}q0 -22 18 -22t18 22z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x - 20}" cy="${GY - 66}" r="2.6" fill="${C.ink}"/><path d="M${x - 42} ${GY - 42}h44" stroke="${C.ink}" stroke-width="2.6"/>`;
     s += `<rect x="${x + 18}" y="${GY - 64}" width="30" height="64" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/>`;
-    s += `<circle cx="${x}" cy="${GY - 142}" r="16" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="${x}" cy="${GY - 142}" r="9" fill="none" stroke="${C.edge}" stroke-width="2"/>`;
-    s += line(`M${x - 24} ${GY - 154}v24M${x + 24} ${GY - 154}v24`, 3) + line(`M${x - 28} ${GY - 154}v8M${x - 20} ${GY - 154}v8`, 1.6) ;
-    s += line(`M${x} ${GY - 158}v-8`, 2); }
+    // plate-and-cutlery sign standing on the awning box on two short posts
+    s += line(`M${x - 8} ${GY - 122}v-6M${x + 8} ${GY - 122}v-6`, 3);
+    s += `<circle cx="${x}" cy="${GY - 144}" r="16" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="${x}" cy="${GY - 144}" r="9" fill="none" stroke="${C.edge}" stroke-width="2"/>`;
+    s += line(`M${x - 24} ${GY - 152}V${GY - 122}M${x + 24} ${GY - 152}V${GY - 122}`, 3) + line(`M${x - 28} ${GY - 152}v8M${x - 20} ${GY - 152}v8`, 1.6); }
   // a tiny spider on the office roof, looking out over the job board
-  s += spider({ x: 250, y: GY - 222, s: .5, look: [1, 0], mouth: "smirk", mark: "dots", pose: "stand" });
+  s += spider({ x: 246, y: GY - 208 - 13, s: .5, look: [1, 0], mouth: "smirk", mark: "dots", pose: "stand" });
   s += sparkle(540, 70, 6) + sparkle(160, 80, 4) + sparkle(730, 90, 5);
   return V("Five tiny locations: a house, an office, a pet store, a library and a restaurant", s);
 }
@@ -207,7 +225,8 @@ export function ch_tables() {
   // scroll with six entries, each keyed to a d6 face
   s += `<path d="M300 44H640V244H300Z" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
   s += hatch(`${P}-sc`, `<rect x="300" y="44" width="340" height="200"/>`, 300, 44, 640, 244, 9, 80, C.edge, 1, .6);
-  s += `<path d="M300 244V${GY + 2}q0 10 -12 10H640q12 0 12 -10V244" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/>`;
+  // the scroll hangs from a cord on a nail (off the top of the frame); the weighted bottom roller hangs clear of the floor
+  s += line("M286 41L470 0L654 41", 2.2, C.ox);
   s += `<rect x="286" y="30" width="368" height="22" rx="11" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/><circle cx="286" cy="41" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><circle cx="654" cy="41" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<rect x="286" y="236" width="368" height="22" rx="11" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/><circle cx="286" cy="247" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><circle cx="654" cy="247" r="11" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<path d="M314 ${70 + 3 * 28 - 14}h318v28H314z" fill="${C.goldB}" opacity=".4"/>`;
@@ -221,10 +240,9 @@ export function ch_tables() {
     s += line(d, 2.2, i === 3 ? C.plum : C.ink, i === 3 ? "" : ` opacity=".7"`);
   }
   // dice on the left
-  s += shadow(170, GY, 70, 7);
-  s += die3d(140, 220, 64, 4, { r: -8, hot: true, glint: true });
-  s += die3d(214, 230, 50, 2, { r: 14 });
-  s += line("M100 150q30 -40 60 -10", 2.2, C.ink, ` stroke-dasharray="3 7" opacity=".5"`);
+  s += shadow(150, GY, 44, 5) + shadow(226, GY, 34, 4);
+  s += die3d(140, GY - 32, 64, 4, { hot: true, glint: true });
+  s += die3d(222, GY - 25, 50, 2);
   // quill on the right, with an inkpot
   s += `<path d="M760 ${GY}v-30q0 -12 12 -12h28q12 0 12 12v30z" fill="${C.ink}"/><rect x="772" y="${GY - 50}" width="28" height="10" fill="${C.deep}" stroke="${C.ink}" stroke-width="2"/>`;
   s += `<path d="M790 ${GY - 46}C770 ${GY - 100} 780 ${GY - 170} 850 ${GY - 220}C846 ${GY - 160} 826 ${GY - 110} 790 ${GY - 46}Z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6"/>`;
@@ -240,10 +258,11 @@ export function ch_quickref() {
   const P = "cqr";
   let s = stage(P);
   // corkboard patch
-  s += `<rect x="190" y="18" width="520" height="${GY - 26}" rx="6" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
+  // a corkboard standing on the floor, leaning on the wall
+  s += `<rect x="190" y="18" width="520" height="${GY - 34}" rx="6" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
   s += stipple(33, 450, 140, 250, 116, 420, 1.3, C.ink, .28);
   s += stipple(34, 450, 140, 250, 116, 200, 1.4, C.goldB, .6);
-  s += `<rect x="178" y="8" width="544" height="${GY - 6}" rx="10" fill="none" stroke="${C.plum}" stroke-width="12"/><rect x="172" y="2" width="556" height="${GY + 6}" rx="12" fill="none" stroke="${C.ink}" stroke-width="3"/><rect x="184" y="14" width="532" height="${GY - 18}" rx="8" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<rect x="178" y="8" width="544" height="${GY - 14}" rx="10" fill="none" stroke="${C.plum}" stroke-width="12"/><rect x="172" y="2" width="556" height="${GY - 2}" rx="12" fill="none" stroke="${C.ink}" stroke-width="3"/><rect x="184" y="14" width="532" height="${GY - 26}" rx="8" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
   // index card, tilted
   s += `<g transform="rotate(-4 450 140)">`;
   s += `<rect x="300" y="52" width="300" height="180" fill="${C.ink}" opacity=".22" transform="translate(6 7)"/>`;

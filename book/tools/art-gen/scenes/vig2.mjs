@@ -1,4 +1,4 @@
-import { C, n, svg, spider, tin, cookie, sparkle, stipple, hatch, rng, line, shadow, stage, die3d, cobweb } from "./lib.mjs";
+import { C, n, svg, spider, tin, cookie, sparkle, stipple, hatch, rng, line, shadow, stage, die3d, cobweb, silk } from "./lib.mjs";
 
 const V = (title, body) => svg("0 0 900 300", title, body);
 const GY = 262;
@@ -25,15 +25,20 @@ export function ch_silk() {
   s += spool(`${P}-g`, 170, GY - 2, 96, 120);
   s += spool(`${P}-g`, 290, GY - 2, 76, 92);
   s += spool(`${P}-g`, 390, GY - 2, 56, 64);
-  // the spun line: from the big spool, looping up and across to a spider
-  s += `<path d="M218 160C300 40 420 60 480 120S640 190 700 70" stroke="${C.goldB}" stroke-width="7" opacity=".35" fill="none" stroke-linecap="round"/>`;
-  s += `<path d="M218 160C300 40 420 60 480 120S640 190 700 70" stroke="${C.gold}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
-  // spider spinning at the end of the line (line from spinnerets at the abdomen)
-  s += spider({ x: 736, y: 128, s: 1.6, r: -30, look: [-.6, .4], mouth: "grin", mark: "chevron", brow: "up", rim: C.goldB, rimOp: .25, pose: "sprawl" });
-  // a second, small line with a tiny spider sliding down it
-  s += line(`M480 120L560 ${GY - 4}`, 1.8, C.gold);
-  s += spider({ x: 524, y: 196, s: .62, r: -30, look: [1, 1], mouth: "big", brow: "up", mark: "dots", pose: "tuck" });
-  s += sparkle(300, 60, 9) + sparkle(470, 100, 6) + sparkle(640, 150, 5) + sparkle(120, 110, 5) + sparkle(560, 60, 4);
+  // the spinner hangs from its own dragline (anchored off the top of the frame, taut and vertical,
+  // attached at the spinnerets on the tip of the abdomen) and pays out a fresh line to the big spool,
+  // which sags gently under its own weight
+  const sp = { x: 700, y: 120, s: 1.3 };
+  s += `<path d="M${sp.x} 0V${n(sp.y - 39 * sp.s + 2)}" stroke="${C.goldB}" stroke-width="5" opacity=".3"/>`;
+  s += `<path d="M${sp.x} 0V${n(sp.y - 39 * sp.s + 2)}" stroke="${C.gold}" stroke-width="1.8"/>`;
+  s += `<path d="M214 150Q433 170 653 130" stroke="${C.goldB}" stroke-width="7" opacity=".35" fill="none" stroke-linecap="round"/>`;
+  s += silk(214, 150, 653, 130, 30, C.gold, 2.4);
+  s += spider({ ...sp, pose: "dangle", look: [-1, .4], mouth: "grin", mark: "chevron", brow: "up", rim: C.goldB, rimOp: .25,
+    legOverride: { L0: [[-9, -6], [-24, -16], [-36, 8]], L1: [[-12, -2], [-32, -12], [-40, 14]] } });
+  // a second, small spider abseils down its own line
+  s += line(`M520 0V${n(190 - 39 * .62 + 1)}`, 1.6, C.gold);
+  s += spider({ x: 520, y: 190, s: .62, look: [0, 1], mouth: "big", brow: "up", mark: "dots", pose: "dangle" });
+  s += sparkle(300, 60, 9) + sparkle(470, 100, 6) + sparkle(610, 190, 5) + sparkle(120, 110, 5) + sparkle(580, 60, 4);
   // floating silk wisps
   return V("Glowing silk spools and a freshly spun line", s);
 }
@@ -71,13 +76,16 @@ export function ch_alert() {
   s += `<path d="M196 ${GY - 100}q4 -20 18 -26" stroke="${C.cream}" stroke-width="4" fill="none" stroke-linecap="round" opacity=".8"/>`;
   s += line(`M150 90l-16 -14M220 72v-22M290 90l16 -14M138 140h-22M302 140h22`, 4, C.oxB);
   // gauge (right) swinging into the red
-  s += gauge(P, 600, 226, 132, 64, [-50, -10, 30]);
-  s += line("M520 120q30 -50 100 -46", 2.4, C.ink, ` stroke-dasharray="3 7" opacity=".6"`);
-  s += `<path d="M620 74l-12 -8 2 14z" fill="${C.ink}" opacity=".6"/>`;
+  s += gauge(P, 600, GY - 12, 132, 64, [-50, -10, 30]);
+  s += line("M520 144q30 -50 100 -46", 2.4, C.ink, ` stroke-dasharray="3 7" opacity=".6"`);
+  s += `<path d="M620 98l-12 -8 2 14z" fill="${C.ink}" opacity=".6"/>`;
   // spider hiding behind the gauge, peeking
-  s += spider({ x: 770, y: 200, s: 1.3, look: [-1, -.4], mouth: "worried", brow: "worried", mark: "dots",
+  // spider standing on the floor beside the gauge, two front feet on its face, peeking
+  s += shadow(776, GY, 62, 6);
+  s += spider({ x: 776, y: GY - 33.8, s: 1.3, look: [-1, -.4], mouth: "worried", brow: "worried", mark: "dots",
     legOverride: { L0: [[-9, -6], [-24, -18], [-34, -8]], L1: [[-12, -2], [-30, -6], [-38, 6]] } });
-  s += `<path d="M790 170q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  // a bead of sweat on the side of its head
+  s += `<path d="M795.5 ${GY - 40}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   return V("An alarm light flashing and a meter swinging into the red", s);
 }
 
@@ -97,42 +105,44 @@ export function ch_vitality() {
   let s = stage(P);
   // bandage roll unspooling (left)
   s += shadow(150, GY, 60, 6);
-  s += `<path d="M150 ${GY - 30}C220 ${GY - 30} 250 ${GY} 330 ${GY - 2}" stroke="${C.ink}" stroke-width="26" fill="none" stroke-linecap="butt"/>`;
-  s += `<path d="M150 ${GY - 30}C220 ${GY - 30} 250 ${GY} 330 ${GY - 2}" stroke="${C.cream}" stroke-width="21" fill="none"/>`;
-  s += `<path d="M150 ${GY - 30}C220 ${GY - 30} 250 ${GY} 330 ${GY - 2}" stroke="${C.edge}" stroke-width="1.6" stroke-dasharray="3 5" fill="none"/>`;
+  // the unrolled bandage lies flat on the floor, running out from under the roll
+  s += `<path d="M140 ${GY}L150 ${GY - 9}H334L328 ${GY}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += line(`M156 ${GY - 4.5}H328`, 1.6, C.edge, ` stroke-dasharray="3 5"`);
   s += `<ellipse cx="140" cy="${GY - 34}" rx="30" ry="34" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<ellipse cx="140" cy="${GY - 34}" rx="10" ry="12" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/>`;
   s += line(`M120 ${GY - 56}q-8 20 0 42`, 2, C.edge);
   // plaster cross on the roll
   // jar (centre)
   s += shadow(440, GY, 64, 7);
-  s += jar(440, GY - 2, 110, 150, true);
-  s += `<ellipse cx="530" cy="${GY - 8}" rx="42" ry="9" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/><path d="M488 ${GY - 8}v6q42 16 84 0v-6" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += jar(440, GY, 110, 150, true);
+  // its lid (same width as the jar) lies flat on the floor, rim down
+  s += shadow(560, GY, 56, 4);
+  s += `<path d="M507 ${GY - 14}v6q53 18 106 0v-6" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/><ellipse cx="560" cy="${GY - 14}" rx="53" ry="9" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
   // bandaged spider nervously next to the jar
-  s += spider({ x: 290, y: 190, s: 1.45, look: [1, .5], mouth: "worried", brow: "worried", mark: "stripe",
+  s += spider({ x: 290, y: GY - 37.7, s: 1.45, look: [1, .5], mouth: "worried", brow: "worried", mark: "stripe",
     over: `<path d="M-16 -12l32 10M-16 -4l32 10" stroke="${C.cream}" stroke-width="5"/><path d="M-16 -12l32 10M-16 -4l32 10" stroke="${C.ink}" stroke-width="1" opacity=".3"/><rect x="6" y="-32" width="16" height="8" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4" transform="rotate(30 14 -28)"/>` });
-  s += `<path d="M322 150q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  s += `<path d="M312 ${GY - 44}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   // vacuum floor nozzle from the right, sucking everything in
-  const tube = "M910 30C820 36 770 90 760 180";
+  const tube = "M934 30C844 36 794 90 784 180";
   s += `<path d="${tube}" stroke="${C.ink}" stroke-width="42" fill="none"/><path d="${tube}" stroke="${C.plum}" stroke-width="34" fill="none"/>`;
-  let rib = ""; for (let t = 0.08; t < 1; t += .1) { const u = 1 - t; const x = u*u*u*910 + 3*u*u*t*820 + 3*u*t*t*770 + t*t*t*760, y = u*u*u*30 + 3*u*u*t*36 + 3*u*t*t*90 + t*t*t*180; rib += `M${n(x - 15)} ${n(y - 6)}l30 12`; }
+  let rib = ""; for (let t = 0.08; t < 1; t += .1) { const u = 1 - t; const x = u*u*u*934 + 3*u*u*t*844 + 3*u*t*t*794 + t*t*t*784, y = u*u*u*30 + 3*u*u*t*36 + 3*u*t*t*90 + t*t*t*180; rib += `M${n(x - 15)} ${n(y - 6)}l30 12`; }
   s += line(rib, 2.2, C.deep);
-  s += line("M880 40q-60 10 -90 70", 4, C.soft);
-  s += `<rect x="738" y="168" width="44" height="30" rx="6" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += `<path d="M642 246V214q0 -18 18 -18h180q18 0 18 18v32z" fill="${C.soft}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
-  s += line("M660 210h170", 3, C.cream, ` opacity=".35"`);
-  s += `<rect x="636" y="244" width="228" height="10" rx="3" fill="${C.ink}"/>`;
-  let br = ""; for (let x = 642; x < 860; x += 6) br += `M${x} 254v7`; s += line(br, 1.6, C.gold);
-  s += `<circle cx="846" cy="252" r="8" fill="${C.ink}"/><circle cx="846" cy="252" r="3" fill="${C.edge}"/>`;
+  s += line("M904 40q-60 10 -90 70", 4, C.soft);
+  s += `<rect x="762" y="168" width="44" height="30" rx="6" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<path d="M666 246V214q0 -18 18 -18h180q18 0 18 18v32z" fill="${C.soft}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
+  s += line("M684 210h170", 3, C.cream, ` opacity=".35"`);
+  s += `<rect x="660" y="244" width="228" height="10" rx="3" fill="${C.ink}"/>`;
+  let br = ""; for (let x = 666; x < 884; x += 6) br += `M${x} 254v7`; s += line(br, 1.6, C.gold);
+  s += `<circle cx="870" cy="252" r="8" fill="${C.ink}"/><circle cx="870" cy="252" r="3" fill="${C.edge}"/>`;
   // suction lines
-  s += line("M548 222q40 -2 84 6M562 196q40 4 76 22M580 250q28 -2 52 -4", 2.6, C.ink, ` stroke-dasharray="10 8" opacity=".55"`);
-  s += `<circle cx="600" cy="224" r="3" fill="${C.edge}" stroke="${C.ink}" stroke-width="1"/><circle cx="614" cy="244" r="2.4" fill="${C.edge}"/><circle cx="586" cy="206" r="2" fill="${C.edge}"/>`;
+  s += line("M618 222q22 -1 40 4M622 196q22 4 36 16M622 238q16 -1 32 -2", 2.6, C.ink, ` stroke-dasharray="10 8" opacity=".55"`);
+  s += `<circle cx="636" cy="220" r="3" fill="${C.edge}" stroke="${C.ink}" stroke-width="1"/><circle cx="648" cy="236" r="2.4" fill="${C.edge}"/><circle cx="632" cy="204" r="2" fill="${C.edge}"/>`;
   return V("Bandages, a jar and a vacuum nozzle: comedic danger", s);
 }
 
 export function ch_heist() {
   const P = "ch";
-  let s = stage(P, { ground: false });
+  let s = stage(P, { groundY: 284, gw: .92 });
   // blueprint sheet with curled ends
   s += `<rect x="96" y="44" width="708" height="220" fill="${C.ink}" opacity=".2" transform="translate(6 7)"/>`;
   s += `<rect x="96" y="44" width="708" height="220" fill="${C.deep}" stroke="${C.ink}" stroke-width="3"/>`;
@@ -157,7 +167,8 @@ export function ch_heist() {
   s += sparkle(486, 150, 12);
   s += `<path d="M752 214h36l-10 -10M788 214l-10 10" stroke="${C.goldB}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
   // spider leaning on the corner, pointing at phase one
-  s += spider({ x: 120, y: 250, s: 1.2, look: [1, -.4], mask: true, mouth: "smirk", mark: "chevron", rim: C.cream, rimOp: .5,
+  s += shadow(118, 284, 56, 5);
+  s += spider({ x: 118, y: 284 - 31.2, s: 1.2, look: [1, -.4], mask: true, mouth: "smirk", mark: "chevron", rim: C.cream, rimOp: .5,
     legOverride: { R0: [[9, -6], [26, -20], [48, -34]] } });
   // pushpins
   for (const [x, y] of [[112, 58], [788, 58]]) s += `<circle cx="${x}" cy="${y}" r="8" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="${x - 2}" cy="${y - 2}" r="2.4" fill="${C.cream}"/>`;
@@ -174,28 +185,33 @@ export function ch_gadgets() {
   const P = "cgd";
   let s = stage(P);
   // paperclip grappling hook with a silk line looping from above
-  s += line("M120 0Q130 44 190 60", 2.4, C.gold);
+  // hangs straight down from its silk line (the line runs off the top of the frame)
+  s += line("M190 0V58", 2.4, C.gold);
   s += paperclipHook(190, 150, 1.4);
   s += shadow(190, GY, 40, 5);
-  // bottle cap shield held by a spider
-  s += shadow(450, GY, 90, 8);
-  s += spider({ x: 420, y: 222, s: 1.55, look: [1, -.2], mouth: "grin", brow: "down", mark: "dots", hat: "goggles",
+  // bottle cap shield held by a spider (same scale as the catapult spider)
+  s += shadow(446, GY, 76, 7);
+  s += spider({ x: 420, y: GY - 31.2, s: 1.2, look: [1, -.2], mouth: "grin", brow: "down", mark: "dots", hat: "goggles",
     legOverride: { R0: [[9, -6], [26, -10], [44, -6]], R1: [[12, -2], [30, 6], [46, 8]] } });
-  s += `<ellipse cx="500" cy="190" rx="22" ry="62" fill="${C.ox}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += `<ellipse cx="510" cy="190" rx="16" ry="56" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3"/>`;
-  let crimp = ""; for (let k = -5; k <= 5; k++) crimp += `M${n(496 - Math.sqrt(1 - (k / 6) ** 2) * 16)} ${190 + k * 10}l-6 3`;
+  s += `<ellipse cx="478" cy="204" rx="18" ry="50" fill="${C.ox}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<ellipse cx="486" cy="204" rx="13" ry="45" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3"/>`;
+  let crimp = ""; for (let k = -4; k <= 4; k++) crimp += `M${n(474 - Math.sqrt(1 - (k / 5) ** 2) * 13)} ${204 + k * 10}l-6 3`;
   s += line(crimp, 2);
-  s += `<ellipse cx="512" cy="190" rx="8" ry="30" fill="none" stroke="${C.goldB}" stroke-width="3"/>`;
-  s += sparkle(526, 140, 7);
-  // rubber band slingshot between two pencil stubs... two pins with a stretched band
+  s += `<ellipse cx="488" cy="204" rx="6" ry="24" fill="none" stroke="${C.goldB}" stroke-width="3"/>`;
+  s += sparkle(500, 160, 7);
+  // rubber-band catapult between two pins stuck in the floor: a spider hauls the pouch down and back
   s += shadow(720, GY, 90, 7);
-  s += `<path d="M640 ${GY}V170M800 ${GY}V170" stroke="${C.ink}" stroke-width="12" stroke-linecap="round"/><path d="M640 ${GY}V170M800 ${GY}V170" stroke="${C.gold}" stroke-width="7" stroke-linecap="round"/>`;
-  s += `<circle cx="640" cy="166" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/><circle cx="800" cy="166" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += `<path d="M640 170Q700 240 720 240Q740 240 800 170" stroke="${C.ink}" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M640 170Q700 240 720 240Q740 240 800 170" stroke="${C.ox}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
-  s += cookie(720, 232, 12, 4);
-  s += line("M690 150l-10 -12M720 142v-16M750 150l10 -12", 2.6, C.ink, ` opacity=".5"`);
+  s += `<path d="M640 ${GY}V132M800 ${GY}V132" stroke="${C.ink}" stroke-width="12" stroke-linecap="round"/><path d="M640 ${GY}V132M800 ${GY}V132" stroke="${C.gold}" stroke-width="7" stroke-linecap="round"/>`;
+  s += `<circle cx="640" cy="128" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/><circle cx="800" cy="128" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += spider({ x: 720, y: GY - 31.2, s: 1.2, look: [0, -1], mouth: "big", brow: "down", mark: "stripe",
+    legOverride: { R0: [[9, -6], [22, -24], [9, -30]], L0: [[-9, -6], [-22, -24], [-9, -30]] } });
+  s += `<path d="M640 132L712 196Q720 200 728 196L800 132" stroke="${C.ink}" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M640 132L712 196Q720 200 728 196L800 132" stroke="${C.ox}" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  s += cookie(720, 189, 10, 4);
+  // the spider's front feet grip the pouch
+  s += line("M711 195l3 3M729 195l-3 3", 4, C.ink);
+  s += line("M690 112l-10 -12M720 104v-16M750 112l10 -12", 2.6, C.ink, ` opacity=".5"`);
   // a spare loose rubber band
-  s += `<ellipse cx="300" cy="${GY - 6}" rx="36" ry="9" fill="none" stroke="${C.ink}" stroke-width="7"/><ellipse cx="300" cy="${GY - 6}" rx="36" ry="9" fill="none" stroke="${C.ox}" stroke-width="3.5"/>`;
+  s += `<ellipse cx="300" cy="${GY - 10}" rx="36" ry="8" fill="none" stroke="${C.ink}" stroke-width="7"/><ellipse cx="300" cy="${GY - 10}" rx="36" ry="8" fill="none" stroke="${C.ox}" stroke-width="3.5"/>`;
   return V("Gadgets: a paperclip grappling hook, a bottle-cap shield and a rubber band", s);
 }
 
@@ -228,7 +244,7 @@ export function ch_running() {
   let s = stage(P, { ground: false });
   s += `<defs><linearGradient id="${P}-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.goldB}" stop-opacity=".6"/><stop offset="1" stop-color="${C.goldB}" stop-opacity="0"/></linearGradient></defs>`;
   // lamp at top-left
-  s += line("M274 0V26", 4);
+  s += line("M274 0V38", 4);
   s += `<path d="M226 58q48 -44 96 0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/><ellipse cx="274" cy="59" rx="24" ry="5" fill="${C.goldB}"/>`;
   // the miniature room: an open box diorama in perspective
   const fl = "M160 250L260 190H600L700 250Z";
@@ -246,7 +262,8 @@ export function ch_running() {
   s += tin(520, 160, 26, 18, { sw: 1.8 });
   s += `<path d="M232 60L120 262H500L316 60z" fill="url(#${P}-l)" opacity=".75"/>`;
   // a spider token on the rug
-  s += spider({ x: 380, y: 200, s: .85, look: [1, -.8], mouth: "o", brow: "up", mark: "dots" });
+  // (room scale: a spider is tiny beside the table, the tin and the cat)
+  s += shadow(392, 224, 14, 2.4) + spider({ x: 392, y: 224 - 7.8, s: .3, look: [1, -.8], mouth: "o", brow: "up", mark: "dots", sw: 3, legW: 1.6 });
   // the Storyteller's hand lowering a cat figure
   s += hand(612, 124, 1);
   // cat figurine dangling from the pinch
@@ -261,7 +278,7 @@ export function ch_running() {
 
 export function ch_location() {
   const P = "clo";
-  let s = stage(P, { ground: false });
+  let s = stage(P, { groundY: 288, gw: .96 });
   // floor plan sheet, grid
   const x0 = 120, y0 = 34, cw = 30, cols = 22, rows = 8;
   s += `<rect x="${x0 + 6}" y="${y0 + 7}" width="${cols * cw}" height="${rows * cw}" fill="${C.ink}" opacity=".2"/>`;
@@ -288,8 +305,11 @@ export function ch_location() {
   // Route B (plum, dashed): straight up over the furniture, past the cat
   s += line(`M${c(.5, 4)}Q${X(4)} ${Y(4)} ${X(6)} ${Y(3)}L${X(8)} ${Y(3.6)}Q${X(11)} ${Y(1.2)} ${X(14)} ${Y(3)}L${X(18)} ${Y(3)}L${X(19)} ${Y(4)}Q${X(20.5)} ${Y(4.6)} ${X(20.5)} ${Y(5.4)}`, 4, C.plum, ` stroke-dasharray="12 7"`);
   // the fork: spider scratching its head at the start
-  s += spider({ x: 80, y: 190, s: 1.1, look: [1, -.6], mouth: "flat", brow: "worried", mark: "stripe",
+  s += shadow(72, 288, 54, 5);
+  s += spider({ x: 72, y: 288 - 28.6, s: 1.1, look: [1, -.6], mouth: "flat", brow: "worried", mark: "stripe",
     legOverride: { R0: [[9, -6], [20, -30], [6, -20]] } });
-  s += `<path d="M96 132q-2 -12 8 -14q8 0 8 8q0 6 -6 8v6" fill="none" stroke="${C.ink}" stroke-width="2.6" stroke-linecap="round"/><circle cx="106" cy="148" r="2" fill="${C.ink}"/>`;
+  s += `<path d="M86 196q-2 -12 8 -14q8 0 8 8q0 6 -6 8v6" fill="none" stroke="${C.ink}" stroke-width="2.6" stroke-linecap="round"/><circle cx="96" cy="212" r="2" fill="${C.ink}"/>`;
+  // pushpins hold the plan to the wall
+  for (const [px, py] of [[x0 + 12, y0 + 12], [x0 + cols * cw - 12, y0 + 12]]) s += `<circle cx="${px}" cy="${py}" r="7" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${px - 2}" cy="${py - 2}" r="2" fill="${C.cream}"/>`;
   return V("A gridded floor plan with two possible routes", s);
 }

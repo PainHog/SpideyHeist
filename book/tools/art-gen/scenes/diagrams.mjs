@@ -79,29 +79,31 @@ export function vitality_track() {
     s += `<circle cx="${x}" cy="${cy}" r="${R - 3}" fill="none" stroke="${C.ink}" stroke-width="1.2"/>`;
   });
   const band = (d, w = 4) => `<path d="${d}" stroke="${C.cream}" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" stroke="${C.ink}" stroke-width=".9" stroke-dasharray="1.5 2.5" opacity=".6"/>`;
+  // each standing spider gets a contact shadow at its feet (y = cy + 14 + 26)
+  for (const x of [xs[0], xs[1], xs[2] - 4, xs[3]]) s += shadow(x, cy + 41, 46, 4, .16);
   // 1 Unharmed
   s += spider({ x: xs[0], y: cy + 14, s: 1, mouth: "grin", look: [0, 0], mark: "chevron" });
   s += sparkle(xs[0] + 34, cy - 34, 6);
   // 2 Rattled: wobble lines, sweat drop
   s += spider({ x: xs[1], y: cy + 14, s: 1, mouth: "worried", brow: "worried", look: [.6, -.3], mark: "chevron" });
   s += line(`M${xs[1] - 44} ${cy - 30}q-6 6 0 12M${xs[1] + 44} ${cy - 30}q6 6 0 12`, 2.2);
-  s += `<path d="M${xs[1] + 16} ${cy - 16}q-4 8 0 11q4 -3 0 -11z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  s += `<path d="M${xs[1] + 15.5} ${cy + 7}q-4 8 0 11q4 -3 0 -11z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   // 3 Hurt: bandages, a leg in a sling, limping
-  s += spider({ x: xs[2] - 4, y: cy + 14, s: 1, r: -6, mouth: "flat", brow: "worried", look: [0, .4], mark: "chevron",
+  s += spider({ x: xs[2] - 4, y: cy + 14, s: 1, mouth: "flat", brow: "worried", look: [0, .4], mark: "chevron",
     legOverride: { R0: [[9, -6], [20, -6], [14, 10]] },
     over: band("M-12 -30l24 12", 5) + `<rect x="5" y="-12" width="12" height="6" rx="1.5" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2" transform="rotate(25 11 -9)"/>` });
   // a matchstick crutch under the limping side
-  s += `<path d="M${xs[2] + 40} ${cy + 44}L${xs[2] + 30} ${cy - 4}" stroke="${C.ink}" stroke-width="6.5" stroke-linecap="round"/><path d="M${xs[2] + 40} ${cy + 44}L${xs[2] + 30} ${cy - 4}" stroke="${C.gold}" stroke-width="3.5" stroke-linecap="round"/>`;
+  s += `<path d="M${xs[2] + 40} ${cy + 39}L${xs[2] + 30} ${cy - 4}" stroke="${C.ink}" stroke-width="6.5" stroke-linecap="round"/><path d="M${xs[2] + 40} ${cy + 39}L${xs[2] + 30} ${cy - 4}" stroke="${C.gold}" stroke-width="3.5" stroke-linecap="round"/>`;
   s += `<path d="M${xs[2] + 22} ${cy - 4}h16" stroke="${C.ink}" stroke-width="6" stroke-linecap="round"/><path d="M${xs[2] + 22} ${cy - 4}h16" stroke="${C.gold}" stroke-width="3" stroke-linecap="round"/>`;
   s += sparkle(xs[2] - 30, cy - 32, 5, C.oxB);
   // 4 Critical: swirl eyes, lots of bandages, dizzy stars
-  s += spider({ x: xs[3], y: cy + 16, s: 1, r: 8, mouth: "worried", eyes: "swirl", mark: "none",
+  s += spider({ x: xs[3], y: cy + 14, s: 1, mouth: "worried", eyes: "swirl", mark: "none",
     over: band("M-17 -32l34 10", 5) + band("M-17 -22l34 -6", 5) + `<rect x="-14" y="-12" width="10" height="6" rx="1.5" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2" transform="rotate(-30 -9 -9)"/>` });
   s += `<ellipse cx="${xs[3]}" cy="${cy - 36}" rx="26" ry="7" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="3 4"/>`;
   s += sparkle(xs[3] - 22, cy - 38, 5) + sparkle(xs[3] + 18, cy - 32, 4.5) + sparkle(xs[3] + 4, cy - 44, 3.5);
   // 5 Out: in a jar
   s += `<g transform="translate(${xs[4]} ${cy + 46})">`;
-  s += spider({ x: 0, y: -26, s: .72, mouth: "worried", eyes: "x", mark: "none", pose: "tuck", body: C.soft, hi: C.plum });
+  s += spider({ x: 0, y: -18 * .72 - 1.4, s: .72, mouth: "worried", eyes: "x", mark: "none", pose: "tuck", body: C.soft, hi: C.plum });
   s += `<path d="M-30 0v-58q0 -8 8 -9h44q8 1 8 9v58z" fill="${C.cream}" fill-opacity=".35" stroke="${C.ink}" stroke-width="2.8"/>`;
   s += `<rect x="-33" y="-78" width="66" height="13" rx="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<path d="M-22 -58v48" stroke="${C.cream}" stroke-width="4" stroke-linecap="round" opacity=".75"/>`;
@@ -178,7 +180,8 @@ export function map_cookie() {
     s += `<rect x="${x}" y="${y + cs - 10}" width="10" height="10" fill="${C.ink}"/><rect x="${x + 4 * cs - 10}" y="${y + cs - 10}" width="10" height="10" fill="${C.ink}"/>`;
     s += `<path d="M${x + 10} ${y + cs - 5}H${x + 4 * cs - 10}" stroke="${C.gold}" stroke-width="3"/>`;
     s += `<path d="M${x + 12} ${y + cs - 8}L${x + 60} ${y + 8}" stroke="${C.plum}" stroke-width="8" stroke-linecap="round"/><path d="M${x + 12} ${y + cs - 8}L${x + 60} ${y + 8}" stroke="${C.ink}" stroke-width="1.6" stroke-linecap="round"/>`;
-    s += `<path d="M${x + 60} ${y + 8}A${cs + 2} ${cs + 2} 0 0 1 ${x + 110} ${y + cs - 8}" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="3 4"/>`; }
+    const L = Math.hypot(48, cs - 16); // hinge (x+12, y+cs-8) to leaf tip (x+60, y+8)
+    s += `<path d="M${x + 60} ${y + 8}A${n(L)} ${n(L)} 0 0 1 ${n(x + 12 + L)} ${y + cs - 8}" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="3 4"/>`; }
   // outer frame
   s += `<rect x="${m}" y="${m}" width="${W * cs}" height="${H * cs}" fill="none" stroke="${C.ink}" stroke-width="3.4"/>`;
   return svg(`0 0 ${W * cs + 2 * m} ${H * cs + 2 * m}`, "Heist 1 sample map: a 16 by 7 grid with the vent, counter, cabinet, cat's bed and door", s);
@@ -190,7 +193,7 @@ export function orn_divider() {
   s += `<circle cx="6" cy="10" r="2.2" fill="${C.ink}"/><circle cx="594" cy="10" r="2.2" fill="${C.ink}"/>`;
   for (const t of [.12, .24, .36, .64, .76, .88]) { const x = 6 + 588 * t, y = (1 - t) * (1 - t) * 10 + 2 * (1 - t) * t * 20 + t * t * 10; s += `<circle cx="${n(x)}" cy="${n(y + 1.6)}" r="1.4" fill="${C.goldB}" stroke="${C.gold}" stroke-width=".6"/>`; }
   // tiny spider sitting on the thread, midway
-  s += spider({ x: 300, y: 12, s: .26, pose: "stand", mark: "chevron", look: [0, .3], mouth: "grin", legW: 1.3 });
+  s += spider({ x: 300, y: 15 - 26 * .22, s: .22, pose: "stand", mark: "chevron", look: [0, .3], mouth: "grin", legW: 1.3 });
   return svg("0 0 600 24", "Section divider: a silk thread with a tiny spider", s);
 }
 
@@ -201,7 +204,7 @@ export function orn_corner() {
   const R = rng(12);
   for (let i = 0; i < 10; i++) { const a = (Math.floor(R() * 7) / 6) * Math.PI / 2, r = 36 + R() * 140; s += `<circle cx="${n(Math.cos(a) * r)}" cy="${n(Math.sin(a) * r)}" r="${n(1.8 + R() * 1.4)}" fill="${C.goldB}" stroke="${C.gold}" stroke-width=".8"/>`; }
   // tiny spider dropping from the web on a gold thread
-  s += `<path d="M124 71.6V118" stroke="${C.gold}" stroke-width="1.4"/><circle cx="124" cy="71.6" r="2" fill="${C.gold}"/>`;
+  s += `<path d="M124 71.6V${n(138 - 39 * .38 + .6)}" stroke="${C.gold}" stroke-width="1.4"/><circle cx="124" cy="71.6" r="2" fill="${C.gold}"/>`;
   s += spider({ x: 124, y: 138, s: .38, pose: "dangle", mark: "chevron", look: [0, .4], mouth: "grin" });
   return svg("0 0 200 200", "Cobweb corner flourish", s);
 }
