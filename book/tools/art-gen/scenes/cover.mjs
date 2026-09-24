@@ -119,13 +119,14 @@ export function cover() {
   s += line(`M350 ${sy + 9}q20 -3 40 0M430 ${sy + 10}q24 2 50 -1M520 ${sy + 9}q20 -2 40 1`, 1.2, C.ink, ` opacity=".45"`);
 
   // two mugs standing side by side on the shelf
-  for (const [mx, band] of [[344, C.plum], [376, C.good]]) {
+  // (shifted left so the right mug's handle sits in the gap before the jar, not inside the glass)
+  for (const [mx, band] of [[330, C.plum], [362, C.good]]) {
     s += `<ellipse cx="${mx + 14}" cy="${gy}" rx="17" ry="2.6" fill="${C.ink}" opacity=".32"/>`;
     s += `<path d="M${mx} ${gy}v-34h28v34z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
     s += `<ellipse cx="${mx + 14}" cy="${gy - 34}" rx="14" ry="3" fill="${C.edge}" stroke="${C.ink}" stroke-width="2"/>`;
     s += `<path d="M${mx} ${gy - 20}h28" stroke="${band}" stroke-width="4"/>`;
   }
-  s += `<path d="M404 ${gy - 28}q12 0 12 10t-12 10" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<path d="M390 ${gy - 28}q11 0 11 10t-11 10" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
 
   // honey jar with a cloth-and-string lid
   s += `<ellipse cx="572" cy="${gy}" rx="24" ry="3" fill="${C.ink}" opacity=".32"/>`;
@@ -190,8 +191,9 @@ export function cover() {
     { x: 572, y: 272, s: .85, hat: "bowtie", look: [-.8, .6], mark: "star", mouth: "o", brow: "up", body: C.soft, hi: C.edge },
     { x: 132, y: 404, s: .85, hat: "goggles", look: [1, .9], mark: "stripe", mouth: "flat", brow: "down" },
   ];
-  // the lead hangs over the lid; its front feet rest on the lid top beside the knob
-  const lead = { x: jx, y: knobTop - 33, s: 1.05 };
+  // the lead hangs over the lid; its three front pairs of feet stand on the lid's top face
+  // (inside the lid ellipse, beside the knob) and the rear pair is lifted clear
+  const lead = { x: jx, y: knobTop - 20, s: 1.05 };
   const threadTop = c => c.y + (-22 - 17) * c.s;
   let th = "";
   for (const c of [...crew, lead]) th += `M${n(c.x)} 0V${n(threadTop(c) + 2)}`;
@@ -204,6 +206,8 @@ export function cover() {
     legOverride: {
       R0: [[9, -6], [20, -2], [18, 30]], L0: [[-9, -6], [-20, -2], [-18, 30]],
       R1: [[12, -2], [34, -4], [36, 34]], L1: [[-12, -2], [-34, -4], [-36, 34]],
+      R2: [[13, 3], [40, -4], [42, 30]], L2: [[-13, 3], [-40, -4], [-42, 30]],
+      R3: [[10, 7], [36, -6], [54, -10]], L3: [[-10, 7], [-36, -6], [-54, -10]],
     },
   });
   s += sparkle(356, 226, 3.5) + sparkle(132, 300, 3.5) + sparkle(572, 206, 3.5);

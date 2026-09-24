@@ -220,10 +220,15 @@ const VB = "0 0 400 400";
   body += strokes([[30, 330, 120, 330], [200, 356, 330, 356], [90, 382, 190, 382]], C.gold, 2);
   body += `</g>`;
   // target: a bullseye card propped on the right
-  const tx = 322, ty = 176;
-  // the card's two wire legs stand on the table, with contact shadows
-  body += shadow(tx + 12, 303, 9, 2.5, C.ink, 0.25) + shadow(tx + 34, 296, 8, 2.2, C.ink, 0.25);
-  body += path(`M${tx - 8} ${ty + 58} L${tx + 12} 302 M${tx + 22} ${ty + 50} L${tx + 34} 295`, "none", C.ink, 4);
+  const tx = 318, ty = 176;
+  // the card stands on a wire tripod easel: two front legs splayed evenly either side of the
+  // card's centre and a rear strut behind it, all three feet on the table (card bottom y=232),
+  // so the card's centre of mass sits inside its support; drawn inside the cameo clip
+  body += `<g clip-path="${cam.clip}">`;
+  body += shadow(tx - 20, 302, 8, 2.4, C.ink, 0.25) + shadow(tx + 20, 302, 8, 2.4, C.ink, 0.25) + shadow(tx + 6, 289, 7, 2, C.ink, 0.22);
+  body += path(`M${tx} ${ty + 20} L${tx + 6} 288`, "none", C.ink, 3.5);
+  body += path(`M${tx - 16} ${ty + 50} L${tx - 20} 301 M${tx + 16} ${ty + 50} L${tx + 20} 301`, "none", C.ink, 4);
+  body += `</g>`;
   body += ell(tx, ty, 44, 56, C.cream, C.ink, 4) + ell(tx, ty, 32, 41, C.oxb, C.ink, 2.5) + ell(tx, ty, 21, 27, C.cream, C.ink, 2.5) + ell(tx, ty, 10, 13, C.oxb, C.ink, 2.5);
   // zigzag silk from the fangs to the bullseye
   const SX = 170; // spider x

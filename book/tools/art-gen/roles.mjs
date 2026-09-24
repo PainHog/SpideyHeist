@@ -15,16 +15,20 @@ const legs = (R, L = mirror(R)) => [...R, ...L];
 // A floor plane seen from slightly above: back edge (horizon) at y=hy, running to the bottom of the field.
 const floor = (hy, col = C.edge, op = 0.8) => path(`M30 ${hy} H370 V380 H30 Z`, col, "none", 0, ` opacity="${op}"`) + line([30, hy], [370, hy], C.ink, 2.5);
 const S = STAND_R;
+// Pull a leg's knee/ankle/foot in towards the body (x scaled by k, root unchanged), so the outer feet
+// and their contact shadows stay on the floor inside the medallion instead of landing on its gold ring.
+const tuck = (l, k) => l.map((p, i) => i ? [p[0] * k, p[1]] : p);
 
 // ---------------- face ----------------
 {
   setPrefix("rl-face");
   const m = medallion();
-  const R = [[[24, 10], [62, -18], [86, -52], [98, -90]], S[1], S[2], S[3]]; // raised in a flourish, above the other legs
-  const L = mirror(S);
+  const R = [[[24, 10], [62, -18], [86, -52], [98, -90]], S[1], tuck(S[2], 0.93), S[3]]; // raised in a flourish, above the other legs
+  const L = mirror([S[0], S[1], tuck(S[2], 0.93), S[3]]);
   // bow tie + pocket square flourish drawn in spider space
-  const bow = path("M0 50 L-24 38 L-26 64 Z", C.gold, C.ink, 3) + path("M0 50 L24 38 L26 64 Z", C.gold, C.ink, 3) +
-    path("M-20 44 L-22 58 M20 44 L22 58", "none", C.glint, 2.4) + circ(0, 50, 6.5, C.glint, C.ink, 2.6);
+  // (worn tight under the chin: the wings' top corners and the knot overlap the carapace's lower edge)
+  const bow = path("M0 43 L-24 31 L-26 57 Z", C.gold, C.ink, 3) + path("M0 43 L24 31 L26 57 Z", C.gold, C.ink, 3) +
+    path("M-20 37 L-22 51 M20 37 L22 51", "none", C.glint, 2.4) + circ(0, 43, 6.5, C.glint, C.ink, 2.6);
   // a slick little quiff of hair
   const quiff = path("M-6 -36 q4 -18 18 -16 q-10 2 -8 14 M4 -37 q6 -12 16 -10", "none", C.ink, 3);
   const sp = base({
@@ -112,10 +116,11 @@ const S = STAND_R;
     [[-128, -84, 9], [-116, -90, 8], [-118, -76, 8], [-128, -96, 7]].map(([x, y, r]) => circ(x, y, r - 2.2, C.cream)).join("") +
     path("M-132 -88 q4 -4 8 0 M-120 -80 q3 -3 6 0", "none", C.edge, 1.8);
   // silk line: knotted at the eye, falling straight down to the bench, a few loose coils lying there
-  const GT = { x: 200, y: 240, s: 0.8 };
+  // (scale 0.76 keeps the rear feet's contact shadows inside the medallion's field)
+  const GT = { x: 200, y: 240, s: 0.76 };
   const eyeW = toWorld(GT, [-132, -52]);
   const sp = base({
-    y: 240,
+    y: GT.y, s: GT.s,
     legs: legs(R, L), lifted: [0, 4],
     afterLegs: "",
     // the last segment of each front leg is redrawn over its tool, so the foot visibly grips it
@@ -145,14 +150,15 @@ const S = STAND_R;
 {
   setPrefix("rl-bruise");
   const m = medallion();
-  const R = [[[26, 8], [66, 24], [74, -12], [62, -40]], S[1], S[2], S[3]];
-  const L = [[[-26, 8], [-68, 22], [-80, -16], [-72, -46]], ...mirror(S).slice(1)];
+  // legs II-IV tucked in so every planted foot (and its shadow) is on the shelf inside the medallion
+  const R = [[[26, 8], [66, 24], [74, -12], [62, -40]], tuck(S[1], 0.85), tuck(S[2], 0.85), tuck(S[3], 0.85)];
+  const L = [[[-26, 8], [-68, 22], [-80, -16], [-72, -46]], ...mirror(R.slice(1))];
   const glove = (x, y, rot) => `<g transform="rotate(${rot} ${x} ${y})">` + path(`M${x - 6} ${y + 12} h12 v10 h-12 Z`, C.cream, C.ink, 2.6) +
     ell(x, y, 17, 19, C.oxb, C.ink, 3.2) + ell(x - 13, y + 2, 8, 10, C.oxb, C.ink, 3) + ell(x - 4, y - 8, 6, 4, C.cream, C.ink, 0, ` opacity="0.7"`) + `</g>`;
   const band = path("M-46 -24 Q0 -50 46 -24", "none", C.ink, 13) + path("M-46 -24 Q0 -50 46 -24", "none", C.oxb, 8.5) +
     path("M44 -26 q18 -6 26 -22 M44 -22 q24 2 34 -10", "none", C.ink, 7.5) + path("M44 -26 q18 -6 26 -22 M44 -22 q24 2 34 -10", "none", C.oxb, 4);
   const sp = base({
-    x: 194, y: 238, s: 0.84, lifted: [0, 4],
+    x: 200, y: 238, s: 0.84, lifted: [0, 4],
     ceph: { rx: 50, ry: 40 }, abd: { dx: 0, dy: -64, rx: 56, ry: 46, pattern: basePat },
     legs: legs(R, L), legW: 10,
     over: band + glove(62, -48, 20) + glove(-72, -54, -16),
@@ -168,8 +174,10 @@ const S = STAND_R;
   body += strokes([[40, 238, 150, 238], [180, 270, 320, 270], [60, 302, 170, 302]], C.gold, 2);
   // right side wall of the cabinet, with the open door's hinge knuckles on its front edge
   body += path("M336 206 L352 330 L370 330 L370 30 L336 30 Z", C.edge, C.ink, 2.5) + path("M348 60 v30 M348 150 v30", "none", C.ink, 7) + path("M348 60 v30 M348 150 v30", "none", C.gold, 4);
-  body += ell(96, 212, 58, 11, C.ink, C.ink, 0, ` opacity="0.25"`);
-  body += path("M40 20 V208 A56 10 0 0 0 152 208 V20 Z", C.gold, C.ink, 3) + path("M54 20 V198", "none", C.glint, 8) + path("M40 110 H152 V172 H40 Z", C.cream, C.ink, 2.5) +
+  // the bottle's round footprint (base ellipse y 206..226) lies wholly on the shelf floor, its back
+  // just touching the back wall at y=206 (not sunk into it)
+  body += ell(96, 220, 58, 11, C.ink, C.ink, 0, ` opacity="0.25"`);
+  body += path("M40 20 V216 A56 10 0 0 0 152 216 V20 Z", C.gold, C.ink, 3) + path("M54 20 V198", "none", C.glint, 8) + path("M40 110 H152 V172 H40 Z", C.cream, C.ink, 2.5) +
     path("M60 132 q8 -6 16 0 t16 0 t16 0 t16 0 M66 152 q7 -5 14 0 t14 0 t14 0", "none", C.ink, 2.4);
   body += path("M30 330 H370 V348 H30 Z", C.gold, C.ink, 3) + path("M30 348 H370 V380 H30 Z", C.deep, "none", 0);
   body += `</g>`;
@@ -182,12 +190,15 @@ const S = STAND_R;
 {
   setPrefix("rl-look");
   const m = medallion();
-  const R = [[[24, 10], [52, 30], [76, 14], [70, -12]], S[1], S[2], S[3]];
-  const L = [S[0], S[1], S[2], S[3]].map((l, i) => i === 0 ? [[24, 10], [58, -20], [70, 30], [64, 78]] : l);
+  // rear legs tucked in (and the spider set a little right) so the far-left feet stand on the
+  // bookcase top inside the medallion, not on its gold ring
+  const LT = { x: 158, y: 170, s: 0.62 };
+  const R = [[[24, 10], [52, 30], [76, 14], [70, -12]], S[1], tuck(S[2], 0.86), tuck(S[3], 0.86)];
+  const L = [S[0], S[1], tuck(S[2], 0.86), tuck(S[3], 0.86)].map((l, i) => i === 0 ? [[24, 10], [58, -20], [70, 30], [64, 78]] : l);
   const glass = `<g transform="rotate(-14 20 -4)">` + path("M12 -12 H34 V4 H12 Z", C.gold, C.ink, 3) + path("M32 -14 H92 V6 H32 Z", C.gold, C.ink, 3) + path("M90 -20 H124 V12 H90 Z", C.gold, C.ink, 3) +
     path("M52 -14 V6 M70 -14 V6", "none", C.ink, 2.4) + path("M36 -9 H88", "none", C.glint, 2.4) + ell(124, -4, 5, 16, C.glint, C.ink, 2.4) + `</g>`;
   const sp = base({
-    x: 150, y: 170, s: 0.62, lifted: [0],
+    ...LT, lifted: [0],
     legs: legs(R, mirror(L)),
     afterLegs: "",
     over: glass + leg([R[0][2], R[0][3]], { w: 7.5, band: C.deep, dash: "3 12", knee: false }),
@@ -212,7 +223,7 @@ const S = STAND_R;
   // safety line: anchored on the top board's front edge, hanging straight down past the frame
   body += path("M226 234 V420", "none", C.gold, 2, ` stroke-dasharray="2 5"`) + circ(226, 234, 3.5, C.gold, C.ink, 1.5);
   // sight line from the spyglass lens to the window
-  { const [lx, ly] = toWorld({ x: 150, y: 170, s: 0.62 }, [20 + 104 * Math.cos(-14 * Math.PI / 180) + 4, -4 + 104 * Math.sin(-14 * Math.PI / 180)]); body += path(`M${r1(lx + 4)} ${r1(ly - 1)} L304 150`, "none", C.ink, 2.4, ` stroke-dasharray="6 7"`); }
+  { const [lx, ly] = toWorld(LT, [20 + 104 * Math.cos(-14 * Math.PI / 180) + 4, -4 + 104 * Math.sin(-14 * Math.PI / 180)]); body += path(`M${r1(lx + 4)} ${r1(ly - 1)} L304 150`, "none", C.ink, 2.4, ` stroke-dasharray="6 7"`); }
   body += `</g>`;
   body += sp;
   body += m.ring;
@@ -223,8 +234,10 @@ const S = STAND_R;
 {
   setPrefix("rl-wheel");
   const m = medallion();
-  const R = [[[24, 8], [66, -28], [104, -6], [124, 30]], [[30, 4], [84, -42], [118, 6], [132, 58]], S[2], S[3]];
-  const L = [[[-24, 10], [-58, -12], [-84, 20], [-96, 64]], ...mirror(S).slice(1)];
+  // legs II-IV (left) and III-IV (right) tucked in, the spider a touch smaller and less tilted, so
+  // every foot and its contact shadow lands on the sill inside the medallion, not on the gold ring
+  const R = [[[24, 8], [66, -28], [104, -6], [124, 30]], [[30, 4], [84, -42], [118, 6], [132, 58]], tuck(S[2], 0.84), tuck(S[3], 0.84)];
+  const L = [[[-24, 10], [-58, -12], [-84, 20], [-96, 64]], ...mirror([S[1], S[2], S[3]].map(l => tuck(l, 0.84)))];
   const cap = path("M-48 -28 Q-46 -58 4 -60 Q54 -58 52 -30 Q2 -40 -48 -28 Z", C.soft, C.ink, 3.5) +
     path("M-26 -50 Q4 -56 34 -50", "none", C.edge, 3) + path("M-46 -34 Q2 -46 50 -36", "none", C.gold, 4) + path("M-40 -30 Q8 -44 58 -28 Q66 -16 50 -12 Q8 -26 -32 -16 Q-46 -18 -40 -30 Z", C.deep, C.ink, 3.5) +
     path("M-30 -24 Q8 -34 52 -22", "none", C.soft, 2) + circ(4, -59, 5, C.gold, C.ink, 2);
@@ -234,7 +247,7 @@ const S = STAND_R;
   // a white silk driving scarf
   const scarf = path("M-34 30 Q0 46 34 30 L30 42 Q0 56 -30 42 Z", C.cream, C.ink, 3) + path("M-30 36 Q-70 40 -104 18 Q-84 44 -118 44 Q-76 64 -32 46 Z", C.cream, C.ink, 3) +
     path("M-40 44 Q-70 48 -96 36 M-26 44 Q0 50 24 40", "none", C.edge, 2.4);
-  const WT = { x: 180, y: 262, s: 0.74, rot: 6 };
+  const WT = { x: 190, y: 254, s: 0.72, rot: 3 };
   const sp = base({
     ...WT,
     legs: legs(R, L),
@@ -293,12 +306,14 @@ const S = STAND_R;
   // baseboard corner
   body += path("M30 250 H370 V290 H30 Z", C.gold, C.ink, 3) + line([30, 262], [370, 262], C.ink, 1.6);
   body += path("M30 290 H370 V380 H30 Z", C.edge, C.ink, 3) + strokes([[40, 320, 150, 320], [220, 340, 350, 340]], C.gold, 2);
-  body += ell(112, 302, 24, 5, C.ink, C.ink, 0, ` opacity="0.14"`) + ell(288, 302, 22, 5, C.ink, C.ink, 0, ` opacity="0.14"`) + ell(196, 302, 96, 10, C.ink, C.ink, 0, ` opacity="0.16"`);
-  // real dust bunnies for cover
-  body += fluff(112, 284, 22, 16, 4) + fluff(288, 286, 20, 14, 8);
-  // eight little feet poking out under the disguise
-  const feet = [-70, -50, -30, -12, 12, 30, 50, 70];
-  for (const [i, dx] of feet.entries()) body += path(`M${196 + dx} 272 L${196 + dx * 1.14} 298`, "none", C.ink, 7) + path(`M${196 + dx} 272 L${196 + dx * 1.14} 298`, "none", C.plum, 3.5) + circ(196 + dx * 1.14, 299, 3.6, C.ink);
+  // real dust bunnies for cover: they rest on the floor just in front of the baseboard (bottom y~296),
+  // a little BEHIND the spider's feet (y=299) and the disguise, and clear of the outermost feet
+  // (x 134 / 258), so no foot stands in a bunny and the drawing order matches the depth
+  body += ell(108, 296, 17, 3.5, C.ink, C.ink, 0, ` opacity="0.14"`) + ell(286, 296, 17, 3.5, C.ink, C.ink, 0, ` opacity="0.14"`) + ell(196, 302, 96, 10, C.ink, C.ink, 0, ` opacity="0.16"`);
+  body += fluff(108, 281, 16, 14, 4) + fluff(286, 281, 16, 14, 8);
+  // eight little feet poking out under the disguise, each planted on the floor with its own shadow
+  const feet = [-62, -44, -26, -9, 9, 26, 44, 62];
+  for (const [i, dx] of feet.entries()) body += ell(196 + dx, 300.5, 6, 1.8, C.ink, C.ink, 0, ` opacity="0.22"`) + path(`M${196 + dx * 0.96} 272 L${196 + dx} 298`, "none", C.ink, 7) + path(`M${196 + dx * 0.96} 272 L${196 + dx} 298`, "none", C.plum, 3.5) + circ(196 + dx, 299, 3.6, C.ink);
   // the disguise
   const eyeHole = ell(196, 204, 56, 24, C.deep, C.ink, 3);
   const k = uid("hole");

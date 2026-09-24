@@ -7,18 +7,21 @@ const GY = 262;
 export function ch_obstacles() {
   const P = "cob";
   let s = stage(P, { gw: .98 });   // the trap and both counters stand on the floor
-  // --- glue trap (left)
-  s += `<path d="M70 ${GY}L100 ${GY - 30}H300L290 ${GY}Z" fill="${C.edge}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
-  s += `<path d="M96 ${GY - 6}L116 ${GY - 25}H284L276 ${GY - 6}Z" fill="${C.goldB}" stroke="${C.gold}" stroke-width="2"/>`;
-  s += line(`M130 ${GY - 16}q20 -4 40 0M200 ${GY - 12}q30 -4 60 -2`, 2.4, C.cream, ` opacity=".9"`);
-  s += `<path d="M70 ${GY}H290v8H70z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  // --- glue trap (left): its 8-deep front edge stands ON the floor line (bottom at GY), so the
+  // glue face runs from GY-38 (back) to GY-8 (front); everything on it sits 8 higher than before
+  const T = GY - 8;
+  s += `<path d="M70 ${T}L100 ${T - 30}H300L290 ${T}Z" fill="${C.edge}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+  s += `<path d="M96 ${T - 6}L116 ${T - 25}H284L276 ${T - 6}Z" fill="${C.goldB}" stroke="${C.gold}" stroke-width="2"/>`;
+  s += line(`M130 ${T - 16}q20 -4 40 0M200 ${T - 12}q30 -4 60 -2`, 2.4, C.cream, ` opacity=".9"`);
+  s += `<path d="M70 ${T}H290v8H70z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += shadow(180, GY, 116, 3, .2);
   // a stuck crumb and a spider tugging its stuck foot free
-  s += flatCookie(258, GY - 10, 9, 3, false, { shade: false });
+  s += flatCookie(258, T - 10, 9, 3, false, { shade: false });
   // the spider stands on the trap; its back leg is lifted, stringing glue up with it
-  s += spider({ x: 180, y: GY - 36, s: 1, look: [-.6, 1], mouth: "worried", brow: "worried", mark: "dots",
+  s += spider({ x: 180, y: T - 36, s: 1, look: [-.6, 1], mouth: "worried", brow: "worried", mark: "dots",
     legOverride: { R3: [[10, 7], [40, -8], [48, 8]] } });
-  s += line(`M228 ${GY - 28}q4 10 -2 18M228 ${GY - 28}q10 8 8 16M228 ${GY - 28}q-6 10 -12 14`, 1.6, C.gold);
-  s += line("M126 186q-12 -6 -18 -18M116 204l-18 -2", 2.4, C.ink, ` opacity=".5"`);
+  s += line(`M228 ${T - 28}q4 10 -2 18M228 ${T - 28}q10 8 8 16M228 ${T - 28}q-6 10 -12 14`, 1.6, C.gold);
+  s += line("M126 178q-12 -6 -18 -18M116 196l-18 -2", 2.4, C.ink, ` opacity=".5"`);
   // --- motion sensor beam (middle)
   s += `<rect x="352" y="${GY - 170}" width="14" height="170" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<rect x="534" y="${GY - 170}" width="14" height="170" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;

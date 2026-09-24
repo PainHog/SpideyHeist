@@ -159,7 +159,7 @@ export function ch_species() {
 
 // A back wall for a vignette: fades out to the sides and the top so it sits in the stage glow.
 // Draws the wall from y0 down to the skirting at yS, a skirting board, and a floor band to the ground line.
-function kitWall(P, o = {}) {
+export function kitWall(P, o = {}) {
   const { x0 = 44, x1 = 856, y0 = 16, yS = 222, gy = GY, pegs = true, tiles = false } = o;
   let c = `<rect x="${x0}" y="${y0}" width="${x1 - x0}" height="${yS - y0}" fill="${C.parch}"/>`;
   if (tiles) { let d = ""; for (let y = yS - 40; y > y0; y -= 40) d += `M${x0} ${y}H${x1}`; for (let x = x0 + 20; x < x1; x += 40) d += `M${x} ${y0}V${yS}`; c += line(d, 1.6, C.edge); }
@@ -179,7 +179,7 @@ function pegHook(x, y) {
 
 export function ch_roles() {
   const P = "cr";
-  let s = stage(P);
+  let s = stage(P, { gw: .92 });   // wide floor: the bow tie and the dust bunny at the ends lie wholly on it
   // the crew's kit wall: a peg-board above the skirting, with two spare tools hung on hooks
   s += kitWall(P);
   { // a coil of gold silk line hanging from a peg
@@ -251,7 +251,7 @@ export function ch_roles() {
 
 export function ch_attributes() {
   const P = "ca";
-  let s = stage(P);
+  let s = stage(P, { gw: .92 });   // wide floor: the lifter's outermost foot (x 80) stands on it
   // BODY: flexing with a crumb dumbbell
   s += shadow(150, GY, 56, 6);
   s += spider({ x: 150, y: 233.4, s: 1.1, mouth: "grin", brow: "down", mark: "stripe",
@@ -278,7 +278,7 @@ export function ch_attributes() {
   // NERVE: steady, eyes closed, meditating on the floor
   s += shadow(580, GY, 56, 6);
   s += spider({ x: 580, y: 233.4, s: 1.1, eyes: "closed", mouth: "grin", mark: "chevron",
-    legOverride: { R0: [[9, -6], [26, 4], [8, 14]], L0: [[-9, -6], [-26, 4], [-8, 14]], R1: [[12, -2], [36, 10], [18, 22]], L1: [[-12, -2], [-36, 10], [-18, 22]] } });
+    legOverride: { R0: [[9, -6], [26, 4], [8, 14]], L0: [[-9, -6], [-26, 4], [-8, 14]], R1: [[12, -2], [36, 10], [18, 26]], L1: [[-12, -2], [-36, 10], [-18, 26]] } });   // folded 2nd pair rests on the floor
   s += line("M526 172q54 -28 108 0", 2, C.good, ` stroke-dasharray="2 7"`);
   s += line("M540 154q40 -22 80 0", 2, C.good, ` stroke-dasharray="2 7" opacity=".6"`);
   // a fly buzzes past, unnoticed
@@ -291,7 +291,8 @@ export function ch_attributes() {
     legOverride: {
       R0: [[9, -6], [24, -30], [44, -44]], L0: [[-9, -6], [-24, -30], [-44, -44]],
       R1: [[12, -2], [38, -10], [60, -12]], L1: [[-12, -2], [-38, -10], [-60, -12]],
-      R2: [[13, 3], [30, 20], [4, 36]], L2: [[-13, 3], [-30, 18], [-4, 36]],
+      // both balancing feet meet on the graphite point (x 790, y 116) once the body's 4° tilt is applied
+      R2: [[13, 3], [30, 20], [4.5, 36]], L2: [[-13, 3], [-30, 18], [0.5, 36]],
       R3: [[10, 7], [40, 16], [62, 6]], L3: [[-10, 7], [-40, 16], [-62, 6]] } });
   s += line("M722 66q-8 10 0 20M858 66q8 10 0 20", 2, C.ink, ` opacity=".5"`);
   return V("Four spiders: flexing, thinking, steady and balancing", s);
@@ -302,11 +303,12 @@ export function ch_builder() {
   let s = stage(P, { ground: false });
   // the desk top in perspective (one eye level for everything: the die and the mug show
   // the same shallow top face) and its wooden front edge
-  s += `<path d="M112 150H788L860 282H40z" fill="${C.edge}" opacity=".5"/>`;
-  s += line("M112 150H788", 2, C.ink, ` opacity=".45"`);
+  // (wide enough that the spider's outermost right foot, x 860 at y 266, is on the desk top)
+  s += `<path d="M100 150H800L884 282H16z" fill="${C.edge}" opacity=".5"/>`;
+  s += line("M100 150H800", 2, C.ink, ` opacity=".45"`);
   s += line("M150 176q200 -3 380 1M100 214q260 3 520 -1M70 252q300 -4 700 2", 1.2, C.gold, ` opacity=".5"`);
-  s += `<path d="M40 282H860V300H40z" fill="${C.gold}" opacity=".35"/>`;
-  s += line("M40 282H860", 3);
+  s += `<path d="M16 282H884V300H16z" fill="${C.gold}" opacity=".35"/>`;
+  s += line("M16 282H884", 3);
   // a desk lamp standing at the back of the desk, its light falling on the sheet
   s += `<path d="M296 66L232 252H566L354 73z" fill="${C.goldB}" opacity=".22"/>`;
   s += shadow(206, 160, 34, 4, .25);

@@ -1,4 +1,5 @@
 import { C, n, svg, spider, tin, cookie, sparkle, stipple, hatch, rng, line, shadow, stage, die3d, cobweb, silk } from "./lib.mjs";
+import { kitWall } from "./vig1.mjs";
 
 const V = (title, body) => svg("0 0 900 300", title, body);
 const GY = 262;
@@ -89,8 +90,8 @@ export function ch_alert() {
   s += shadow(776, GY, 62, 6);
   s += spider({ x: 776, y: GY - 33.8, s: 1.3, look: [-1, -.4], mouth: "worried", brow: "worried", mark: "dots",
     legOverride: { L0: [[-9, -6], [-24, -18], [-34, -8]], L1: [[-12, -2], [-30, -6], [-38, 6]] } });
-  // a bead of sweat on the side of its head
-  s += `<path d="M800 ${GY - 50}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  // a bead of sweat on the side of its head (sitting on the head's outline, not beside it)
+  s += `<path d="M795 ${GY - 47}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   return V("An alarm light flashing and a meter swinging into the red", s);
 }
 
@@ -127,7 +128,8 @@ export function ch_vitality() {
   s += spider({ x: 290, y: GY - 37.7, s: 1.45, look: [1, .5], mouth: "worried", brow: "worried", mark: "stripe",
         // bandages wrap the abdomen and a plaster sits on the head, clear of the eyes
     over: `<path d="M-18 -30l36 10M-19 -20l37 7" stroke="${C.cream}" stroke-width="5"/><path d="M-18 -30l36 10M-19 -20l37 7" stroke="${C.ink}" stroke-width="1" opacity=".3"/><rect x="-14" y="-12" width="12" height="6" rx="1.5" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.3" transform="rotate(-24 -8 -9)"/><rect x="6" y="-32" width="16" height="8" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4" transform="rotate(30 14 -28)"/>` });
-  s += `<path d="M322 ${GY - 54}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  // a bead of sweat sitting on the head's right outline (not floating beside it)
+  s += `<path d="M309 ${GY - 52}q4 8 0 12q-4 -4 0 -12z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
   // vacuum floor nozzle from the right, sucking everything in
   // the hose runs on past the right edge of the page box (the chapter-art box is wider than
   // the 3:1 viewBox, so it must reach well beyond x 900 or its cut end would show)
@@ -153,6 +155,8 @@ export function ch_vitality() {
 export function ch_heist() {
   const P = "ch";
   let s = stage(P, { groundY: 284, gw: .92 });
+  // the wall the blueprint is pinned to (the pushpins need something to go into), skirting below it
+  s += kitWall(P, { gy: 284, yS: 268, pegs: false });
   // blueprint sheet with curled ends
   s += `<rect x="96" y="44" width="708" height="220" fill="${C.ink}" opacity=".2" transform="translate(6 7)"/>`;
   s += `<rect x="96" y="44" width="708" height="220" fill="${C.deep}" stroke="${C.ink}" stroke-width="3"/>`;
@@ -225,7 +229,9 @@ export function ch_gadgets() {
   s += cube(gx - 24, GY - gry - 4, 17) + cube(gx + 22, GY - gry - 2, 15);
   // the crook of the catching tine rests on the right-hand rim; the loaded hook hangs straight,
   // shank down the outside of the glass, and the climber stands directly below the eye
-  const crown = [gx + grx + 14, rimY + 6];
+  // (placed so the crook's underside sits on the rim at x 212 AND the inside tine's tip bears on
+  // the inner glass wall: the braced tine is what stops the loaded hook rotating off the rim)
+  const crown = [gx + grx + 17, rimY + 6];
   const hk = paperclipHook(crown[0], crown[1], 1, 0);
   const cx = crown[0], abTop = feet - 39 * sp;
   s += hk.svg;                                              // the tine inside is seen through the glass
@@ -250,8 +256,11 @@ export function ch_gadgets() {
   const kx = 462, kr = 38, kry = 33, ky = GY - kr;
   const hx = 392;
   s += shadow(hx + 36, GY, 96, 6);
+  // each front foot ends exactly where its hooked tip (drawn over the skirt below) begins
+  const gp = t => [kx - 12 - Math.sqrt(1 - t * t) * kry - 3, ky + t * kr - 1];
+  const loc = p => [(p[0] - hx) / sp, (p[1] - feet) / sp];
   s += spider({ x: hx, y: feet, s: sp, look: [1, -.2], mouth: "flat", brow: "down", mark: "dots", hat: "goggles",
-    legOverride: { R0: [[9, -6], [28, -44], [40.5, -36.5]], R1: [[12, -2], [30, -14], [35, 3.5]] } });
+    legOverride: { R0: [[9, -6], [26, -50], loc(gp(-.7))], R1: [[12, -2], [30, -14], loc(gp(.5))] } });
   let crimp = "";
   for (let k = -5; k <= 5; k++) { const t = k / 6, yy = ky + t * kr, xx = kx - 12 - Math.sqrt(1 - t * t) * kry; crimp += `M${n(xx)} ${n(yy)}l12 ${n(-2 * t)}`; }
   s += `<ellipse cx="${kx - 12}" cy="${ky}" rx="${kry}" ry="${kr}" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
@@ -366,7 +375,7 @@ export function ch_running() {
   // the Storyteller's hand lowering a cat figure
   s += hand(612, 124, 1);
   // cat figurine dangling from the pinch
-  s += `<path d="M606 124v8" stroke="${C.ink}" stroke-width="2"/>`;
+  s += `<path d="M606 123v15" stroke="${C.ink}" stroke-width="2"/>`;   // loop runs from the pinch down into the head between the ears
   s += `<path d="M588 176q-4 -28 18 -40q22 12 18 40z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<path d="M594 140l2 -12 8 8zM618 140l-2 -12 -8 8z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
   s += `<ellipse cx="600" cy="146" rx="2" ry="3" fill="${C.goldB}"/><ellipse cx="612" cy="146" rx="2" ry="3" fill="${C.goldB}"/>`;
@@ -377,7 +386,9 @@ export function ch_running() {
 
 export function ch_location() {
   const P = "clo";
-  let s = stage(P, { groundY: 288, gw: .96 });
+  let s = stage(P, { groundY: 288, gw: .98 });   // the spider's outermost foot (x 18) stands well on the floor
+  // the wall the plan is pinned to, with its skirting on the floor line
+  s += kitWall(P, { gy: 288, yS: 276, pegs: false });
   // floor plan sheet, grid
   const x0 = 120, y0 = 34, cw = 30, cols = 22, rows = 8;
   s += `<rect x="${x0 + 6}" y="${y0 + 7}" width="${cols * cw}" height="${rows * cw}" fill="${C.ink}" opacity=".2"/>`;
@@ -395,9 +406,11 @@ export function ch_location() {
   s += `<circle cx="${X(11)}" cy="${Y(3)}" r="${cw * 1.6}" fill="${C.oxB}" opacity=".16" stroke="${C.oxB}" stroke-width="2" stroke-dasharray="5 5"/>`;
   s += `<path d="M${X(11) - 9} ${Y(3) + 4}l2 -12 6 7h2l6 -7 2 12q-9 8 -18 0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="1.6" stroke-linejoin="round"/>`;
   // entry vent (left) and target (right)
-  s += `<rect x="${X(0) - 8}" y="${Y(4) - 16}" width="16" height="32" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/>`;
-  s += line(`M${X(0) - 5} ${Y(4) - 8}h10M${X(0) - 5} ${Y(4)}h10M${X(0) - 5} ${Y(4) + 8}h10`, 2, C.soft);
-  s += `<circle cx="${X(20.5)}" cy="${Y(6)}" r="18" fill="${C.goldB}" opacity=".45"/>` + tin(X(20.5), Y(6) + 10, 26, 18, { sw: 1.8 });
+  // (printed symbols stay inside the sheet: the vent sits just inside the outer wall line, and the
+  // target is a flat printed cookie glyph, not a 3-D tin with a shadow standing on the upright plan)
+  s += `<rect x="${X(0) + 3}" y="${Y(4) - 16}" width="14" height="32" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += line(`M${X(0) + 6} ${Y(4) - 8}h8M${X(0) + 6} ${Y(4)}h8M${X(0) + 6} ${Y(4) + 8}h8`, 2, C.soft);
+  s += `<circle cx="${X(20.5)}" cy="${Y(6)}" r="18" fill="${C.goldB}" opacity=".45"/>` + cookie(X(20.5), Y(6), 12, 5);
   // Route A (gold, dotted): through the doorways, the long way round the cat
   const c = (a, b) => `${X(a)} ${Y(b)}`;
   s += line(`M${c(.5, 4)}H${X(7.5)}V${Y(4)}H${X(9)}Q${X(9)} ${Y(7.5)} ${X(11)} ${Y(7.4)}H${X(15)}Q${X(17)} ${Y(7.4)} ${X(17)} ${Y(6)}Q${X(17)} ${Y(5)} ${X(19)} ${Y(5.5)}L${X(20)} ${Y(6)}`, 4, C.gold, ` stroke-dasharray="2 8"`);

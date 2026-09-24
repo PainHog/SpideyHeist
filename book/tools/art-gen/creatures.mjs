@@ -29,7 +29,9 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
 
   // planted front paw
   // near foreleg, straight down in front of the chest and out of the bottom of the frame to its paw on the floor
-  body += path("M108 290 Q102 340 106 404 L180 404 Q182 340 176 290 Z", C.gold, C.ink, 3.5) + path("M118 330 q24 -6 50 6", "none", C.ox, 6);
+  // (its top runs up under the head, which is drawn later and hides the shoulder, so the leg has no
+  // flat cut-off top edge floating on the chest)
+  body += path("M110 222 Q102 320 106 404 L180 404 Q184 320 174 222 Z", C.gold, C.ink, 3.5) + path("M118 330 q24 -6 50 6", "none", C.ox, 6);
   body += `</g>` + v.ring;
   // head (breaks the frame at the top)
   const hx = 214, hy = 168;
@@ -130,7 +132,9 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   for (const [dx, dy] of [[-36, 36], [-46, 28], [-28, 46], [36, 36], [46, 28], [28, 46]]) body += circ(hx + dx, hy + dy, 2, C.gold);
   body += ell(hx, hy + 12, 32, 20, C.ink) + ell(hx - 10, hy + 5, 9, 5, C.soft) + path(`M${hx - 8} ${hy + 22} q8 6 16 0`, "none", C.deep, 2);
   // drool: a strand hanging straight down from the corner of the lip, a drop gathering at its end
-  body += path(`M${hx + 50} ${hy + 96} Q${hx + 47} ${hy + 118} ${hx + 50} ${hy + 138}`, "none", C.ink, 5) + path(`M${hx + 50} ${hy + 96} Q${hx + 47} ${hy + 118} ${hx + 50} ${hy + 138}`, "none", C.cream, 2.4);
+  // (the strand starts inside the lower lip's outline at x=hx+50, where the lip edge is at y~hy+89,
+  // so it hangs from the mouth rather than from the collar below it)
+  body += path(`M${hx + 50} ${hy + 88} Q${hx + 47} ${hy + 114} ${hx + 50} ${hy + 138}`, "none", C.ink, 5) + path(`M${hx + 50} ${hy + 88} Q${hx + 47} ${hy + 114} ${hx + 50} ${hy + 138}`, "none", C.cream, 2.4);
   body += drop(hx + 50, hy + 132, 0.8);
   // big friendly paws
   for (const x of [150, 294]) body += shadow(x + 4, 356, 46, 7, C.ink, 0.3) + ell(x, 340, 42, 20, C.cream, C.ink, 3.5) + path(`M${x - 16} 342 v15 M${x} 344 v15 M${x + 16} 342 v15`, "none", C.ink, 2.6);
@@ -182,7 +186,7 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += v.ring;
   // our spider, safe on a silk line anchored to the stair nosing (clear of the vacuum),
   // hanging head-down straight below it from the spinnerets at the abdomen tip
-  body += hang(380, 254, 312, 0.22, { lid: "sly", mouth: "grin", look: [-0.4, -0.8] }, { rim: { col: C.cream, w: 1.8 } });
+  body += hang(372, 254, 312, 0.22, { lid: "sly", mouth: "grin", look: [-0.4, -0.8] }, { rim: { col: C.cream, w: 1.8 } });
   save("creature-vacuum", VB, "The Vacuum: a relentless robot vacuum halted at a stair edge, sensor glaring, while a spider dangles safely below", body);
 }
 
@@ -240,9 +244,12 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += path(`M${jx - 64} ${jy - 40} V${jy + 80} M${jx - 50} ${jy - 50} V${jy - 10}`, "none", C.cream, 6);
   body += path(`M${jx + 60} ${jy - 30} V${jy + 30}`, "none", C.cream, 3.5);
   // lid with air holes
-  body += path(`M${jx - 76} ${jy - 86} H${jx + 76} V${jy - 106} H${jx - 76} Z`, C.gold, C.ink, 3.5) + ell(jx, jy - 106, 76, 14, C.glint, C.ink, 3.5);
-  for (const [x, y] of [[-40, -106], [-14, -110], [12, -104], [38, -109], [-26, -100], [26, -100], [52, -104], [-54, -104]]) body += circ(jx + x, jy + y, 3, C.ink);
-  body += path(`M${jx - 70} ${jy - 92} V${jy - 100} M${jx - 50} ${jy - 90} V${jy - 100} M${jx - 30} ${jy - 88} V${jy - 98} M${jx + 30} ${jy - 88} V${jy - 98} M${jx + 50} ${jy - 90} V${jy - 100} M${jx + 70} ${jy - 92} V${jy - 100}`, "none", C.ink, 2);
+  // the lid is screwed onto the neck: its band (y jy-79..jy-99) overlaps the jar's mouth (y jy-80),
+  // so it sits on the jar instead of hovering a hair above it
+  const ly = 7;
+  body += path(`M${jx - 76} ${jy - 86 + ly} H${jx + 76} V${jy - 106 + ly} H${jx - 76} Z`, C.gold, C.ink, 3.5) + ell(jx, jy - 106 + ly, 76, 14, C.glint, C.ink, 3.5);
+  for (const [x, y] of [[-40, -106], [-14, -110], [12, -104], [38, -109], [-26, -100], [26, -100], [52, -104], [-54, -104]]) body += circ(jx + x, jy + y + ly, 3, C.ink);
+  body += path(`M${jx - 70} ${jy - 92 + ly} V${jy - 100 + ly} M${jx - 50} ${jy - 90 + ly} V${jy - 100 + ly} M${jx - 30} ${jy - 88 + ly} V${jy - 98 + ly} M${jx + 30} ${jy - 88 + ly} V${jy - 98 + ly} M${jx + 50} ${jy - 90 + ly} V${jy - 100 + ly} M${jx + 70} ${jy - 92 + ly} V${jy - 100 + ly}`, "none", C.ink, 2);
   // the grabby hand wrapped around the jar
   body += path(`M${jx - 120} 400 Q${jx - 130} ${jy + 80} ${jx - 84} ${jy + 50} L${jx - 70} ${jy + 90} Q${jx - 90} ${jy + 120} ${jx - 60} 400 Z`, C.parch, C.ink, 4);
   // base of the thumb, where it leaves the palm and turns round the jar's left side
@@ -264,7 +271,7 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   setPrefix("cr-guard");
   const v = oval();
   const GT = { x: 180, y: 232, s: 0.98 };
-  const crew = [366, 304];
+  const crew = [362, 304]; // (its right-hand feet's shadows stay clear of the oval's ring)
   // the torch is gripped at (96,-44) in the guard's leg I and aimed straight at the crew member
   const piv = toWorld(GT, [96, -44]);
   const th = Math.atan2(crew[1] - piv[1], crew[0] - piv[0]) * 180 / Math.PI;
@@ -294,7 +301,10 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += drop(crew[0] - 18, crew[1] - 12, 0.55);
   // the guard: ox-red spider with cap, badge, torch and moustache
   const R = [[[26, 10], [58, -2], [84, -30], [96, -44]], STAND_R[1], STAND_R[2], STAND_R[3]];
-  const L = [[[-26, 10], [-62, -24], [-80, -64], [-78, -104]], ...mirror(STAND_R).slice(1)];
+  // left legs II-IV tucked in towards the body so their feet and shadows stay on the floor inside the
+  // vignette instead of standing on (and shadowing) the oval ring and the page margin beyond it
+  const tuck = (l, k) => l.map((p, i) => i ? [p[0] * k, p[1]] : p);
+  const L = [[[-26, 10], [-62, -24], [-80, -64], [-78, -104]], ...mirror([tuck(STAND_R[1], 0.9), tuck(STAND_R[2], 0.84), tuck(STAND_R[3], 0.84)])];
   const cap = path("M-44 -28 Q-46 -70 0 -74 Q46 -70 44 -28 Z", C.deep, C.ink, 3.5) + path("M-48 -28 Q0 -44 48 -28 Q48 -16 0 -22 Q-48 -16 -48 -28 Z", C.ink, C.ink, 2) +
     path("M-38 -34 Q0 -42 38 -34", "none", C.gold, 3.5) + path("M-30 -60 Q0 -70 30 -60", "none", C.soft, 2.5) +
     path("M-10 -66 L0 -70 L10 -66 L9 -52 Q6 -44 0 -41 Q-6 -44 -9 -52 Z", C.gold, C.ink, 2.4) + circ(0, -56, 3.2, C.glint);

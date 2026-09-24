@@ -28,14 +28,18 @@ export function part_one() {
   s += `<defs><linearGradient id="${P}-lamp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.goldB}" stop-opacity=".55"/><stop offset="1" stop-color="${C.goldB}" stop-opacity="0"/></linearGradient></defs>`;
   // the table top the blueprint lies on, in perspective: its far edge behind the back row,
   // its near edge meeting the wooden front edge below (so the sheet rests on something)
-  s += `<path d="M150 168H750L852 372H48Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+  // The near corners run out past the frame (a big table, deliberately cropped), so every foot
+  // of the front spiders, out to their outermost legs, lands on the table top.
+  s += `<path d="M150 168H750L940 372H-40Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   s += line("M150 168H750", 2, C.soft, ` opacity=".9"`);
   s += line("M118 232q120 -3 230 1M560 230q90 2 190 -1M84 300q70 -2 140 1M700 298q60 2 120 0M70 340q60 2 110 -1M740 342q40 -2 80 1", 1.4, C.soft, ` opacity=".7"`);
   // lamp light cone
   s += `<path d="M396 58L180 372H720L504 58z" fill="url(#${P}-lamp)" opacity=".7"/>`;
   // the table's wooden front edge: a solid band, so the table still reads on the near-black part page
-  s += `<rect x="40" y="372" width="820" height="16" rx="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += line("M46 376H854", 2.2, C.goldB, ` opacity=".8"`) + line("M120 382q40 -3 80 0M380 383q50 2 100 -1M640 382q40 -2 80 1", 1.2, C.ink, ` opacity=".4"`);
+  // two legs under the front edge, running off the bottom of the frame (the table stands on the floor)
+  for (const lx of [70, 806]) s += `<rect x="${lx}" y="380" width="24" height="50" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/><path d="M${lx + 5} 390V430" stroke="${C.goldB}" stroke-width="2.4" opacity=".7"/>`;
+  s += `<rect x="-10" y="372" width="920" height="16" rx="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += line("M-4 376H904", 2.2, C.goldB, ` opacity=".8"`) + line("M120 382q40 -3 80 0M380 383q50 2 100 -1M640 382q40 -2 80 1", 1.2, C.ink, ` opacity=".4"`);
   // the blueprint (a perspective sheet), deep plum with cream lines
   const bp = "M230 196L672 196L742 350L160 350Z";
   s += `<path d="M228 204L674 204L748 358L154 358Z" fill="${C.ink}" opacity=".25"/>`;
@@ -185,13 +189,15 @@ export function part_two() {
   s += line("M230 372v14M310 372v14", 5);
   s += `<path d="M226 364q-4 -40 16 -44h40q16 0 16 20v24z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<rect x="220" y="346" width="100" height="28" rx="8" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  // sleeping dog
+  // sleeping dog, lying on the floor (its belly on the same floor line as the sofa's feet)
+  s += `<g transform="translate(0 8)">`;
   s += `<path d="M300 378q-4 -30 36 -32q38 -2 46 20q2 12 -6 12z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8"/>`;
   s += `<circle cx="376" cy="356" r="16" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8"/>`;
   s += `<path d="M362 348q-10 4 -8 22q8 -2 10 -14z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.2"/>`;
   s += line("M372 356q4 3 8 0", 2) + `<ellipse cx="391" cy="360" rx="4" ry="3" fill="${C.ink}"/>`;
   s += `<path d="M306 372q-14 0 -16 -12" stroke="${C.ink}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M398 334q4 -6 10 -6M404 324q4 -6 10 -6" stroke="${C.ink}" stroke-width="2" fill="none" opacity=".5"/>`;
+  s += `</g>`;
   // stairs connecting the floors (in the living room)
   // --- downstairs right: kitchen with the tin
   s += `<rect x="462" y="330" width="218" height="58" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
@@ -218,7 +224,7 @@ export function part_two() {
   s += spider({ x: 450, y: 134, s: .55, mask: true, look: [0, 1], pose: "dangle", rim: C.cream, rimOp: .8, thread: 12, threadColor: C.goldB });
   // storyteller's threat markers: little ox pins over each threat
   const pin = (x, y) => `<path d="M${x} ${y}q-10 -12 -10 -20a10 10 0 0 1 20 0q0 8 -10 20z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><circle cx="${x}" cy="${y - 20}" r="3.6" fill="${C.cream}"/>`;
-  s += pin(258, 190) + pin(540, 280) + pin(376, 336) + pin(434, 362);
+  s += pin(258, 190) + pin(540, 280) + pin(376, 344) + pin(434, 362);
   // a garden, trees either side for charm
   s += line("M110 388v-60", 9) + line("M110 388v-60", 4.5, C.gold) + `<circle cx="110" cy="300" r="40" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/><path d="M92 290q10 -14 26 -12" stroke="${C.goldB}" opacity=".5" stroke-width="4" fill="none" stroke-linecap="round"/>`;
   s += line("M790 388v-44", 9) + line("M790 388v-44", 4.5, C.gold) + `<circle cx="790" cy="324" r="30" fill="${C.good}" stroke="${C.ink}" stroke-width="3"/>`;
