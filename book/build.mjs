@@ -156,15 +156,13 @@ const css = readFileSync(join(SRC, "book.css"), "utf8");
  * Each chapter lists spots in order of preference; the first not yet used wins.
  */
 const SPOTS = {
-  "ch-01": ["spot-crew-huddle", "spot-debrief"], "ch-02": ["spot-dice-push"],
-  "ch-03": ["spot-silk-swing", "spot-vacuum-ride"], "ch-04": ["spot-lookout-sill", "spot-dust-bunny"],
-  "ch-05": ["spot-dust-bunny", "spot-lockpick"], "ch-06": ["spot-lockpick", "spot-loot-haul"],
-  "ch-07": ["spot-map-board", "spot-crew-huddle"], "ch-08": ["spot-jar-rescue", "spot-silk-swing"],
-  "ch-09": ["spot-alarm-freeze"], "ch-10": ["spot-jar-rescue", "spot-cat-nap"],
-  "ch-11": ["spot-loot-haul", "spot-debrief"], "ch-12": ["spot-silk-swing", "spot-lockpick"],
-  "ch-13": ["spot-couch-sneak"], "ch-14": ["spot-map-board"], "ch-15": ["spot-vacuum-ride", "spot-alarm-freeze"],
-  "ch-16": ["spot-cat-nap"], "ch-17": ["spot-crew-huddle"], "ch-18": ["spot-alarm-freeze", "spot-couch-sneak"],
-  "ch-19": ["spot-loot-haul", "spot-cat-nap"], "ch-20": ["spot-dice-push"], "ch-21": ["spot-debrief"],
+  "ch-01": ["spot-crew-huddle"], "ch-02": ["spot-dice-push"], "ch-03": ["spot-silk-swing"],
+  "ch-04": ["spot-lookout-sill"], "ch-05": ["spot-dust-bunny"], "ch-06": ["spot-lockpick"],
+  "ch-07": ["spot-map-board"], "ch-08": ["spot-jar-rescue"], "ch-09": ["spot-alarm-freeze"],
+  "ch-10": ["spot-cat-nap"], "ch-11": ["spot-loot-haul"], "ch-12": ["spot-silk-swing"],
+  "ch-13": ["spot-couch-sneak"], "ch-14": ["spot-map-board"], "ch-15": ["spot-vacuum-ride"],
+  "ch-16": ["spot-couch-sneak"], "ch-17": ["spot-crew-huddle"], "ch-18": ["spot-lookout-sill"],
+  "ch-19": ["spot-map-board"], "ch-20": ["spot-dice-push"], "ch-21": ["spot-debrief"],
 };
 const PT_PER_IN = 72;
 const BOTTOM_LIMIT_PT = 0.78 * PT_PER_IN;   // @page bottom margin: content must end above this
@@ -172,14 +170,19 @@ const MIN_SPOT_IN = 1.5, MAX_SPOT_IN = 5.3, SAFETY_IN = 0.2, MIN_GAP_IN = 0.22; 
 
 function planSpots(ends) {
   const used = new Set(), plan = {};
-  for (const [id, { freeIn }] of Object.entries(ends)) {
+  const order = Object.keys(ends);
+  for (const [idx, [id, { freeIn }]] of Object.entries(ends).entries()) {
     const prefs = SPOTS[id];
     const room = freeIn - SAFETY_IN;
     if (!prefs || room - MIN_GAP_IN < MIN_SPOT_IN) continue;
     // preferred spots first, then any spot not used yet, and only then a repeat
     const all = [...new Set(Object.values(SPOTS).flat())];
     const have = a => existsSync(join(ART, `${a}.svg`));
-    const art = prefs.find(a => !used.has(a) && have(a)) ?? all.find(a => !used.has(a) && have(a)) ?? prefs.find(have);
+    // don't take a spot a later chapter prefers; repeat our own before stealing one
+    const later = new Set(order.slice(idx + 1).flatMap(k => SPOTS[k] ?? []));
+    const art = prefs.find(a => !used.has(a) && have(a))
+      ?? all.find(a => !used.has(a) && have(a) && !later.has(a))
+      ?? prefs.find(have);
     if (!art) continue;
     used.add(art);
     const h = +Math.min(MAX_SPOT_IN, room - MIN_GAP_IN).toFixed(2);
