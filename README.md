@@ -4,7 +4,7 @@
 
 The official companion game system for **Heisty Spideys, First Edition** — built for **Foundry VTT v13 & v14** on the modern ApplicationV2 + DataModel architecture.
 
-![Foundry v13](https://img.shields.io/badge/Foundry-v13%E2%80%93v14-5f2470) ![System](https://img.shields.io/badge/type-game%20system-b8892a)
+![Foundry v13](https://img.shields.io/badge/Foundry-v13%E2%80%93v14-36343a) ![System](https://img.shields.io/badge/type-game%20system-b8892a)
 
 ---
 

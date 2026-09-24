@@ -2,6 +2,11 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.5.0] — Heist-noir look
+
+### Changed
+- **New colour scheme, matching the rulebook's heist-noir edition:** charcoal and near-black with signal red for danger and the Alert, and gold for loot and silk, on warm paper. Applies to the spider, threat and item sheets, the Character Builder, the roll dialog, chat cards, the Alert meter and all item/creature icons.
+
 ## [1.4.0] — Rulebook v4.3 rulings
 
 The system now matches **Heisty Spideys v4.3**, where every open rules question from the editorial review was resolved (see `book/REVIEW.md` §B for each ruling and its reason).
