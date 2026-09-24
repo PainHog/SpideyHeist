@@ -3,9 +3,9 @@ import { writeFileSync } from "node:fs";
 
 export const OUT = new URL("../../art/", import.meta.url).pathname; // book/art/
 export const C = {
-  plum: "#5f2470", deep: "#3a1348", soft: "#7b3a8e", cream: "#f6efdd",
-  parch: "#eaddbe", edge: "#d9c69a", ink: "#2a1c30", gold: "#b8892a",
-  glint: "#f0cf6b", ox: "#7a2231", oxb: "#b2364a", good: "#2f7d4f",
+  plum: "#36343a", deep: "#1f1d22", soft: "#5a5660", cream: "#f3eee4",
+  parch: "#e6dccb", edge: "#cdbfa4", ink: "#141216", gold: "#b8892a",
+  glint: "#f0cf6b", ox: "#8f1d1d", oxb: "#d13a2f", good: "#2f7d4f",
 };
 
 let PFX = "x", N = 0;

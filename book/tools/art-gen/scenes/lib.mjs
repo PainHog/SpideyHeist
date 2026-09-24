@@ -1,9 +1,9 @@
 // Shared drawing kit for the Heisty Spideys book art (cover, parts, vignettes, diagrams).
 export const C = {
-  plum: "#5f2470", deep: "#3a1348", soft: "#7b3a8e",
-  cream: "#f6efdd", parch: "#eaddbe", edge: "#d9c69a",
-  ink: "#2a1c30", gold: "#b8892a", goldB: "#f0cf6b",
-  ox: "#7a2231", oxB: "#b2364a", good: "#2f7d4f",
+  plum: "#36343a", deep: "#1f1d22", soft: "#5a5660",
+  cream: "#f3eee4", parch: "#e6dccb", edge: "#cdbfa4",
+  ink: "#141216", gold: "#b8892a", goldB: "#f0cf6b",
+  ox: "#8f1d1d", oxB: "#d13a2f", good: "#2f7d4f",
   // The brief asks for a blue tin lid; this muted blue is used for that lid only.
   blue: "#3d5a80", blueL: "#6f90b8",
 };
@@ -215,7 +215,11 @@ export function tin(x, y0, w, h, o = {}) {
   if (sh) s += `<ellipse cx="${n(x + rx * .12)}" cy="${n(y0 - ry * .35)}" rx="${n(rx * 1.12)}" ry="${n(ry * .75)}" fill="${C.ink}" opacity=".3"/>`;
   s += `<path d="M${n(x - rx)} ${n(top)}V${n(y)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + rx)} ${n(y)}V${n(top)}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="${sw}"/>`;
   s += `<path d="M${n(x - rx)} ${n(top + h * .22)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + rx)} ${n(top + h * .22)}M${n(x - rx)} ${n(top + h * .82)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + rx)} ${n(top + h * .82)}" stroke="${C.gold}" stroke-width="${n(sw * 1.3)}" fill="none"/>`;
-  s += cookie(x + rx * 0.12, top + h * .56, h * .2, 7);
+  // a paper label wrapped round the tin (no free-floating cookie decal): a band that
+  // follows the tin's curvature, with squiggle "lettering"
+  const ly0 = top + h * .38, ly1 = top + h * .68, lx = rx * .62;
+  s += `<path d="M${n(x - lx)} ${n(ly0 + ry * .55)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + lx)} ${n(ly0 + ry * .55)}V${n(ly1 + ry * .55)}A${n(rx)} ${n(ry)} 0 0 1 ${n(x - lx)} ${n(ly1 + ry * .55)}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="${n(sw * .7)}"/>`;
+  s += `<path d="M${n(x - lx * .6)} ${n((ly0 + ly1) / 2 + ry * .75)}q${n(lx * .3)} -3 ${n(lx * .6)} 0t${n(lx * .6)} 0M${n(x - lx * .4)} ${n((ly0 + ly1) / 2 + ry * .75 + h * .09)}q${n(lx * .2)} -2 ${n(lx * .4)} 0t${n(lx * .4)} 0" stroke="${C.ox}" stroke-width="${n(Math.max(1.2, sw * .6))}" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M${n(x - rx * .72)} ${n(top + ry + 2)}V${n(y - 2)}" stroke="${C.cream}" stroke-width="${n(w * .07)}" opacity=".9" stroke-linecap="round"/>`;
   s += `<path d="M${n(x + rx * .72)} ${n(top + ry + 2)}V${n(y)}" stroke="${C.ink}" stroke-width="${n(w * .08)}" opacity=".15"/>`;
   if (open) {
