@@ -453,64 +453,75 @@ function toothpick(a, b, w = 6) {
 export function spot_jar_rescue() {
   const P = "sjr";
   let s = glow(P, 300, 225, 295, 210);
-  const TY = 392; // table front edge
-  s += tabletop(P, TY, 26, 574, { depth: 120, thick: 18 });
-  const jx = 200, base = 362, bw = 80, bry = 15;
+  const TY = 398; // table front edge
+  s += tabletop(P, TY, 26, 574, { depth: 130, thick: 20, top: C.edge, edge: C.gold });
+  const jx = 176, base = 370, bw = 80, bry = 15;
   const skB = 206, skT = 186, lrx = 70, lry = 13;
   // jar: shadow, glass back, the trapped spider, glass front
   s += shadow(jx + 8, base - 2, bw + 16, 12, .3);
   const jarPath = `M${jx - bw} ${base - bry}V${skB + 34}Q${jx - bw} ${skB + 14} ${jx - lrx + 4} ${skB + 10}V${skB}H${jx + lrx - 4}V${skB + 10}Q${jx + bw} ${skB + 14} ${jx + bw} ${skB + 34}V${base - bry}A${bw} ${bry} 0 0 1 ${jx - bw} ${base - bry}z`;
-  s += `<path d="${jarPath}" fill="${C.cream}" opacity=".55"/>`;
-  s += `<ellipse cx="${jx}" cy="${base - bry}" rx="${bw - 4}" ry="${bry - 3}" fill="${C.edge}" stroke="${C.ink}" stroke-width="1.4" opacity=".7"/>`;
+  s += `<path d="${jarPath}" fill="${C.cream}" opacity=".6"/>`;
+  s += `<ellipse cx="${jx}" cy="${base - bry}" rx="${bw - 4}" ry="${bry - 3}" fill="${C.parch}" stroke="${C.ink}" stroke-width="1.4" opacity=".8"/>`;
   s += line(`M${jx - bw + 2} ${skB + 34}A${bw - 2} ${bry} 0 0 1 ${jx + bw - 2} ${skB + 34}`, 1.4, C.ink, ` opacity=".35"`);
-  // trapped spider on the jar floor, looking up at the rescue
+  // trapped spider on the jar floor, waving up at the rescue
   {
-    const x = jx - 4, gy = base - bry + 2, sc = .72;
+    const x = jx - 6, gy = base - bry + 2, sc = .72;
     s += shadow(x, gy, 44, 5, .25);
-    s += sp({ ...standOn(x, gy, sc, { L0: [jx - bw + 4, gy - 58] }, { L0: [x - 40, gy - 50] }), look: [.6, -1], mouth: "worried", brow: "worried", mark: "dots" });
+    s += sp({ ...standOn(x, gy, sc, { R0: [x + 34, gy - 76] }, { R0: [x + 36, gy - 46] }), look: [.7, -1], mouth: "o", brow: "worried", mark: "dots" });
+    s += line(`M${x + 40} ${gy - 88}q6 4 5 12M${x + 46} ${gy - 92}q10 6 8 18`, 1.8, C.ink, ` opacity=".5"`);
   }
   // glass front: outline, reflections
   s += `<path d="${jarPath}" fill="none" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
-  s += line(`M${jx - bw + 14} ${skB + 44}V${base - 30}M${jx - bw + 26} ${skB + 52}V${skB + 90}`, 5, "#fff", ` opacity=".75"`);
+  s += line(`M${jx - bw + 14} ${skB + 44}V${base - 30}M${jx - bw + 26} ${skB + 52}V${skB + 84}`, 5, "#fff", ` opacity=".75"`);
   s += line(`M${jx + bw - 14} ${skB + 60}V${base - 40}`, 3, "#fff", ` opacity=".55"`);
-  // glass bead ring under the lid
   s += `<path d="M${jx - lrx + 2} ${skB + 4}h${2 * lrx - 4}" stroke="${C.ink}" stroke-width="2" opacity=".5"/>`;
   // screw lid with punched air holes
   s += `<path d="M${jx - lrx} ${skT}V${skB}A${lrx} ${lry * .5} 0 0 0 ${jx + lrx} ${skB}V${skT}z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += line(`M${jx - lrx + 10} ${skT + 4}v14M${jx - lrx + 24} ${skT + 5}v15M${jx - lrx + 38} ${skT + 6}v15M${jx + lrx - 10} ${skT + 4}v14M${jx + lrx - 24} ${skT + 5}v15M${jx + lrx - 38} ${skT + 6}v15M${jx} ${skT + 6}v15M${jx - 14} ${skT + 6}v15M${jx + 14} ${skT + 6}v15`, 1.6, C.plum);
+  { let r = ""; for (let k = -5; k <= 5; k++) r += `M${jx + k * 12.5} ${skT + 5 + Math.abs(k) * -.2}v${14 - Math.abs(k) * .6}`; s += line(r, 1.6, C.plum); }
   s += `<ellipse cx="${jx}" cy="${skT}" rx="${lrx}" ry="${lry}" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.6"/>`;
   for (const [hx, hy] of [[-34, -2], [-12, -5], [12, -5], [34, -2], [-22, 5], [0, 3], [22, 5]]) s += `<ellipse cx="${jx + hx}" cy="${skT + hy}" rx="3.4" ry="1.6" fill="${C.deep}"/>`;
   s += line(`M${jx - 50} ${skT - 4}q20 -7 40 -8`, 2.4, C.cream, ` opacity=".8"`);
 
-  // the cookie tin beside the jar: its lid rim is the fulcrum
-  const tx = 372, tw = 126, th = 114;
+  // the cookie tin beside the jar: the rim of its lid is the fulcrum
+  const tx = 410, tw = 170, th = 124;
   s += tin(tx, base, tw, th, { sw: 2.6 });
   const lidTop = base - tw * .16 - th - th * .22; // centre of the lid's top face
-  // toothpick lever: tip under the jar lid's skirt, resting on the tin lid's rim, long arm over the tin
-  const T = [jx + lrx + 2, skB + 1], F = [tx - tw / 2 - 1, lidTop - 7];
+  // toothpick lever: tip wedged under the jar lid's skirt, resting on the tin's rim, long arm over the tin
+  const T = [jx + lrx + 1, skB - 1], F = [tx - tw / 2 - 2, lidTop - 6];
   const dir = [F[0] - T[0], F[1] - T[1]], L = Math.hypot(...dir), u = [dir[0] / L, dir[1] / L];
-  const E = [F[0] + u[0] * 92, F[1] + u[1] * 92];
-  s += toothpick([T[0] - u[0] * 6, T[1] - u[1] * 6], E, 6.5);
-  // fulcrum contact and the lid lifting a crack on that side
-  s += line(`M${jx + lrx - 16} ${skB + 5}q10 4 18 0`, 2, C.ink, ` opacity=".6"`);
-  s += line(`M${jx + lrx + 10} ${skB - 16}l8 -8M${jx + lrx + 14} ${skB - 4}l10 -4`, 2, C.ink);
-  // two crewmates on the tin lid bearing down on the long arm
+  const at = t => [F[0] + u[0] * t, F[1] + u[1] * t];
+  const E = at(196);
+  let gyB = 0;
+  s += toothpick([T[0] - u[0] * 8, T[1] - u[1] * 8], E, 7);
+  // the lid lifting a crack on the lever side
+  s += line(`M${jx + lrx + 10} ${skB - 18}l8 -8M${jx + lrx + 16} ${skB - 6}l10 -4`, 2, C.ink);
+  // two crewmates standing on the tin lid, in front of the lever, bearing down on its long arm
   {
-    const sc = .6, x1 = tx + 12, g1 = lidTop + 8;
-    const at = t => [F[0] + u[0] * t, F[1] + u[1] * t];
-    const e1 = at(70), e2 = at(86);
-    s += shadow(x1 + 8, g1, 36, 4, .25);
-    s += sp({ ...standOn(x1, g1, sc, { L0: [e1[0], e1[1] - 3], L1: [e1[0] + 8, e1[1] - 3] }, { L0: [x1 - 14, e1[1] - 26], L1: [x1 - 6, e1[1] - 24] }), look: [-1, .4], mouth: "flat", brow: "down", mark: "stripe" });
-    const x2 = tx + 42, g2 = lidTop - 4;
-    const P2 = standOn(x2, g2, sc, { L0: [e2[0] + 2, e2[1] - 3], L1: [e2[0] + 10, e2[1] - 3] }, { L0: [x2 - 12, e2[1] - 26], L1: [x2 - 4, e2[1] - 24] });
-    s = s.replace(`<!--crew2-->`, "");
-    s += sp({ ...P2, look: [-1, .3], mouth: "grin", brow: "down", mark: "chevron", hat: "goggles" });
-    s += line(`M${x2 + 30} ${g2 - 50}q4 -6 0 -12M${x2 + 38} ${g2 - 44}q6 -6 2 -14`, 1.8, C.ink, ` opacity=".5"`);
+    const sc = .62, gy = lidTop + 15;
+    const onStick = x => { const t = (x - F[0]) / u[0]; return at(t)[1] - 3.5; };
+    // crewmate A on the tin lid, hauling the lever down with both forelegs hooked over it
+    {
+      const x = 368, xl = x - 11, xr = x + 11;
+      s += shadow(x + 4, gy, 38, 4, .25);
+      s += sp({ ...standOn(x, gy, sc, { L0: [xl, onStick(xl)], R0: [xr, onStick(xr)] }, { L0: [x - 30, onStick(xl) - 4], R0: [x + 28, onStick(xr) - 4] }), look: [-.6, -.8], mouth: "flat", brow: "down", mark: "stripe" });
+    }
+    // crewmate B standing on the long end of the lever, all eight feet gripping it, weighing it down
+    {
+      const x = 470, sp4 = [9, 20, 31, 40], f = {}, k = {};
+      for (let i = 0; i < 4; i++) {
+        f["R" + i] = [x + sp4[i], onStick(x + sp4[i]) + 1]; f["L" + i] = [x - sp4[i], onStick(x - sp4[i]) + 1];
+        k["R" + i] = [x + sp4[i] * .7 + 6, onStick(x) - 30 + i * 5]; k["L" + i] = [x - sp4[i] * .7 - 6, onStick(x) - 30 + i * 5];
+      }
+      const y = onStick(x) - 17;
+      s += sp({ x, y, s: sc, legOverride: legs(x, y, sc, f, k), look: [-1, .5], mouth: "grin", brow: "down", mark: "chevron", hat: "goggles" });
+      gyB = y;
+    }
+    s += line(`M504 ${n(gyB - 14)}l6 8M500 ${n(gyB + 4)}l8 4`, 2, C.ink, ` opacity=".55"`);
   }
   // a spoon lying flat on the table (left)
-  s += shadow(66, 382, 44, 4, .25);
-  s += `<path d="M30 384L82 376" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M30 384L82 376" stroke="${C.soft}" stroke-width="3.6" stroke-linecap="round"/>`;
-  s += `<ellipse cx="96" cy="373" rx="18" ry="6.5" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2" transform="rotate(-8 96 373)"/>`;
-  s += `<ellipse cx="96" cy="372" rx="11" ry="3.4" fill="${C.edge}" opacity=".6" transform="rotate(-8 96 372)"/>`;
-  return V("Two spiders on a cookie tin lever the lid off a jar to free a trapped crewmate", s);
+  s += shadow(66, 388, 44, 4, .25);
+  s += `<path d="M34 392L80 384" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M34 392L80 384" stroke="${C.soft}" stroke-width="3.6" stroke-linecap="round"/>`;
+  s += `<ellipse cx="96" cy="381" rx="18" ry="6.5" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2" transform="rotate(-8 96 381)"/>`;
+  s += `<ellipse cx="96" cy="380" rx="11" ry="3.4" fill="${C.edge}" opacity=".6" transform="rotate(-8 96 380)"/>`;
+  return V("Two spiders on a cookie tin lever the lid off a jar to free a trapped crewmate", `<g transform="translate(0 -14)">${s}</g>`);
 }

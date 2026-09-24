@@ -156,7 +156,7 @@ export function ch_roles() {
   xs.forEach(x => s += shadow(x, GY, 44, 6));
   // 1 bow tie (Face)
   // (lying flat on the floor, so seen foreshortened: a squashed bow with a thin edge)
-  { const x = xs[0], y = GY - 11; s += `<path d="M${x} ${y + 4}l-40 -9q-8 10 0 20zM${x} ${y + 4}l40 -9q8 10 0 20z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  { const x = xs[0], y = GY - 14; s += `<path d="M${x} ${y + 4}l-40 -9q-8 10 0 20zM${x} ${y + 4}l40 -9q8 10 0 20z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
     s += `<path d="M${x} ${y}l-40 -9q-8 10 0 20zM${x} ${y}l40 -9q8 10 0 20z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
     s += `<ellipse cx="${x}" cy="${y}" rx="9" ry="6" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6"/>`;
     s += line(`M${x - 30} ${y - 4}q8 4 0 9M${x + 30} ${y - 4}q-8 4 0 9`, 2, C.ink, ` opacity=".5"`); s += sparkle(x + 34, y - 26, 5); }
@@ -265,7 +265,7 @@ export function ch_builder() {
   s += `<rect x="286" y="36" width="330" height="236" fill="${C.cream}" stroke="${C.ink}" stroke-width="3"/>`;
   // portrait box with a sketched spider
   s += `<rect x="304" y="54" width="92" height="92" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.2"/>`;
-  s += spider({ x: 350, y: 110, s: .9, body: C.cream, hi: C.cream, mark: "none", mouth: "grin", legW: .6, sw: 1.6 });
+  s += spider({ x: 350, y: 106, s: .62, body: C.cream, hi: C.cream, mark: "none", mouth: "grin", legW: .8, sw: 2 });
   // "name" line & scribbles (no legible text)
   s += line("M412 66h180", 2, C.ink) + line("M416 58q10 -8 18 0t18 0 18 0 18 0 18 -2", 2, C.plum);
   // attribute rows: pip boxes
@@ -279,14 +279,15 @@ export function ch_builder() {
   for (let k = 0; k < 5; k++) s += `<rect x="${470 + k * 26}" y="164" width="20" height="20" rx="3" fill="${k === 0 ? C.good : C.cream}" stroke="${C.ink}" stroke-width="1.8"/>`;
   s += line("M470 208h128M470 226h96M470 244h112", 1.6, C.ink, ` opacity=".45"`);
   s += `</g>`;
-  // pencil, eraser crumbs, a die
-  s += pencil(700, 70, 560, 220, 12);
-  s += line("M548 232q10 4 20 0", 2, C.ink, ` opacity=".6"`);
-  s += `<circle cx="640" cy="262" r="3" fill="${C.oxB}"/><circle cx="652" cy="266" r="2" fill="${C.oxB}"/><circle cx="632" cy="268" r="2.4" fill="${C.oxB}"/>`;
+  // the pencil lies on the desk, its tip resting on the sheet by the line it just drew; eraser crumbs, a die
+  s += line("M560 236L728 204", 10, C.ink, ` opacity=".2"`);
+  s += pencil(728, 196, 560, 228, 12);
+  s += line("M540 236q10 4 20 0", 2, C.ink, ` opacity=".6"`);
+  s += `<ellipse cx="640" cy="264" rx="3" ry="1.8" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/><ellipse cx="652" cy="267" rx="2.2" ry="1.3" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/><ellipse cx="630" cy="269" rx="2.4" ry="1.4" fill="${C.edge}" stroke="${C.ink}" stroke-width=".8"/>`;
   s += shadow(208, 262, 34, 5) + die3d(200, 237, 50, 6, { hot: true });
   // spider peeking over the desk (right), holding the eraser
   s += shadow(770, 262, 70, 6) + shadow(695, 264, 22, 3);
-  s += `<rect x="678" y="244" width="34" height="20" rx="4" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<rect x="678" y="244" width="34" height="20" rx="4" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/><path d="M682 250h14" stroke="${C.edge}" stroke-width="2.4" stroke-linecap="round"/>`;
   s += spider({ x: 770, y: 226, s: 1.4, look: [-1, -.2], mouth: "grin", brow: "up", hat: "fedora", mark: "dots",
     legOverride: { L0: [[-9, -6], [-30, -18], [-47, 14]] } });
   // a thimble mug

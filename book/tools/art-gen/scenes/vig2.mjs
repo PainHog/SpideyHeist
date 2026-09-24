@@ -31,8 +31,11 @@ export function ch_silk() {
   const sp = { x: 700, y: 120, s: 1.3 };
   s += `<path d="M${sp.x} 0V${n(sp.y - 39 * sp.s + 2)}" stroke="${C.goldB}" stroke-width="5" opacity=".3"/>`;
   s += `<path d="M${sp.x} 0V${n(sp.y - 39 * sp.s + 2)}" stroke="${C.gold}" stroke-width="1.8"/>`;
-  s += `<path d="M214 150Q433 170 653 130" stroke="${C.goldB}" stroke-width="7" opacity=".35" fill="none" stroke-linecap="round"/>`;
-  s += silk(214, 150, 653, 130, 30, C.gold, 2.4);
+  // the fresh line leaves the spinnerets (tip of the abdomen, behind the body) and winds onto the
+  // big spool's thread, just under its top flange
+  const tipY = sp.y - 39 * sp.s + 1;
+  s += `<path d="M209 165Q450 170 ${sp.x} ${n(tipY)}" stroke="${C.goldB}" stroke-width="7" opacity=".35" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M209 165Q450 170 ${sp.x} ${n(tipY)}" stroke="${C.gold}" stroke-width="2.4" fill="none"/>`;
   s += spider({ ...sp, pose: "dangle", look: [-1, .4], mouth: "grin", mark: "chevron", brow: "up", rim: C.goldB, rimOp: .25,
     legOverride: { L0: [[-9, -6], [-24, -16], [-36, 8]], L1: [[-12, -2], [-32, -12], [-40, 14]] } });
   // a second, small spider abseils down its own line
