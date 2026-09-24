@@ -28,8 +28,8 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += path("M64 300 q30 -8 44 10 M60 340 q34 -8 50 12 M318 300 q-26 -8 -40 10 M320 344 q-30 -8 -44 12", "none", C.ox, 7);
 
   // planted front paw
-  body += path("M96 300 Q92 350 104 372 L170 372 Q176 340 168 300 Z", C.gold, C.ink, 3.5);
-  body += ell(136, 372, 42, 18, C.cream, C.ink, 3.5) + path("M122 372 v14 M138 374 v14 M154 372 v14", "none", C.ink, 2.4);
+  // near foreleg, straight down in front of the chest and out of the bottom of the frame to its paw on the floor
+  body += path("M108 290 Q102 340 106 404 L180 404 Q182 340 176 290 Z", C.gold, C.ink, 3.5) + path("M118 330 q24 -6 50 6", "none", C.ox, 6);
   body += `</g>` + v.ring;
   // head (breaks the frame at the top)
   const hx = 214, hy = 168;
@@ -77,7 +77,6 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   // the paw is raised palm-out with the toes on top, so the unsheathed claws come out of the toe tips, curving up
   for (const [x, y, a] of [[360, 164, -24], [384, 152, -8], [410, 152, 6], [432, 166, 22]]) body += `<path d="M${x - 5} ${y} Q${x - 2} ${y - 20} ${x + 5} ${y - 28} Q${x + 3} ${y - 12} ${x + 6} ${y} Z" transform="rotate(${a} ${x} ${y + 6})" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
   for (const [x, y] of [[364, 170], [386, 158], [410, 158], [430, 172]]) body += ell(x, y, 9, 8, C.oxb, C.ink, 2.4);
-  body += path("M332 150 q-10 -12 -4 -26 M440 130 q12 -8 10 -24", "none", C.ink, 3);
   body += `</g>`;
   // the tiny heister, very still on the floorboards, right under the paw
   body += mini(362, 320, 0.2, { look: [0, -1] }, { feetShadow: { rx: 10, ry: 3.5, op: 0.25 } });
@@ -93,7 +92,7 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   let body = v.bg + `<g clip-path="${v.clip}">`;
   body += path("M0 318 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 318], [480, 318], C.ink, 3);
   // rug stripe
-  body += path("M40 352 H440", "none", C.ox, 8) + path("M40 366 H440", "none", C.gold, 4);
+  body += path("M40 352 H440", "none", C.plum, 8) + path("M40 366 H440", "none", C.gold, 4);
   // back and wagging tail
   body += path("M404 250 Q380 170 400 120", "none", C.edge, 14, ` opacity="0.8"`) + path("M404 250 Q440 170 470 150", "none", C.edge, 14, ` opacity="0.8"`);
   body += path("M404 250 Q404 170 436 118", "none", C.ink, 22) + path("M404 250 Q404 170 436 118", "none", C.cream, 15) + path("M430 132 Q434 124 436 118", "none", C.gold, 15);
@@ -101,6 +100,10 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += path("M384 110 q-18 12 -20 34 M452 108 q18 6 26 26 M410 82 q16 -4 30 6", "none", C.ink, 3.2);
   body += `</g>` + v.ring;
   const hx = 222, hy = 176;
+  // chest and forelegs, behind the head: two sturdy legs come down to the paws on the floor
+  body += path(`M${hx - 84} 250 Q${hx} 236 ${hx + 84} 250 L${hx + 72} 330 L${hx - 72} 330 Z`, C.parch, C.ink, 3.5);
+  for (const x of [150, 294]) body += path(`M${x - 30} 240 Q${x - 34} 290 ${x - 30} 334 L${x + 30} 334 Q${x + 34} 290 ${x + 30} 240 Z`, C.cream, C.ink, 3.5);
+  body += furTicks([[hx - 60, 262], [hx - 40, 300]], 6, 14, 1, C.ink, 2, 9) + furTicks([[hx + 60, 262], [hx + 40, 300]], 6, 14, -1, C.ink, 2, 10);
   // floppy ears behind head
   body += path(`M${hx - 96} ${hy - 76} Q${hx - 160} ${hy - 60} ${hx - 150} ${hy + 40} Q${hx - 140} ${hy + 90} ${hx - 100} ${hy + 60} Q${hx - 88} ${hy} ${hx - 70} ${hy - 60} Z`, C.gold, C.ink, 4);
   body += path(`M${hx + 96} ${hy - 76} Q${hx + 160} ${hy - 60} ${hx + 150} ${hy + 40} Q${hx + 140} ${hy + 90} ${hx + 100} ${hy + 60} Q${hx + 88} ${hy} ${hx + 70} ${hy - 60} Z`, C.gold, C.ink, 4);
@@ -130,10 +133,10 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += path(`M${hx + 50} ${hy + 96} Q${hx + 47} ${hy + 118} ${hx + 50} ${hy + 138}`, "none", C.ink, 5) + path(`M${hx + 50} ${hy + 96} Q${hx + 47} ${hy + 118} ${hx + 50} ${hy + 138}`, "none", C.cream, 2.4);
   body += drop(hx + 50, hy + 132, 0.8);
   // big friendly paws
-  for (const x of [120, 330]) body += ell(x, 352, 48, 26, C.cream, C.ink, 3.5) + path(`M${x - 18} 352 v18 M${x} 354 v18 M${x + 18} 352 v18`, "none", C.ink, 2.6);
+  for (const x of [150, 294]) body += shadow(x + 4, 356, 46, 7, C.ink, 0.3) + ell(x, 340, 42, 20, C.cream, C.ink, 3.5) + path(`M${x - 16} 342 v15 M${x} 344 v15 M${x + 16} 342 v15`, "none", C.ink, 2.6);
   // spider clinging to the nose: body on the nose leather, all eight feet on the muzzle (below the eyes)
-  body += mini(hx, hy + 6, 0.26, { lid: "worry", mouth: "wobble", look: [0, 0] });
-  body += drop(hx + 40, hy - 26, 0.7);
+  body += mini(hx, hy + 6, 0.26, { lid: "worry", mouth: "wobble", look: [0, 0] }, { rim: { col: C.cream, w: 1.6 } });
+  body += drop(hx + 12, hy - 4, 0.4);
   body += star(84, 90, 9) + star(372, 70, 7);
   save("creature-dog", VB, "The Dog: a huge, delighted pup going cross-eyed at a spider clinging to its nose, tongue lolling, tail a blur", body);
 }
@@ -147,7 +150,7 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += path("M0 0 H480 V262 H0 Z", C.parch, "none", 0);
   body += strokes([[0, 90, 480, 70], [0, 160, 480, 140], [0, 230, 480, 210], [180, 83, 170, 153], [360, 76, 352, 146], [90, 157, 84, 226], [290, 148, 282, 218]], C.edge, 3);
   // the route it has been mowing: dotted zigzag trail
-  body += path("M40 90 L420 60 L60 130 L400 110 L150 170", "none", C.gold, 3, ` stroke-dasharray="2 9"`);
+  body += path("M40 90 L420 60 L60 130 L400 110 L150 170", "none", C.soft, 3, ` stroke-dasharray="2 9" opacity="0.55"`);
   body += path("M0 262 L480 242 L480 262 L0 282 Z", C.gold, C.ink, 3);
   body += path("M0 282 L480 262 L480 400 L0 400 Z", C.deep, "none", 0);
   body += strokes([[0, 330, 480, 310], [0, 380, 480, 360]], C.plum, 3);
@@ -155,6 +158,12 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   // vacuum body (3/4 disc)
   const cx = 250, cy = 172, rx = 150, ry = 58, h = 36;
   body += ell(cx + 6, cy + h + 16, rx - 6, ry * 0.5, C.ink, C.ink, 0, ` opacity="0.25"`);
+  // spinning side brush under the front-left of the rim: it turns flat on the floor, so its three
+  // bristle tufts and the blur of their sweep are foreshortened into the floor plane
+  const bx = cx - 116, by = cy + h + 34;
+  body += ell(bx, by + 3, 46, 12, C.ink, C.ink, 0, ` opacity="0.18"`);
+  body += path(`M${bx - 48} ${by - 4} A48 15 0 0 0 ${bx + 30} ${by + 12}`, "none", C.ink, 2.5, ` stroke-dasharray="6 6"`);
+  for (const a of [200, 320, 80]) { const e = [bx + Math.cos(a * Math.PI / 180) * 40, by + Math.sin(a * Math.PI / 180) * 12]; body += path(`M${bx} ${by} L${r1(e[0])} ${r1(e[1])}`, "none", C.ink, 3.5) + path(`M${r1(e[0])} ${r1(e[1])} l${a > 90 && a < 270 ? -5 : 5} -2 M${r1(e[0])} ${r1(e[1])} l${a > 90 && a < 270 ? -5 : 5} 2`, "none", C.ink, 2); }
   body += path(`M${cx - rx} ${cy} V${cy + h} A${rx} ${ry} 0 0 0 ${cx + rx} ${cy + h} V${cy} Z`, C.ink, C.ink, 3);
   body += path(`M${cx - rx + 10} ${cy + h * 0.5} A${rx - 10} ${ry} 0 0 0 ${cx + rx - 10} ${cy + h * 0.5}`, "none", C.gold, 5);
   body += ell(cx, cy, rx, ry, C.deep, C.ink, 3.5);
@@ -167,17 +176,13 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   body += path(`M${cx - 44} ${cy + 64} Q${cx} ${cy + 72} ${cx + 44} ${cy + 64} L${cx + 40} ${cy + 78} Q${cx} ${cy + 86} ${cx - 40} ${cy + 78} Z`, C.ox, C.ink, 3);
   body += path(`M${cx - 26} ${cy + 70} Q${cx} ${cy + 76} ${cx + 26} ${cy + 70}`, "none", C.oxb, 6) + path(`M${cx - 8} ${cy + 73} h16`, "none", C.glint, 4);
   body += path(`M${cx - 70} ${cy + 96} l-12 12 M${cx} ${cy + 104} v16 M${cx + 70} ${cy + 96} l12 12`, "none", C.oxb, 4);
-  // spinning side brush at the front left
-  const bx = cx - 118, by = cy + 64;
-  for (const a of [0, 120, 240]) body += `<path d="M${bx} ${by} l34 -6" transform="rotate(${a} ${bx} ${by}) scale(1 1)" stroke="${C.ink}" stroke-width="3.5" stroke-linecap="round"/>`;
-  body += ell(bx, by, 9, 5, C.gold, C.ink, 2);
-  body += path(`M${bx - 44} ${by - 14} A46 18 0 0 0 ${bx + 20} ${by + 20}`, "none", C.ink, 2.5, ` stroke-dasharray="6 6"`);
   // crumbs being hoovered
-  for (const [x, y] of [[140, 232], [160, 244], [108, 226], [330, 238], [352, 228]]) body += path(`M${x} ${y} l6 -3 l3 5 l-6 3 Z`, C.gold, C.ink, 1.6);
+  // crumbs lying on the floor ahead of the brush and beside the machine (flat on the floor)
+  for (const [x, y] of [[62, 240], [80, 248], [52, 226], [424, 214], [440, 204]]) body += shadow(x + 3, y + 3, 5, 1.6, C.ink, 0.3) + path(`M${x} ${y} l7 -2 l3 4 l-7 3 Z`, C.gold, C.ink, 1.6);
   body += v.ring;
   // our spider, safe on a silk line anchored to the stair nosing (clear of the vacuum),
   // hanging head-down straight below it from the spinnerets at the abdomen tip
-  body += hang(380, 254, 312, 0.22, { lid: "sly", mouth: "grin", look: [-0.4, -0.8] });
+  body += hang(380, 254, 312, 0.22, { lid: "sly", mouth: "grin", look: [-0.4, -0.8] }, { rim: { col: C.cream, w: 1.8 } });
   save("creature-vacuum", VB, "The Vacuum: a relentless robot vacuum halted at a stair edge, sensor glaring, while a spider dangles safely below", body);
 }
 
@@ -187,7 +192,8 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   const v = oval();
   let body = v.bg + `<g clip-path="${v.clip}">`;
   // the enormous face filling the left side
-  body += circ(40, 170, 250, C.parch, C.ink, 4);
+  // the face is so close that its centre (nose, other eye) lies beyond the left edge of the frame
+  body += circ(-50, 170, 330, C.parch, C.ink, 4);
   body += path("M-40 20 Q60 -30 180 10 Q140 30 120 60 Q60 40 -40 60 Z", C.gold, C.ink, 3.5);
   body += path("M60 28 q30 -6 60 4 M10 40 q30 -8 60 0", "none", C.glint, 3);
   // eyebrow raised
@@ -207,7 +213,10 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   // blushing freckled cheek and a gap-toothed grin at the edge
   body += ell(120, 256, 56, 26, C.oxb, C.ink, 0, ` opacity="0.35"`);
   for (const [x, y] of [[96, 248], [112, 258], [130, 246], [146, 260], [104, 268]]) body += circ(x, y, 2.6, C.gold);
-  body += path("M140 306 Q196 318 244 272 Q252 318 212 342 Q170 356 140 306 Z", C.deep, C.ink, 3.5) + path("M162 316 Q196 322 232 296 L236 306 Q200 332 166 326 Z", C.cream, C.ink, 2) + path("M180 342 Q204 330 226 334 Q210 348 188 346 Z", C.oxb, C.ink, 2);
+  // the right-hand end of a wide grin, running off the left edge with the rest of the face
+  body += path("M-20 300 Q110 330 206 284 Q214 330 170 352 Q80 386 -20 350 Z", C.deep, C.ink, 3.5) +
+    path("M-20 306 Q110 334 196 294 L200 306 Q150 334 118 336 L114 324 L96 326 L98 338 Q40 336 -20 326 Z", C.cream, C.ink, 2) +
+    path("M60 366 Q120 346 176 346 Q150 366 110 372 Q84 374 60 366 Z", C.oxb, C.ink, 2);
   body += `</g>` + v.ring;
   // the jar
   const jx = 340, jy = 226, jk = uid("jar");
@@ -281,9 +290,9 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   const R = [[[26, 10], [58, -2], [84, -30], [96, -44]], STAND_R[1], STAND_R[2], STAND_R[3]];
   const L = [[[-26, 10], [-62, -24], [-80, -64], [-78, -104]], ...mirror(STAND_R).slice(1)];
   const cap = path("M-44 -28 Q-46 -70 0 -74 Q46 -70 44 -28 Z", C.deep, C.ink, 3.5) + path("M-48 -28 Q0 -44 48 -28 Q48 -16 0 -22 Q-48 -16 -48 -28 Z", C.ink, C.ink, 2) +
-    path("M-38 -34 Q0 -42 38 -34", "none", C.gold, 3.5) + path("M0 -66 l7 12 l-7 10 l-7 -10 Z", C.glint, C.ink, 2.4) + path("M-30 -60 Q0 -70 30 -60", "none", C.soft, 2.5);
+    path("M-38 -34 Q0 -42 38 -34", "none", C.gold, 3.5) + path("M-30 -60 Q0 -70 30 -60", "none", C.soft, 2.5) +
+    path("M-10 -66 L0 -70 L10 -66 L9 -52 Q6 -44 0 -41 Q-6 -44 -9 -52 Z", C.gold, C.ink, 2.4) + circ(0, -56, 3.2, C.glint);
   const tache = path("M0 24 Q-10 16 -22 22 Q-32 26 -34 18 Q-30 34 -16 32 Q-6 30 0 26 Q6 30 16 32 Q30 34 34 18 Q32 26 22 22 Q10 16 0 24 Z", C.ink, C.ink, 2);
-  const badge = path("M26 20 L40 16 L42 30 Q40 40 32 44 Q22 38 22 30 Z", C.gold, C.ink, 2.4) + circ(32, 28, 3.5, C.glint);
   const torch = `<g transform="rotate(${r1(th)} 96 -44)">` + path("M60 -54 H100 V-34 H60 Z", C.edge, C.ink, 3) + path("M100 -58 H116 V-30 H100 Z", C.edge, C.ink, 3) + ell(116, -44, 4, 14, C.glint, C.ink, 2) + path("M70 -54 V-34 M80 -54 V-34", "none", C.ink, 2) + `</g>`;
   body += spider({
     ...GT,
@@ -294,7 +303,7 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
     fy: -4,
     faceO: { er: 15, esp: 19, lid: "glare", lidCol: C.ox, small: "std", mouth: "none", look: [1, 0.3] },
     // the torch is drawn over the leg, then the leg's last segment again so the foot visibly grips it
-    over: tache + badge + cap + torch + leg([R[0][2], R[0][3]], { w: 8, col: C.ox, hl: C.oxb, band: C.deep, dash: "3 12", knee: false }),
+    over: tache + cap + torch + leg([R[0][2], R[0][3]], { w: 8, col: C.ox, hl: C.oxb, band: C.deep, dash: "3 12", knee: false }),
   });
   save("creature-guard-spider", VB, "The Guard Spider: a stern ox-red rival in a peaked cap with a badge and moustache, aiming a torch beam at a sneaking crew member", body);
 }
@@ -328,7 +337,7 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path(`M${F.l + D[0]} ${F.t + D[1]} H${F.r + D[0]} V${F.b + D[1]} H${F.l + D[0]} Z`, C.parch, "none", 0);
   body += path(`M${F.l} 286 L${F.r} 286 L${F.r + D[0]} 266 L${F.r + D[0]} ${F.b + D[1]} L${F.r} ${F.b} L${F.l} ${F.b} Z`, C.glint, C.ink, 0, ` opacity="0.9"`);
   { const R = rng(31); let d = ""; for (let i = 0; i < 70; i++) { const x = R() * 390, y = 290 + R() * 34; d += `M${r1(x)} ${r1(y)} l${r1(4 + R() * 4)} ${r1(-1 - R() * 2)}`; } body += path(d, "none", C.gold, 2); }
-  body += path("M4 286 Q4 236 58 236 Q112 236 112 286 Z", C.ox, C.ink, 3) + path("M26 286 Q26 258 58 258 Q90 258 90 286 Z", C.deep, C.ink, 2.5) + path("M18 250 q10 -8 24 -6 M76 244 q12 2 20 10", "none", C.gold, 2.5);
+  body += path("M4 286 Q4 236 58 236 Q112 236 112 286 Z", C.soft, C.ink, 3) + path("M26 286 Q26 258 58 258 Q90 258 90 286 Z", C.deep, C.ink, 2.5) + path("M18 250 q10 -8 24 -6 M76 244 q12 2 20 10", "none", C.edge, 2.5);
   body += ell(340, 278, 26, 8, C.edge, C.ink, 3) + ell(340, 276, 19, 5, C.soft, C.ink, 1.5, ` opacity="0.7"`);
   // --- the corn snake, coiled on the substrate
   const bodyStroke = (d, w = 30) => path(d, "none", C.ink, w + 6) + path(d, "none", C.gold, w) +
@@ -395,7 +404,7 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path("M170 212 L146 300 Q160 312 176 304 L198 220 Z", C.oxb, C.ink, 3) + path("M180 232 L160 298 Q167 303 174 300 L190 236 Z", C.plum, C.ink, 2) + path("M168 250 l10 3 M162 272 l10 3", "none", C.ox, 2);
   // perch: a wooden dowel running side to side, its ends fixed into the cage sides
   const PY = 226;
-  body += path(`M${CG.l} ${PY - 7} H${CG.r} V${PY + 7} H${CG.l} Z`, C.gold, C.ink, 3) + path(`M${CG.l} ${PY - 3} H${CG.r}`, "none", C.glint, 2) + path(`M70 ${PY + 2} q10 -3 20 0 M250 ${PY + 1} q12 -3 24 0`, "none", C.ox, 1.8);
+  body += path(`M${CG.l} ${PY - 7} H${CG.r} V${PY + 7} H${CG.l} Z`, C.gold, C.ink, 3) + path(`M${CG.l} ${PY - 3} H${CG.r}`, "none", C.glint, 2) + path(`M70 ${PY + 2} q10 -3 20 0 M250 ${PY + 1} q12 -3 24 0`, "none", C.ink, 1.8, ` opacity="0.5"`);
   // --- the parrot (a scarlet macaw-ish bird), in profile facing right
   // body
   body += path("M150 196 Q140 120 196 96 Q246 84 252 140 Q258 196 222 222 Q190 236 164 222 Z", C.oxb, C.ink, 3.5);
@@ -442,7 +451,7 @@ function taper(pts, w0, w1, col, ink = 2.5) {
 {
   setPrefix("cr-rat");
   const v = oval();
-  const FUR = C.soft, SH = C.plum, PINK = C.oxb;
+  const FUR = C.soft, SH = C.plum, PINK = C.parch;
   const fg = uid("floor");
   let body = `<defs><linearGradient id="${fg}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.plum}"/><stop offset="0.55" stop-color="${C.edge}"/><stop offset="1" stop-color="${C.parch}"/></linearGradient></defs>`;
   body += v.bg + `<g clip-path="${v.clip}">`;
@@ -460,7 +469,7 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path("M52 46 H70 V268 H52 Z", C.edge, C.ink, 3) + path("M52 90 l18 -6 M52 110 l18 -6 M52 130 l18 -6 M52 150 l18 -6 M52 170 l18 -6 M52 190 l18 -6", "none", C.ink, 1.6) + ell(61, 270, 22, 7, C.gold, C.ink, 3);
   body += shadow(64, 276, 30, 5, C.ink, 0.35);
   // --- the crumb on the floor between them: the bargaining chip
-  body += shadow(296, 334, 16, 3.5, C.ink, 0.35) + path("M284 332 l6 -12 l14 -2 l8 10 l-4 8 Z", C.gold, C.ink, 2.4) + circ(294, 326, 1.6, C.ox) + circ(302, 324, 1.6, C.ox);
+  body += shadow(296, 334, 16, 3.5, C.ink, 0.35) + path("M284 332 l6 -12 l14 -2 l8 10 l-4 8 Z", C.gold, C.ink, 2.4) + circ(294, 326, 1.6, C.deep) + circ(302, 324, 1.6, C.deep);
   // --- the rat: sitting up on its haunches, three-quarter view facing right, arms crossed
   const rx = 190;
   body += shadow(rx - 4, 318, 92, 11, C.ink, 0.4);
@@ -537,8 +546,9 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   // (the torch is held above the exterminator, off to the left, so the shadow runs straight out to the right)
   body += path(`M${TL.r - 4} ${TL.foot - 5} L480 ${TL.foot - 14} L480 ${TL.foot + 14} L${TL.r - 4} ${TL.foot + 4} Z`, C.ink, "none", 0, ` opacity="0.35"`);
   body += shadow((TL.l + TL.r) / 2, TL.foot, (TL.r - TL.l) / 2 + 8, 5, C.ink, 0.4);
-  body += path(`M${TL.l - 6} -10 H${TL.r + 6} V60 Q${TL.r + 10} 74 ${TL.r} 84 L${TL.r - 2} ${TL.foot - 12} Q${TL.r + 6} ${TL.foot - 4} ${TL.r + 2} ${TL.foot} H${TL.l - 2} Q${TL.l - 6} ${TL.foot - 4} ${TL.l + 2} ${TL.foot - 12} L${TL.l} 84 Q${TL.l - 10} 74 ${TL.l - 6} 60 Z`, C.gold, C.ink, 3.5);
-  body += path(`M${TL.l + 5} 96 L${TL.l + 7} ${TL.foot - 16}`, "none", C.glint, 5) + path(`M${TL.r - 8} 96 L${TL.r - 8} ${TL.foot - 16}`, "none", C.ox, 5, ` opacity="0.6"`);
+  const legD = `M${TL.l - 6} -10 H${TL.r + 6} V60 Q${TL.r + 10} 74 ${TL.r} 84 L${TL.r - 2} ${TL.foot - 12} Q${TL.r + 6} ${TL.foot - 4} ${TL.r + 2} ${TL.foot} H${TL.l - 2} Q${TL.l - 6} ${TL.foot - 4} ${TL.l + 2} ${TL.foot - 12} L${TL.l} 84 Q${TL.l - 10} 74 ${TL.l - 6} 60 Z`;
+  body += path(legD, C.gold, C.ink, 3.5);
+  body += path(`M${TL.l + 5} 96 L${TL.l + 7} ${TL.foot - 16}`, "none", C.glint, 5) + path(`M${TL.r - 8} 96 L${TL.r - 8} ${TL.foot - 16}`, "none", C.ink, 5, ` opacity="0.3"`);
   body += path(`M${TL.l - 6} 60 H${TL.r + 6}`, "none", C.ink, 2.5);
   // --- the exterminator: two huge work boots on the floor, trouser legs rising out of frame
   const boot = (x, y, s, far) => {
@@ -547,7 +557,7 @@ function taper(pts, w0, w1, col, ink = 2.5) {
     const leather = far ? C.ox : C.oxb, dark = far ? C.deep : C.ox;
     let b = "";
     b += path(`M${P(10, -140)} L${P(6, -330)} L${P(122, -330)} L${P(112, -140)} Z`, far ? C.gold : C.parch, C.ink, 3.5); // trouser leg
-    b += path(`M${P(34, -170)} L${P(30, -320)} M${P(92, -160)} L${P(98, -300)}`, "none", far ? C.ox : C.edge, 3, ` opacity="0.7"`);
+    b += path(`M${P(34, -170)} L${P(30, -320)} M${P(92, -160)} L${P(98, -300)}`, "none", far ? C.deep : C.edge, 3, ` opacity="0.5"`);
     b += path(`M${P(2, -14)} L${P(-2, -154)} L${P(116, -154)} L${P(120, -98)} Q${P(156, -94)} ${P(196, -80)} Q${P(250, -68)} ${P(264, -36)} Q${P(270, -16)} ${P(258, -14)} Z`, leather, C.ink, 3.5); // upper
     b += path(`M${P(192, -80)} Q${P(250, -68)} ${P(264, -36)} Q${P(270, -16)} ${P(258, -14)} L${P(186, -14)} Q${P(180, -50)} ${P(192, -80)} Z`, dark, C.ink, 3); // toe cap
     b += path(`M${P(-2, -154)} L${P(116, -154)} L${P(116, -142)} L${P(-2, -142)} Z`, dark, C.ink, 2.5) + path(`M${P(4, -150)} L${P(-8, -174)} L${P(14, -174)} L${P(18, -150)}`, dark, C.ink, 2.5); // collar + pull tab
@@ -571,10 +581,11 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path("M276 284 q-3 6 0 8 q3 -2 0 -8 Z", C.cream, C.ink, 1.6) + drop(276, 298, 0.5);
   body += `</g>` + v.ring;
   // --- the tiny spider hiding behind the table leg, in its shadow, peeking round the far side
-  const hide = mini(380, 322, 0.11, { lid: "worry", mouth: "o", look: [-1, 0] }, { feetShadow: { rx: 11, ry: 4, op: 0.35 } });
+  const hide = mini(378, 322, 0.11, { lid: "worry", mouth: "o", look: [-1, 0] }, { feetShadow: { rx: 11, ry: 4, op: 0.35 } });
   const hk = uid("hidek");
   // the leg occludes the spider: clip the spider to the region right of the leg's right edge
-  body += `<clipPath id="${hk}"><path d="M${TL.r - 1} 0 H480 V400 H${TL.r - 1} Z"/></clipPath><g clip-path="url(#${hk})">${hide}</g>`;
+  // the spider is masked by the leg's exact silhouette (outline included), so it tucks in behind it
+  body += `<mask id="${hk}" maskUnits="userSpaceOnUse" x="0" y="0" width="480" height="400"><rect width="480" height="400" fill="#fff"/><path d="${legD}" fill="#000" stroke="#000" stroke-width="3.5"/></mask><g mask="url(#${hk})">${hide}</g>`;
   save("creature-exterminator", VB, "The Exterminator, seen from spider height: two huge work boots and a dripping spray wand, a torch beam sweeping the floor while a tiny spider hides behind a table leg", body);
 }
 
@@ -599,7 +610,7 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path(`M0 ${WL} H480 V400 H0 Z`, C.cream, "none", 0, ` opacity="0.55"`) + path(`M0 ${WL} H480 V400 H0 Z`, C.good, "none", 0, ` opacity="0.08"`);
   body += ell(bc[0], WL, hw(WL), 12, C.cream, C.ink, 2, ` opacity="0.6"`);
   // gravel resting on the bottom, and a plant rooted in it
-  { const Rg = rng(8); let g = ""; const cols = [C.gold, C.ox, C.plum, C.edge, C.soft];
+  { const Rg = rng(8); let g = ""; const cols = [C.gold, C.cream, C.plum, C.edge, C.soft];
     for (let i = 0; i < 46; i++) { const x = bc[0] - hw(BASE) - 20 + Rg() * (2 * hw(BASE) + 40), y = BASE - 4 - Rg() * 18 * (1 - Math.abs(x - bc[0]) / 140); g += circ(x, y, 3.5 + Rg() * 3, cols[i % 5], C.ink, 1.5); } body += g; }
   body += path("M150 316 Q142 270 156 226 M150 300 Q128 280 124 256 M152 276 Q172 256 176 236", "none", C.ink, 7) + path("M150 316 Q142 270 156 226 M150 300 Q128 280 124 256 M152 276 Q172 256 176 236", "none", C.good, 4);
   // --- the goldfish, near the surface, tilted up toward the spider on the rim
@@ -610,11 +621,11 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   fish += path("M-10 30 Q0 50 16 32 Z M-40 22 Q-44 40 -28 30 Z", C.glint, C.ink, 2.5);
   fish += ell(0, 0, 58, 34, C.gold, C.ink, 3.5);
   fish += path("M-30 -22 Q0 -34 30 -24", "none", C.glint, 4, ` opacity="0.8"`);
-  fish += path("M-24 -4 a8 8 0 0 0 0 12 M-10 -12 a8 8 0 0 0 0 12 M-10 6 a8 8 0 0 0 0 12 M4 -4 a8 8 0 0 0 0 12", "none", C.ox, 2);
+  fish += path("M-24 -4 a8 8 0 0 0 0 12 M-10 -12 a8 8 0 0 0 0 12 M-10 6 a8 8 0 0 0 0 12 M4 -4 a8 8 0 0 0 0 12", "none", C.glint, 2.2);
   fish += path("M12 8 Q2 24 20 26 Z", C.glint, C.ink, 2.5);
   // blank, happy face: big round eye with a small centred pupil, a little open smile
   fish += circ(34, -8, 13, C.cream, C.ink, 3) + circ(35, -8, 4.5, C.ink) + circ(33, -10, 1.6, C.cream);
-  fish += path("M48 8 Q54 14 58 6", "none", C.ink, 3) + ell(55, 4, 3.5, 3, C.ox, C.ink, 1.6);
+  fish += path("M48 8 Q54 14 58 6", "none", C.ink, 3) + ell(55, 4, 3.5, 3, C.deep, C.ink, 1.6);
   body += `<g transform="translate(${fx} ${fy}) rotate(${fa})">${fish}</g>`;
   // bubbles rising straight up from its mouth, growing a little as they rise
   body += circ(fx + 56, 170, 3, "none", C.ink, 2) + circ(fx + 57, 154, 4, "none", C.ink, 2) + circ(fx + 56, 138, 5, "none", C.ink, 2);

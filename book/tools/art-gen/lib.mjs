@@ -227,11 +227,14 @@ export function spider(o) {
     ceph = { rx: 40, ry: 34 }, abd = { dx: 0, dy: -66, rx: 54, ry: 48 },
     legs = [...STAND_R, ...mirror(STAND_R)], legW = 7, legCol, band = null, dash, fuzz = false,
     legCols = [], legHl = [], back = [], front = [], faceO = {}, fx = 0, fy = -2, under = "", over = "", afterLegs = "", preFront = "", legOp = [], seed = 3,
-    feetShadow = null, lifted = [],
+    feetShadow = null, lifted = [], rim = null,
   } = o;
   const lc = legCol || col;
   let s = `<g transform="translate(${r1(x)} ${r1(y)}) rotate(${rot}) scale(${flip ? -sc : sc} ${sc})">`;
   s += under;
+  // rim: a paper/gold halo round the whole silhouette so a dark spider reads on a dark ground.
+  // { col, w } with w in WORLD units (it is divided by the scale here).
+  if (rim) s += halo({ legs, legW, ceph, abd }, rim.col || C.cream, (rim.w ?? 2.5) / sc, rim.op ?? 1);
   // contact shadows under every planted foot (legs listed in `lifted` are in the air)
   if (feetShadow) {
     const { rx = 12, ry = 4, op = 0.22, col = C.ink } = feetShadow;
@@ -249,6 +252,43 @@ export function spider(o) {
   for (const i of order) if (front.includes(i)) s += L(i);
   s += over;
   return s + `</g>`;
+}
+
+// Silhouette halo for spider(): drawn under the spider, it leaves a thin light edge all round.
+function halo({ legs, legW, ceph, abd }, col, rw, op) {
+  let h = "";
+  legs.forEach((l, i) => {
+    const w = legW * (i % 4 === 0 ? 1.05 : 1);
+    h += path(poly(l), "none", col, w + 5 + rw * 2);
+    for (let k = 1; k < l.length - 1; k++) h += circ(l[k][0], l[k][1], w * 0.62 + 1.1 + rw, col);
+    const f = l[l.length - 1]; h += circ(f[0], f[1], w * 0.42 + 1 + rw, col);
+  });
+  if (abd) h += `<g transform="rotate(${abd.rot || 0} ${abd.dx} ${abd.dy})">` + ell(abd.dx, abd.dy, abd.rx + 2 + rw, abd.ry + 2 + rw, col) + `</g>`;
+  h += `<g transform="rotate(${ceph.rot || 0} 0 0)">` + ell(0, 0, ceph.rx + 2 + rw, ceph.ry + 2 + rw, col) + `</g>`;
+  return `<g opacity="${op}">${h}</g>`;
+}
+
+// Rim light: thin light strokes hugging the upper edge of a spider's abdomen, carapace and chosen
+// leg segments (as if lit from above), for drawing OVER a shadow that swallows the spider.
+// t = the spider's placement {x, y, s}; o = the same leg/body options given to spider().
+export function rimLight(t, o, { col = C.gold, w = 2.2, legs: idx = [0, 1, 2, 3, 4, 5, 6, 7], segs = [0, 1, 2], op = 0.95, body = true } = {}) {
+  const { legs = [...STAND_R, ...mirror(STAND_R)], legW = 7, ceph = { rx: 40, ry: 34 }, abd = { dx: 0, dy: -66, rx: 54, ry: 48 } } = o;
+  const sc = t.s ?? 1, lw = w / sc;
+  let d = "";
+  for (const i of idx) {
+    const l = legs[i], lwid = legW * (i % 4 === 0 ? 1.05 : 1);
+    for (const j of segs) {
+      if (j >= l.length - 1) continue;
+      const [a, b] = [l[j], l[j + 1]], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
+      let nx = -dy / L, ny = dx / L; if (ny > 0 || (ny === 0 && nx > 0)) { nx = -nx; ny = -ny; }
+      const off = (lwid + 5) / 2 + lw * 0.2;
+      d += `M${r1(a[0] + dx * 0.12 + nx * off)} ${r1(a[1] + dy * 0.12 + ny * off)} L${r1(a[0] + dx * 0.88 + nx * off)} ${r1(a[1] + dy * 0.88 + ny * off)}`;
+    }
+  }
+  const arc = (cx, cy, rx, ry, a0, a1) => { let s = ""; for (let a = a0; a <= a1; a += 6) s += (a === a0 ? "M" : "L") + r1(cx + Math.cos(a * Math.PI / 180) * rx) + " " + r1(cy + Math.sin(a * Math.PI / 180) * ry); return s; };
+  if (body && abd) d += arc(abd.dx, abd.dy, abd.rx + 2 + lw * 0.2, abd.ry + 2 + lw * 0.2, 196, 344);
+  if (body) d += arc(0, 0, ceph.rx + 2 + lw * 0.2, ceph.ry + 2 + lw * 0.2, 200, 250) + arc(0, 0, ceph.rx + 2 + lw * 0.2, ceph.ry + 2 + lw * 0.2, 290, 340);
+  return `<g transform="translate(${r1(t.x)} ${r1(t.y)}) scale(${sc})"><path d="${d}" fill="none" stroke="${col}" stroke-width="${r1(lw * 100) / 100}" stroke-linecap="round" opacity="${op}"/></g>`;
 }
 
 // ---------- frames ----------

@@ -195,7 +195,7 @@ const VB = "0 0 400 400";
     x: 214, y: 198, s: 1.3, rot: 6,
     ceph: { rx: 16, ry: 14 },
     abd: { dx: -4, dy: -26, rx: 9, ry: 24, rot: -14 },
-    legs: [...Rl, ...Ll].map(stretch), legW: 2.3,
+    legs: [...Rl, ...Ll].map(stretch), legW: 2.3, rim: { col: C.cream, w: 1.8 },
     fy: 0,
     faceO: { er: 7, esp: 7.4, lid: "worry", small: [[-5, -9, 1.3], [5, -9, 1.3], [-14, -5, 1.5], [14, -5, 1.5]], mouth: "o", look: [0.8, 0], cheW: 0.85 },
   });
@@ -226,7 +226,8 @@ const VB = "0 0 400 400";
   body += path(`M${tx - 8} ${ty + 58} L${tx + 12} 302 M${tx + 22} ${ty + 50} L${tx + 34} 295`, "none", C.ink, 4);
   body += ell(tx, ty, 44, 56, C.cream, C.ink, 4) + ell(tx, ty, 32, 41, C.oxb, C.ink, 2.5) + ell(tx, ty, 21, 27, C.cream, C.ink, 2.5) + ell(tx, ty, 10, 13, C.oxb, C.ink, 2.5);
   // zigzag silk from the fangs to the bullseye
-  const fx = 202, fy = 258;
+  const SX = 170; // spider x
+  const fx = SX + 48, fy = 258;
   let zz = `M${fx} ${fy}`; const n = 11;
   for (let i = 1; i <= n; i++) { const x = fx + (tx - fx) * (i / n), y = fy + (ty - fy) * (i / n) + (i < n ? (i % 2 ? -11 : 11) * (1 - i / (n + 2)) : 0); zz += ` L${r1(x)} ${r1(y)}`; }
   body += path(zz, "none", C.ink, 6.5) + path(zz, "none", C.glint, 3);
@@ -244,13 +245,13 @@ const VB = "0 0 400 400";
     [[26, 20], [76, -42], [114, 2], [130, 84]],
     [[10, 16], [40, -60], [74, -30], [86, 82]],
     [[-12, 16], [-50, -60], [-92, -30], [-100, 82]],
-    [[-26, 12], [-84, -44], [-128, 0], [-142, 84]],
+    [[-26, 12], [-78, -44], [-116, 0], [-126, 84]],
   ];
   const spots = [[-30, -30, 7], [-8, -40, 6], [14, -32, 7], [-36, -6, 5], [-14, -16, 6], [30, -14, 5], [6, -4, 4], [-44, 12, 4], [-22, 10, 5]]
     .map(([x, y, r]) => circ(x, y, r, C.deep)).join("");
   const aspots = [[-90, -10, 5], [-74, -22, 4], [-104, 6, 4], [-80, 6, 5], [-60, -8, 4]].map(([x, y, r]) => circ(x, y, r, C.deep)).join("");
   const sp = spider({
-    x: 154, y: 222, s: 0.86,
+    x: SX, y: 222, s: 0.86,
     col: C.parch, shade: C.edge, hi: C.cream,
     ceph: { rx: 58, ry: 52, pattern: spots },
     abd: { dx: -72, dy: 0, rx: 42, ry: 32, pattern: aspots },
@@ -261,7 +262,7 @@ const VB = "0 0 400 400";
     faceO: { er: 13, esp: 14, lid: ["wink", "glare"], lidCol: C.parch, small: [[-4, -16, 2.6], [22, -18, 2.6], [36, -8, 3]], mouth: "none", look: [1, 0] },
     over: ell(48, 44, 7, 9, C.plum, C.ink, 2.4) + ell(62, 42, 7, 9, C.plum, C.ink, 2.4) + ell(58, 36, 3, 2, C.glint, C.ink, 0),
   });
-  body += shadow(150, 302, 120, 6, C.ink, 0.16);
+  body += shadow(SX - 2, 302, 116, 6, C.ink, 0.16);
   body += sp;
   // aim lines
   save("species-spitting", VB, "Spitting spider: domed, spotted carapace, one eye shut, firing a zigzag of silk into a bullseye", body);
