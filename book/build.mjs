@@ -25,7 +25,7 @@ const ROOT = join(BOOK, "..");
 const SRC = join(BOOK, "src");
 const ART = join(BOOK, "art");
 const DIST = join(BOOK, "dist");
-const VERSION = "4.3";
+const VERSION = "4.4";
 const DRAFT = process.argv.includes("--draft");
 const CHROME = process.env.CHROME_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 
