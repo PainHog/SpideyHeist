@@ -4,22 +4,27 @@
   "img": "systems/heisty-spideys/assets/icons/creature.svg",
   "system": {
     "threatLevel": "Standard",
-    "alertContribution": "",
+    "alertContribution": "+1 per round while active",
     "speed": {
       "value": 4
     },
     "rolls": [
       {
+        "label": "Perception",
+        "pool": 3,
+        "note": ""
+      },
+      {
         "label": "Strike",
         "pool": 4,
-        "note": "Athletics"
+        "note": "Brawl"
       }
     ],
-    "senses": "<p>Aware of you the moment you cross the floor near its tank.</p>",
-    "passive": "<p>Slow to commit, but fast once it does.</p>",
-    "escalation": "",
-    "weakness": "",
-    "notes": "<p>The display tank's lid is loose &mdash; everyone knows, nobody has fixed it.</p>",
-    "biography": "<p>A large corn snake in a display tank near the counter of the pet store. It watches the crew cross the floor with unhurried interest. Slow to commit &mdash; but fast once it does.</p>"
+    "senses": "<p>Notices movement within 3 squares of the tank.</p>",
+    "passive": "<p>Coiled in its display tank; the lid is loose.</p>",
+    "escalation": "<p>Alert 3, tongue flicks toward the crew. Alert 5, noses at the loose lid. Alert 7, out of the tank and hunting.</p>",
+    "weakness": "<p>A heat lamp to bask under, a lid that's actually shut.</p>",
+    "notes": "<p><strong>Note:</strong> a Strike that lands drops a Vitality level like any hit.</p>",
+    "biography": "<p><em>&ldquo;Slow to Commit. Then Very Much Committed.&rdquo;</em></p><p>A large corn snake in a display tank near the counter of the pet store. It watches the crew cross the floor with unhurried interest. Slow to commit &mdash; but fast once it does.</p>"
   }
 }

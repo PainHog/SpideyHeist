@@ -4,22 +4,27 @@
   "img": "systems/heisty-spideys/assets/icons/creature.svg",
   "system": {
     "threatLevel": "High",
-    "alertContribution": "",
+    "alertContribution": "+1 per round while on the map",
     "speed": {
       "value": 6
     },
     "rolls": [
       {
-        "label": "Any",
+        "label": "Perception",
         "pool": 5,
-        "note": "the ST rolls any relevant pool, 4-5"
+        "note": ""
+      },
+      {
+        "label": "Spray",
+        "pool": 5,
+        "note": "Athletics"
       }
     ],
-    "senses": "",
-    "passive": "<p>Came prepared. Arrives only once the Alert has climbed dangerously high.</p>",
+    "senses": "<p>A flashlight and a professional's habit of checking corners.</p>",
+    "passive": "<p>Only appears once the Alert has reached Lockdown (7+), and only if the ST decides the humans called someone.</p>",
     "escalation": "",
-    "weakness": "",
-    "notes": "<p><strong>Primary Roll:</strong> Any (4&ndash;5).</p>",
-    "biography": "<p><em>&ldquo;Came prepared. If the Alert got this high, something already went very wrong.&rdquo;</em></p><p>The end-of-the-line threat. If the Exterminator is on the map, the crew's situation has already gone badly sideways.</p>"
+    "weakness": "<p>Can't fit anywhere small; leaves once the job looks done.</p>",
+    "notes": "<p><strong>Note:</strong> a Spray that lands drops a Vitality level; a spider caught in the open by one is Out.</p>",
+    "biography": "<p><em>&ldquo;Came Prepared.&rdquo;</em></p><p>The end-of-the-line threat. If the Exterminator is on the map, the crew's situation has already gone badly sideways.</p>"
   }
 }

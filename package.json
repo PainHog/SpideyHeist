@@ -1,6 +1,6 @@
 {
   "name": "heisty-spideys",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Heisty Spideys \u2014 a Foundry VTT game system of eight-legged larceny.",
   "private": true,
   "type": "module",

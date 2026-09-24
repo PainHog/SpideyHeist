@@ -27,7 +27,8 @@
     <div class="stat-block">
       <span class="stat-value">{{system.speed.effective}}</span>
       <span class="stat-label"><i class="fa-solid fa-shoe-prints"></i> Speed</span>
-      {{#if vitalityState.halfSpeed}}<span class="stat-note">halved</span>{{/if}}
+      {{#if vitalityState.assisted}}<span class="stat-note" title="Critical: can't move on your own — an adjacent crewmate can bring you along at half their Speed.">assisted</span>
+      {{else if vitalityState.halfSpeed}}<span class="stat-note">halved</span>{{/if}}
     </div>
     <div class="stat-block silk-block">
       <span class="stat-value">{{system.silk.value}}<span class="stat-max">/{{system.silk.max}}</span></span>

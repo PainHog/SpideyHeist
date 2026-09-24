@@ -3,7 +3,7 @@
   "name": "Silk Line",
   "img": "systems/heisty-spideys/assets/icons/web.svg",
   "system": {
-    "effect": "<p>Run a Silk Line between two points up to 5 squares apart &mdash; as your Action, or for 1 Silk Point to skip the roll. It's safe footing the crew can climb or cross with no Acrobatics roll: up a wall, across a gap, along a ceiling. It holds up to two spiders at once and stays until it's broken or the scene ends.</p>",
+    "effect": "<p>As your Action, roll GRACE + Acrobatics against Difficulty 2 (or spend 1 Silk Point to skip the roll) to run a Silk Line between two points up to 5 squares apart. It's safe footing the crew can climb or cross with no Acrobatics roll: up a wall, across a gap, along a ceiling. It holds up to two spiders at once and stays until it's broken or the scene ends.</p>",
     "uses": 0,
     "consumable": false,
     "source": "Every spider's own silk",

@@ -55,7 +55,7 @@ export class HeistyActor extends Actor {
     return HeistyDice.skillCheck(this, skillKey, options);
   }
 
-  /** Roll an Attribute check (Attribute alone — the Improvise path). */
+  /** Roll an Attribute check (Attribute alone — an untrained roll, Skill 0). */
   async rollAttribute(attrKey, options = {}) {
     return HeistyDice.attributeCheck(this, attrKey, options);
   }

@@ -67,6 +67,7 @@ export class SpiderData extends foundry.abstract.TypeDataModel {
     const v = HEISTY.vitality[this.vitality.state] ?? HEISTY.vitality.unharmed;
     this.vitality.penalty = v.penalty;
     this.vitality.halfSpeed = v.halfSpeed;
+    this.vitality.assisted = v.assisted;
     this.vitality.out = v.out;
     this.vitality.label = v.label;
     this.vitality.order = v.order;
@@ -76,8 +77,10 @@ export class SpiderData extends foundry.abstract.TypeDataModel {
     const baseSpeed = (species?.system?.speed ?? this.speed.value) || 0;
     this.speed.base = baseSpeed;
 
-    // Speed is halved (round down) while Hurt, Critical, or Out.
-    this.speed.effective = v.halfSpeed ? Math.floor(baseSpeed / 2) : baseSpeed;
+    // Hurt halves Speed (round down). At Critical the spider can't move on its
+    // own — an adjacent crewmate brings it along at half *their* Speed — so its
+    // own effective Speed is 0.
+    this.speed.effective = v.assisted ? 0 : v.halfSpeed ? Math.floor(baseSpeed / 2) : baseSpeed;
   }
 }
 

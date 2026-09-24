@@ -11,7 +11,7 @@ The official companion game system for **Heisty Spideys, First Edition** — bui
 ## What's in the box
 
 - **Spider character sheet** — four Attributes, twelve Skills, Speed, Silk Points, and the Vitality ladder. Click any Skill or Attribute to roll its pool; shift-click to skip the dialog.
-- **The dice engine** — the whole engine, faithfully: pools of d6s, 4/5/6 = Success, with automatic handling of **Critical** (double the required Successes, Alert −1), **Partial**, **Failure**, and the **Botch** (when your pool bottoms out). Vitality penalties and the current Alert are folded in for you.
+- **The dice engine** — the whole engine, faithfully: pools of d6s, 4/5/6 = Success, with automatic handling of **Critical** (double the required Successes, Alert −1 at Difficulty 2+), **Partial**, **Failure**, and the **Botch** (when your pool bottoms out). Vitality penalties and the current Alert are folded in for you.
 - **The Alert meter** — a shared, always-visible HUD tracking how awake the location is. The Storyteller nudges it; everyone sees it climb through Calm → Stirring → Active → Lockdown → **Full Alert**. Roll cards offer one-click Alert adjustments.
 - **The Character Builder** — a guided, step-by-step wizard (Species → Role → Attributes → Skills → Perks → Flaw → Name) with live point-buy counters, the book's random-roll tables, and full validation. Finishes by exporting a complete, ready-to-play spider.
 - **Eight compendiums, ready to run** — all 6 Species, 7 Crew Roles, 42 Perks, 10 Flaws, Silk & Gadgets, the full Creature Compendium, the five ready-to-run Heists (as multi-page journals), and a Rules Reference.

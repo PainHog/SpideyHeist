@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "bruiser",
-    "effect": "<p>Ignore the first -1 die penalty from being Rattled. You've been Rattled before. You're fine.</p>"
+    "effect": "<p>Ignore the &minus;1 die penalty from being Rattled. You've been Rattled before. You're fine.</p>"
   }
 }

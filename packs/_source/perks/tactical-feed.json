@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "lookout",
-    "effect": "<p>Once per round, give a crewmate +1 die on their next roll by telling them exactly what to do. You're not helping. You're instructing.</p>"
+    "effect": "<p>Once per round, give a crewmate +1 die on their next roll by telling them exactly what to do. You're not helping. You're instructing. It's a free action and doesn't count as the roll's Assist.</p>"
   }
 }

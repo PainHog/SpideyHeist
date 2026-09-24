@@ -1,25 +1,35 @@
 {
   "key": "protection-rat",
-  "name": "Protection Rat",
+  "name": "The Rat",
   "img": "systems/heisty-spideys/assets/icons/creature.svg",
   "system": {
     "threatLevel": "Standard",
-    "alertContribution": "",
+    "alertContribution": "none while the deal holds; +2 if it goes bad",
     "speed": {
       "value": 6
     },
     "rolls": [
       {
-        "label": "Persuasion",
+        "label": "Perception",
+        "pool": 3,
+        "note": ""
+      },
+      {
+        "label": "Brawl",
         "pool": 4,
-        "note": "he wants something first"
+        "note": ""
+      },
+      {
+        "label": "Haggle",
+        "pool": 4,
+        "note": "Persuasion"
       }
     ],
     "senses": "",
-    "passive": "<p>Runs protection for the block.</p>",
+    "passive": "<p>Lives under the dishwasher; nothing crosses the kitchen without his say-so.</p>",
     "escalation": "",
-    "weakness": "",
-    "notes": "<p>He wants something. Work out what. It's a negotiation, not a fight.</p>",
-    "biography": "<p>A rat lives under the dishwasher of the restaurant and runs protection for the block. He'll want something before the crew gets anywhere near the office. Work out what.</p>"
+    "weakness": "<p>Food, a favour owed, being treated like a professional.</p>",
+    "notes": "<p><strong>Note:</strong> he wants something. Work out what. It's a negotiation, not a fight &mdash; until it is.</p>",
+    "biography": "<p><em>&ldquo;Runs Protection for the Block.&rdquo;</em></p><p>A rat lives under the dishwasher of the restaurant and runs protection for the block. He'll want something before the crew gets anywhere near the office. Work out what.</p>"
   }
 }

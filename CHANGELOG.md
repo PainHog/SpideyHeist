@@ -2,6 +2,23 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.4.0] — Rulebook v4.3 rulings
+
+The system now matches **Heisty Spideys v4.3**, where every open rules question from the editorial review was resolved (see `book/REVIEW.md` §B for each ruling and its reason).
+
+### Changed
+- **Criticals lower the Alert only at Difficulty 2+.** The roll card no longer suggests −1 Alert for a Critical on a Trivial (Difficulty 1) roll.
+- **Critical Vitality:** a Critical spider can't move on its own — the sheet shows its Speed as *assisted* (a crewmate brings it along at half their Speed). Hurt still halves Speed.
+- **Lockdown is 7+** all the way up to the Limit (Alert 9 at an Easy location is Lockdown, not unbanded).
+- **Advancement:** Absurd heists now award 6 AP; Skills and Attributes can reach 5 after creation.
+- **Perks and Signature Moves** updated: Unfazed, That All You Got? (BODY + Endurance), Thunderous Entrance and Make a Scene (once per scene), Tactical Feed (free action, not an Assist), I Called It (+1 die to that roll), That's Not What Happened (also cancels the Alert rise).
+- **Silk Points:** Improvise now swaps in a plausible Skill at +1 Difficulty; Damage Control works on any spike of +2 or more; a Silk Line without SP is a GRACE + Acrobatics roll (Difficulty 2).
+- **Rules journals, heists and the Quick Reference** carry the v4.3 wording (recovery once per obstacle, Tinkerer patching via Field Repair, Waiting Web species swaps, creature Alert contributions, loot tiers, Heist 5 now Hard/6, and more).
+
+### Fixed
+- **Creature stats now come from the book.** The Corn Snake, Alert Parrot, The Rat (formerly "Protection Rat"), The Exterminator and Goldfish previously carried numbers the book never gave; they now match the rulebook's new official stat blocks. *Worlds that already imported these creatures keep their old copies — re-import them from the Creature Compendium.*
+- Remaining v4.2 wording fixes brought into the system (Stealth-0 Botch joke, GRACE no longer "sets your Speed", "don't make you untouchable", "Engineering, Difficulty 4", Botch/Assist Quick Reference rows).
+
 ## [1.3.0] — Foundry v14 audit (verified on 14.368)
 
 A full audit against the newest Foundry release (v14.368, "Version 14 Stable 10"), run by independent agents across the manifest, packs, templates, CSS and all JavaScript.

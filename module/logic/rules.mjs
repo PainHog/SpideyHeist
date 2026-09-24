@@ -36,8 +36,19 @@ export function classifyBotch(die) {
   return Number(die) <= 3 ? "botch" : "cleanfail";
 }
 
-/** Suggested Alert change for a result key (single source of truth: HEISTY.results). */
-export function alertForResult(resultKey) {
+/** A Critical lowers the Alert only on a roll of at least this Difficulty. */
+export const CRITICAL_ALERT_MIN_DIFFICULTY = 2;
+
+/**
+ * Suggested Alert change for a result key (single source of truth: HEISTY.results).
+ * A Critical drops the Alert by 1 only on a roll of Difficulty 2 or higher — no
+ * farming the Alert off Trivial rolls — so at Difficulty 1 it suggests 0.
+ * @param {string} resultKey   A HEISTY.results key.
+ * @param {number} difficulty  The roll's final Difficulty (clamped to 1+, as classifyResult does).
+ */
+export function alertForResult(resultKey, difficulty) {
+  const d = Math.max(1, Number(difficulty) || 1);
+  if (resultKey === "critical" && d < CRITICAL_ALERT_MIN_DIFFICULTY) return 0;
   return HEISTY.results[resultKey]?.alert ?? 0;
 }
 

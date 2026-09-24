@@ -38,7 +38,7 @@ HEISTY.attributes = {
   grace: {
     label: "Grace",
     abbr: "GRACE",
-    hint: "Agility and dexterity. Acrobatics, disguise, persuasion — and it sets your Speed. Charm is physical."
+    hint: "Agility and dexterity. Acrobatics, disguise, persuasion. Charm is physical."
   }
 };
 
@@ -86,14 +86,16 @@ HEISTY.skillRatings = {
 
 /**
  * The Vitality ladder. `penalty` is the dice-pool modifier applied to every
- * roll; `halfSpeed` halves movement (round down); `out` removes the spider.
+ * roll; `halfSpeed` halves movement (round down); `assisted` means the spider
+ * can't move on its own — an adjacent crewmate brings it along at half *their*
+ * Speed (so its own Speed reads 0); `out` removes the spider.
  */
 HEISTY.vitality = {
-  unharmed: { label: "Unharmed", order: 0, penalty: 0, halfSpeed: false, out: false, hint: "Full capabilities. The cat hasn't found you." },
-  rattled: { label: "Rattled", order: 1, penalty: -1, halfSpeed: false, out: false, hint: "Shaken, bruised, or briefly jarred. −1 die on all rolls." },
-  hurt: { label: "Hurt", order: 2, penalty: -2, halfSpeed: true, out: false, hint: "You're limping. −2 dice on everything, and your Speed is halved." },
-  critical: { label: "Critical", order: 3, penalty: -3, halfSpeed: true, out: false, hint: "A crewmate must help you move. You can still act, barely. −3 dice." },
-  out: { label: "Out", order: 4, penalty: 0, halfSpeed: true, out: true, hint: "Caught. Jarred, vacuumed, or adopted. Activate the Waiting Web." }
+  unharmed: { label: "Unharmed", order: 0, penalty: 0, halfSpeed: false, assisted: false, out: false, hint: "Full capabilities. The cat hasn't found you." },
+  rattled: { label: "Rattled", order: 1, penalty: -1, halfSpeed: false, assisted: false, out: false, hint: "Shaken, bruised, or briefly jarred. −1 die on all rolls." },
+  hurt: { label: "Hurt", order: 2, penalty: -2, halfSpeed: true, assisted: false, out: false, hint: "You're limping. −2 dice on everything, and your Speed is halved (round down)." },
+  critical: { label: "Critical", order: 3, penalty: -3, halfSpeed: false, assisted: true, out: false, hint: "You can't move on your own — an adjacent crewmate can bring you along at half their Speed. You can still act, barely. −3 dice." },
+  out: { label: "Out", order: 4, penalty: 0, halfSpeed: true, assisted: false, out: true, hint: "Caught. Jarred, vacuumed, or adopted. Activate the Waiting Web." }
 };
 
 /** Ordered Vitality keys, best → worst. */
@@ -135,10 +137,10 @@ HEISTY.alertBands = [
   { key: "calm", min: 0, max: 2, label: "Calm", stealth: 0, all: 0, description: "The plan is working. Enjoy it. It won't last." },
   { key: "stirring", min: 3, max: 4, label: "Stirring", stealth: 1, all: 0, description: "Something feels off. Stealth rolls are +1 Difficulty." },
   { key: "active", min: 5, max: 6, label: "Active", stealth: 1, all: 0, description: "A threat has woken up. It's moving now — no new roll penalty yet." },
-  { key: "lockdown", min: 7, max: 8, label: "Lockdown", stealth: 2, all: 1, description: "Everything is wrong. All rolls +1 (Stealth +2, stacked)." }
+  { key: "lockdown", min: 7, max: Infinity, label: "Lockdown", stealth: 2, all: 1, description: "Everything is wrong. All rolls +1 (Stealth +2, stacked)." }
 ];
 
-/** What pushes the Alert up (and the one thing that pulls it down). */
+/** What pushes the Alert up (and the one thing that pulls it down). `delta: null` varies by creature. */
 HEISTY.alertTriggers = [
   { delta: 1, text: "A roll fails with a consequence — noise, attention, evidence." },
   { delta: 1, text: "Spotted briefly — an NPC notices something's off but isn't sure." },
@@ -147,7 +149,8 @@ HEISTY.alertTriggers = [
   { delta: 2, text: "A confirmed alert — an NPC knows something is happening." },
   { delta: 2, text: "A spider goes Out. The location notices something is very wrong." },
   { delta: 2, text: "A Loud Failure — something loud breaks, a crash that carries." },
-  { delta: -1, text: "A Critical Success. The only thing that lowers the Alert during a heist." }
+  { delta: null, text: "+X — a creature's own contribution each round it's active (see its stat block). A creature is active when its Escalation says it's awake, hunting or pursuing." },
+  { delta: -1, text: "A Critical Success on a roll of Difficulty 2 or higher. The only thing that lowers the Alert during a heist." }
 ];
 
 /* -------------------------------------------- */
@@ -157,12 +160,12 @@ HEISTY.alertTriggers = [
 /** Ways to spend Silk Points. */
 HEISTY.silkSpends = [
   { cost: 1, label: "Extra Die", text: "Add 1 die to a roll before it's made. The most common spend, and a good one." },
-  { cost: 1, label: "Silk Line", text: "Instantly run a silk line between two points up to 5 squares apart. No roll." },
+  { cost: 1, label: "Silk Line", text: "Run a silk line between two points up to 5 squares apart without the roll (GRACE + Acrobatics, Difficulty 2)." },
   { cost: 2, label: "Reroll", text: "After rolling, reroll up to 3 dice and keep the better result." },
   { cost: 2, label: "Web Structure", text: "Build a small web structure with no roll — a net, a tripwire, a platform, a hammock." },
-  { cost: 2, label: "Improvise", text: "Attempt any check on your Attribute alone — no Skill — at +1 Difficulty." },
+  { cost: 2, label: "Improvise", text: "Swap the called-for Skill for one of yours that could plausibly work — Engineering to rig a hoist instead of Athletics to climb, Deception instead of Stealth — at +1 Difficulty." },
   { cost: 3, label: "Silk Clutch", text: "After a failed roll, succeed anyway. The Alert rises by 1." },
-  { cost: 3, label: "Damage Control", text: "The crew reduces one +2 Alert spike to +1. Once per heist." },
+  { cost: 3, label: "Damage Control", text: "The crew reduces one Alert spike of +2 or more by 1. Once per heist." },
   { cost: 4, label: "Not Part of the Plan", text: "Negate one complication the ST just introduced. Once per heist." }
 ];
 
@@ -180,7 +183,7 @@ HEISTY.silkEarns = [
 
 /** Outcome categories produced by the dice engine. */
 HEISTY.results = {
-  critical: { label: "Critical Success", css: "critical", alert: -1, blurb: "You did it perfectly — and the Alert drops by 1. Savor it." },
+  critical: { label: "Critical Success", css: "critical", alert: -1, blurb: "You did it perfectly — and the Alert drops by 1 (only on a roll of Difficulty 2 or higher). Savor it." },
   success: { label: "Full Success", css: "success", alert: 0, blurb: "It worked. The thing happens. The Alert is still right there." },
   partial: { label: "Partial Success", css: "partial", alert: 1, blurb: "It worked, but. Progress, and a complication lands." },
   failure: { label: "Failure", css: "failure", alert: 1, blurb: "It did not work. No progress, and something gets worse." },
@@ -220,7 +223,10 @@ HEISTY.roles = {
   grifter: { label: "The Grifter", coreSkills: ["deception", "disguise"], signature: "You're Looking at the Wrong Spider" }
 };
 
-/** Advancement Point costs and awards. */
+/**
+ * Advancement Point costs and awards. After creation, Skills and Attributes can
+ * reach 5 (Attributes include the species bonus) — the data models' max of 5.
+ */
 HEISTY.advancement = {
   spend: [
     { cost: 1, text: "+1 to a Skill" },
@@ -231,17 +237,18 @@ HEISTY.advancement = {
     easy: 2,
     standard: 3,
     hard: 5,
+    absurd: 6,
     legendary: 8
   }
 };
 
 /** Loot tiers. */
 HEISTY.lootTiers = {
-  crumb: { label: "Crumb", difficulty: "Trivial", hint: "A single bit of food, a small charm, a coin." },
+  crumb: { label: "Crumb", difficulty: "Easy", hint: "A single bit of food, a small charm, a coin." },
   trinket: { label: "Trinket", difficulty: "Easy", hint: "A small shiny thing, a memory stick, a piece of jewelry." },
   prize: { label: "Prize", difficulty: "Standard", hint: "Something significant — the main event of a proper heist." },
-  treasure: { label: "Treasure", difficulty: "Hard", hint: "High value, high security, genuinely dangerous to take." },
-  score: { label: "The Score", difficulty: "Legendary", hint: "The kind of job spiders tell the spiderlings about." }
+  treasure: { label: "Treasure", difficulty: "Hard or Absurd", hint: "High value, high security, genuinely dangerous to take." },
+  score: { label: "The Big Score", difficulty: "Legendary", hint: "The kind of job spiders tell the spiderlings about." }
 };
 
 /** Item type labels for sheet headers and drop hints. */
@@ -268,7 +275,6 @@ HEISTY.getAlertState = function (value, limit) {
   for (const b of HEISTY.alertBands) {
     if (v >= b.min && v <= b.max) { band = b; break; }
   }
-  if (v > 8) band = HEISTY.alertBands[HEISTY.alertBands.length - 1];
   return {
     key: atLimit ? "fullalert" : band.key,
     label: atLimit ? "Full Alert" : band.label,

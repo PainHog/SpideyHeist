@@ -4,7 +4,7 @@
   "img": "systems/heisty-spideys/assets/icons/creature.svg",
   "system": {
     "threatLevel": "Standard",
-    "alertContribution": "",
+    "alertContribution": "+1 each round it's repeating something",
     "speed": {
       "value": 0
     },
@@ -12,14 +12,19 @@
       {
         "label": "Perception",
         "pool": 4,
-        "note": "repeats what it hears, loudly"
+        "note": ""
+      },
+      {
+        "label": "Mimicry",
+        "pool": 3,
+        "note": "Deception"
       }
     ],
-    "senses": "<p>It has seen you. It will describe you.</p>",
+    "senses": "<p>Sees the whole front of the store from its cage.</p>",
     "passive": "<p>Repeats what it hears, loudly and at length.</p>",
-    "escalation": "",
-    "weakness": "",
-    "notes": "<p>It will describe you. In detail. At volume. The noise pushes the Alert up.</p>",
-    "biography": "<p>An alert parrot near the front of the pet store that repeats what it hears, loudly and at length. It has seen you. It will describe you. In detail. At volume.</p>"
+    "escalation": "<p>Alert 3, mutters. Alert 5, repeats every noise it hears. Alert 7, shrieks &mdash; the Alert rises by 2 once.</p>",
+    "weakness": "<p>A cloth over the cage, a cracker (Persuasion, Difficulty 1).</p>",
+    "notes": "<p><strong>Speed:</strong> 0 (caged).</p>",
+    "biography": "<p><em>&ldquo;It Will Describe You. In Detail. At Volume.&rdquo;</em></p><p>An alert parrot near the front of the pet store that repeats what it hears, loudly and at length. It has seen you. It will describe you. In detail. At volume.</p>"
   }
 }

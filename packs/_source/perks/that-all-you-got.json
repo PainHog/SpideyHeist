@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "bruiser",
-    "effect": "<p>After a hit that would drop you to Critical, roll Endurance (Difficulty 3). On a success, you stop at Hurt instead.</p>"
+    "effect": "<p>After a hit that would drop you to Critical, roll BODY + Endurance (Difficulty 3). On a success, you stop at Hurt instead.</p>"
   }
 }

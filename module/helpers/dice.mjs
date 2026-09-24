@@ -2,9 +2,10 @@
  * HEISTY SPIDEYS — The Dice Engine
  * --------------------------------
  * The entire engine: roll a pool of d6s, count every 4, 5, or 6 as a Success,
- * compare to the Difficulty. Handles the Botch (pool at 0), Critical (double the
- * required Successes, Alert −1), Partial, and clean Failure, and reads the
- * spider's Vitality penalty and the current Alert automatically.
+ * compare to the Difficulty. Handles the Botch (pool at 0 or below), Critical
+ * (double the required Successes; Alert −1 at Difficulty 2+), Partial, and
+ * clean Failure, and reads the spider's Vitality penalty and the current Alert
+ * automatically.
  */
 
 import { HEISTY } from "../config.mjs";
@@ -36,7 +37,7 @@ export const HeistyDice = {
     });
   },
 
-  /** Roll an Attribute alone (the Improvise path — the ST usually adds +1 Difficulty). */
+  /** Roll an Attribute alone (an untrained roll — a Skill of 0). */
   async attributeCheck(actor, attrKey, options = {}) {
     const attr = HEISTY.attributes[attrKey];
     if (!attr) return null;
@@ -101,7 +102,7 @@ export const HeistyDice = {
     const faces = this._readFaces(roll);
     const successes = countSuccesses(faces.map(f => f.result));
     const resultKey = classifyResult(successes, difficulty);
-    const suggested = alertForResult(resultKey);
+    const suggested = alertForResult(resultKey, difficulty);
     const res = HEISTY.results[resultKey];
 
     const content = await renderTemplate("systems/heisty-spideys/templates/chat/roll-card.hbs", {
@@ -136,7 +137,7 @@ export const HeistyDice = {
     const die = roll.dice[0].results[0].result;
     const resultKey = classifyBotch(die);
     const res = HEISTY.results[resultKey];
-    const suggested = alertForResult(resultKey);
+    const suggested = alertForResult(resultKey, ctx.difficulty);
 
     const content = await renderTemplate("systems/heisty-spideys/templates/chat/roll-card.hbs", {
       actorName: actor.name,
