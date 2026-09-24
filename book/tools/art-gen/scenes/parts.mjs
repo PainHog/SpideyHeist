@@ -33,7 +33,7 @@ export function part_one() {
   s += line(hd, 1.3, C.ink, ` opacity=".3"`);
   // the blueprint (a perspective sheet), deep plum with cream lines
   const bp = "M230 196L672 196L742 350L160 350Z";
-  s += `<path d="M236 204L678 204L748 358L166 358Z" fill="${C.ink}" opacity=".25"/>`;
+  s += `<path d="M228 204L674 204L748 358L154 358Z" fill="${C.ink}" opacity=".25"/>`;
   s += `<path d="${bp}" fill="${C.deep}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   // curled corner
   s += `<path d="M672 196l18 40q-26 -6 -40 -20z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
@@ -65,29 +65,32 @@ export function part_one() {
   s += `<ellipse cx="700" cy="330" rx="20" ry="6" fill="none" stroke="${C.ink}" stroke-width="1.5" opacity=".6"/>`;
 
   // back row spiders leaning over the plan
-  s += spider({ x: 330, y: 176, s: 1.4, hat: "goggles", look: [.4, 1], mark: "dots", mouth: "o", brow: "up",
-    legOverride: { R0: [[9, -6], [24, -10], [28, 20]] } });
-  s += magnifier(372, 214, 22, 60);
+  // contact shadows (lamp overhead) for everyone standing on the table/plan
+  s += shadow(330, 212, 62, 7) + shadow(548, 210, 64, 7) + shadow(112, 338, 78, 8) + shadow(800, 338, 76, 8);
+  s += magnifier(400, 252, 22, 225);
+  s += spider({ x: 330, y: 176, s: 1.4, hat: "goggles", look: [.8, 1], mark: "dots", mouth: "o", brow: "up",
+    legOverride: { R0: [[9, -6], [26, -14], [24, 28]] } });
   s += spider({ x: 548, y: 170, s: 1.45, mask: true, look: [.6, .8], mark: "chevron", mouth: "smirk", brow: "down",
     legOverride: { R0: [[9, -6], [26, -18], [36, 40]] } });
   // front spiders
-  s += spider({ x: 112, y: 300, s: 1.5, hat: "fedora", look: [1, .2], mark: "star", mouth: "grin",
-    legOverride: { R0: [[9, -6], [26, -26], [50, -6]] } });
-  s += pencil(150, 250, 214, 300, 9);
+  // a full-size pencil (spiders are tiny) leaning with its tip on the plan; the front leg steadies it
+  s += pencil(88, 96, 230, 318, 15);
+  s += spider({ x: 112, y: 300, s: 1.5, hat: "fedora", look: [1, -.2], mark: "star", mouth: "grin",
+    legOverride: { R0: [[9, -6], [30, -34], [55, -26]] } });
+  // thimble cup of tea, held out by the right spider: one foot through the handle, one under the base
+  s += `<path d="M740 262q12 0 12 9t-12 9" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<path d="M706 252h34l-3 30h-28z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  s += `<ellipse cx="723" cy="252" rx="17" ry="4" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += line("M708 264h30", 3, C.oxB);
+  s += line("M716 244q-4 -10 2 -18M728 244q-4 -10 2 -18", 1.8, C.ink, ` opacity=".5"`);
   s += spider({ x: 800, y: 300, s: 1.4, hat: "bowtie", body: C.soft, hi: C.edge, look: [-1, .3], mark: "stripe", mouth: "grin", brow: "up",
-    legOverride: { L0: [[-9, -6], [-24, -20], [-40, -10]] } });
-  // thimble cup of tea for the right spider
-  s += `<path d="M784 274q12 0 12 9t-12 9" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
-  s += `<path d="M750 264h34l-3 30h-28z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
-  s += `<ellipse cx="767" cy="264" rx="17" ry="4" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
-  s += line("M752 276h30", 3, C.oxB);
-  s += line("M760 256q-4 -10 2 -18M772 256q-4 -10 2 -18", 1.8, C.ink, ` opacity=".5"`);
+    legOverride: { L0: [[-9, -6], [-26, -30], [-40, -26]], L1: [[-12, -2], [-40, -14], [-54, -12]] } });
 
   // desk lamp (top)
   s += `<path d="M392 60q58 -44 116 0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   s += `<path d="M396 60h108" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>`;
   s += `<ellipse cx="450" cy="62" rx="30" ry="6" fill="${C.goldB}"/>`;
-  s += line("M450 28V0", 4);
+  s += line("M450 40V0", 4);
   s += line("M420 40q12 -16 34 -18", 3, C.oxB);
   s += sparkle(600, 236 - 30, 7) + sparkle(250, 180, 5) + sparkle(820, 200, 4);
   return svg("0 0 900 420", "The crew plans the job around a blueprint", s);

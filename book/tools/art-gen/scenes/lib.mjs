@@ -159,12 +159,59 @@ export function cookie(x, y, r, seed = 3, bite = false) {
   return `${shape}<circle cx="${n(x - r * .28)}" cy="${n(y - r * .3)}" r="${n(r * .4)}" fill="${C.goldB}" opacity=".45"/>${chips}`;
 }
 
-// Cookie tin with a blue lid. x,y = centre bottom; w width; h body height.
-export function tin(x, y, w, h, o = {}) {
-  const { open = false, glow = false, sw = 2.4 } = o;
-  const rx = w / 2, ry = w * 0.16, top = y - h;
+// A cookie lying flat on a surface, seen from a low angle: an elliptical top face
+// over a thin baked edge. x = centre, y = the contact line (lowest point of the edge).
+// bite: a notch taken out of the back-right rim. Includes a small contact shadow.
+export function flatCookie(x, y, r, seed = 3, bite = false, o = {}) {
+  const { shade = true, lightDx = 1 } = o;
+  const ry = r * 0.34, t = Math.max(2, r * 0.2), cy = y - t - ry;
+  // Outline in "round" space (a circle of radius r at the origin), then squashed to the ellipse.
+  // A bite is a circle centred on the rim; the outline follows its inner arc.
+  const bA = -0.55, bC = [Math.cos(bA) * r, Math.sin(bA) * r], br = r * 0.36;
+  const inB = p => Math.hypot(p[0] - bC[0], p[1] - bC[1]) < br;
+  const base = [];
+  for (let i = 0; i < 96; i++) { const a = i / 96 * Math.PI * 2; base.push([Math.cos(a) * r, Math.sin(a) * r]); }
+  let outline = base;
+  if (bite) {
+    const k = base.findIndex(inB), rot = [...base.slice(k), ...base.slice(0, k)];
+    const j = rot.findIndex(p => !inB(p));
+    const pOut = rot[j], pIn = rot[rot.length - 1];
+    const t1 = Math.atan2(pIn[1] - bC[1], pIn[0] - bC[0]); let t2 = Math.atan2(pOut[1] - bC[1], pOut[0] - bC[0]);
+    const arc = dir => { const A = []; let d = t2 - t1; if (dir > 0 && d < 0) d += 2 * Math.PI; if (dir < 0 && d > 0) d -= 2 * Math.PI; for (let q = 1; q < 12; q++) { const tt = t1 + d * q / 12; A.push([bC[0] + Math.cos(tt) * br, bC[1] + Math.sin(tt) * br]); } return A; };
+    const A1 = arc(1), A2 = arc(-1), m = A => Math.hypot(...A[5]);
+    outline = [...rot.slice(j), ...(m(A1) < m(A2) ? A1 : A2)];
+  }
+  // ring(yy): the outline placed with its centre at (x, yy); index 0 is the rightmost point
+  const ring = yy => outline.map(p => [x + p[0], yy + p[1] * ry / r]);
+  const byT = bC[1] * ry / r, bx = x + bC[0];
+  const top = ring(cy), bot = ring(cy + t);
+  const w = n(Math.max(1.2, r * 0.07));
+  let s = "";
+  if (shade) s += `<ellipse cx="${n(x + lightDx * r * .18)}" cy="${n(y - ry * .45)}" rx="${n(r * 1.08)}" ry="${n(ry * .8)}" fill="${C.ink}" opacity=".32"/>`;
+  // the baked edge: the outline dropped by t, joined to the top face by a band
+  const edge = `<path d="M${pts(bot)}z"/><rect x="${n(x - r)}" y="${n(cy)}" width="${n(2 * r)}" height="${n(t)}"/>`;
+  s += `<g fill="${C.gold}">${edge}</g><g fill="${C.ink}" opacity=".28">${edge}</g>`;
+  s += `<path d="M${pts(bot)}z" fill="none" stroke="${C.ink}" stroke-width="${w}"/><path d="M${n(x - r)} ${n(cy)}v${n(t)}M${n(x + r)} ${n(cy)}v${n(t)}" stroke="${C.ink}" stroke-width="${w}"/>`;
+  s += `<path d="M${pts(top)}z" fill="${C.gold}" stroke="${C.ink}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  s += `<ellipse cx="${n(x - r * .25)}" cy="${n(cy - ry * .25)}" rx="${n(r * .42)}" ry="${n(ry * .38)}" fill="${C.goldB}" opacity=".45"/>`;
+  const R = rng(seed);
+  for (let i = 0; i < 6; i++) {
+    const a = R() * 6.28, u = 0.2 + R() * 0.5;
+    const ex = x + Math.cos(a) * r * u, ey = cy + Math.sin(a) * ry * u;
+    if (bite && Math.hypot(ex - bx, (ey - cy - byT) * r / ry) < br * 1.3) continue;
+    s += `<ellipse cx="${n(ex)}" cy="${n(ey)}" rx="${n(r * 0.13)}" ry="${n(r * 0.06)}" fill="${C.deep}"/>`;
+  }
+  return s;
+}
+
+// Cookie tin with a blue lid. x,y = the lowest point of the base (where it touches
+// the surface it stands on); w width; h body height. o.shadow adds a contact shadow.
+export function tin(x, y0, w, h, o = {}) {
+  const { open = false, glow = false, sw = 2.4, shadow: sh = true } = o;
+  const rx = w / 2, ry = w * 0.16, y = y0 - ry, top = y - h;
   let s = "";
   if (glow) s += `<ellipse cx="${x}" cy="${n(top + h * .2)}" rx="${n(rx * 1.7)}" ry="${n(h * 1)}" fill="${C.goldB}" opacity=".16"/>`;
+  if (sh) s += `<ellipse cx="${n(x + rx * .12)}" cy="${n(y0 - ry * .35)}" rx="${n(rx * 1.12)}" ry="${n(ry * .75)}" fill="${C.ink}" opacity=".3"/>`;
   s += `<path d="M${n(x - rx)} ${n(top)}V${n(y)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + rx)} ${n(y)}V${n(top)}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="${sw}"/>`;
   s += `<path d="M${n(x - rx)} ${n(top + h * .22)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + rx)} ${n(top + h * .22)}M${n(x - rx)} ${n(top + h * .82)}A${n(rx)} ${n(ry)} 0 0 0 ${n(x + rx)} ${n(top + h * .82)}" stroke="${C.gold}" stroke-width="${n(sw * 1.3)}" fill="none"/>`;
   s += cookie(x + rx * 0.12, top + h * .56, h * .2, 7);

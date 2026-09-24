@@ -1,4 +1,4 @@
-import { C, n, svg, spider, tin, cookie, sparkle, cobweb, stipple, hatch, rng, line } from "./lib.mjs";
+import { C, n, svg, spider, tin, flatCookie, sparkle, cobweb, stipple, hatch, rng, line } from "./lib.mjs";
 
 export function cover() {
   const P = "cv";
@@ -58,9 +58,11 @@ export function cover() {
   // sill
   s += `<path d="M${wx - 22} ${wy + wh + 12}h${ww + 44}v12h-${ww + 44}z" fill="${C.soft}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
   // curtain on the left
-  s += `<path d="M0 270h58q-6 90 -18 150q-14 70 -6 148H0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
-  s += line("M16 276q-2 140 4 290M34 276q-4 100 -10 190", 2, C.ink, ` opacity=".45"`);
+  s += `<path d="M0 262h58q-6 98 -18 150q-14 70 -6 148H0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+  s += line("M16 268q-2 140 4 298M34 268q-4 100 -10 198", 2, C.ink, ` opacity=".45"`);
   s += `<path d="M0 262h72" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M0 262h72" stroke="${C.gold}" stroke-width="3.5" stroke-linecap="round"/><circle cx="74" cy="262" r="5" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
+  // curtain rings round the rod
+  for (const rx of [10, 30, 50]) s += `<ellipse cx="${rx}" cy="262" rx="4" ry="6" fill="none" stroke="${C.gold}" stroke-width="2"/>`;
   // little potted plant on the sill
   s += `<path d="M204 566l4 -22h24l4 22z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
   s += `<path d="M220 544q-10 -22 -2 -34q6 10 2 34zM220 544q6 -20 18 -24q0 14 -18 24zM220 544q-14 -10 -22 -8q6 12 22 8z" fill="${C.good}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
@@ -69,47 +71,51 @@ export function cover() {
   s += `<path d="M248 300L612 360V792H430L248 556z" fill="url(#${P}-beam)"/>`;
 
   // 4. high shelf with the tin
-  const sy = 488;
+  const sy = 474; // front edge of the shelf top; objects stand on the strip just above it
   // shadow under shelf
   s += hatch(`${P}-sh`, `<path d="M318 ${sy + 16}H612V${sy + 70}H360z"/>`, 318, sy + 10, 612, sy + 80, 7, 60, C.ink, 1.2, .35);
   // brackets
-  s += `<path d="M366 ${sy + 14}v44q0 -30 30 -44z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += `<path d="M404 ${sy + 14}v44q0 -30 30 -44z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
   s += `<path d="M576 ${sy + 14}v44q0 -30 -30 -44z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += `<path d="M318 ${sy}l10 -12H618V${sy}z" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
   s += `<rect x="318" y="${sy}" width="300" height="16" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
+  const gy = sy - 3; // where things on the shelf touch it
   s += `<path d="M322 ${sy + 3}H612" stroke="${C.goldB}" stroke-width="2.5" opacity=".8"/>`;
   s += line(`M350 ${sy + 9}q20 -3 40 0M430 ${sy + 10}q24 2 50 -1M520 ${sy + 9}q20 -2 40 1`, 1.2, C.ink, ` opacity=".45"`);
-  // mugs on the left of the shelf
-  s += `<path d="M334 ${sy}v-40h36v40z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
-  s += `<path d="M370 ${sy - 32}q14 0 14 12t-14 12" fill="none" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += `<path d="M334 ${sy - 26}h36" stroke="${C.oxB}" stroke-width="5"/>`;
-  s += `<path d="M338 ${sy - 40}v-34h30v34z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
-  s += `<path d="M368 ${sy - 68}q11 0 11 10t-11 10" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
+  // mugs on the left of the shelf (stacked, the top one resting on the lower rim)
+  s += `<ellipse cx="354" cy="${gy}" rx="24" ry="3" fill="${C.ink}" opacity=".3"/><ellipse cx="572" cy="${gy}" rx="26" ry="3" fill="${C.ink}" opacity=".3"/>`;
+  s += `<path d="M334 ${gy}v-40h36v40z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += `<path d="M370 ${gy - 32}q14 0 14 12t-14 12" fill="none" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += `<path d="M334 ${gy - 26}h36" stroke="${C.oxB}" stroke-width="5"/>`;
+  s += `<path d="M338 ${gy - 40}v-34h30v34z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  s += `<path d="M368 ${gy - 68}q11 0 11 10t-11 10" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
   // jam jar on the right
-  s += `<path d="M548 ${sy}v-44q0 -6 6 -6h34q6 0 6 6v44z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += `<rect x="552" y="${sy - 62}" width="38" height="14" rx="3" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/>`;
-  s += `<path d="M556 ${sy - 62}l4 -6h22l4 6" fill="${C.parch}" stroke="${C.ink}" stroke-width="2"/>`;
-  s += `<rect x="556" y="${sy - 34}" width="30" height="18" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.8"/>`;
-  s += `<path d="M562 ${sy - 25}h18" stroke="${C.ox}" stroke-width="2"/>`;
-  s += `<path d="M554 ${sy - 40}v28" stroke="${C.cream}" stroke-width="3" opacity=".4" stroke-linecap="round"/>`;
+  s += `<path d="M548 ${gy}v-44q0 -6 6 -6h34q6 0 6 6v44z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += `<rect x="552" y="${gy - 62}" width="38" height="14" rx="3" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<path d="M556 ${gy - 62}l4 -6h22l4 6" fill="${C.parch}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += `<rect x="556" y="${gy - 34}" width="30" height="18" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.8"/>`;
+  s += `<path d="M562 ${gy - 25}h18" stroke="${C.ox}" stroke-width="2"/>`;
+  s += `<path d="M554 ${gy - 40}v28" stroke="${C.cream}" stroke-width="3" opacity=".4" stroke-linecap="round"/>`;
   // the tin (target) glowing in the beam
-  s += `<ellipse cx="462" cy="${sy - 40}" rx="120" ry="92" fill="url(#${P}-tinglow)"/>`;
-  s += tin(462, sy - 2, 96, 74, { sw: 3 });
-  s += sparkle(512, sy - 108, 8) + sparkle(412, sy - 84, 5) + sparkle(522, sy - 46, 4);
+  // big enough that the crew are clearly tiny beside it
+  s += `<ellipse cx="466" cy="${sy - 70}" rx="140" ry="120" fill="url(#${P}-tinglow)"/>`;
+  s += tin(466, gy + 1, 128, 100, { sw: 3 });
+  s += sparkle(540, sy - 150, 7) + sparkle(392, sy - 118, 5) + sparkle(538, sy - 60, 4);
 
   // 5. the crew on silk lines
   const RIM = { rim: C.goldB, rimOp: .3 };
   const crew = [
-    { x: 372, y: 330, s: 1.4, hat: "beanie", look: [.8, .6], mark: "dots", mouth: "grin" },
-    { x: 566, y: 306, s: 1.3, hat: "bowtie", look: [-.8, .6], mark: "star", mouth: "o", brow: "up", body: C.soft, hi: C.edge },
-    { x: 132, y: 414, s: 1.25, hat: "goggles", look: [1, .9], mark: "stripe", mouth: "flat", brow: "down" },
+    { x: 356, y: 296, s: .9, hat: "beanie", look: [.8, .6], mark: "dots", mouth: "grin" },
+    { x: 572, y: 272, s: .85, hat: "bowtie", look: [-.8, .6], mark: "star", mouth: "o", brow: "up", body: C.soft, hi: C.edge },
+    { x: 132, y: 404, s: .85, hat: "goggles", look: [1, .9], mark: "stripe", mouth: "flat", brow: "down" },
   ];
-  const lead = { x: 466, y: 340, s: 1.75 };
+  // the lead hangs just over the lid, front feet touching it (lid top ellipse ~ sy-143)
+  const lead = { x: 466, y: sy - 176, s: 1.05 };
   const threadTop = c => c.y + (-22 - 17) * c.s;
   let th = "";
   for (const c of [...crew, lead]) th += `M${n(c.x)} 0V${n(threadTop(c) + 2)}`;
   s += `<path d="${th}" stroke="${C.goldB}" stroke-width="4" opacity=".16" fill="none"/>`;
   s += `<path d="${th}" stroke="${C.goldB}" stroke-width="1.5" fill="none"/>`;
-  s += line("M598 0Q606 130 588 214", 1.2, C.goldB, ` opacity=".5"`);
   // dust motes in the moonbeam
   s += stipple(21, 450, 420, 150, 120, 40, 1.2, C.cream, .45);
   for (const c of crew) s += spider({ pose: "dangle", ...RIM, ...c });
@@ -122,7 +128,7 @@ export function cover() {
     },
   });
   // sparkles of silk
-  s += sparkle(372, 236, 4) + sparkle(132, 280, 3.5) + sparkle(566, 214, 3.5);
+  s += sparkle(356, 226, 3.5) + sparkle(132, 300, 3.5) + sparkle(572, 206, 3.5);
 
   // 6. counter with the sleeping cat
   const cy = 640;
@@ -181,14 +187,15 @@ export function cover() {
   s += line(`M${hx + 40} ${hy - 20}l6 -6M${hx + 44} ${hy - 10}l8 -2`, 2, C.goldB);
 
   // crumbs and a runaway cookie on the counter (right)
-  s += cookie(520, cy - 20, 22, 9, true);
-  s += `<circle cx="480" cy="${cy - 4}" r="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.2"/><circle cx="462" cy="${cy - 2}" r="2.2" fill="${C.gold}" stroke="${C.ink}" stroke-width="1"/><circle cx="446" cy="${cy - 3}" r="1.8" fill="${C.gold}"/>`;
+  // the cookie lies flat on the counter top; crumbs lie beside it
+  s += flatCookie(520, cy + 2, 26, 9, true);
+  s += `<ellipse cx="480" cy="${cy}" rx="3" ry="1.6" fill="${C.gold}" stroke="${C.ink}" stroke-width="1"/><ellipse cx="462" cy="${cy + 2}" rx="2.4" ry="1.3" fill="${C.gold}" stroke="${C.ink}" stroke-width=".9"/><ellipse cx="446" cy="${cy - 1}" rx="1.8" ry="1" fill="${C.gold}"/>`;
   // vignette edges to frame the page
   // tea towel hanging from a cabinet knob
-  s += `<path d="M150 ${cy + 50}h38l6 70q-24 8 -50 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
-  s += line(`M147 ${cy + 96}h48M148 ${cy + 104}h48`, 3, C.oxB);
-  s += line(`M160 ${cy + 56}q2 30 -2 60`, 1.6, C.edge);
-  s += `<circle cx="170" cy="${cy + 52}" r="5" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += `<path d="M164 ${cy + 52}q0 -8 8 -8h20q8 0 8 8l6 68q-25 8 -50 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += line(`M159 ${cy + 96}h48M160 ${cy + 104}h48`, 3, C.oxB);
+  s += line(`M172 ${cy + 56}q2 30 -2 60`, 1.6, C.edge);
+  s += line(`M176 ${cy + 50}q6 -4 12 0`, 1.6, C.edge);
   // soft darkening at the edges to frame the scene
   s += `<defs><radialGradient id="${P}-vig" cx="50%" cy="58%" r="75%"><stop offset=".55" stop-color="${C.ink}" stop-opacity="0"/><stop offset="1" stop-color="${C.ink}" stop-opacity=".55"/></radialGradient></defs>`;
   s += `<rect width="612" height="792" fill="url(#${P}-vig)"/>`;
