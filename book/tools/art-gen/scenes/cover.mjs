@@ -60,7 +60,7 @@ export function cover() {
   s += stipple(11, 306, 420, 320, 120, 220, 0.9, C.soft, .3);
 
   /* ------------------------------------------------------ window (left) */
-  const wx = 42, wy = 292, ww = 206, wh = 250;
+  const wx = 42, wy = 292, ww = 206, wh = 212;       // sill clears the cat's back (top ~y 512)
   s += `<rect x="${wx - 12}" y="${wy - 12}" width="${ww + 24}" height="${wh + 24}" rx="4" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<rect x="${wx}" y="${wy}" width="${ww}" height="${wh}" fill="url(#${P}-sky)" stroke="${C.ink}" stroke-width="3"/>`;
   s += `<clipPath id="${P}-win"><rect x="${wx}" y="${wy}" width="${ww}" height="${wh}"/></clipPath><g clip-path="url(#${P}-win)">`;
@@ -71,9 +71,9 @@ export function cover() {
   for (let i = 0; i < 22; i++) { const x = wx + 6 + R() * (ww - 12), y = wy + 6 + R() * (wh - 70); if (Math.hypot(x - 120, y - 366) > 60) stars += `<circle cx="${n(x)}" cy="${n(y)}" r="${n(0.8 + R() * 1.4)}" fill="${C.goldB}" opacity="${n(.5 + R() * .5)}"/>`; }
   s += stars;
   // neighbours' rooftops with a chimney and lit windows
-  s += `<path d="M42 542V492l30-22 30 22v-14h22v30l40-30 40 30V474l24-16 20 16V542z" fill="${C.deep}"/>`;
+  s += `<g transform="translate(0 -38)"><path d="M42 542V492l30-22 30 22v-14h22v30l40-30 40 30V474l24-16 20 16V542z" fill="${C.deep}"/>`;
   s += `<rect x="176" y="446" width="10" height="20" fill="${C.deep}"/>`;
-  s += `<rect x="92" y="502" width="8" height="10" fill="${C.goldB}" opacity=".7"/><rect x="186" y="496" width="7" height="9" fill="${C.goldB}" opacity=".55"/><rect x="146" y="508" width="7" height="9" fill="${C.goldB}" opacity=".4"/>`;
+  s += `<rect x="92" y="502" width="8" height="10" fill="${C.goldB}" opacity=".7"/><rect x="186" y="496" width="7" height="9" fill="${C.goldB}" opacity=".55"/><rect x="146" y="508" width="7" height="9" fill="${C.goldB}" opacity=".4"/></g>`;
   s += `</g>`;
   // muntins
   s += `<path d="M${wx + ww / 2} ${wy}V${wy + wh}M${wx} ${wy + wh / 2}H${wx + ww}" stroke="${C.plum}" stroke-width="9"/>`;
@@ -87,16 +87,17 @@ export function cover() {
   for (const cx of [wx + 10, wx + ww - 10]) s += `<path d="M${cx - 8} ${sillY + 12}h16l-4 14h-8z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
   // potted plant standing on the sill (pot base on the sill top)
   s += `<ellipse cx="220" cy="${sillY}" rx="16" ry="2.4" fill="${C.ink}" opacity=".35"/>`;
-  s += `<path d="M206 ${sillY}l-4 -22h36l-4 22z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
-  s += `<path d="M200 ${sillY - 22}h40v-5h-40z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+  s += `<path d="M206 ${sillY}l-4 -22h36l-4 22z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  s += `<path d="M200 ${sillY - 22}h40v-5h-40z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+  s += `<path d="M204 ${sillY - 12}h32" stroke="${C.gold}" stroke-width="2.4"/>`;
   s += `<path d="M220 ${sillY - 27}q-12 -24 -2 -38q8 12 2 38zM220 ${sillY - 27}q6 -22 20 -26q0 16 -20 26zM220 ${sillY - 27}q-16 -10 -24 -8q6 14 24 8z" fill="${C.good}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
   // little sponge resting on the sill
   s += `<ellipse cx="80" cy="${sillY}" rx="13" ry="2" fill="${C.ink}" opacity=".3"/><rect x="68" y="${sillY - 9}" width="24" height="9" rx="2" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.8"/><path d="M68 ${sillY - 3}h24" stroke="${C.good}" stroke-width="3"/>`;
 
   // curtain: rings on a rod; the rod sits in a wall bracket
-  s += `<path d="M0 262h58q-6 98 -18 150q-14 70 -6 148H0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
-  s += line("M16 268q-2 140 4 292M34 268q-4 100 -10 198", 2, C.ink, ` opacity=".45"`);
-  s += `<path d="M58 262q-4 60 -14 110" stroke="${C.oxB}" stroke-width="2" fill="none" opacity=".5"/>`;
+  s += `<path d="M0 262h58q-6 98 -18 150q-14 70 -6 148H0z" fill="${C.edge}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+  s += line("M16 268q-2 140 4 292M34 268q-4 100 -10 198", 2.2, C.ink, ` opacity=".4"`);
+  s += `<path d="M52 266q-4 60 -14 110q-10 50 -6 120" stroke="${C.cream}" stroke-width="3" fill="none" opacity=".6"/>`;
   s += `<path d="M66 258v14h8v-14z" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.8"/>`;          // bracket plate
   s += `<path d="M0 262h78" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M0 262h78" stroke="${C.gold}" stroke-width="3.5" stroke-linecap="round"/><circle cx="80" cy="262" r="5" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
   for (const rx of [10, 30, 50]) s += `<ellipse cx="${rx}" cy="262" rx="4" ry="6" fill="none" stroke="${C.gold}" stroke-width="2"/>`;
@@ -104,8 +105,6 @@ export function cover() {
   // moonbeam falling from the window across the room
   s += `<path d="M248 300L612 360V792H430L248 552z" fill="url(#${P}-beam)"/>`;
 
-  // wall outlet between window and counter run
-  s += `<rect x="276" y="584" width="22" height="32" rx="3" fill="${C.parch}" stroke="${C.ink}" stroke-width="2"/><path d="M283 594v5M291 594v5M283 606v5M291 606v5" stroke="${C.ink}" stroke-width="2.2" stroke-linecap="round"/>`;
 
   /* ----------------------------------------------------- shelf (right) */
   s += hatch(`${P}-sh`, `<path d="M318 ${sy + 16}H612V${sy + 64}H360z"/>`, 318, sy + 10, 612, sy + 74, 7, 60, C.ink, 1.2, .3);
@@ -120,7 +119,7 @@ export function cover() {
   s += line(`M350 ${sy + 9}q20 -3 40 0M430 ${sy + 10}q24 2 50 -1M520 ${sy + 9}q20 -2 40 1`, 1.2, C.ink, ` opacity=".45"`);
 
   // two mugs standing side by side on the shelf
-  for (const [mx, band] of [[344, C.oxB], [376, C.good]]) {
+  for (const [mx, band] of [[344, C.plum], [376, C.good]]) {
     s += `<ellipse cx="${mx + 14}" cy="${gy}" rx="17" ry="2.6" fill="${C.ink}" opacity=".32"/>`;
     s += `<path d="M${mx} ${gy}v-34h28v34z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
     s += `<ellipse cx="${mx + 14}" cy="${gy - 34}" rx="14" ry="3" fill="${C.edge}" stroke="${C.ink}" stroke-width="2"/>`;
@@ -128,12 +127,12 @@ export function cover() {
   }
   s += `<path d="M404 ${gy - 28}q12 0 12 10t-12 10" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
 
-  // jam jar with a cloth-and-string lid
+  // honey jar with a cloth-and-string lid
   s += `<ellipse cx="572" cy="${gy}" rx="24" ry="3" fill="${C.ink}" opacity=".32"/>`;
-  s += `<path d="M552 ${gy}v-40q0 -6 6 -6h30q6 0 6 6v40z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += `<path d="M552 ${gy}v-40q0 -6 6 -6h30q6 0 6 6v40z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<path d="M550 ${gy - 46}q23 -10 46 0l-4 10h-38z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
   s += `<path d="M554 ${gy - 38}h38" stroke="${C.gold}" stroke-width="2.4"/>`;
-  s += `<rect x="558" y="${gy - 30}" width="30" height="16" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.8"/><path d="M564 ${gy - 22}h18" stroke="${C.ox}" stroke-width="2"/>`;
+  s += `<rect x="558" y="${gy - 30}" width="30" height="16" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.8"/><path d="M564 ${gy - 22}q4.5 -3 9 0t9 0" stroke="${C.plum}" stroke-width="1.8" fill="none"/>`;
   s += `<path d="M556 ${gy - 30}v24" stroke="${C.cream}" stroke-width="3" opacity=".4" stroke-linecap="round"/>`;
 
   /* --------------------------------- the glass cookie jar (the target) */
@@ -182,7 +181,7 @@ export function cover() {
   s += hook(446) + `<path d="M446 ${railY + 12}v54" stroke="${C.ink}" stroke-width="6" stroke-linecap="round"/><path d="M446 ${railY + 12}v54" stroke="${C.edge}" stroke-width="3" stroke-linecap="round"/>`;
   s += `<path d="M430 ${railY + 66}h32a16 14 0 0 1 -32 0z" fill="url(#${P}-steel)" stroke="${C.ink}" stroke-width="2.2"/>`;
   // whisk
-  s += hook(500) + `<path d="M500 ${railY + 12}v26" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M500 ${railY + 12}v26" stroke="${C.ox}" stroke-width="4" stroke-linecap="round"/>`;
+  s += hook(500) + `<path d="M500 ${railY + 12}v26" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/><path d="M500 ${railY + 12}v26" stroke="${C.soft}" stroke-width="4" stroke-linecap="round"/>`;
   s += `<path d="M500 ${railY + 38}c-14 10 -14 42 0 46c14 -4 14 -36 0 -46zM500 ${railY + 38}c-6 12 -6 40 0 46c6 -6 6 -34 0 -46z" fill="none" stroke="${C.edge}" stroke-width="1.8"/>`;
   /* ----------------------------------------------------- the crew */
   const RIM = { rim: C.goldB, rimOp: .3 };
@@ -244,7 +243,7 @@ export function cover() {
   const tx = 360;
   s += `<path d="M${tx} ${barY - 4}q0 -6 7 -6h36q7 0 7 6l4 64q-29 8 -58 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
   s += `<path d="M${tx + 1} ${barY - 3}h48" stroke="${C.edge}" stroke-width="2.2" opacity=".9"/>`;       // fold crease over the bar
-  s += line(`M${tx - 1} ${barY + 42}h54M${tx - 1} ${barY + 50}h55`, 3, C.oxB);
+  s += line(`M${tx - 1} ${barY + 42}h54M${tx - 1} ${barY + 50}h55`, 3, C.plum);
   s += line(`M${tx + 14} ${barY + 4}q2 30 -2 56M${tx + 34} ${barY + 4}q-2 28 2 56`, 1.4, C.edge);
 
   /* ------------------------------------------------ items on the counter */
@@ -253,8 +252,8 @@ export function cover() {
   s += `<ellipse cx="${kx}" cy="${CT}" rx="34" ry="3.2" fill="${C.ink}" opacity=".38"/>`;
   s += `<path d="M${kx - 30} ${CT}q-4 -40 10 -54h40q14 14 10 54z" fill="url(#${P}-steel)" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
   s += `<path d="M${kx - 30} ${CT - 36}q-18 -6 -26 -24l6 -3q10 14 22 16" fill="url(#${P}-steel)" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;  // spout
-  s += `<path d="M${kx - 16} ${CT - 54}q16 -30 32 0" fill="none" stroke="${C.ink}" stroke-width="6" stroke-linecap="round"/><path d="M${kx - 16} ${CT - 54}q16 -30 32 0" fill="none" stroke="${C.ox}" stroke-width="3" stroke-linecap="round"/>`;
-  s += `<ellipse cx="${kx}" cy="${CT - 54}" rx="20" ry="4" fill="${C.edge}" stroke="${C.ink}" stroke-width="2"/><circle cx="${kx}" cy="${CT - 58}" r="3.5" fill="${C.ox}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  s += `<path d="M${kx - 16} ${CT - 54}q16 -30 32 0" fill="none" stroke="${C.ink}" stroke-width="6" stroke-linecap="round"/><path d="M${kx - 16} ${CT - 54}q16 -30 32 0" fill="none" stroke="${C.soft}" stroke-width="3" stroke-linecap="round"/>`;
+  s += `<ellipse cx="${kx}" cy="${CT - 54}" rx="20" ry="4" fill="${C.edge}" stroke="${C.ink}" stroke-width="2"/><circle cx="${kx}" cy="${CT - 58}" r="3.5" fill="${C.plum}" stroke="${C.ink}" stroke-width="1.4"/>`;
   s += `<path d="M${kx - 20} ${CT - 44}q-4 18 0 38" stroke="${C.cream}" stroke-width="4" opacity=".7" fill="none" stroke-linecap="round"/>`;
   // the runaway cookie lying flat, with crumbs, between the cat and the kettle
   s += flatCookie(470, CT + 1, 24, 9, true);
@@ -265,6 +264,8 @@ export function cover() {
   const body = `M58 ${CT}C40 ${cy - 70} 110 ${cy - 128} 200 ${cy - 124}C268 ${cy - 122} 322 ${cy - 100} 344 ${cy - 58}L360 ${CT}Z`;
   s += `<path d="${body}" fill="${C.deep}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
   s += line(`M80 ${cy - 72}C110 ${cy - 118} 170 ${cy - 128} 226 ${cy - 122}C272 ${cy - 118} 306 ${cy - 104} 326 ${cy - 84}`, 4, C.soft);
+  // moonlight rim along the top of the dark coat, so the silhouette reads against the dark wall
+  s += `<path d="M52 ${cy - 40}C52 ${cy - 80} 110 ${cy - 126} 200 ${cy - 122}C262 ${cy - 120} 312 ${cy - 100} 334 ${cy - 66}" transform="translate(4 3)" stroke="${C.parch}" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".55"/>`;
   s += line(`M150 ${cy - 124}q-8 20 2 34M190 ${cy - 126}q-10 22 0 38M232 ${cy - 122}q-8 20 4 34M110 ${cy - 108}q-2 18 10 28M270 ${cy - 112}q-6 18 6 28`, 5, C.ink, ` opacity=".75"`);
   s += line(`M96 ${CT - 4}q-20 -60 50 -70`, 2.4, C.ink, ` opacity=".6"`);
   // back paw tucked under the haunch, resting on the counter
@@ -284,21 +285,22 @@ export function cover() {
   s += `<path d="M${hx - 36} ${hy - 20}L${hx - 34} ${hy - 48}L${hx - 18} ${hy - 34}ZM${hx + 32} ${hy - 26}L${hx + 42} ${hy - 52}L${hx + 18} ${hy - 36}Z" fill="${C.ox}"/>`;
   s += `<ellipse cx="${hx}" cy="${hy}" rx="54" ry="46" fill="${C.deep}" stroke="${C.ink}" stroke-width="3.2"/>`;
   s += line(`M${hx - 40} ${hy - 26}q20 -22 56 -18`, 3.5, C.soft);
+  s += `<path d="M${hx - 51} ${hy + 4}A54 46 0 0 1 ${hx + 30} ${hy - 40}" stroke="${C.parch}" stroke-width="2.2" fill="none" opacity=".5" transform="translate(2.5 1.5)"/>`;
+  s += line(`M${hx - 42} ${hy - 16}L${hx - 39.5} ${hy - 56}M${hx + 37} ${hy - 22}L${hx + 48} ${hy - 60}`, 2, C.parch, ` opacity=".5"`);
   s += line(`M${hx - 8} ${hy - 44}v12M${hx + 4} ${hy - 44}v12M${hx - 20} ${hy - 40}l4 10`, 3, C.ink, ` opacity=".7"`);
   // muzzle, nose, mouth
   s += `<path d="M${hx - 24} ${hy + 22}q0 -20 24 -20t24 20q-4 18 -24 18t-24 -18z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/>`;
   s += `<path d="M${hx - 6} ${hy + 8}h12l-6 7z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="1.6" stroke-linejoin="round"/>`;
   s += line(`M${hx} ${hy + 15}v5q-6 6 -11 1M${hx} ${hy + 20}q6 6 11 1`, 1.8);
   s += line(`M${hx - 20} ${hy + 16}l-44 -6M${hx - 20} ${hy + 22}l-42 4M${hx + 20} ${hy + 16}l46 -8M${hx + 20} ${hy + 22}l44 2`, 1.4, C.cream, ` opacity=".85"`);
-  // TWO eyes, same size and height, symmetric about the nose:
-  // left (viewer's) fast asleep — a closed lid; right just opening — a gold sliver
+  // TWO eyes, same size and height, symmetric about the nose: both just opening, gold slivers
+  // under heavy lids (the sleeping guard is stirring)
   const eL = hx - 22, eR = hx + 22, ey = hy - 6;
-  s += `<path d="M${eL - 13} ${ey}q13 -11 26 0q-13 9 -26 0z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;   // closed lid
-  s += line(`M${eL - 13} ${ey}q13 9 26 0`, 3.2);                                                                                                     // lash line
-  s += line(`M${eL - 9} ${ey + 5}l-2 4M${eL} ${ey + 6.5}v4M${eL + 9} ${ey + 5}l2 4`, 1.6);                                                            // lashes
-  s += `<path d="M${eR - 13} ${ey}q13 -11 26 0q-13 9 -26 0z" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;       // open eye
-  s += `<ellipse cx="${eR + 1}" cy="${ey}" rx="2" ry="4" fill="${C.ink}"/><circle cx="${eR + 4}" cy="${ey - 2.5}" r="1.2" fill="${C.cream}"/>`;
-  s += `<path d="M${eR - 13} ${ey}q13 -11 26 0v-4q-13 -9 -26 0z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;        // heavy upper lid
+  for (const ex of [eL, eR]) {
+    s += `<path d="M${ex - 13} ${ey}q13 -11 26 0q-13 9 -26 0z" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    s += `<ellipse cx="${ex + 1}" cy="${ey}" rx="2" ry="4" fill="${C.ink}"/><circle cx="${ex + 4}" cy="${ey - 2.5}" r="1.2" fill="${C.cream}"/>`;
+    s += `<path d="M${ex - 13} ${ey}q13 -11 26 0v-4q-13 -9 -26 0z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>`;
+  }
   s += line(`M${eR + 16} ${ey - 10}l6 -6M${eR + 20} ${ey - 2}l8 -2`, 2, C.goldB);                                                                     // "noticing" ticks
 
   /* ------------------------------------------------ framing vignette */

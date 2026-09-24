@@ -27,7 +27,8 @@ export function ch_welcome() {
   { // cookies stand inside the tin: clip them to the area above the front rim
     const rx = 65, ry = 130 * .16, top = GY - ry - 110;
     s += `<clipPath id="${P}-in"><path d="M${590 - rx} ${n(top)}A${rx} ${n(ry)} 0 0 0 ${590 + rx} ${n(top)}V0H${590 - rx}z"/></clipPath>`;
-    s += `<g clip-path="url(#${P}-in)">${cookie(566, 140, 24, 4)}${cookie(608, 134, 26, 6)}</g>`;
+    // a tin packed full: a row of cookies standing on edge, the back ones peeking between the front ones
+    s += `<g clip-path="url(#${P}-in)">${cookie(548, 146, 22, 8)}${cookie(632, 144, 22, 9)}${cookie(590, 138, 23, 7)}${cookie(566, 146, 24, 4)}${cookie(612, 140, 26, 6)}</g>`;
   }
   // the lid, full size (same diameter as the tin), stood on its rim and leaning against the tin
   s += shadow(690, GY, 26, 4);
@@ -36,17 +37,19 @@ export function ch_welcome() {
   s += `<ellipse cx="670" cy="${GY - 90}" rx="3.4" ry="16" fill="${C.cream}" opacity=".6" transform="rotate(-10 670 ${GY - 90})"/>`;
   // a cookie that rolled out and fell flat
   s += flatCookie(470, GY, 22, 12, true);
+  // crumbs lying on the floor where it landed
+  for (const [cx, rr] of [[436, 2.6], [446, 1.8], [504, 2.2], [514, 1.6], [424, 1.5]]) s += `<ellipse cx="${cx}" cy="${n(GY - rr * .5)}" rx="${rr}" ry="${n(rr * .55)}" fill="${C.gold}" stroke="${C.ink}" stroke-width=".9"/>`;
   s += sparkle(540, 96, 10) + sparkle(640, 108, 7) + sparkle(626, 84, 4.5) + sparkle(420, 90, 4);
   return V("A spider eyes an unguarded cookie tin", s);
 }
 
 export function ch_dice() {
   const P = "cd";
-  let s = stage(P);
+  let s = stage(P, { gw: .94 });   // wide floor: the thrower stands well inside it
   // the thrower (right) flings the dice leftwards: two still in flight, three already landed flat
   // flight arcs start at the thrower's raised foot; bounce ticks where a die hit the table
-  s += line("M734 147Q712 98 690 112", 2, C.ink, ` stroke-dasharray="3 8" opacity=".45"`);
-  s += line("M734 147Q560 -10 404 170Q392 220 380 256Q352 110 282 118", 2, C.ink, ` stroke-dasharray="3 8" opacity=".45"`);
+  s += line("M704 147Q682 98 660 112", 2, C.ink, ` stroke-dasharray="3 8" opacity=".45"`);
+  s += line("M704 147Q540 -10 404 170Q392 220 380 256Q352 110 282 118", 2, C.ink, ` stroke-dasharray="3 8" opacity=".45"`);
   s += line("M370 258l-6 -8M380 256v-10M390 258l6 -8", 2, C.ink, ` opacity=".5"`);
   // landed dice: flat on the table, square to it, with contact shadows
   s += shadow(310, GY, 50, 6) + shadow(440, GY, 46, 6) + shadow(576, GY, 48, 6);
@@ -54,13 +57,14 @@ export function ch_dice() {
   s += die3d(430, GY - 36, 72, 2);
   s += die3d(566, GY - 38, 76, 6, { hot: true, glint: true });
   // airborne dice: tumbling (tilted), with faint shadows on the table below
-  s += shadow(262, GY, 26, 3, .1) + shadow(686, GY, 28, 3, .1);
+  s += shadow(262, GY, 26, 3, .1) + shadow(656, GY, 28, 3, .1);
   s += die3d(262, 112, 56, 1, { r: 30 });
-  s += die3d(686, 118, 60, 4, { r: -24, hot: true, glint: true });
+  s += die3d(656, 118, 60, 4, { r: -24, hot: true, glint: true });
   // motion ticks trail behind each die (on the side it came from)
-  s += line("M318 94l16 -8M320 114l20 0M726 100l18 8", 2.4);
+  s += line("M326 92l16 -8M328 112l20 0M716 104l18 6M712 122l16 2", 2.4, C.ink, ` opacity=".7"`);
   // thrower spider (right), one leg flung up
-  s += spider({ x: 800, y: 222, s: 1.5, look: [-1, -.6], mouth: "big", brow: "up", mark: "dots",
+  s += shadow(770, GY, 90, 7);
+  s += spider({ x: 770, y: 222, s: 1.5, look: [-1, -.6], mouth: "big", brow: "up", mark: "dots",
     legOverride: { L0: [[-9, -6], [-26, -30], [-44, -50]], L1: [[-12, -2], [-34, -24], [-52, -30]] } });
   s += sparkle(360, 150, 6) + sparkle(620, 160, 5);
   return V("Six-sided dice tumbling, the fours, fives and sixes glinting", s);
@@ -94,9 +98,13 @@ export function ch_grid() {
   s += cap(8, 1, C.oxB);
   s += cap(1, 3, C.good);
   // a pawn-like token (a thimble)
-  { const [x, y] = mid(8, 3); s += `<path d="M${n(x - 16)} ${n(y + 4)}q2 -34 16 -36q14 2 16 36z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4"/>` + stipple(3, x, y - 12, 9, 12, 16, .9, C.ink, .55) + `<ellipse cx="${n(x)}" cy="${n(y + 4)}" rx="16" ry="5" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4"/>`; }
+  // (standing open end down: only the FRONT half of its rim shows, and it casts a contact shadow)
+  { const [x, y] = mid(8, 3); s += `<ellipse cx="${n(x + 3)}" cy="${n(y + 6)}" rx="20" ry="6" fill="${C.ink}" opacity=".25"/>`;
+    s += `<path d="M${n(x - 16)} ${n(y + 4)}q2 -34 16 -36q14 2 16 36a16 5 0 0 1 -32 0z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.4"/>` + stipple(3, x, y - 12, 9, 12, 16, .9, C.ink, .55);
+    s += line(`M${n(x - 15)} ${n(y + 1)}a16 5 0 0 0 30 0`, 1.6, C.parch); }
   // the counting spider standing on square (2,2), a leg pointing along
-  { const [x, y] = mid(2, 2); s += shadow(x + 4, y + 12, 56, 6); s += spider({ x, y: y - 22, s: 1.3, look: [1, .6], brow: "up", mouth: "o", hat: "goggles", mark: "stripe",
+  // (scaled so its legs stay clear of the first counted square)
+  { const [x0, y] = mid(2, 2), x = x0 - 10; s += shadow(x + 4, y + 10, 44, 5); s += spider({ x, y: y - 15, s: .9, look: [1, .6], brow: "up", mouth: "o", hat: "goggles", mark: "stripe",
       legOverride: { R0: [[9, -6], [28, -20], [46, -8]] } }); }
   s += sparkle(560, 104, 6) + sparkle(210, 100, 4);
   return V("A spider counts squares across a grid", s);
@@ -116,26 +124,28 @@ export function ch_species() {
   s += line(tk, 2, C.ink, ` opacity=".6"`);
   s += `<rect x="70" y="262" width="760" height="14" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/>`;
   const sil = { body: C.deep, hi: C.plum, mark: "none" };
+  // spaced and scaled so no two suspects' legs cross (every leg can be counted)
   // 1 jumping: compact, huge front eyes
-  s += spider({ x: 170, y: 239.5, s: 1.25, ...sil, abd: [0, -20, 16, 14], look: [0, 0], mouth: "grin", legOverride: {} , pose: "tuck", legW: 1.3 });
+  s += spider({ x: 141, y: 262 - 18 * 1.02, s: 1.02, ...sil, abd: [0, -20, 16, 14], look: [0, 0], mouth: "grin", legOverride: {} , pose: "tuck", legW: 1.3 });
   // 2 orb weaver: big round abdomen
-  s += spider({ x: 290, y: 234, s: 1.1, ...sil, abd: [0, -34, 28, 28], mouth: "smirk", pose: "stand" });
+  s += spider({ x: 250, y: 262 - 26 * .9, s: .9, ...sil, abd: [0, -34, 28, 28], mouth: "smirk", pose: "stand" });
   // 3 wolf: long body, sturdy legs
-  s += spider({ x: 420, y: 230, s: 1.2, ...sil, abd: [0, -30, 15, 22], legW: 1.5, mouth: "flat", brow: "down", pose: "stand" });
+  s += spider({ x: 380, y: 262 - 26 * .98, s: .98, ...sil, abd: [0, -30, 15, 22], legW: 1.5, mouth: "flat", brow: "down", pose: "stand" });
   // 4 cellar: tiny body, very long legs
-  s += spider({ x: 540, y: 180, s: .9, ...sil, abd: [0, -18, 12, 10], legW: .8, mouth: "o", pose: "stand",
+  s += spider({ x: 514, y: 262 - 91 * .74, s: .74, ...sil, abd: [0, -18, 12, 10], legW: .8, mouth: "o", pose: "stand",
     legOverride: {
-      R0: [[9, -6], [30, -60], [26, 91]], L0: [[-9, -6], [-30, -60], [-26, 91]],
-      R1: [[12, -2], [46, -56], [56, 91]], L1: [[-12, -2], [-46, -56], [-56, 91]],
-      R2: [[13, 3], [60, -40], [80, 91]], L2: [[-13, 3], [-60, -40], [-80, 91]],
-      R3: [[10, 7], [62, -20], [96, 91]], L3: [[-10, 7], [-62, -20], [-96, 91]] } });
+      R0: [[9, -6], [28, -60], [23, 91]], L0: [[-9, -6], [-28, -60], [-23, 91]],
+      R1: [[12, -2], [42, -56], [49, 91]], L1: [[-12, -2], [-42, -56], [-49, 91]],
+      R2: [[13, 3], [54, -40], [70, 91]], L2: [[-13, 3], [-54, -40], [-70, 91]],
+      R3: [[10, 7], [56, -20], [84, 91]], L3: [[-10, 7], [-56, -20], [-84, 91]] } });
   // 5 spitting: domed head
-  s += spider({ x: 660, y: 232, s: 1.15, ...sil, abd: [0, -26, 17, 15], mouth: "o", brow: "up", pose: "stand",
+  s += spider({ x: 645, y: 262 - 26 * .94, s: .94, ...sil, abd: [0, -26, 17, 15], mouth: "o", brow: "up", pose: "stand",
     over: `<path d="M-14 -4q14 -30 28 0" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.2"/><path d="M-6 -16q6 -6 12 0" stroke="${C.plum}" stroke-width="2" fill="none"/>` });
-  // 6 crab: wide, legs to the sides
-  // crab spiders hold the front two pairs out sideways; the back pairs stand on the plinth
-  s += spider({ x: 760, y: 235, s: 1.05, ...sil, abd: [0, -16, 22, 12], mouth: "smirk", pose: "sprawl", brow: "down",
+  // 6 crab: crab spiders hold the front two pairs out sideways; the back pairs stand on the plinth
+  s += spider({ x: 758, y: 262 - 25.7 * .86, s: .86, ...sil, abd: [0, -16, 22, 12], mouth: "smirk", pose: "sprawl", brow: "down",
     legOverride: { R2: [[13, 3], [42, -6], [56, 25.7]], L2: [[-13, 3], [-42, -6], [-56, 25.7]], R3: [[10, 7], [34, 0], [42, 25.7]], L3: [[-10, 7], [-34, 0], [-42, 25.7]] } });
+  // line-up numbers painted on the front of the plinth
+  [141, 250, 380, 514, 645, 758].forEach((x, i) => s += `<rect x="${x - 9}" y="264" width="18" height="11" rx="2" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/><text x="${x}" y="273.2" font-family="Georgia, serif" font-size="10" font-weight="bold" fill="${C.ink}" text-anchor="middle">${i + 1}</text>`);
   return V("A line-up of spider silhouettes of different shapes", s);
 }
 
@@ -145,20 +155,24 @@ export function ch_roles() {
   const xs = [110, 225, 340, 450, 565, 680, 800];
   xs.forEach(x => s += shadow(x, GY, 44, 6));
   // 1 bow tie (Face)
-  { const x = xs[0], y = GY - 25; s += `<path d="M${x} ${y}l-40 -24q-8 24 0 48zM${x} ${y}l40 -24q8 24 0 48z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
-    s += `<rect x="${x - 9}" y="${y - 12}" width="18" height="24" rx="5" fill="${C.ox}" stroke="${C.ink}" stroke-width="3"/>`;
-    s += line(`M${x - 30} ${y - 10}q10 10 0 22M${x + 30} ${y - 10}q-10 10 0 22`, 2, C.ink, ` opacity=".5"`); s += sparkle(x + 34, y - 36, 5); }
+  // (lying flat on the floor, so seen foreshortened: a squashed bow with a thin edge)
+  { const x = xs[0], y = GY - 11; s += `<path d="M${x} ${y + 4}l-40 -9q-8 10 0 20zM${x} ${y + 4}l40 -9q8 10 0 20z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+    s += `<path d="M${x} ${y}l-40 -9q-8 10 0 20zM${x} ${y}l40 -9q8 10 0 20z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+    s += `<ellipse cx="${x}" cy="${y}" rx="9" ry="6" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6"/>`;
+    s += line(`M${x - 30} ${y - 4}q8 4 0 9M${x + 30} ${y - 4}q-8 4 0 9`, 2, C.ink, ` opacity=".5"`); s += sparkle(x + 34, y - 26, 5); }
   // 2 vent grille (Ghost)
-  { const x = xs[1], y = GY - 34; s += `<rect x="${x - 42}" y="${y - 40}" width="84" height="74" rx="6" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
+  { const x = xs[1], y = GY - 34;
+    s += `<path d="M${x - 38} ${y - 40}l14 -12h78l-12 12zM${x + 42} ${y - 36}l12 -16V${GY - 12}l-12 12z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+    s += `<rect x="${x - 42}" y="${y - 40}" width="84" height="74" rx="6" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
     let sl = ""; for (let k = 0; k < 5; k++) sl += `M${x - 30} ${y - 26 + k * 12}h60`; s += line(sl, 6, C.ink) + line(sl, 2.5, C.deep);
     s += `<circle cx="${x - 34}" cy="${y - 32}" r="3" fill="${C.ink}"/><circle cx="${x + 34}" cy="${y + 26}" r="3" fill="${C.ink}"/>`;
     s += `<circle cx="${x - 6}" cy="${y - 2}" r="2.6" fill="${C.goldB}"/><circle cx="${x + 6}" cy="${y - 2}" r="2.6" fill="${C.goldB}"/>`; }
   // 3 goggles (Tinkerer)
   // goggles lie on the lens rims; the strap flops down to the ground behind them
-  { const x = xs[2], y = GY - 20; const strap = `M${x - 40} ${y - 4}q-18 2 -20 ${GY - y + 3}h-10M${x + 40} ${y - 4}q18 2 20 ${GY - y + 3}h10`;
-    s += line(strap, 6, C.ink) + line(strap, 3, C.ox);
-    for (const d of [-22, 22]) s += `<circle cx="${x + d}" cy="${y}" r="20" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/><circle cx="${x + d}" cy="${y}" r="13" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.4"/><path d="M${x + d - 7} ${y - 4}q4 -6 10 -6" stroke="${C.cream}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-    s += `<rect x="${x - 4}" y="${y - 4}" width="8" height="8" fill="${C.ink}"/>`; }
+  { const x = xs[2], y = GY - 10; const strap = `M${x - 40} ${y - 2}Q${x - 58} ${y - 18} ${x} ${y - 20}Q${x + 58} ${y - 18} ${x + 40} ${y - 2}`;
+    s += line(strap, 6, C.ink) + line(strap, 3, C.plum);
+    for (const d of [-22, 22]) s += `<path d="M${x + d - 20} ${y}v5a20 7 0 0 0 40 0v-5" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6"/><ellipse cx="${x + d}" cy="${y}" rx="20" ry="7" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6"/><ellipse cx="${x + d}" cy="${y}" rx="13" ry="4.5" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2"/><path d="M${x + d - 8} ${y - 1}q4 -2.4 9 -2.6" stroke="${C.cream}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+    s += `<rect x="${x - 4}" y="${y - 2}" width="8" height="5" fill="${C.ink}"/>`; }
   // 4 boxing glove (Bruiser)
   { const x = xs[3], y = GY - 34; s += `<path d="M${x - 30} ${y + 10}q-12 -46 22 -54q40 -6 44 26q4 30 -20 40z" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
     s += `<path d="M${x - 34} ${y - 4}q-14 6 -6 22q10 6 18 -4" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3"/>`;
@@ -168,7 +182,11 @@ export function ch_roles() {
   // 5 spyglass (Lookout)
   { const x = xs[4], y = GY - 11.8; s += `<g transform="rotate(-4.2 ${x} ${y})"><rect x="${x - 48}" y="${y - 8}" width="36" height="16" rx="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/><rect x="${x - 14}" y="${y - 11}" width="30" height="22" rx="3" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/><rect x="${x + 14}" y="${y - 15}" width="34" height="30" rx="4" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/><ellipse cx="${x + 48}" cy="${y}" rx="5" ry="15" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.6"/><path d="M${x - 44} ${y - 3}h26M${x + 18} ${y - 9}h24" stroke="${C.goldB}" stroke-width="2.4"/></g>`; }
   // 6 window (Wheelman)
-  { const x = xs[5], y = GY - 44; s += `<rect x="${x - 40}" y="${y - 50}" width="80" height="84" fill="${C.deep}" stroke="${C.ink}" stroke-width="3"/>`;
+  { const x = xs[5], y = GY - 44;
+    s += `<path d="M${x - 52} ${y - 62}l12 -10h92l-12 10zM${x + 52} ${y - 62}l12 -10V${GY - 10}l-12 10z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+    s += `<rect x="${x - 52}" y="${y - 62}" width="104" height="${GY - y + 62}" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/>`;
+    s += line(`M${x - 52} ${y - 36}h12M${x + 40} ${y - 36}h12M${x - 52} ${y + 6}h12M${x + 40} ${y + 6}h12`, 1.4, C.ink, ` opacity=".35"`);
+    s += `<rect x="${x - 40}" y="${y - 50}" width="80" height="84" fill="${C.deep}" stroke="${C.ink}" stroke-width="3"/>`;
     s += `<circle cx="${x + 16}" cy="${y - 26}" r="10" fill="${C.cream}"/>`;
     s += line(`M${x} ${y - 50}v84M${x - 40} ${y - 8}h80`, 6, C.plum) ;
     s += `<rect x="${x - 40}" y="${y - 50}" width="80" height="84" fill="none" stroke="${C.ink}" stroke-width="3"/>`;

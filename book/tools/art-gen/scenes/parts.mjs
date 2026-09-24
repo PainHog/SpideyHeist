@@ -13,8 +13,9 @@ export const magnifier = (x, y, r, ang = 40) => {
 export const pencil = (x1, y1, x2, y2, w = 10) => {
   const L = Math.hypot(x2 - x1, y2 - y1), a = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
   return `<g transform="translate(${n(x1)} ${n(y1)}) rotate(${n(a)})">` +
-    `<rect x="0" y="${-w / 2}" width="${n(L * .12)}" height="${w}" rx="2" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2"/>` +
-    `<rect x="${n(L * .12)}" y="${-w / 2}" width="${n(L * .08)}" height="${w}" fill="${C.edge}" stroke="${C.ink}" stroke-width="2"/>` +
+    `<rect x="0" y="${-w / 2}" width="${n(L * .12)}" height="${w}" rx="2" fill="${C.parch}" stroke="${C.ink}" stroke-width="2"/>` +
+    `<rect x="${n(L * .12)}" y="${-w / 2}" width="${n(L * .08)}" height="${w}" fill="${C.soft}" stroke="${C.ink}" stroke-width="2"/>` +
+    `<path d="M${n(L * .14)} ${-w / 2}v${w}M${n(L * .18)} ${-w / 2}v${w}" stroke="${C.edge}" stroke-width="1.2"/>` +
     `<rect x="${n(L * .2)}" y="${-w / 2}" width="${n(L * .62)}" height="${w}" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2"/>` +
     `<path d="M${n(L * .2)} 0H${n(L * .82)}" stroke="${C.gold}" stroke-width="${n(w * .3)}"/>` +
     `<path d="M${n(L * .82)} ${-w / 2}L${n(L)} 0L${n(L * .82)} ${w / 2}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>` +
@@ -50,8 +51,8 @@ export function part_one() {
   s += line("M330 274h30M600 280l6 14", 5, C.deep);
   // route: dotted gold path to the X
   s += line("M236 330Q300 300 350 296T470 250T600 236", 3, C.goldB, ` stroke-dasharray="2 9"`);
-  s += `<path d="M590 226l20 20M610 226l-20 20" stroke="${C.oxB}" stroke-width="5" stroke-linecap="round"/>`;
-  s += `<circle cx="600" cy="236" r="18" fill="none" stroke="${C.oxB}" stroke-width="2.5" stroke-dasharray="5 4"/>`;
+  s += `<path d="M590 226l20 20M610 226l-20 20" stroke="${C.goldB}" stroke-width="5" stroke-linecap="round"/>`;
+  s += `<circle cx="600" cy="236" r="18" fill="none" stroke="${C.goldB}" stroke-width="2.5" stroke-dasharray="5 4"/>`;
   // a little cat-shaped hazard ring
   s += `<circle cx="330" cy="310" r="14" fill="${C.ox}" opacity=".7" stroke="${C.oxB}" stroke-width="2"/>`;
   s += `<path d="M322 304l3 -8 4 6h2l4 -6 3 8" fill="none" stroke="${C.cream}" stroke-width="2" stroke-linejoin="round"/>`;
@@ -60,38 +61,47 @@ export function part_one() {
   s += `<path d="M168 330q2 -26 24 -26t24 26z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += stipple(4, 192, 318, 16, 8, 30, 1, C.ink, .5);
   s += `<ellipse cx="192" cy="331" rx="25" ry="7" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += `<ellipse cx="700" cy="330" rx="30" ry="10" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += `<path d="M670 330v8q30 14 60 0v-8" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += `<ellipse cx="704" cy="340" rx="33" ry="8" fill="${C.ink}" opacity=".3"/>`;
+  s += `<path d="M670 330v8q30 14 60 0v-8" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += line("M676 338l-1 5M684 341l-1 5M694 343v5M706 343v5M716 341l1 5M724 338l1 5", 1.6, C.ink, ` opacity=".6"`);
+  s += `<ellipse cx="700" cy="330" rx="30" ry="10" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<ellipse cx="700" cy="330" rx="20" ry="6" fill="none" stroke="${C.ink}" stroke-width="1.5" opacity=".6"/>`;
 
   // back row spiders leaning over the plan
   // contact shadows (lamp overhead) for everyone standing on the table/plan
   s += shadow(330, 212, 62, 7) + shadow(548, 210, 64, 7) + shadow(112, 338, 78, 8) + shadow(800, 338, 76, 8);
-  s += magnifier(400, 252, 22, 225);
-  s += spider({ x: 330, y: 176, s: 1.4, hat: "goggles", look: [.8, 1], mark: "dots", mouth: "o", brow: "up",
-    legOverride: { R0: [[9, -6], [26, -14], [24, 28]] } });
-  s += spider({ x: 548, y: 170, s: 1.45, mask: true, look: [.6, .8], mark: "chevron", mouth: "smirk", brow: "down",
+  { // a magnifying glass lying flat on the plan: lens and rim are ellipses on the table plane
+    const mx = 404, my = 262, rx = 26, ry = 9.5;
+    s += `<ellipse cx="${mx + 4}" cy="${my + 3}" rx="${rx + 4}" ry="${ry + 2}" fill="${C.ink}" opacity=".35"/>`;
+    s += line(`M${mx - rx + 2} ${my - 1}L${mx - rx - 38} ${my - 8}`, 9, C.ink) + line(`M${mx - rx} ${my - 1}L${mx - rx - 36} ${my - 8}`, 4.6, C.soft);
+    s += `<ellipse cx="${mx}" cy="${my}" rx="${rx}" ry="${ry}" fill="${C.cream}" fill-opacity=".4" stroke="${C.ink}" stroke-width="6"/>`;
+    s += `<ellipse cx="${mx}" cy="${my}" rx="${rx}" ry="${ry}" fill="none" stroke="${C.gold}" stroke-width="3"/>`;
+    s += line(`M${mx - 12} ${my - 2}q6 -4 14 -4`, 2.4, C.cream, ` opacity=".9"`);
+  }
+  s += spider({ x: 330, y: 176, s: 1.4, rim: C.cream, rimOp: .55, hat: "goggles", look: [.8, 1], mark: "dots", mouth: "o", brow: "up",
+    legOverride: { R0: [[9, -6], [24, -10], [20.5, 57]] } });
+  s += spider({ x: 548, y: 170, s: 1.45, rim: C.cream, rimOp: .55, mask: true, look: [.6, .8], mark: "chevron", mouth: "smirk", brow: "down",
     legOverride: { R0: [[9, -6], [26, -18], [36, 40]] } });
   // front spiders
   // a full-size pencil (spiders are tiny) leaning with its tip on the plan; the front leg steadies it
   s += pencil(88, 96, 230, 318, 15);
-  s += spider({ x: 112, y: 300, s: 1.5, hat: "fedora", look: [1, -.2], mark: "star", mouth: "grin",
+  s += spider({ x: 112, y: 300, s: 1.5, rim: C.cream, rimOp: .55, hat: "fedora", look: [1, -.2], mark: "star", mouth: "grin",
     legOverride: { R0: [[9, -6], [30, -34], [55, -26]] } });
   // thimble cup of tea, held out by the right spider: one foot through the handle, one under the base
   s += `<path d="M740 262q12 0 12 9t-12 9" fill="none" stroke="${C.ink}" stroke-width="2.4"/>`;
   s += `<path d="M706 252h34l-3 30h-28z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
   s += `<ellipse cx="723" cy="252" rx="17" ry="4" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
-  s += line("M708 264h30", 3, C.oxB);
+  s += line("M708 264h30", 3, C.plum);
   s += line("M716 244q-4 -10 2 -18M728 244q-4 -10 2 -18", 1.8, C.ink, ` opacity=".5"`);
-  s += spider({ x: 800, y: 300, s: 1.4, hat: "bowtie", body: C.soft, hi: C.edge, look: [-1, .3], mark: "stripe", mouth: "grin", brow: "up",
+  s += spider({ x: 800, y: 300, s: 1.4, rim: C.cream, rimOp: .55, hat: "bowtie", body: C.soft, hi: C.edge, look: [-1, .3], mark: "stripe", mouth: "grin", brow: "up",
     legOverride: { L0: [[-9, -6], [-26, -30], [-40, -26]], L1: [[-12, -2], [-40, -14], [-54, -12]] } });
 
   // desk lamp (top)
-  s += `<path d="M392 60q58 -44 116 0z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+  s += `<path d="M392 60q58 -44 116 0z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/><path d="M406 54q16 -12 38 -13" stroke="${C.soft}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M396 60h108" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>`;
   s += `<ellipse cx="450" cy="62" rx="30" ry="6" fill="${C.goldB}"/>`;
   s += line("M450 40V0", 4);
-  s += line("M420 40q12 -16 34 -18", 3, C.oxB);
+
   s += sparkle(600, 236 - 30, 7) + sparkle(250, 180, 5) + sparkle(820, 200, 4);
   return svg("0 0 900 420", "The crew plans the job around a blueprint", s);
 }
@@ -105,11 +115,14 @@ export function part_two() {
   s += line(hd, 1.3, C.ink, ` opacity=".3"`);
   // house shell
   const L = 210, R = 690, T = 150, M = 270, B = 388;
-  s += `<path d="M${L - 30} ${T + 6}L450 26L${R + 30} ${T + 6}Z" fill="${C.ox}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
+  // charcoal slate roof (signal red is kept for danger)
+  s += `<path d="M${L - 30} ${T + 6}L450 26L${R + 30} ${T + 6}Z" fill="${C.plum}" stroke="${C.ink}" stroke-width="3.2" stroke-linejoin="round"/>`;
   let sh = ""; for (let i = 0; i < 5; i++) sh += `M${n(450 - (i + 1) * 50)} ${n(26 + (i + 1) * 25.6)}H${n(450 + (i + 1) * 50)}`;
-  s += line(sh, 1.6, C.ink, ` opacity=".35"`);
+  s += line(sh, 1.8, C.soft);
   // attic with vent + chimney
-  s += `<rect x="560" y="40" width="34" height="60" fill="${C.plum}" stroke="${C.ink}" stroke-width="3"/><rect x="554" y="34" width="46" height="12" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<rect x="560" y="40" width="34" height="60" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/><rect x="554" y="34" width="46" height="12" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += line("M560 58h34M560 76h34M577 46v12M570 58v18M586 76v24", 1.4, C.ink, ` opacity=".45"`);
+  s += `<rect x="418" y="90" width="64" height="46" rx="4" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<rect x="424" y="96" width="52" height="34" rx="3" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += line("M428 104h44M428 112h44M428 120h44", 2.4, C.soft);
   // outer walls
@@ -139,12 +152,14 @@ export function part_two() {
   s += `<rect x="226" y="206" width="14" height="50" rx="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.4"/>`;
   s += `<path d="M262 228q20 -26 56 -8q10 4 24 8z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
   // child, sitting up, awake (threat), curious eyes
+  s += `<path d="M242 228q-4 -16 6 -20h28q8 4 4 20z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;   // pillow
+  s += `<circle cx="243" cy="212" r="4" fill="${C.parch}" stroke="${C.ink}" stroke-width="2"/><circle cx="273" cy="212" r="4" fill="${C.parch}" stroke="${C.ink}" stroke-width="2"/>`;
   s += `<circle cx="258" cy="210" r="15" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<path d="M244 204q14 -18 30 -2q-6 -12 -16 -12q-10 0 -14 14z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
   s += `<circle cx="253" cy="211" r="2.6" fill="${C.ink}"/><circle cx="264" cy="211" r="2.6" fill="${C.ink}"/><ellipse cx="258" cy="219" rx="2.4" ry="2" fill="${C.ink}"/>`;
   // sight cone from the child
   s += `<path d="M270 212L440 170L440 250Z" fill="${C.oxB}" opacity=".16"/>`;
-  s += `<rect x="370" y="244" width="24" height="20" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.2"/><rect x="394" y="252" width="18" height="12" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<rect x="370" y="244" width="24" height="20" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.2"/><rect x="394" y="252" width="18" height="12" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2.2"/>`;
   s += `<path d="M300 170h40v30h-40z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/><circle cx="330" cy="180" r="4" fill="${C.goldB}"/>`;
 
   // --- upstairs right: office with the memory stick
@@ -162,14 +177,14 @@ export function part_two() {
   s += line("M643 236v20M630 258h26", 4) + `<circle cx="632" cy="261" r="3" fill="${C.ink}"/><circle cx="654" cy="261" r="3" fill="${C.ink}"/>`;
 
   // --- downstairs left: living room with the dog
-  s += `<ellipse cx="310" cy="376" rx="84" ry="10" fill="${C.ox}" opacity=".5"/>`;
+  s += `<ellipse cx="310" cy="376" rx="84" ry="10" fill="${C.soft}" opacity=".45"/>`;
   s += line("M230 372v14M310 372v14", 5);
   s += `<path d="M226 364q-4 -40 16 -44h40q16 0 16 20v24z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
   s += `<rect x="220" y="346" width="100" height="28" rx="8" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6"/>`;
   // sleeping dog
   s += `<path d="M300 378q-4 -30 36 -32q38 -2 46 20q2 12 -6 12z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8"/>`;
   s += `<circle cx="376" cy="356" r="16" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.8"/>`;
-  s += `<path d="M362 348q-10 4 -8 22q8 -2 10 -14z" fill="${C.ox}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<path d="M362 348q-10 4 -8 22q8 -2 10 -14z" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.2"/>`;
   s += line("M372 356q4 3 8 0", 2) + `<ellipse cx="391" cy="360" rx="4" ry="3" fill="${C.ink}"/>`;
   s += `<path d="M306 372q-14 0 -16 -12" stroke="${C.ink}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
   s += `<path d="M398 334q4 -6 10 -6M404 324q4 -6 10 -6" stroke="${C.ink}" stroke-width="2" fill="none" opacity=".5"/>`;

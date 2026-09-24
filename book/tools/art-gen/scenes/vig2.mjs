@@ -175,44 +175,126 @@ export function ch_heist() {
   return V("A blueprint with the five phases of a heist marked along the route", s);
 }
 
-const paperclipHook = (x, y, sc = 1) => {
-  // a paperclip bent into a three-pronged grappling hook, local coords
-  const d = "M0 -60V10q0 14 -12 14q-14 0 -14 -16v-8M0 10q0 14 12 14q14 0 14 -16v-8M0 10v16q0 10 -6 10";
-  return `<g transform="translate(${x} ${y}) scale(${sc})">${line(d, 8, C.ink)}${line(d, 4.5, C.edge)}${line("M-2 -50v50", 1.5, C.cream)}<circle cx="0" cy="-62" r="5" fill="none" stroke="${C.ink}" stroke-width="3"/></g>`;
+// A paperclip bent into a three-tine grappling hook, drawn as a loaded hook hangs: crown
+// uppermost, tines curving down, shank below it with the eye at its foot. x,y = the crown;
+// ang = the shank's lean from vertical (deg, + leans right) so it lines up with a taut line.
+// Returns {svg, eye:[x,y]}.
+const paperclipHook = (x, y, sc = 1, ang = 0) => {
+  const shank = "M0 0V58";
+  const tL = "M0 0C-6 -14 -26 -14 -28 4C-29 12 -26 18 -22 22";   // catching tine
+  const tR = "M0 0C6 -14 26 -14 28 4C29 12 26 18 22 22";        // outer tine
+  const tF = "M0 0C-2 -8 -9 -9 -11 1C-12 7 -10 11 -7 14";       // third tine, turned toward the viewer
+  const wire = d => line(d, 7.5, C.ink) + line(d, 4, C.edge);
+  const barb = (tx, ty, dx) => `<path d="M${tx} ${ty}l${dx * 3.5} -1.5 ${-dx * 1.5} 6z" fill="${C.edge}" stroke="${C.ink}" stroke-width="1.6" stroke-linejoin="round"/>`;
+  let g = wire(tL) + wire(tR) + wire(shank) + wire(tF);
+  g += barb(-22, 21, 1) + barb(22, 21, -1) + barb(-7, 13, 1);
+  g += `<circle cx="0" cy="65" r="7" fill="none" stroke="${C.ink}" stroke-width="7.5"/><circle cx="0" cy="65" r="7" fill="none" stroke="${C.edge}" stroke-width="4"/>`;
+  g += line("M-1.4 16V52", 1.4, C.cream, ` opacity=".9"`) + line("M-4 -7C-12 -12 -22 -10 -24 0", 1.4, C.cream, ` opacity=".9"`);
+  // wire wrapped round the crown binds the three tines to the shank
+  g += line("M-4 5l8 2M-4 9l8 2M-4 13l8 2", 2.2, C.ink);
+  const a = ang * Math.PI / 180, L = 72 * sc;
+  return { svg: `<g transform="translate(${x} ${y}) rotate(${n(-ang)}) scale(${sc})">${g}</g>`, eye: [x + Math.sin(a) * L, y + Math.cos(a) * L] };
 };
 
 export function ch_gadgets() {
   const P = "cgd";
-  let s = stage(P);
-  // paperclip grappling hook with a silk line looping from above
-  // hangs straight down from its silk line (the line runs off the top of the frame)
-  s += line("M190 0V58", 2.4, C.gold);
-  s += paperclipHook(190, 150, 1.4);
-  s += shadow(190, GY, 40, 5);
-  // bottle cap shield held by a spider (same scale as the catapult spider)
-  s += shadow(446, GY, 76, 7);
-  s += spider({ x: 420, y: GY - 31.2, s: 1.2, look: [1, -.2], mouth: "grin", brow: "down", mark: "dots", hat: "goggles",
-    legOverride: { R0: [[9, -6], [26, -10], [44, -6]], R1: [[12, -2], [30, 6], [46, 8]] } });
-  s += `<ellipse cx="478" cy="204" rx="18" ry="50" fill="${C.ox}" stroke="${C.ink}" stroke-width="3"/>`;
-  s += `<ellipse cx="486" cy="204" rx="13" ry="45" fill="${C.oxB}" stroke="${C.ink}" stroke-width="3"/>`;
-  let crimp = ""; for (let k = -4; k <= 4; k++) crimp += `M${n(474 - Math.sqrt(1 - (k / 5) ** 2) * 13)} ${204 + k * 10}l-6 3`;
-  s += line(crimp, 2);
-  s += `<ellipse cx="488" cy="204" rx="6" ry="24" fill="none" stroke="${C.goldB}" stroke-width="3"/>`;
-  s += sparkle(500, 160, 7);
-  // rubber-band catapult between two pins stuck in the floor: a spider hauls the pouch down and back
-  s += shadow(720, GY, 90, 7);
-  s += `<path d="M640 ${GY}V132M800 ${GY}V132" stroke="${C.ink}" stroke-width="12" stroke-linecap="round"/><path d="M640 ${GY}V132M800 ${GY}V132" stroke="${C.gold}" stroke-width="7" stroke-linecap="round"/>`;
-  s += `<circle cx="640" cy="128" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/><circle cx="800" cy="128" r="9" fill="${C.oxB}" stroke="${C.ink}" stroke-width="2.6"/>`;
-  s += spider({ x: 720, y: GY - 31.2, s: 1.2, look: [0, -1], mouth: "big", brow: "down", mark: "stripe",
-    legOverride: { R0: [[9, -6], [22, -24], [9, -30]], L0: [[-9, -6], [-22, -24], [-9, -30]] } });
-  s += `<path d="M640 132L712 196Q720 200 728 196L800 132" stroke="${C.ink}" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M640 132L712 196Q720 200 728 196L800 132" stroke="${C.ox}" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-  s += cookie(720, 189, 10, 4);
-  // the spider's front feet grip the pouch
-  s += line("M711 195l3 3M729 195l-3 3", 4, C.ink);
-  s += line("M690 112l-10 -12M720 104v-16M750 112l10 -12", 2.6, C.ink, ` opacity=".5"`);
-  // a spare loose rubber band
-  s += `<ellipse cx="300" cy="${GY - 10}" rx="36" ry="8" fill="none" stroke="${C.ink}" stroke-width="7"/><ellipse cx="300" cy="${GY - 10}" rx="36" ry="8" fill="none" stroke="${C.ox}" stroke-width="3.5"/>`;
-  return V("Gadgets: a paperclip grappling hook, a bottle-cap shield and a rubber band", s);
+  let s = stage(P, { gw: .92 });
+  const sp = .85;                     // one spider scale for the whole scene: tiny beside the glass
+  const feet = GY - 26 * sp;          // spider y for feet on the floor
+
+  // ---- 1. GRAPPLING HOOK, caught over the rim of a glass tumbler holding two sugar cubes.
+  // The silk line is knotted to the hook's eye and runs taut to the climber's spinnerets:
+  // it is testing that the hook has set before it climbs.
+  const gx = 146, gw = 132, rimY = 70, gry = 11, grx = gw / 2;
+  s += shadow(gx + 8, GY, grx + 12, 7, .22);
+  const glass = `M${gx - grx} ${rimY}L${gx - grx + 6} ${GY - gry}A${grx - 6} ${gry} 0 0 0 ${gx + grx - 6} ${GY - gry}L${gx + grx} ${rimY}`;
+  s += `<path d="${glass}A${grx} ${gry} 0 0 0 ${gx - grx} ${rimY}z" fill="${C.cream}" fill-opacity=".35"/>`;
+  s += `<path d="M${gx - grx} ${rimY}A${grx} ${gry} 0 0 1 ${gx + grx} ${rimY}" fill="none" stroke="${C.ink}" stroke-width="2.4" opacity=".55"/>`;
+  s += `<ellipse cx="${gx}" cy="${GY - gry - 8}" rx="${grx - 8}" ry="${gry - 2}" fill="${C.edge}" opacity=".45" stroke="${C.ink}" stroke-width="1.4" stroke-opacity=".5"/>`;
+  const cube = (cx, by, z) => `<path d="M${cx - z} ${by}v${-z * 1.4}l${z * .5} ${-z * .4}h${z * 2}v${z * 1.4}l${-z * .5} ${z * .4}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M${cx - z} ${by - z * 1.4}h${z * 2}l${z * .5} ${-z * .4}M${cx + z} ${by - z * 1.4}v${z * 1.4}" fill="none" stroke="${C.ink}" stroke-width="1.6" stroke-linejoin="round"/>` + stipple(cx, cx, by - z * .7, z * .8, z * .5, 8, .8, C.edge, .9);
+  s += cube(gx - 24, GY - gry - 4, 17) + cube(gx + 22, GY - gry - 2, 15);
+  // the crook of the catching tine rests on the right-hand rim; the loaded hook hangs straight,
+  // shank down the outside of the glass, and the climber stands directly below the eye
+  const crown = [gx + grx + 14, rimY + 6];
+  const hk = paperclipHook(crown[0], crown[1], 1, 0);
+  const cx = crown[0], abTop = feet - 39 * sp;
+  s += hk.svg;                                              // the tine inside is seen through the glass
+  s += `<path d="M${gx - grx} ${rimY}A${grx} ${gry} 0 0 0 ${gx + grx} ${rimY}" fill="none" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<path d="${glass}" fill="${C.cream}" fill-opacity=".18" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+  s += line(`M${gx - grx + 12} ${rimY + 22}L${gx - grx + 16} ${GY - 40}`, 6, C.cream, ` opacity=".75"`);
+  s += line(`M${gx - grx + 26} ${rimY + 26}l1 36`, 2.4, C.cream, ` opacity=".6"`);
+  // the outside of the hook (outer tine, shank, eye) is in front of the glass: redraw it on top
+  s += `<clipPath id="${P}-out"><rect x="${gx + grx - 1}" y="0" width="300" height="300"/></clipPath><g clip-path="url(#${P}-out)">${hk.svg}</g>`;
+  const [ex, ey] = hk.eye;
+  // the line is threaded through the eye (over the bottom of the loop) and knotted just below it
+  s += `<path d="M${n(ex)} ${n(ey - 6)}V${n(abTop + 1)}" stroke="${C.gold}" stroke-width="2.2"/>`;
+  s += `<path d="M${n(ex - 4)} ${n(ey + 3)}q4 -5 8 0q-4 5 -8 0z" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.2"/>`;
+  s += shadow(cx, GY, 52, 5);
+  s += spider({ x: cx, y: feet, s: sp, look: [0, -1], mouth: "grin", brow: "up", mark: "chevron",
+    legOverride: { R0: [[9, -6], [22, -34], [5, -58]], L0: [[-9, -6], [-22, -34], [-5, -58]] } });
+  s += line(`M${cx - 30} ${abTop - 4}l-8 -6M${cx + 30} ${abTop - 4}l8 -6`, 2.2, C.ink, ` opacity=".45"`);
+
+  // ---- 2. BOTTLE-CAP SHIELD: a steel crown cap stood on its rim on the floor, its printed face
+  // turned toward the viewer and the right, held upright by a crouching spider whose two front
+  // feet hook over the crimped skirt.
+  const kx = 462, kr = 38, kry = 33, ky = GY - kr;
+  const hx = 392;
+  s += shadow(hx + 36, GY, 96, 6);
+  s += spider({ x: hx, y: feet, s: sp, look: [1, -.2], mouth: "flat", brow: "down", mark: "dots", hat: "goggles",
+    legOverride: { R0: [[9, -6], [28, -44], [40.5, -36.5]], R1: [[12, -2], [30, -14], [35, 3.5]] } });
+  let crimp = "";
+  for (let k = -5; k <= 5; k++) { const t = k / 6, yy = ky + t * kr, xx = kx - 12 - Math.sqrt(1 - t * t) * kry; crimp += `M${n(xx)} ${n(yy)}l12 ${n(-2 * t)}`; }
+  s += `<ellipse cx="${kx - 12}" cy="${ky}" rx="${kry}" ry="${kr}" fill="${C.edge}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<path d="M${kx - 12} ${ky - kr}H${kx}V${ky + kr}H${kx - 12}z" fill="${C.edge}"/>`;
+  s += line(crimp, 2.4, C.ink, ` opacity=".7"`);
+  s += `<ellipse cx="${kx}" cy="${ky}" rx="${kry}" ry="${kr}" fill="${C.parch}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += `<ellipse cx="${kx}" cy="${ky}" rx="${kry - 8}" ry="${kr - 8}" fill="none" stroke="${C.edge}" stroke-width="3"/>`;
+  s += `<path d="M${kx} ${ky - 16}l4.4 9.4 10.2 1.1-7.6 7 2.1 10.1-9.1-5.1-9.1 5.1 2.1-10.1-7.6-7 10.2-1.1z" fill="${C.plum}" stroke="${C.ink}" stroke-width="1.6" stroke-linejoin="round"/>`;
+  s += line(`M${kx - 18} ${ky - 18}q8 -12 22 -14`, 4, C.cream, ` opacity=".85"`);
+  // the two front feet press on the skirt, their tips hooked over its crimped edge
+  const tip = d => line(d, 4.4, C.ink) + line(d, 2.2, C.plum);
+  const grip = (t, dx, dy) => { const x0 = kx - 12 - Math.sqrt(1 - t * t) * kry, y0 = ky + t * kr; return tip(`M${n(x0 - 3)} ${n(y0 - 1)}l${dx} ${dy}`); };
+  s += grip(-.7, 9, 3) + grip(.5, 9, -1);
+  // a dried pea bounces off the shield: ping!
+  s += `<circle cx="${kx + 80}" cy="${ky - 42}" r="7" fill="${C.good}" stroke="${C.ink}" stroke-width="2"/><circle cx="${kx + 78}" cy="${ky - 44}" r="2" fill="${C.cream}" opacity=".7"/>`;
+  s += line(`M${kx + 40} ${ky - 6}l14 -4M${kx + 36} ${ky - 20}l12 -10M${kx + 42} ${ky + 8}l14 2`, 2.4, C.ink, ` opacity=".6"`);
+  s += line(`M${kx + 42} ${ky - 18}Q${kx + 60} ${ky - 46} ${kx + 72} ${ky - 44}`, 1.8, C.ink, ` stroke-dasharray="2 5" opacity=".55"`);
+
+  // ---- 3. RUBBER-BAND LAUNCHER: a forked twig planted in a cork block; a rubber band is wrapped
+  // round the tip of each arm and its leather pouch, cupping a cookie, is hauled back by a spider
+  // with its back legs braced. Three-quarter view: the far arm sits up and right of the near one.
+  const bx = 784;
+  s += shadow(bx + 6, GY, 54, 6, .25);
+  s += `<path d="M${bx - 40} ${GY}V${GY - 34}l10 -8h64l6 8V${GY}z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2.8" stroke-linejoin="round"/>`;
+  s += `<path d="M${bx - 40} ${GY - 34}l10 -8h64l6 8z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  s += stipple(41, bx, GY - 16, 34, 12, 30, 1, C.gold, .9);
+  const nearTip = [bx - 34, 118], farTip = [bx + 26, 104], fork = [bx, 180];
+  const twig = `M${bx} ${GY - 38}L${fork[0]} ${fork[1]}Q${bx - 22} 160 ${nearTip[0]} ${nearTip[1]}M${fork[0]} ${fork[1]}Q${bx + 18} 150 ${farTip[0]} ${farTip[1]}`;
+  const pc = [672, 184], pr = 15;                  // cookie in the pouch
+  const pTop = [pc[0] + 13, pc[1] - pr - 2], pBot = [pc[0] + 13, pc[1] + pr + 2];
+  const band = (a, b, w = 7) => line(`M${a[0]} ${a[1]}L${b[0]} ${b[1]}`, w, C.ink) + line(`M${a[0]} ${a[1]}L${b[0]} ${b[1]}`, w - 3.4, C.edge);
+  s += band([farTip[0] - 2, farTip[1] + 7], pTop);               // far band, behind the frame
+  s += line(twig, 13, C.ink) + line(twig, 8, C.gold);
+  s += line(`M${bx - 3} ${GY - 44}L${bx - 3} 196M${bx - 26} 148l-4 -18`, 2, C.goldB, ` opacity=".8"`);
+  s += `<ellipse cx="${bx}" cy="${GY - 38}" rx="9" ry="3" fill="${C.ink}" opacity=".45"/>`;
+  for (const [tx, ty] of [nearTip, farTip]) s += `<path d="M${tx - 6} ${ty + 4}l12 3M${tx - 6} ${ty + 9}l12 3" stroke="${C.ink}" stroke-width="5" stroke-linecap="round"/><path d="M${tx - 6} ${ty + 4}l12 3M${tx - 6} ${ty + 9}l12 3" stroke="${C.edge}" stroke-width="2.4" stroke-linecap="round"/>`;
+  const lx = 620;
+  s += shadow(lx + 4, GY, 64, 6);
+  s += spider({ x: lx, y: feet, s: sp, look: [1, -.4], mouth: "big", brow: "down", mark: "stripe",
+    legOverride: {
+      R0: [[9, -6], [30, -44], [44, -70]], R1: [[12, -2], [40, -30], [48, -52]],
+      L2: [[-13, 3], [-40, -12], [-60, 26]], L3: [[-10, 7], [-44, 0], [-76, 26]] } });
+  // the pouch: a leather sling cupping the back (left) half of the cookie; its corners take the band
+  s += `<path d="M${pTop[0]} ${pTop[1]}Q${pc[0] - 30} ${pc[1] - 26} ${pc[0] - 24} ${pc[1]}Q${pc[0] - 30} ${pc[1] + 26} ${pBot[0]} ${pBot[1]}Q${pc[0] - 16} ${pc[1]} ${pTop[0]} ${pTop[1]}z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += cookie(pc[0] + 2, pc[1], pr, 4);
+  s += `<path d="M${pTop[0]} ${pTop[1]}Q${pc[0] - 26} ${pc[1] - 22} ${pc[0] - 22} ${pc[1]}" fill="none" stroke="${C.ink}" stroke-width="2.6"/>`;   // pouch lip over the cookie
+  s += band([nearTip[0] - 2, nearTip[1] + 7], pBot);             // near band, in front
+  s += line(`M${pc[0] - 50} ${pc[1] - 40}l-10 -8M${pc[0] - 58} ${pc[1] - 20}l-12 -2`, 2.2, C.ink, ` opacity=".45"`);
+
+  // workbench odds and ends lying flat: a spare rubber band
+  s += `<ellipse cx="60" cy="${GY - 5}" rx="20" ry="4" fill="none" stroke="${C.ink}" stroke-width="6"/><ellipse cx="60" cy="${GY - 5}" rx="20" ry="4" fill="none" stroke="${C.edge}" stroke-width="2.6"/>`;
+  s += sparkle(420, 62, 6) + sparkle(260, 34, 4);
+  return V("Gadgets: a paperclip grappling hook caught on a glass rim, a bottle-cap shield and a rubber-band launcher", s);
 }
 
 // cartoon hand reaching down from the upper right; fingertips pinch at (x,y)
