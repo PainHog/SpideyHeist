@@ -1,4 +1,4 @@
-import { C, setPrefix, save, spider, cameo, shadow, circ, ell, path, line, strokes, mirror, STAND_R, star, rng, r1, uid, hairRing, cloud, arch, pol, leg, poly, face, shaded, pt } from "./lib.mjs";
+import { C, setPrefix, save, spider, cameo, shadow, circ, ell, path, line, strokes, mirror, STAND_R, star, rng, r1, uid, hairRing, cloud, arch, pol, leg, poly, face, shaded, pt, toWorld, toLocal, planted } from "./lib.mjs";
 
 const VB = "0 0 400 400";
 
@@ -32,12 +32,11 @@ const VB = "0 0 400 400";
   body += path("M20 330 L380 318 L380 400 L20 400 Z", C.edge, C.ink, 3);
   body += path("M20 330 L380 318", "none", C.gold, 3);
   for (let i = 0; i < 9; i++) body += line([40 + i * 40, 348 + R2() * 6], [70 + i * 40, 346 + R2() * 6], C.gold, 2);
-  // dragline safety silk from ledge to abdomen
-  body += path("M110 326 Q150 250 196 132", "none", C.gold, 2.4, ` stroke-dasharray="1 5"`);
-  body += circ(110, 326, 4, C.gold, C.ink, 2);
-  // leap arc
-  body += path("M60 300 Q90 190 150 150", "none", C.ink, 3, ` stroke-dasharray="10 9" opacity="0.5"`);
+  // dragline safety silk: anchored on the ledge, running straight up to the spinnerets at the
+  // abdomen tip (the abdomen's far end, hidden behind the body in this front view)
+  const spin = toWorld({ x: 200, y: 190, s: 1, rot: -10 }, [0, -72 - 42]);
   body += `</g>`;
+  body += `<g clip-path="${cam.clip}">` + line([116, 324], spin, C.gold, 2.4, ` stroke-dasharray="1 5"`) + circ(116, 324, 4, C.gold, C.ink, 2) + `</g>`;
   body += cam.ring;
   body += shadow(206, 330, 58, 7, C.ink, 0.18);
   body += sp;
@@ -123,29 +122,21 @@ const VB = "0 0 400 400";
 {
   setPrefix("sp-wolf");
   const cam = cameo();
-  // front three-quarter sprint toward lower left: low, wide, legs in alternating stride
-  const R = [
-    [[26, 12], [64, -4], [100, 20], [122, 60]],
-    [[32, 6], [88, -30], [140, -14], [176, 18]],
-    [[32, -2], [84, -62], [140, -70], [184, -50]],
-    [[26, -10], [60, -84], [110, -110], [156, -118]],
-  ];
-  const L = [
-    [[-26, 12], [-58, -4], [-94, 26], [-122, 76]],
-    [[-32, 6], [-86, -16], [-130, 28], [-148, 80]],
-    [[-32, -2], [-84, -40], [-138, -24], [-166, 22]],
-    [[-26, -10], [-66, -62], [-118, -64], [-156, -36]],
-  ];
+  // front three-quarter sprint toward lower left: low and wide, all eight feet on the floorboards
+  // (the floor plane runs from the skirting line at y=150 to the bottom; far feet sit higher)
+  const WT = { x: 204, y: 214, s: 0.96, rot: 16 };
+  const WF = [[262, 294], [318, 280], [352, 238], [334, 180], [150, 300], [94, 272], [66, 222], [132, 172]];
+  const WL = planted(WT, WF, [48, 60, 62, 50, 48, 60, 62, 50]);
   const cp = path("M-7 -40 L7 -40 L4 -14 L-4 -14 Z", C.gold, "none", 0) +
     path("M-48 -4 Q-40 -28 -22 -36", "none", C.gold, 6) + path("M48 -4 Q40 -28 22 -36", "none", C.gold, 6);
   const ap = path("M0 -94 L12 -70 L0 -40 L-12 -70 Z", C.deep, C.ink, 2) +
     [-80, -62].map(y => path(`M-44 ${y} L-22 ${y + 12} M44 ${y} L22 ${y + 12}`, "none", C.gold, 4)).join("") +
     path("M-54 -40 Q0 -20 54 -40", "none", C.gold, 5);
   const sp = spider({
-    x: 204, y: 206, s: 0.96, rot: 16,
+    ...WT,
     ceph: { rx: 52, ry: 38, pattern: cp, fuzz: 40 },
     abd: { dx: 0, dy: -60, rx: 60, ry: 40, pattern: ap, fuzz: 44 },
-    legs: [...R, ...L], legW: 7.5, band: C.gold, dash: "3 10", fuzz: true,
+    legs: WL, legW: 7.5, feetShadow: { rx: 13, ry: 4, op: 0.25 }, band: C.gold, dash: "3 10", fuzz: true,
     fx: -2, fy: -8,
     faceO: { er: 16, esp: 19, lid: "glare", small: "wolf", mouth: "grin", look: [-0.5, 0.3], cheY: 1.95 },
   });
@@ -156,10 +147,11 @@ const VB = "0 0 400 400";
   body += strokes([[120, 150, -60, 400], [200, 150, 150, 400], [280, 150, 360, 400], [360, 150, 560, 400], [40, 150, -260, 400]], C.gold, 2.2);
   body += strokes([[60, 196, 120, 196], [236, 250, 300, 250], [300, 330, 390, 330], [20, 300, 90, 300]], C.gold, 2);
   body += `</g>` + cam.ring;
-  body += shadow(200, 292, 150, 14, C.ink, 0.16);
-  // dust puffs kicked up behind
-  body += cloud([[330, 306, 14], [348, 294, 11], [352, 314, 10], [314, 316, 9]]) + cloud([[262, 318, 9], [276, 324, 7]]);
-  body += strokes([[284, 96, 322, 72], [300, 170, 350, 150], [262, 76, 294, 54]], C.ink, 4.5);
+  body += shadow(206, 250, 118, 30, C.ink, 0.14);
+  // dust puffs kicked up behind the rear (upper-right) feet, resting low on the floor
+  body += cloud([[350, 172, 10], [362, 164, 8], [364, 180, 7]]) + cloud([[330, 164, 6], [318, 170, 5]]);
+  // speed lines trail up-right, behind the direction of travel
+  body += strokes([[284, 96, 318, 74], [306, 126, 342, 106], [262, 72, 290, 54]], C.ink, 4.5);
 
   body += sp;
   save("species-wolf", VB, "Wolf spider: stocky and striped, sprinting low along the floorboards", body);
@@ -197,21 +189,23 @@ const VB = "0 0 400 400";
     [[-10, 4], [-58, -58], [-112, 40], [-94, 88]],
     [[-6, 8], [-36, -20], [-78, 82], [-50, 112]],
   ];
+  // stretch the legs (not the roots) so the body stays tiny against very long, thin legs
+  const stretch = l => l.map((p, i) => i ? [p[0] * 1.1, p[1] * 1.1] : p);
   const sp = spider({
     x: 214, y: 198, s: 1.3, rot: 6,
-    ceph: { rx: 21, ry: 18 },
-    abd: { dx: -6, dy: -30, rx: 12, ry: 30, rot: -14 },
-    legs: [...Rl, ...Ll], legW: 2.8,
+    ceph: { rx: 16, ry: 14 },
+    abd: { dx: -4, dy: -26, rx: 9, ry: 24, rot: -14 },
+    legs: [...Rl, ...Ll].map(stretch), legW: 2.3,
     fy: 0,
-    faceO: { er: 9, esp: 9.5, lid: "worry", small: [[-6, -11, 1.6], [6, -11, 1.6], [-18, -6, 1.8], [18, -6, 1.8]], mouth: "o", look: [0.8, 0], cheW: 0.85 },
+    faceO: { er: 7, esp: 7.4, lid: "worry", small: [[-5, -9, 1.3], [5, -9, 1.3], [-14, -5, 1.5], [14, -5, 1.5]], mouth: "o", look: [0.8, 0], cheW: 0.85 },
   });
   body += sp;
   // wall lip over the crack: the leading legs vanish inside it
   body += `<g clip-path="${cam.clip}"><g clip-path="url(#${lipK})">` + path("M0 0 H400 V330 H0 Z", C.parch, "none", 0) + wall + `</g>`;
   body += path("M" + crackR.map(pt).join(" L"), "none", C.ink, 3) + `</g>`;
   body += cam.ring;
-  // sweat drops
-  body += path("M184 150 q-7 11 0 16 q7 -5 0 -16 Z", C.cream, C.ink, 2) + path("M170 170 q-5 8 0 11 q5 -3 0 -11 Z", C.cream, C.ink, 1.8);
+  // sweat beading on the carapace edge (drops hang downward, touching the body)
+  body += path("M196 180 q-6 10 0 14 q6 -4 0 -14 Z", C.cream, C.ink, 1.8) + path("M193 199 q-5 8 0 11 q5 -3 0 -11 Z", C.cream, C.ink, 1.6);
   save("species-cellar", VB, "Cellar spider: a tiny body folding impossibly long legs to slip into a crack in the wall", body);
 }
 
@@ -221,12 +215,15 @@ const VB = "0 0 400 400";
   const cam = cameo();
   let body = cam.bg + `<g clip-path="${cam.clip}">`;
   // tabletop
-  body += path("M0 300 L400 300 L400 400 L0 400 Z", C.edge, "none", 0) + line([0, 300], [400, 300], C.ink, 3);
-  body += strokes([[30, 320, 120, 320], [200, 350, 330, 350], [90, 380, 190, 380]], C.gold, 2);
+  // tabletop: back edge at y=268 so every foot (near ~300, far ~294) and the card's stand sit on it
+  body += path("M0 268 L400 268 L400 400 L0 400 Z", C.edge, "none", 0) + line([0, 268], [400, 268], C.ink, 3);
+  body += strokes([[30, 330, 120, 330], [200, 356, 330, 356], [90, 382, 190, 382]], C.gold, 2);
   body += `</g>`;
   // target: a bullseye card propped on the right
   const tx = 322, ty = 176;
-  body += path(`M${tx - 8} ${ty + 58} L${tx + 12} 302 M${tx + 22} ${ty + 50} L${tx + 34} 302`, "none", C.ink, 4);
+  // the card's two wire legs stand on the table, with contact shadows
+  body += shadow(tx + 12, 303, 9, 2.5, C.ink, 0.25) + shadow(tx + 34, 296, 8, 2.2, C.ink, 0.25);
+  body += path(`M${tx - 8} ${ty + 58} L${tx + 12} 302 M${tx + 22} ${ty + 50} L${tx + 34} 295`, "none", C.ink, 4);
   body += ell(tx, ty, 44, 56, C.cream, C.ink, 4) + ell(tx, ty, 32, 41, C.oxb, C.ink, 2.5) + ell(tx, ty, 21, 27, C.cream, C.ink, 2.5) + ell(tx, ty, 10, 13, C.oxb, C.ink, 2.5);
   // zigzag silk from the fangs to the bullseye
   const fx = 202, fy = 258;
@@ -288,24 +285,35 @@ const VB = "0 0 400 400";
   body += path("M0 150 H400 V168 H0 Z", C.gold, C.ink, 3);
   // countertop speckle
   body += path("M0 168 H400 V400 H0 Z", C.parch, "none", 0) + speck(0, 172, 400, 228, 260);
+  // a sugar cube at the back of the counter, to scale (about 1.6x the spider's body length):
+  // it sits on the counter behind the spider and runs out of frame at the right
+  const cube = [[226, 98], [316, 66], [420, 92], [330, 124]];
+  body += shadow(330, 236, 118, 12, C.ink, 0.16);
+  body += path(poly(cube) + "Z", C.cream, C.ink, 3);
+  body += path(`M226 98 L330 124 L330 236 L226 206 Z`, C.parch, C.ink, 3);
+  body += path(`M330 124 L420 92 L420 204 L330 236 Z`, C.edge, C.ink, 3);
+  { const Rs = rng(12); let g = ""; for (let i = 0; i < 70; i++) { const u = Rs(), v = Rs(); const x = 226 + u * 104, y = 98 + u * 26 + v * 108; g += `M${r1(x)} ${r1(y)} l3 1 l-1 3 l-3 -1 Z`; } body += path(g, C.cream, C.edge, 1); }
   body += `</g>` + cam.ring;
   // spider: flattened, wide, sideways; front two pairs long and open
+  // legs I and II are held up and open (ambush pose); legs III and IV stand on the counter
+  const CT = { x: 200, y: 248, s: 0.9, rot: -8 };
+  const stand = (root, foot, b) => arch(root, toLocal(CT, foot), root[0] > 0 ? b : -b, 0.42, 0.78, 0.4);
   const Rr = [
     [[40, 4], [96, -42], [150, -46], [176, -14]],
     [[44, -6], [104, -76], [156, -96], [184, -74]],
-    [[38, 12], [66, 30], [86, 58]],
-    [[30, 16], [52, 40], [58, 70]],
+    stand([38, 12], [270, 312], 22),
+    stand([30, 16], [236, 326], 14),
   ];
   const Ll = [
     [[-40, 4], [-96, -42], [-150, -46], [-176, -14]],
     [[-44, -6], [-104, -76], [-156, -96], [-184, -74]],
-    [[-38, 12], [-66, 30], [-86, 58]],
-    [[-30, 16], [-52, 40], [-58, 70]],
+    stand([-38, 12], [138, 318], 22),
+    stand([-30, 16], [170, 330], 14),
   ];
   // camouflage speckles over the pale half
   const camo = (cx, cy, w, h) => `<g opacity="0.95">${speck(cx, cy, w, h, 40)}</g>`;
   const sp = spider({
-    x: 200, y: 248, s: 0.9, rot: -8,
+    ...CT, feetShadow: { rx: 12, ry: 4, op: 0.25 }, lifted: [0, 1, 4, 5],
     col: `url(#${g})`, shade: `url(#${gd})`, hi: "none",
     ceph: { rx: 54, ry: 30, pattern: camo(6, -30, 50, 60), hi: "none" },
     abd: { dx: 0, dy: -44, rx: 70, ry: 44, pattern: camo(8, -88, 64, 90) + path("M-30 -62 Q0 -50 30 -62 M-40 -40 Q0 -26 40 -40", "none", C.deep, 3, ` opacity="0.5"`), hi: "none" },
@@ -314,9 +322,7 @@ const VB = "0 0 400 400";
     fx: -4, fy: -6,
     faceO: { er: 13, esp: 16, lid: "sly", lidCol: C.plum, small: [[-40, -12, 3.5], [36, -12, 3.5], [-8, -18, 2.4], [8, -18, 2.4]], mouth: "smirk", look: [-1, 0.2], che: C.soft },
   });
-  body += shadow(200, 318, 120, 8, C.ink, 0.14);
+  body += shadow(204, 300, 96, 22, C.ink, 0.12);
   body += sp;
-  // a sugar cube for scale
-  body += path("M300 290 l30 -8 l22 10 l-30 8 Z", C.cream, C.ink, 2.5) + path("M300 290 v26 l22 8 v-24 Z", C.cream, C.ink, 2.5) + path("M322 300 l30 -8 v26 l-30 8 Z", C.parch, C.ink, 2.5);
   save("species-crab", VB, "Crab spider: flattened and sideways, long front legs held open, half its body blending into a speckled countertop", body);
 }

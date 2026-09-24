@@ -226,11 +226,17 @@ export function spider(o) {
     col = C.plum, shade = C.deep, hi = C.soft,
     ceph = { rx: 40, ry: 34 }, abd = { dx: 0, dy: -66, rx: 54, ry: 48 },
     legs = [...STAND_R, ...mirror(STAND_R)], legW = 7, legCol, band = null, dash, fuzz = false,
-    legCols = [], legHl = [], back = [], front = [], faceO = {}, fx = 0, fy = -2, under = "", over = "", afterLegs = "", legOp = [], seed = 3,
+    legCols = [], legHl = [], back = [], front = [], faceO = {}, fx = 0, fy = -2, under = "", over = "", afterLegs = "", preFront = "", legOp = [], seed = 3,
+    feetShadow = null, lifted = [],
   } = o;
   const lc = legCol || col;
   let s = `<g transform="translate(${r1(x)} ${r1(y)}) rotate(${rot}) scale(${flip ? -sc : sc} ${sc})">`;
   s += under;
+  // contact shadows under every planted foot (legs listed in `lifted` are in the air)
+  if (feetShadow) {
+    const { rx = 12, ry = 4, op = 0.22, col = C.ink } = feetShadow;
+    for (let i = 0; i < 8; i++) if (!lifted.includes(i)) { const f = legs[i][legs[i].length - 1]; s += ell(f[0], f[1] + ry * 0.6, rx, ry, col, C.ink, 0, ` opacity="${op}"`); }
+  }
   const order = [3, 7, 2, 6, 1, 5, 0, 4];
   const L = i => leg(legs[i], { w: (legW * (i % 4 === 0 ? 1.05 : 1)), col: legCols[i] || lc, hl: legHl[i] || hi, band, dash, fuzz, op: legOp[i] ?? 1 });
   for (const i of order) if (back.includes(i)) s += L(i);
@@ -239,6 +245,7 @@ export function spider(o) {
   s += afterLegs;
   s += shaded(0, 0, ceph.rx, ceph.ry, { col: ceph.col || col, shade: ceph.shade || shade, hi: ceph.hi ?? hi, pattern: ceph.pattern || "", fuzz: ceph.fuzz || 0, seed, rot: ceph.rot || 0 });
   s += face(fx, fy, { lidCol: ceph.col || col, ...faceO });
+  s += preFront;
   for (const i of order) if (front.includes(i)) s += L(i);
   s += over;
   return s + `</g>`;
@@ -298,6 +305,28 @@ export function arch(root, foot, bulge = 30, kt = 0.38, at = 0.74, ab = 0.5) {
   return [root, [root[0] + dx * kt + nx * bulge, root[1] + dy * kt + ny * bulge],
     [root[0] + dx * at + nx * bulge * ab, root[1] + dy * at + ny * bulge * ab], foot];
 }
+// World point -> a spider's local coords, for a spider placed with {x, y, s, rot, flip}.
+export function toLocal({ x = 0, y = 0, s = 1, rot = 0, flip = false }, [wx, wy]) {
+  const dx = (wx - x) / s, dy = (wy - y) / s, a = -rot * Math.PI / 180;
+  let lx = dx * Math.cos(a) - dy * Math.sin(a); const ly = dx * Math.sin(a) + dy * Math.cos(a);
+  if (flip) lx = -lx;
+  return [lx, ly];
+}
+// Local spider coords -> world point.
+export function toWorld({ x = 0, y = 0, s = 1, rot = 0, flip = false }, [lx, ly]) {
+  const a = rot * Math.PI / 180, px = (flip ? -lx : lx) * s, py = ly * s;
+  return [x + px * Math.cos(a) - py * Math.sin(a), y + px * Math.sin(a) + py * Math.cos(a)];
+}
+export const STAND_ROOTS = [[24, 10], [30, 4], [32, -4], [28, -12], [-24, 10], [-30, 4], [-32, -4], [-28, -12]];
+// Eight legs whose feet land exactly on the given WORLD points (0-3 right I..IV, 4-7 left I..IV).
+// Knees always bulge up/outward (right legs +bulge, left legs -bulge in arch terms).
+export function planted(t, feet, bulge = 30, roots = STAND_ROOTS) {
+  return feet.map((f, i) => {
+    const b = Array.isArray(bulge) ? bulge[i] : bulge;
+    return arch(roots[i], toLocal(t, f), roots[i][0] >= 0 ? b : -b);
+  });
+}
+
 // polar helper
 export const pol = (cx, cy, r, deg) => [cx + Math.cos(deg * Math.PI / 180) * r, cy + Math.sin(deg * Math.PI / 180) * r];
 

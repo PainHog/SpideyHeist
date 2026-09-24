@@ -1,4 +1,4 @@
-import { C, setPrefix, save, spider, medallion, shadow, circ, ell, path, line, strokes, mirror, STAND_R, star, rng, r1, uid, pt, poly, hairRing } from "./lib.mjs";
+import { C, setPrefix, save, spider, medallion, shadow, circ, ell, path, line, strokes, mirror, STAND_R, star, rng, r1, uid, pt, poly, hairRing, toWorld, leg } from "./lib.mjs";
 
 const VB = "0 0 400 400";
 const basePat = circ(0, -84, 8, C.gold, C.ink, 2) + path("M-30 -58 Q0 -44 30 -58", "none", C.gold, 4, ` stroke-dasharray="2 7"`) + circ(-22, -76, 4, C.soft) + circ(22, -76, 4, C.soft);
@@ -7,18 +7,20 @@ const base = (o = {}) => spider({
   ceph: { rx: 44, ry: 38 },
   abd: { dx: 0, dy: -62, rx: 50, ry: 44, pattern: basePat },
   legs: [...STAND_R, ...mirror(STAND_R)], legW: 7.5, band: C.deep, dash: "3 12",
-  fy: -2,
+  fy: -2, feetShadow: { rx: 13, ry: 4.5, op: 0.22 },
   ...o,
   faceO: { er: 16, esp: 19, lid: "sly", small: "std", mouth: "smirk", ...(o.faceO || {}) },
 });
 const legs = (R, L = mirror(R)) => [...R, ...L];
+// A floor plane seen from slightly above: back edge (horizon) at y=hy, running to the bottom of the field.
+const floor = (hy, col = C.edge, op = 0.8) => path(`M30 ${hy} H370 V380 H30 Z`, col, "none", 0, ` opacity="${op}"`) + line([30, hy], [370, hy], C.ink, 2.5);
 const S = STAND_R;
 
 // ---------------- face ----------------
 {
   setPrefix("rl-face");
   const m = medallion();
-  const R = [[[24, 10], [62, -18], [86, -52], [98, -90]], S[1], S[2], S[3]];
+  const R = [[[24, 10], [62, -18], [86, -52], [98, -90]], S[1], S[2], S[3]]; // raised in a flourish, above the other legs
   const L = mirror(S);
   // bow tie + pocket square flourish drawn in spider space
   const bow = path("M0 50 L-24 38 L-26 64 Z", C.oxb, C.ink, 3) + path("M0 50 L24 38 L26 64 Z", C.oxb, C.ink, 3) +
@@ -26,20 +28,23 @@ const S = STAND_R;
   // a slick little quiff of hair
   const quiff = path("M-6 -36 q4 -18 18 -16 q-10 2 -8 14 M4 -37 q6 -12 16 -10", "none", C.ink, 3);
   const sp = base({
-    legs: legs(R, L),
+    legs: legs(R, L), lifted: [0],
     over: bow + quiff,
     faceO: { lid: ["sly", "wink"], mouth: "grin", look: [0.3, 0] },
   });
   let body = m.bg + `<g clip-path="${m.clip}">`;
-  // warm spotlight
-  body += ell(200, 330, 150, 40, C.edge, C.ink, 0, ` opacity="0.8"`);
-  body += path("M60 80 L140 350 M340 80 L260 350", "none", C.edge, 2, ` stroke-dasharray="3 9"`);
+  // a stage floor (back edge above the rear feet) and a warm spotlight from above:
+  // the beam starts narrow above the frame and widens down to the pool of light the spider stands in
+  body += floor(190);
+  body += path("M170 52 L206 52 L352 262 L48 262 Z", C.cream, "none", 0, ` opacity="0.35"`);
+  body += path("M170 52 L48 262 M206 52 L352 262", "none", C.edge, 2, ` stroke-dasharray="3 9"`);
+  body += ell(200, 262, 152, 50, C.cream, C.ink, 0, ` opacity="0.75"`);
   body += `</g>`;
   body += sp;
   // speech bubble with an ellipsis only
-  body += `<g transform="translate(-16 8)">` + path("M236 132 Q236 86 282 84 Q330 84 332 118 Q334 150 288 152 Q274 152 262 148 L238 168 L246 144 Q236 140 236 132 Z", C.cream, C.ink, 3.5) +
+  body += `<g transform="translate(416 8) scale(-1 1)">` + path("M236 132 Q236 86 282 84 Q330 84 332 118 Q334 150 288 152 Q274 152 262 148 L238 168 L246 144 Q236 140 236 132 Z", C.cream, C.ink, 3.5) +
     circ(264, 118, 5.5, C.ink) + circ(284, 118, 5.5, C.ink) + circ(304, 118, 5.5, C.ink) + `</g>`;
-  body += star(92, 128, 11) + star(118, 96, 6) + star(330, 206, 8);
+  body += star(306, 124, 11) + star(282, 92, 6);
   body += m.ring;
   save("role-face", VB, "The Face: a charming spider in a bow tie, winking mid-pitch beside an empty speech bubble", body);
 }
@@ -56,9 +61,10 @@ const S = STAND_R;
     circ(120, 64, 3, C.gold, C.ink, 1.5) + circ(280, 64, 3, C.gold, C.ink, 1.5) + circ(120, 190, 3, C.gold, C.ink, 1.5) + circ(280, 190, 3, C.gold, C.ink, 1.5);
   const R = [[[24, 10], [62, -8], [92, 40], [90, 96]], [[30, 4], [84, -26], [118, 26], [128, 84]], S[2], S[3]];
   const L = mirror(R);
+  L[0] = [[-24, 10], [-66, -4], [-52, 34], [-12, 30]]; // hush: the leg tip held up to the chelicerae
   const sp = base({
-    y: 216,
-    legs: legs(R, L),
+    y: 216, feetShadow: null,
+    legs: legs(R, L), front: [4],
     faceO: { lid: ["sly", "sly"], mouth: "smirk", look: [-0.8, 0.2] },
   });
   let body = m.bg + `<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1">` +
@@ -98,17 +104,20 @@ const S = STAND_R;
     path("M-154 -142 q4 -4 8 0 M-138 -148 q4 -4 8 0 M-126 -136 q3 -3 6 0", "none", C.edge, 2);
   const sp = base({
     y: 240,
-    legs: legs(R, L),
+    legs: legs(R, L), lifted: [0, 4],
     afterLegs: "",
-    over: gog + tack + clip + lint,
+    // the last segment of each front leg is redrawn over its tool, so the foot visibly grips it
+    over: gog + tack + clip + lint + leg([R[0][2], R[0][3]], { w: 7.5, band: C.deep, dash: "3 12", knee: false }) + leg([L[0][2], L[0][3]], { w: 7.5, band: C.deep, dash: "3 12", knee: false }),
     faceO: { lid: ["half", "squint"], mouth: "smirk", look: [0.4, -0.3] },
   });
   let body = m.bg + `<g clip-path="${m.clip}">`;
-  // workbench: a cog and a spool in the background
+  // workbench top (back edge above the rear feet); a spare cog lies flat on it, in perspective
+  body += floor(184, C.edge, 0.7);
+  body += strokes([[60, 250, 130, 250], [220, 334, 300, 334], [64, 206, 120, 206]], C.gold, 2);
+  const [gx, gy] = [290, 212];
   let cog = "";
-  for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2; cog += `M${r1(92 + Math.cos(a) * 30)} ${r1(300 + Math.sin(a) * 30)} L${r1(92 + Math.cos(a) * 42)} ${r1(300 + Math.sin(a) * 42)}`; }
-  body += path(cog, "none", C.edge, 12) + circ(92, 300, 32, C.edge) + circ(92, 300, 12, C.parch, C.edge, 0);
-  body += ell(200, 340, 140, 30, C.edge, C.ink, 0, ` opacity="0.7"`);
+  for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2; cog += `M${r1(gx + Math.cos(a) * 30)} ${r1(gy + Math.sin(a) * 12)} L${r1(gx + Math.cos(a) * 42)} ${r1(gy + Math.sin(a) * 17)}`; }
+  body += ell(gx, gy + 4, 44, 18, C.ink, C.ink, 0, ` opacity="0.15"`) + path(cog, "none", C.gold, 10) + ell(gx, gy, 32, 13, C.gold, C.ink, 2) + ell(gx, gy, 11, 4.5, C.edge, C.ink, 2);
   body += `</g>`;
   body += sp;
   body += star(270, 108, 10) + star(300, 136, 6) + star(248, 88, 5);
@@ -127,23 +136,28 @@ const S = STAND_R;
   const band = path("M-46 -24 Q0 -50 46 -24", "none", C.ink, 13) + path("M-46 -24 Q0 -50 46 -24", "none", C.oxb, 8.5) +
     path("M44 -26 q18 -6 26 -22 M44 -22 q24 2 34 -10", "none", C.ink, 7.5) + path("M44 -26 q18 -6 26 -22 M44 -22 q24 2 34 -10", "none", C.oxb, 4);
   const sp = base({
-    y: 238, s: 0.84,
+    x: 194, y: 238, s: 0.84, lifted: [0, 4],
     ceph: { rx: 50, ry: 40 }, abd: { dx: 0, dy: -64, rx: 56, ry: 46, pattern: basePat },
     legs: legs(R, L), legW: 10,
     over: band + glove(62, -48, 20) + glove(-72, -54, -16),
     faceO: { er: 15, esp: 19, lid: "glare", mouth: "grin", look: [0, 0.2] },
   });
   let body = m.bg + `<g clip-path="${m.clip}">`;
-  // cabinet interior with a door swinging open
-  body += path("M60 70 H250 V330 H60 Z", C.gold, C.ink, 3) + path("M72 82 H238 V318 H72 Z", C.edge, C.ink, 2.5) + path("M72 200 H238", "none", C.gold, 7) + path("M72 204 H238", "none", C.ink, 2);
-  body += path("M84 200 v-40 h24 v40 Z M88 160 v-8 h16 v8", C.cream, C.ink, 2.4) + path("M186 200 q0 -30 14 -30 q14 0 14 30 Z", C.plum, C.ink, 2.4) + path("M82 318 h50 v-26 h-50 Z", C.parch, C.ink, 2.4);
-  body += path("M250 70 L344 44 L344 356 L250 330 Z", C.gold, C.ink, 3.5) + path("M262 90 L332 70 L332 330 L262 312 Z", "none", C.ink, 2) + circ(268, 200, 5, C.glint, C.ink, 2);
-  body += path("M354 90 q14 24 0 48 M362 170 q14 24 0 48 M354 250 q14 24 0 48", "none", C.ink, 3);
+  // inside a kitchen cabinet at spider scale: wooden back wall, the shelf floor he stands on,
+  // the foot of a giant bottle (running out of frame), the open door's edge, the shelf lip, the dark room below
+  body += path("M30 30 H370 V206 H30 Z", C.gold, "none", 0);
+  body += strokes([[80, 30, 80, 206], [170, 30, 170, 206], [262, 30, 262, 206]], C.ink, 1.6, ` opacity="0.35"`);
+  body += path("M30 206 H336 L352 330 H30 Z", C.edge, C.ink, 2.5);
+  body += strokes([[40, 238, 150, 238], [180, 270, 320, 270], [60, 302, 170, 302]], C.gold, 2);
+  // right side wall of the cabinet, with the open door's hinge knuckles on its front edge
+  body += path("M336 206 L352 330 L370 330 L370 30 L336 30 Z", C.ox, C.ink, 2.5) + path("M348 60 v30 M348 150 v30", "none", C.glint, 5);
+  body += ell(96, 212, 58, 11, C.ink, C.ink, 0, ` opacity="0.25"`);
+  body += path("M40 20 V208 A56 10 0 0 0 152 208 V20 Z", C.ox, C.ink, 3) + path("M52 20 V200", "none", C.oxb, 8) + path("M40 110 H152 V172 H40 Z", C.cream, C.ink, 2.5) + path("M48 128 H144 M48 154 H144", "none", C.gold, 3);
+  body += path("M30 330 H370 V348 H30 Z", C.gold, C.ink, 3) + path("M30 348 H370 V380 H30 Z", C.deep, "none", 0);
   body += `</g>`;
   body += sp;
-  body += star(84, 140, 9) + star(116, 110, 5);
   body += m.ring;
-  save("role-bruiser", VB, "The Bruiser: a burly spider in a sweatband and tiny boxing gloves, bursting from a cabinet", body);
+  save("role-bruiser", VB, "The Bruiser: a burly spider in a sweatband and tiny boxing gloves, squaring up on a kitchen-cabinet shelf beside a giant bottle", body);
 }
 
 // ---------------- lookout ----------------
@@ -155,27 +169,29 @@ const S = STAND_R;
   const glass = `<g transform="rotate(-14 20 -4)">` + path("M12 -12 H34 V4 H12 Z", C.gold, C.ink, 3) + path("M32 -14 H92 V6 H32 Z", C.gold, C.ink, 3) + path("M90 -20 H124 V12 H90 Z", C.gold, C.ink, 3) +
     path("M52 -14 V6 M70 -14 V6", "none", C.ink, 2.4) + path("M36 -9 H88", "none", C.glint, 2.4) + ell(124, -4, 5, 16, C.glint, C.ink, 2.4) + `</g>`;
   const sp = base({
-    x: 150, y: 176, s: 0.66,
+    x: 150, y: 170, s: 0.62, lifted: [0],
     legs: legs(R, mirror(L)),
-    front: [0],
     afterLegs: "",
-    over: glass,
+    over: glass + leg([R[0][2], R[0][3]], { w: 7.5, band: C.deep, dash: "3 12", knee: false }),
     faceO: { lid: ["wink", "wide"], mouth: "flat", look: [1, 0] },
   });
   let body = m.bg + `<g clip-path="${m.clip}">`;
-  // night window on the right
-  body += path("M258 60 H372 V250 H258 Z", C.deep, C.ink, 3) + path("M315 60 V250 M258 150 H372", "none", C.edge, 5);
-  body += path("M340 92 a16 16 0 1 0 12 26 a12 12 0 1 1 -12 -26 Z", C.glint, C.ink, 2);
-  for (const [x, y] of [[278, 84], [296, 120], [282, 200], [344, 188], [360, 226]]) body += circ(x, y, 1.8, C.glint);
-  // tall bookcase: top shelf ledge + spines dropping away
-  body += path("M40 222 H232 V420 H40 Z", C.gold, C.ink, 3.5) + path("M36 214 H240 V230 H36 Z", C.edge, C.ink, 3);
-  const cols = [C.plum, C.ox, C.deep, C.soft, C.good, C.ox, C.plum, C.deep];
-  let x = 50;
-  for (let i = 0; i < 8; i++) { const w = 18 + (i * 7) % 9; body += path(`M${x} 240 h${w} v160 h${-w} Z`, cols[i], C.ink, 2.5) + path(`M${x + 3} 262 h${w - 6} M${x + 3} 268 h${w - 6}`, "none", C.glint, 1.5); x += w + 2; }
-  // dizzying drop: dangling safety line
-  body += path("M214 214 V352", "none", C.gold, 2, ` stroke-dasharray="2 5"`);
-  // sight line to the window
-  body += path("M238 132 L300 112", "none", C.ink, 2.4, ` stroke-dasharray="6 7"`);
+  // night window on the far wall across the room (small only because it is far away)
+  body += path("M282 60 H396 V250 H282 Z", C.deep, C.ink, 3) + path("M339 60 V250 M282 150 H396", "none", C.edge, 5);
+  body += path("M356 92 a16 16 0 1 0 12 26 a12 12 0 1 1 -12 -26 Z", C.glint, C.ink, 2);
+  for (const [x, y] of [[300, 84], [318, 120], [304, 200], [360, 188], [372, 226]]) body += circ(x, y, 1.8, C.glint);
+  // top of a tall bookcase, seen from slightly above: the top board is a surface the feet stand on
+  body += path("M20 156 H272 V232 H20 Z", C.edge, C.ink, 3) + strokes([[40, 180, 120, 180], [150, 206, 250, 206]], C.gold, 2);
+  body += path("M20 232 H276 V248 H20 Z", C.gold, C.ink, 3);
+  body += path("M28 248 H268 V420 H28 Z", C.gold, C.ink, 3);
+  // book spines at spider scale: each spine is wider than the spider's body
+  const cols = [C.ox, C.deep, C.soft, C.good];
+  let x = 30;
+  for (let i = 0; i < 4; i++) { const w = 56 + (i * 5) % 9; body += path(`M${x} 256 h${w} v160 h${-w} Z`, cols[i], C.ink, 2.5) + path(`M${x + 5} 282 h${w - 10} M${x + 5} 290 h${w - 10}`, "none", C.glint, 2); x += w + 3; }
+  // safety line: anchored on the top board's front edge, hanging straight down past the frame
+  body += path("M226 234 V420", "none", C.gold, 2, ` stroke-dasharray="2 5"`) + circ(226, 234, 3.5, C.gold, C.ink, 1.5);
+  // sight line from the spyglass lens to the window
+  { const [lx, ly] = toWorld({ x: 150, y: 170, s: 0.62 }, [20 + 104 * Math.cos(-14 * Math.PI / 180) + 4, -4 + 104 * Math.sin(-14 * Math.PI / 180)]); body += path(`M${r1(lx + 4)} ${r1(ly - 1)} L310 118`, "none", C.ink, 2.4, ` stroke-dasharray="6 7"`); }
   body += `</g>`;
   body += sp;
   body += m.ring;
@@ -195,23 +211,30 @@ const S = STAND_R;
     circ(-19, -2, 20, "none", C.ink, 9) + circ(19, -2, 20, "none", C.ink, 9) + circ(-19, -2, 20, "none", C.gold, 5) + circ(19, -2, 20, "none", C.gold, 5) +
     path("M-28 -12 l8 -6 M10 -12 l8 -6", "none", C.cream, 3);
   const scarf = path("M-34 30 Q0 46 34 30 L30 42 Q0 56 -30 42 Z", C.oxb, C.ink, 3) + path("M-30 36 Q-70 40 -104 18 Q-84 44 -118 44 Q-76 64 -32 46 Z", C.oxb, C.ink, 3);
+  const WT = { x: 180, y: 262, s: 0.74, rot: 6 };
   const sp = base({
-    x: 176, y: 240, s: 0.8, rot: 6,
+    ...WT,
     legs: legs(R, L),
     over: cap + gog + scarf,
     faceO: { er: 15, esp: 19, lid: "glare", mouth: "grin", look: [1, 0] },
   });
   let body = m.bg + `<g clip-path="${m.clip}">`;
-  // open window at the right with night outside
-  body += path("M276 120 H372 V310 H276 Z", C.deep, C.ink, 3.5) + path("M276 40 H372 V132 H276 Z", C.edge, C.ink, 3) + path("M324 40 V132", "none", C.ink, 2.5);
-  body += path("M264 306 H384 V322 H264 Z", C.edge, C.ink, 3);
-  for (const [x, y] of [[300, 160], [346, 190], [310, 250], [356, 276], [330, 222]]) body += circ(x, y, 2, C.glint);
-  body += path("M350 150 a14 14 0 1 0 10 22 a10 10 0 1 1 -10 -22 Z", C.glint, C.ink, 2);
-  // exit arrow painted on the wall, pointing out of the window
-  body += path("M150 86 H218 V68 L262 100 L218 132 V114 H150 Z", C.glint, C.ink, 3.5) + path("M160 100 H214", "none", C.gold, 3);
-  // speed lines and the anchored getaway line
-  body += strokes([[50, 262, 96, 256], [56, 290, 104, 282], [72, 316, 110, 308]], C.ink, 4);
-  body += path("M60 330 Q140 300 208 262", "none", C.gold, 2.5, ` stroke-dasharray="2 5"`) + circ(60, 330, 4, C.gold, C.ink, 2);
+  // a deep window sill at spider scale: wall at the left, the casing edge, and the open window
+  // (night outside) at the right; the sill's top surface runs under all eight feet
+  body += path("M306 20 H380 V236 H306 Z", C.deep, "none", 0);
+  for (const [x, y] of [[326, 70], [352, 130], [330, 188], [362, 212], [344, 100]]) body += circ(x, y, 2, C.glint);
+  body += path("M338 44 a16 16 0 1 0 12 26 a12 12 0 1 1 -12 -26 Z", C.glint, C.ink, 2);
+  body += path("M282 20 H306 V236 H282 Z", C.edge, C.ink, 3) + path("M290 30 V226", "none", C.parch, 3);
+  body += path("M20 214 H380 V236 H20 Z", C.ink, "none", 0, ` opacity="0.08"`);
+  body += path("M20 236 H380 V322 H20 Z", C.edge, C.ink, 3) + strokes([[44, 262, 130, 262], [210, 300, 330, 300], [300, 250, 370, 250]], C.gold, 2);
+  body += path("M20 322 H380 V340 H20 Z", C.gold, C.ink, 3);
+  // chalked exit arrow on the wall, pointing out of the window
+  body += path("M132 92 H200 V74 L244 106 L200 138 V120 H132 Z", C.glint, C.ink, 3.5) + path("M142 106 H196", "none", C.gold, 3);
+  // speed lines trail behind (left of) the dash toward the window
+  body += strokes([[54, 196, 98, 192], [50, 226, 96, 220], [62, 256, 104, 250]], C.ink, 4);
+  // getaway dragline: anchored on the wall, running to the spinnerets at the abdomen tip
+  // (hidden behind the body in this front view); it sags a little under its own weight
+  { const [sx, sy] = toWorld(WT, [0, -62 - 44]); body += path(`M62 178 Q${r1((62 + sx) / 2)} ${r1(Math.max(178, sy) + 18)} ${r1(sx)} ${r1(sy)}`, "none", C.gold, 2.5, ` stroke-dasharray="2 5"`) + circ(62, 178, 4, C.gold, C.ink, 2); }
   body += `</g>`;
   body += sp;
   body += m.ring;
@@ -243,7 +266,8 @@ const S = STAND_R;
   };
   let body = m.bg + `<g clip-path="${m.clip}">`;
   // baseboard corner
-  body += path("M40 290 H360 V360 H40 Z", C.edge, C.ink, 3) + line([40, 306], [360, 306], C.gold, 2);
+  body += path("M30 250 H370 V290 H30 Z", C.gold, C.ink, 3) + line([30, 262], [370, 262], C.ink, 1.6);
+  body += path("M30 290 H370 V380 H30 Z", C.edge, C.ink, 3) + strokes([[40, 320, 150, 320], [220, 340, 350, 340]], C.gold, 2);
   body += ell(96, 300, 30, 6, C.ink, C.ink, 0, ` opacity="0.14"`) + ell(310, 300, 26, 5, C.ink, C.ink, 0, ` opacity="0.14"`) + ell(196, 302, 96, 10, C.ink, C.ink, 0, ` opacity="0.16"`);
   // real dust bunnies for cover
   body += fluff(96, 276, 30, 18, 4) + fluff(310, 278, 26, 16, 8);
