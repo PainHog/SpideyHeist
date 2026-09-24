@@ -298,3 +298,339 @@ const drop = (x, y, s = 1) => path(`M${x} ${y} q${-7 * s} ${11 * s} 0 ${16 * s} 
   });
   save("creature-guard-spider", VB, "The Guard Spider: a stern ox-red rival in a peaked cap with a badge and moustache, aiming a torch beam at a sneaking crew member", body);
 }
+
+// ======================================================================
+// New creatures (snake, parrot, rat, exterminator, goldfish)
+// ======================================================================
+
+// A stroke that tapers from w0 to w1 along a polyline (segments with round caps), outlined in ink.
+function taper(pts, w0, w1, col, ink = 2.5) {
+  let a = "", b = "";
+  for (let i = 0; i < pts.length - 1; i++) {
+    const w = w0 + (w1 - w0) * (i / Math.max(1, pts.length - 2));
+    a += line(pts[i], pts[i + 1], C.ink, w + ink * 2);
+    b += line(pts[i], pts[i + 1], col, w);
+  }
+  return a + b;
+}
+
+// ---------------- snake ----------------
+{
+  setPrefix("cr-snake");
+  const v = oval();
+  let body = v.bg + `<g clip-path="${v.clip}">`;
+  // the table the tank stands on
+  body += path("M0 300 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 300], [480, 300], C.ink, 3) + strokes([[40, 360, 150, 360], [200, 382, 300, 382]], C.gold, 2);
+  // tank: front glass x -10..372, y 70..330; the right side recedes by (+32,-20)
+  const F = { l: -10, r: 364, t: 76, b: 330 }, D = [40, -34];
+  body += shadow(200, 336, 230, 8, C.ink, 0.22);
+  // interior seen through the glass: back wall (the room), substrate, hide and water dish
+  body += path(`M${F.l + D[0]} ${F.t + D[1]} H${F.r + D[0]} V${F.b + D[1]} H${F.l + D[0]} Z`, C.parch, "none", 0);
+  body += path(`M${F.l} 286 L${F.r} 286 L${F.r + D[0]} 266 L${F.r + D[0]} ${F.b + D[1]} L${F.r} ${F.b} L${F.l} ${F.b} Z`, C.glint, C.ink, 0, ` opacity="0.9"`);
+  { const R = rng(31); let d = ""; for (let i = 0; i < 70; i++) { const x = R() * 390, y = 290 + R() * 34; d += `M${r1(x)} ${r1(y)} l${r1(4 + R() * 4)} ${r1(-1 - R() * 2)}`; } body += path(d, "none", C.gold, 2); }
+  body += path("M4 286 Q4 236 58 236 Q112 236 112 286 Z", C.ox, C.ink, 3) + path("M26 286 Q26 258 58 258 Q90 258 90 286 Z", C.deep, C.ink, 2.5) + path("M18 250 q10 -8 24 -6 M76 244 q12 2 20 10", "none", C.gold, 2.5);
+  body += ell(340, 278, 26, 8, C.edge, C.ink, 3) + ell(340, 276, 19, 5, C.soft, C.ink, 1.5, ` opacity="0.7"`);
+  // --- the corn snake, coiled on the substrate
+  const bodyStroke = (d, w = 30) => path(d, "none", C.ink, w + 6) + path(d, "none", C.gold, w) +
+    `<path d="${d}" fill="none" stroke="${C.ink}" stroke-width="${w - 4}" stroke-dasharray="18 14"/>` +
+    `<path d="${d}" fill="none" stroke="${C.ox}" stroke-width="${w - 10}" stroke-dasharray="14 18" stroke-dashoffset="-2"/>` +
+    path(d, "none", C.glint, 3, ` opacity="0.55" transform="translate(0 -${Math.round(w * 0.3)})"`);
+  const E = (cx, cy, rx, ry, a0, a1) => { // elliptical arc a0->a1 (deg, clockwise) as a path string
+    const p = t => [cx + rx * Math.cos(t * Math.PI / 180), cy + ry * Math.sin(t * Math.PI / 180)];
+    let d = `M${pt(p(a0))}`; for (let t = a0 + 10; t <= a1; t += 10) d += ` L${pt(p(Math.min(t, a1)))}`; return d;
+  };
+  // tail tip (tucked out at the front left), bottom coil back half, top coil back half, bottom coil front, top coil front, neck
+  body += taper([[92, 306], [70, 314], [52, 318], [40, 316]], 24, 6, C.gold);
+  body += bodyStroke(E(186, 292, 112, 22, 180, 360));
+  body += bodyStroke(E(182, 268, 78, 15, 180, 360));
+  body += bodyStroke(E(186, 292, 112, 22, 0, 180));
+  body += bodyStroke(E(182, 268, 78, 15, 0, 180));
+  // neck rises from the top coil's right side in an S, then pitches down toward the glass
+  const neck = "M258 268 C318 262 236 148 282 172";
+  body += bodyStroke(neck, 28);
+  // head in profile, pointing down-right at the spider outside; forked tongue flicking out
+  const ha = 44;
+  body += `<g transform="translate(282 172) rotate(${ha})">` +
+    path("M72 4 L94 4 M94 4 L104 -3 M94 4 L104 11", "none", C.ink, 5) + path("M72 4 L94 4 M94 4 L104 -3 M94 4 L104 11", "none", C.oxb, 2.6) +
+    path("M-8 -15 Q22 -21 48 -12 Q66 -6 68 2 Q66 10 48 14 Q22 19 -8 15 Z", C.gold, C.ink, 3.5) +
+    path("M8 -14 L30 -2 L8 10 L18 -2 Z", C.ox, C.ink, 2) + path("M40 -14 Q54 -10 60 -4", "none", C.glint, 3) +
+    path("M66 6 Q46 12 28 10", "none", C.ink, 2.4) + circ(61, -3, 2, C.ink) +
+    circ(42, -5, 7.5, C.glint, C.ink, 2.4) + circ(43, -5, 4, C.ink) + circ(41, -7, 1.6, C.cream) + `</g>`;
+  // --- glass: faint tint, reflections from a light at the upper left, frame
+  body += path(`M${F.l} ${F.t} H${F.r} V${F.b} H${F.l} Z`, C.cream, "none", 0, ` opacity="0.06"`);
+  body += path(`M${F.r} ${F.t} L${F.r + D[0]} ${F.t + D[1]} L${F.r + D[0]} ${F.b + D[1]} L${F.r} ${F.b} Z`, C.cream, C.ink, 2.5, ` opacity="0.35"`);
+  body += strokes([[30, 200, 110, 90], [60, 214, 130, 116], [300, 150, 340, 96]], C.cream, 5, ` opacity="0.7"`);
+  body += path(`M${F.l} ${F.b - 12} H${F.r} V${F.b} H${F.l} Z`, C.ink, C.ink, 2) + path(`M${F.r} ${F.b} L${F.r + D[0]} ${F.b + D[1]} V${F.b + D[1] - 12} L${F.r} ${F.b - 12} Z`, C.deep, C.ink, 2);
+  body += path(`M${F.l} ${F.t} H${F.r} V${F.t + 10} H${F.l} Z`, C.ink, C.ink, 2) + path(`M${F.r} ${F.t} L${F.r + D[0]} ${F.t + D[1]} V${F.t + D[1] + 10} L${F.r} ${F.t + 10} Z`, C.deep, C.ink, 2);
+  body += line([F.r, F.t], [F.r, F.b], C.ink, 6);
+  // --- the loose lid: a mesh screen knocked askew. It still rests on the front and back rims,
+  // but its front-right corner overhangs the front and a dark gap has opened along the right end and back.
+  const TP = (u, w) => [F.l + u * (F.r - F.l) + w * D[0], F.t + w * D[1]];
+  body += path(poly([TP(0, 0), TP(1, 0), TP(1, 1), TP(0, 1)]) + "Z", C.ink, C.ink, 2);
+  const LC = [TP(-0.1, 0.02), TP(0.86, -0.22), TP(0.93, 0.82), TP(-0.03, 1.08)];
+  const thick = LC.map(([x, y]) => [x, y + 6]);
+  body += path(poly([LC[0], LC[1], thick[1], thick[0]]) + "Z", C.edge, C.ink, 2.5) + path(poly([LC[1], LC[2], thick[2], thick[1]]) + "Z", C.gold, C.ink, 2.5);
+  body += path(poly(LC) + "Z", C.deep, C.ink, 3);
+  { let d = ""; for (let i = 1; i < 16; i++) { const t = i / 16, a = [LC[0][0] + (LC[1][0] - LC[0][0]) * t, LC[0][1] + (LC[1][1] - LC[0][1]) * t], b = [LC[3][0] + (LC[2][0] - LC[3][0]) * t, LC[3][1] + (LC[2][1] - LC[3][1]) * t]; d += `M${pt(a)} L${pt(b)}`; } body += path(d, "none", C.soft, 1.4, ` opacity="0.8"`); }
+  body += path(`M${pt(LC[0])} L${pt(LC[1])}`, "none", C.edge, 3);
+  body += `</g>` + v.ring;
+  // the tiny spider on the table in front of the glass, looking up at the snake
+  body += mini(318, 354, 0.12, { lid: "worry", mouth: "o", look: [-0.3, -1] }, { feetShadow: { rx: 11, ry: 4, op: 0.3 } });
+  save("creature-snake", VB, "The Snake: a corn snake coiled in its display tank, tongue flicking at a tiny spider on the table outside the glass; the mesh lid has slid askew", body);
+}
+
+// ---------------- parrot ----------------
+{
+  setPrefix("cr-parrot");
+  const v = oval();
+  let body = v.bg + `<g clip-path="${v.clip}">`;
+  // side table the cage stands on
+  body += path("M0 336 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 336], [480, 336], C.ink, 3);
+  const CG = { l: 40, r: 324, top: -10, tray: 312 };
+  body += shadow(182, 344, 160, 7, C.ink, 0.25);
+  // back bars (behind the bird), seen through the cage
+  { let d = ""; for (let x = CG.l + 11; x < CG.r; x += 22) d += `M${x} ${CG.top} V${CG.tray}`; body += path(d, "none", C.gold, 2, ` opacity="0.45"`); }
+  body += path(`M${CG.l} 140 H${CG.r}`, "none", C.gold, 2, ` opacity="0.45"`);
+  // the tail hangs down behind the perch
+  body += path("M170 212 L146 300 Q160 312 176 304 L198 220 Z", C.oxb, C.ink, 3) + path("M180 232 L160 298 Q167 303 174 300 L190 236 Z", C.plum, C.ink, 2) + path("M168 250 l10 3 M162 272 l10 3", "none", C.ox, 2);
+  // perch: a wooden dowel running side to side, its ends fixed into the cage sides
+  const PY = 226;
+  body += path(`M${CG.l} ${PY - 7} H${CG.r} V${PY + 7} H${CG.l} Z`, C.gold, C.ink, 3) + path(`M${CG.l} ${PY - 3} H${CG.r}`, "none", C.glint, 2) + path(`M70 ${PY + 2} q10 -3 20 0 M250 ${PY + 1} q12 -3 24 0`, "none", C.ox, 1.8);
+  // --- the parrot (a scarlet macaw-ish bird), in profile facing right
+  // body
+  body += path("M150 196 Q140 120 196 96 Q246 84 252 140 Q258 196 222 222 Q190 236 164 222 Z", C.oxb, C.ink, 3.5);
+  body += path("M232 120 Q248 150 238 192", "none", C.ox, 4) + path("M168 118 Q180 102 204 98", "none", C.cream, 3, ` opacity="0.5"`);
+  // folded wing: gold coverts, green middle, plum flight feathers pointing down and back to the tail
+  body += path("M170 128 Q214 124 222 164 Q212 206 184 226 Q162 232 154 214 Q150 166 170 128 Z", C.gold, C.ink, 3);
+  body += path("M160 176 Q192 176 214 186 Q204 212 184 226 Q164 230 156 214 Z", C.good, C.ink, 2.5);
+  body += path("M158 206 Q184 206 204 206 Q196 220 184 228 L176 244 L170 232 L164 242 L160 228 Q152 220 158 206 Z", C.plum, C.ink, 2.5);
+  body += path("M176 140 q10 -4 20 2 M170 156 q14 -4 26 4", "none", C.ox, 2);
+  // head
+  body += circ(232, 84, 38, C.oxb, C.ink, 3.5);
+  body += path("M222 50 Q240 44 258 56", "none", C.cream, 3, ` opacity="0.45"`);
+  // bare cream face patch with the eye
+  body += path("M234 70 Q252 62 264 76 Q268 96 252 104 Q236 104 232 90 Z", C.cream, C.ink, 2.5);
+  body += path("M240 94 l6 1 M242 99 l7 0 M246 88 l6 2", "none", C.ox, 1.4);
+  body += circ(248, 80, 8, C.glint, C.ink, 2.4) + circ(249, 80, 4.2, C.ink) + circ(247, 78, 1.6, C.cream);
+  // beak, open mid-squawk: hooked pale upper mandible over a dropped dark lower mandible, tongue inside
+  body += path("M260 94 L290 98 L288 126 L258 110 Z", C.deep, C.ink, 2);
+  body += path("M258 104 Q278 110 292 134 Q282 140 270 134 Q260 124 256 112 Z", C.ink, C.ink, 2.5);
+  body += ell(272, 112, 7, 5, C.ox, C.ink, 1.6, ` transform="rotate(30 272 112)"`);
+  body += path("M256 66 Q290 58 303 84 Q310 106 298 120 Q296 104 288 97 Q276 91 260 97 Z", C.cream, C.ink, 3);
+  body += path("M262 70 Q284 66 294 84", "none", C.edge, 2);
+  // legs and zygodactyl feet on the perch: two toes forward over the dowel, two back (behind it)
+  for (const fx of [192, 208]) {
+    body += path(`M${fx} 222 L${fx} ${PY - 6}`, "none", C.ink, 8) + path(`M${fx} 222 L${fx} ${PY - 6}`, "none", C.edge, 4.5);
+    body += path(`M${fx} ${PY - 7} Q${fx + 9} ${PY - 9} ${fx + 12} ${PY - 1} Q${fx + 13} ${PY + 6} ${fx + 8} ${PY + 9}`, "none", C.ink, 7) + path(`M${fx} ${PY - 7} Q${fx + 9} ${PY - 9} ${fx + 12} ${PY - 1} Q${fx + 13} ${PY + 6} ${fx + 8} ${PY + 9}`, "none", C.edge, 3.5);
+    body += path(`M${fx} ${PY - 7} Q${fx + 4} ${PY - 8} ${fx + 6} ${PY - 2} Q${fx + 7} ${PY + 5} ${fx + 3} ${PY + 8}`, "none", C.ink, 6) + path(`M${fx} ${PY - 7} Q${fx + 4} ${PY - 8} ${fx + 6} ${PY - 2} Q${fx + 7} ${PY + 5} ${fx + 3} ${PY + 8}`, "none", C.edge, 3);
+  }
+  // front bars (in front of the bird and perch), cross rings, and the base tray on the table
+  { let d = ""; for (let x = CG.l; x <= CG.r; x += 22) d += `M${x} ${CG.top} V${CG.tray}`; body += path(d, "none", C.ink, 5) + path(d, "none", C.gold, 2.6); }
+  body += path(`M${CG.l - 4} 150 H${CG.r + 4}`, "none", C.ink, 7) + path(`M${CG.l - 4} 150 H${CG.r + 4}`, "none", C.gold, 4);
+  body += path(`M${CG.l - 10} ${CG.tray} H${CG.r + 10} V${CG.tray + 24} H${CG.l - 10} Z`, C.plum, C.ink, 3.5) + path(`M${CG.l - 10} ${CG.tray + 6} H${CG.r + 10}`, "none", C.soft, 3);
+  // squawk: sound arcs spreading from the open beak toward the right
+  for (const r of [24, 40, 56]) body += path(`M${r1(290 + r * Math.cos(-0.5))} ${r1(106 + r * Math.sin(-0.5))} A${r} ${r} 0 0 1 ${r1(290 + r * Math.cos(0.55))} ${r1(106 + r * Math.sin(0.55))}`, "none", C.ink, 3.5);
+  // the spider's silk line runs down from above the frame to the spinnerets
+  body += path(`M404 0 V${r1(164 - 106 * 0.11 + 2)}`, "none", C.gold, 2.2);
+  body += `</g>` + v.ring;
+  // tiny spider hanging outside the cage, braced against the noise
+  body += mini(404, 164, 0.11, { lid: "squint", mouth: "wobble", look: [-1, 0] });
+  save("creature-parrot", VB, "The Parrot: a scarlet macaw on the perch of its cage, beak wide mid-squawk at a tiny spider dangling on a silk line outside the bars", body);
+}
+
+// ---------------- rat ----------------
+{
+  setPrefix("cr-rat");
+  const v = oval();
+  const FUR = C.soft, SH = C.plum, PINK = C.oxb;
+  const fg = uid("floor");
+  let body = `<defs><linearGradient id="${fg}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.plum}"/><stop offset="0.55" stop-color="${C.edge}"/><stop offset="1" stop-color="${C.parch}"/></linearGradient></defs>`;
+  body += v.bg + `<g clip-path="${v.clip}">`;
+  // under the dishwasher: the machine's underside overhead, a dark void behind, the kitchen floor
+  // (tiles) catching light that comes in from the kitchen at the front
+  body += path("M0 0 H480 V400 H0 Z", C.deep, "none", 0);
+  body += path("M0 250 H480 V400 H0 Z", `url(#${fg})`, "none", 0) + line([0, 250], [480, 250], C.ink, 3);
+  body += strokes([[0, 290, 480, 290], [150, 250, 120, 290], [360, 250, 380, 290], [0, 350, 480, 350], [120, 290, 90, 350], [380, 290, 410, 350]], C.ink, 2, ` opacity="0.35"`);
+  // corrugated drain hose lying along the back of the floor
+  body += path("M0 236 Q240 226 480 240", "none", C.ink, 22) + path("M0 236 Q240 226 480 240", "none", C.edge, 16);
+  { let d = ""; for (let x = 8; x < 480; x += 14) { const t = x / 480, y = (1 - t) * (1 - t) * 236 + 2 * t * (1 - t) * 226 + t * t * 240; d += `M${x} ${r1(y - 7)} v14`; } body += path(d, "none", C.gold, 2); }
+  // the dishwasher's underside and its levelling foot (a threaded post down to a pad on the floor)
+  body += path("M0 0 H480 V46 H0 Z", C.ink, "none", 0) + path("M0 46 H480", "none", C.edge, 4) + path("M0 38 H480", "none", C.soft, 2, ` opacity="0.6"`);
+  for (const x of [70, 170, 300, 410]) body += circ(x, 28, 4, C.edge, C.ink, 1.5);
+  body += path("M52 46 H70 V268 H52 Z", C.edge, C.ink, 3) + path("M52 90 l18 -6 M52 110 l18 -6 M52 130 l18 -6 M52 150 l18 -6 M52 170 l18 -6 M52 190 l18 -6", "none", C.ink, 1.6) + ell(61, 270, 22, 7, C.gold, C.ink, 3);
+  body += shadow(64, 276, 30, 5, C.ink, 0.35);
+  // --- the crumb on the floor between them: the bargaining chip
+  body += shadow(296, 334, 16, 3.5, C.ink, 0.35) + path("M284 332 l6 -12 l14 -2 l8 10 l-4 8 Z", C.gold, C.ink, 2.4) + circ(294, 326, 1.6, C.ox) + circ(302, 324, 1.6, C.ox);
+  // --- the rat: sitting up on its haunches, three-quarter view facing right, arms crossed
+  const rx = 190;
+  body += shadow(rx - 4, 318, 92, 11, C.ink, 0.4);
+  // tail: one long naked tail lying on the floor, curling round in front
+  body += taper([[140, 300], [104, 312], [82, 330], [96, 346], [140, 352], [196, 348], [226, 340]], 11, 3, C.parch);
+  { let d = ""; for (const [x, y] of [[112, 309], [92, 322], [88, 338], [110, 348], [150, 351], [184, 349]]) d += `M${x - 3} ${y - 3} l5 5`; body += path(d, "none", C.ink, 1.4); }
+  // far hind foot (behind), haunch and body
+  body += path(`M${rx - 44} 312 Q${rx - 20} 302 ${rx + 8} 310 L${rx + 10} 316 Q${rx - 20} 318 ${rx - 44} 318 Z`, PINK, C.ink, 2.5);
+  body += path(`M${rx - 70} 300 Q${rx - 86} 236 ${rx - 42} 196 Q${rx - 20} 150 ${rx + 10} 150 Q${rx + 44} 156 ${rx + 46} 200 Q${rx + 50} 260 ${rx + 36} 300 Q${rx - 20} 322 ${rx - 70} 300 Z`, FUR, C.ink, 3.5);
+  body += path(`M${rx - 18} 196 Q${rx + 16} 190 ${rx + 30} 220 Q${rx + 34} 270 ${rx + 16} 300 Q${rx - 10} 306 ${rx - 20} 290 Q${rx - 30} 240 ${rx - 18} 196 Z`, C.parch, C.ink, 2.5);
+  body += furTicks([[rx - 70, 290], [rx - 80, 240], [rx - 50, 196], [rx - 20, 156]], 7, 12, -1, C.ink, 2, 5);
+  body += path(`M${rx - 60} 250 Q${rx - 50} 280 ${rx - 30} 296`, "none", SH, 4);
+  // near hind foot: long, flat on the floor, five toes
+  body += path(`M${rx - 34} 318 Q${rx - 34} 304 ${rx - 10} 304 L${rx + 30} 308 Q${rx + 40} 312 ${rx + 36} 318 Z`, PINK, C.ink, 2.5);
+  for (let i = 0; i < 5; i++) body += circ(rx + 20 + i * 4.5, 316 - Math.abs(i - 2) * 1.5, 2.6, PINK, C.ink, 1.4);
+  // crossed arms: the far forearm (higher) runs right-to-left with its paw tucked on the near upper arm;
+  // the near forearm (lower, in front) runs left-to-right with its paw tucked on the far upper arm
+  const arm = (d) => path(d, FUR, C.ink, 3);
+  const fingers = (x, y, dir) => { let f = ""; for (let i = 0; i < 4; i++) { const d = `M${x} ${y + i * 4.5} q${dir * 9} -1 ${dir * 11} 4`; f += path(d, "none", C.ink, 5.5) + path(d, "none", PINK, 3); } return f; };
+  body += arm(`M${rx + 24} 190 Q${rx + 44} 200 ${rx + 46} 226 Q${rx + 44} 238 ${rx + 32} 236 L${rx - 22} 232 Q${rx - 30} 226 ${rx - 22} 218 L${rx + 24} 220 Z`);
+  body += arm(`M${rx - 26} 188 Q${rx - 50} 206 ${rx - 48} 236 Q${rx - 46} 256 ${rx - 32} 256 L${rx - 20} 250 Q${rx - 34} 226 ${rx - 16} 196 Z`);
+  body += fingers(rx - 34, 216, -1);
+  body += arm(`M${rx - 46} 240 Q${rx - 48} 258 ${rx - 32} 260 L${rx + 26} 256 Q${rx + 34} 250 ${rx + 26} 242 L${rx - 30} 240 Z`);
+  body += fingers(rx + 28, 240, 1);
+  body += path(`M${rx - 36} 250 L${rx + 10} 248`, "none", SH, 2.5, ` opacity="0.8"`);
+  // head: pointed snout to the right, two round ears (the near one notched), both eyes
+  const hx = rx + 18, hy = 128;
+  body += circ(hx + 26, hy - 40, 16, FUR, C.ink, 3) + circ(hx + 26, hy - 40, 9, PINK, C.ink, 0, ` opacity="0.8"`);
+  body += path(`M${hx - 36} ${hy + 10} Q${hx - 40} ${hy - 34} ${hx} ${hy - 38} Q${hx + 36} ${hy - 36} ${hx + 50} ${hy - 4} L${hx + 76} ${hy + 14} Q${hx + 80} ${hy + 22} ${hx + 70} ${hy + 26} Q${hx + 30} ${hy + 40} ${hx - 10} ${hy + 36} Q${hx - 36} ${hy + 30} ${hx - 36} ${hy + 10} Z`, FUR, C.ink, 3.5);
+  body += path(`M${hx - 30} ${hy - 10} Q${hx - 24} ${hy - 30} ${hx} ${hy - 32}`, "none", C.cream, 3, ` opacity="0.4"`);
+  body += path(`M${hx - 20} ${hy - 30} A22 22 0 1 1 ${hx - 2} ${hy - 62} L${hx - 8} ${hy - 50} L${hx + 2} ${hy - 46} A22 22 0 0 1 ${hx - 20} ${hy - 30} Z`, FUR, C.ink, 3);
+  body += path(`M${hx - 16} ${hy - 34} A14 14 0 1 1 ${hx - 4} ${hy - 56} L${hx - 9} ${hy - 48} Z`, PINK, "none", 0, ` opacity="0.8"`);
+  body += circ(hx + 76, hy + 16, 6, PINK, C.ink, 2.4);
+  // eyes: the near one half-lidded and sceptical, the far one just visible past the snout ridge
+  body += circ(hx + 30, hy - 14, 4.5, C.ink) + circ(hx + 29, hy - 15, 1.4, C.glint);
+  body += circ(hx + 8, hy - 6, 8, C.ink) + circ(hx + 6, hy - 8, 2.6, C.glint) + path(`M${hx - 2} ${hy - 10} L${hx + 18} ${hy - 10}`, "none", C.ink, 3) + path(`M${hx - 2} ${hy - 14} L${hx + 18} ${hy - 12} L${hx + 18} ${hy - 18} L${hx - 2} ${hy - 18} Z`, FUR, "none", 0);
+  body += path(`M${hx - 6} ${hy - 22} q12 -8 26 -2`, "none", C.ink, 3) + path(`M${hx - 4} ${hy - 2} l10 -16`, "none", C.ink, 1.6, ` opacity="0.6"`);
+  // mouth, two incisors, and a toothpick held at the corner of the mouth
+  body += path(`M${hx + 70} ${hy + 26} Q${hx + 56} ${hy + 30} ${hx + 44} ${hy + 26}`, "none", C.ink, 2.4);
+  body += path(`M${hx + 62} ${hy + 26} h5 v7 h-5 Z M${hx + 67} ${hy + 26} h5 v7 h-5 Z`, C.glint, C.ink, 1.6);
+  body += path(`M${hx + 46} ${hy + 27} L${hx + 22} ${hy + 44}`, "none", C.ink, 5) + path(`M${hx + 46} ${hy + 27} L${hx + 22} ${hy + 44}`, "none", C.gold, 2.6);
+  // whiskers grow from the muzzle
+  for (const [dx, dy] of [[58, 12], [62, 18], [54, 20]]) body += circ(hx + dx, hy + dy, 1.4, C.ink);
+  body += path(`M${hx + 58} ${hy + 12} Q${hx + 90} ${hy - 6} ${hx + 118} ${hy - 4} M${hx + 62} ${hy + 18} Q${hx + 96} ${hy + 14} ${hx + 124} ${hy + 22} M${hx + 54} ${hy + 20} Q${hx + 80} ${hy + 34} ${hx + 104} ${hy + 50}`, "none", C.ink, 1.6);
+  body += `</g>` + v.ring;
+  // the tiny spider, standing on the floor across from the rat, one front leg raised to make its pitch
+  const ST = { x: 356, y: 318, s: 0.14 };
+  const SL = [...STAND_R, ...mirror(STAND_R)];
+  SL[4] = [[-24, 10], [-56, -50], [-96, -78], [-130, -84]];
+  body += mini(ST.x, ST.y, ST.s, { lid: "sly", mouth: "grin", look: [-1, 0] }, { legs: SL, lifted: [4], feetShadow: { rx: 12, ry: 4, op: 0.35 } });
+  save("creature-rat", VB, "The Rat: a streetwise rat sitting up under a dishwasher, arms crossed and toothpick in its teeth, sizing up a tiny spider pitching a deal over a crumb", body);
+}
+
+// ---------------- exterminator ----------------
+{
+  setPrefix("cr-exterm");
+  const v = oval();
+  const bg = uid("xbeam");
+  // torch beam from a light held high off-frame at the upper left, aimed at the floor beside the table leg
+  const src = [40, -120], pool = { x: 262, y: 322, rx: 74, ry: 17 };
+  const tA = [pool.x + pool.rx * Math.cos(-1.9), pool.y + pool.ry * Math.sin(-1.9)], tB = [pool.x + pool.rx * Math.cos(0.5), pool.y + pool.ry * Math.sin(0.5)];
+  let body = `<defs><linearGradient id="${bg}" gradientUnits="userSpaceOnUse" x1="${src[0]}" y1="${src[1]}" x2="${pool.x}" y2="${pool.y}"><stop offset="0" stop-color="${C.glint}" stop-opacity="0.75"/><stop offset="1" stop-color="${C.glint}" stop-opacity="0.35"/></linearGradient></defs>`;
+  body += v.bg + `<g clip-path="${v.clip}">`;
+  // a dim room at floor level: far wall, skirting, floorboards receding
+  body += path("M0 0 H480 V232 H0 Z", C.deep, "none", 0) + path("M0 206 H480 V232 H0 Z", C.plum, C.ink, 2.5);
+  body += path("M0 232 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 232], [480, 232], C.ink, 3);
+  body += strokes([[200, 232, 150, 400], [420, 232, 480, 330]], C.gold, 3) + strokes([[40, 280, 120, 280], [300, 372, 400, 372], [230, 250, 300, 250]], C.gold, 2);
+  // the beam: a cone from the torch (off-frame) that ends in a pool of light on the floor
+  body += path(`M${src[0] - 10} ${src[1]} L${src[0] + 10} ${src[1]} L${pt(tB)} A${pool.rx} ${pool.ry} 0 0 1 ${pt(tA)} Z`, `url(#${bg})`, "none", 0);
+  body += ell(pool.x, pool.y, pool.rx, pool.ry, C.glint, C.ink, 0, ` opacity="0.75"`);
+  // --- the table leg (its top runs out of frame), lit on the side facing the torch,
+  // casting its shadow across the floor away from the light (to the lower right)
+  const TL = { l: 330, r: 368, foot: 330 };
+  // (the torch is held above the exterminator, off to the left, so the shadow runs straight out to the right)
+  body += path(`M${TL.r - 4} ${TL.foot - 5} L480 ${TL.foot - 14} L480 ${TL.foot + 14} L${TL.r - 4} ${TL.foot + 4} Z`, C.ink, "none", 0, ` opacity="0.35"`);
+  body += shadow((TL.l + TL.r) / 2, TL.foot, (TL.r - TL.l) / 2 + 8, 5, C.ink, 0.4);
+  body += path(`M${TL.l - 6} -10 H${TL.r + 6} V60 Q${TL.r + 10} 74 ${TL.r} 84 L${TL.r - 2} ${TL.foot - 12} Q${TL.r + 6} ${TL.foot - 4} ${TL.r + 2} ${TL.foot} H${TL.l - 2} Q${TL.l - 6} ${TL.foot - 4} ${TL.l + 2} ${TL.foot - 12} L${TL.l} 84 Q${TL.l - 10} 74 ${TL.l - 6} 60 Z`, C.gold, C.ink, 3.5);
+  body += path(`M${TL.l + 5} 96 L${TL.l + 7} ${TL.foot - 16}`, "none", C.glint, 5) + path(`M${TL.r - 8} 96 L${TL.r - 8} ${TL.foot - 16}`, "none", C.ox, 5, ` opacity="0.6"`);
+  body += path(`M${TL.l - 6} 60 H${TL.r + 6}`, "none", C.ink, 2.5);
+  // --- the exterminator: two huge work boots on the floor, trouser legs rising out of frame
+  const boot = (x, y, s, far) => {
+    // x,y = heel bottom; the boot faces right; s = scale. A lace-up work boot with a toe cap and a lugged sole.
+    const P = (a, b) => `${r1(x + a * s)} ${r1(y + b * s)}`;
+    const leather = far ? C.ox : C.oxb, dark = far ? C.deep : C.ox;
+    let b = "";
+    b += path(`M${P(10, -140)} L${P(6, -330)} L${P(122, -330)} L${P(112, -140)} Z`, far ? C.gold : C.parch, C.ink, 3.5); // trouser leg
+    b += path(`M${P(34, -170)} L${P(30, -320)} M${P(92, -160)} L${P(98, -300)}`, "none", far ? C.ox : C.edge, 3, ` opacity="0.7"`);
+    b += path(`M${P(2, -14)} L${P(-2, -154)} L${P(116, -154)} L${P(120, -98)} Q${P(156, -94)} ${P(196, -80)} Q${P(250, -68)} ${P(264, -36)} Q${P(270, -16)} ${P(258, -14)} Z`, leather, C.ink, 3.5); // upper
+    b += path(`M${P(192, -80)} Q${P(250, -68)} ${P(264, -36)} Q${P(270, -16)} ${P(258, -14)} L${P(186, -14)} Q${P(180, -50)} ${P(192, -80)} Z`, dark, C.ink, 3); // toe cap
+    b += path(`M${P(-2, -154)} L${P(116, -154)} L${P(116, -142)} L${P(-2, -142)} Z`, dark, C.ink, 2.5) + path(`M${P(4, -150)} L${P(-8, -174)} L${P(14, -174)} L${P(18, -150)}`, dark, C.ink, 2.5); // collar + pull tab
+    b += path(`M${P(206, -70)} Q${P(242, -62)} ${P(254, -38)}`, "none", C.cream, 3, ` opacity="0.4"`);
+    for (let i = 0; i < 4; i++) {
+      const ax = 88 + i * 14, ay = -136 + i * 12;
+      b += path(`M${P(ax, ay)} L${P(ax + 30, ay + 8)} M${P(ax, ay + 8)} L${P(ax + 30, ay)}`, "none", C.cream, 3);
+      b += circ(x + ax * s, y + ay * s, 2.4 * s, C.glint, C.ink, 1) + circ(x + (ax + 30) * s, y + (ay + 8) * s, 2.4 * s, C.glint, C.ink, 1);
+    }
+    b += path(`M${P(-6, -16)} L${P(262, -16)} Q${P(274, -8)} ${P(262, 0)} L${P(-6, 0)} Z`, C.ink, C.ink, 2.5); // sole
+    b += path(`M${P(-6, -22)} L${P(58, -22)} L${P(58, -16)} L${P(-6, -16)} Z`, C.deep, C.ink, 2); // heel block
+    for (let k = 0; k < 7; k++) b += path(`M${P(10 + k * 36, 0)} v${r1(-5 * s)} h${r1(14 * s)} v${r1(5 * s)}`, "none", C.edge, 2);
+    return b;
+  };
+  body += shadow(170, 296, 150, 9, C.ink, 0.4) + boot(40, 294, 0.84, true);
+  body += shadow(110, 366, 170, 11, C.ink, 0.4) + boot(-30, 362, 1, false);
+  // --- the spray wand: held off-frame above, a metal tube angling down to a nozzle near the floor
+  body += path("M150 -10 L262 262", "none", C.ink, 11) + path("M150 -10 L262 262", "none", C.edge, 6) + path("M150 -10 L262 262", "none", C.cream, 2, ` transform="translate(-2 0)" opacity="0.7"`);
+  body += path("M252 252 L270 244 L284 280 L266 288 Z", C.ink, C.ink, 2) + path("M262 272 L284 264", "none", C.edge, 3);
+  // a drip gathering at the nozzle and a drop falling straight down from it
+  body += path("M276 284 q-3 6 0 8 q3 -2 0 -8 Z", C.cream, C.ink, 1.6) + drop(276, 298, 0.5);
+  body += `</g>` + v.ring;
+  // --- the tiny spider hiding behind the table leg, in its shadow, peeking round the far side
+  const hide = mini(380, 322, 0.11, { lid: "worry", mouth: "o", look: [-1, 0] }, { feetShadow: { rx: 11, ry: 4, op: 0.35 } });
+  const hk = uid("hidek");
+  // the leg occludes the spider: clip the spider to the region right of the leg's right edge
+  body += `<clipPath id="${hk}"><path d="M${TL.r - 1} 0 H480 V400 H${TL.r - 1} Z"/></clipPath><g clip-path="url(#${hk})">${hide}</g>`;
+  save("creature-exterminator", VB, "The Exterminator, seen from spider height: two huge work boots and a dripping spray wand, a torch beam sweeping the floor while a tiny spider hides behind a table leg", body);
+}
+
+// ---------------- goldfish ----------------
+{
+  setPrefix("cr-fish");
+  const v = oval();
+  // bowl: a glass sphere (centre bc, radius R) cut flat at the rim (y=RIM) and the base (y=BASE)
+  const bc = [236, 206], R = 136, RIM = 84, BASE = 330, WL = 124;
+  const hw = y => Math.sqrt(R * R - (y - bc[1]) ** 2);
+  const bowl = `M${r1(bc[0] - hw(RIM))} ${RIM} A${R} ${R} 0 0 0 ${r1(bc[0] - hw(BASE))} ${BASE} L${r1(bc[0] + hw(BASE))} ${BASE} A${R} ${R} 0 0 0 ${r1(bc[0] + hw(RIM))} ${RIM} Z`;
+  const bk = uid("bowl");
+  let body = v.bg + `<g clip-path="${v.clip}">`;
+  // the table the bowl stands on
+  body += path("M0 300 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 300], [480, 300], C.ink, 3) + strokes([[30, 350, 120, 350], [330, 372, 440, 372]], C.gold, 2);
+  body += shadow(bc[0] + 8, BASE + 2, hw(BASE) + 26, 9, C.ink, 0.28);
+  body += `</g>`;
+  body += `<clipPath id="${bk}"><path d="${bowl}"/></clipPath>`;
+  // water: fills the bowl below the water line; the surface is an ellipse
+  body += `<g clip-path="url(#${bk})">`;
+  body += path(bowl, C.cream, "none", 0, ` opacity="0.35"`);
+  body += path(`M0 ${WL} H480 V400 H0 Z`, C.cream, "none", 0, ` opacity="0.55"`) + path(`M0 ${WL} H480 V400 H0 Z`, C.good, "none", 0, ` opacity="0.08"`);
+  body += ell(bc[0], WL, hw(WL), 12, C.cream, C.ink, 2, ` opacity="0.6"`);
+  // gravel resting on the bottom, and a plant rooted in it
+  { const Rg = rng(8); let g = ""; const cols = [C.gold, C.ox, C.plum, C.edge, C.soft];
+    for (let i = 0; i < 46; i++) { const x = bc[0] - hw(BASE) - 20 + Rg() * (2 * hw(BASE) + 40), y = BASE - 4 - Rg() * 18 * (1 - Math.abs(x - bc[0]) / 140); g += circ(x, y, 3.5 + Rg() * 3, cols[i % 5], C.ink, 1.5); } body += g; }
+  body += path("M150 316 Q142 270 156 226 M150 300 Q128 280 124 256 M152 276 Q172 256 176 236", "none", C.ink, 7) + path("M150 316 Q142 270 156 226 M150 300 Q128 280 124 256 M152 276 Q172 256 176 236", "none", C.good, 4);
+  // --- the goldfish, near the surface, tilted up toward the spider on the rim
+  const fx = 238, fy = 196, fa = -20;
+  let fish = "";
+  fish += path("M-50 0 Q-86 -40 -104 -28 Q-92 -6 -98 0 Q-92 8 -104 30 Q-84 40 -50 6 Z", C.glint, C.ink, 3) + path("M-60 -2 L-94 -22 M-62 2 L-96 22 M-62 0 L-98 0", "none", C.gold, 2);
+  fish += path("M-20 -30 Q0 -58 26 -34 Z", C.glint, C.ink, 3) + path("M-8 -40 L6 -34", "none", C.gold, 2);
+  fish += path("M-10 30 Q0 50 16 32 Z M-40 22 Q-44 40 -28 30 Z", C.glint, C.ink, 2.5);
+  fish += ell(0, 0, 58, 34, C.gold, C.ink, 3.5);
+  fish += path("M-30 -22 Q0 -34 30 -24", "none", C.glint, 4, ` opacity="0.8"`);
+  fish += path("M-24 -4 a8 8 0 0 0 0 12 M-10 -12 a8 8 0 0 0 0 12 M-10 6 a8 8 0 0 0 0 12 M4 -4 a8 8 0 0 0 0 12", "none", C.ox, 2);
+  fish += path("M12 8 Q2 24 20 26 Z", C.glint, C.ink, 2.5);
+  // blank, happy face: big round eye with a small centred pupil, a little open smile
+  fish += circ(34, -8, 13, C.cream, C.ink, 3) + circ(35, -8, 4.5, C.ink) + circ(33, -10, 1.6, C.cream);
+  fish += path("M48 8 Q54 14 58 6", "none", C.ink, 3) + ell(55, 4, 3.5, 3, C.ox, C.ink, 1.6);
+  body += `<g transform="translate(${fx} ${fy}) rotate(${fa})">${fish}</g>`;
+  // bubbles rising straight up from its mouth, growing a little as they rise
+  body += circ(fx + 56, 170, 3, "none", C.ink, 2) + circ(fx + 57, 154, 4, "none", C.ink, 2) + circ(fx + 56, 138, 5, "none", C.ink, 2);
+  body += `</g>`;
+  // glass: rim, outline, highlights from a light at the upper left
+  body += path(bowl, "none", C.ink, 4);
+  body += ell(bc[0], RIM, hw(RIM), 10, "none", C.ink, 3) + ell(bc[0], RIM, hw(RIM) - 4, 7, "none", C.cream, 2, ` opacity="0.8"`);
+  body += path(`M${bc[0] - 112} 170 A118 118 0 0 1 ${bc[0] - 56} 112`, "none", C.cream, 7, ` opacity="0.85"`) + path(`M${bc[0] - 118} 206 A120 120 0 0 1 ${bc[0] - 114} 184`, "none", C.cream, 5, ` opacity="0.85"`);
+  body += v.ring;
+  // --- the tiny spider standing on the rim's front lip, all eight feet on the glass edge, leaning in to talk
+  const ST = { x: 257, y: 76, s: 0.19 };
+  const rimPt = t => [bc[0] + hw(RIM) * Math.cos(t * Math.PI / 180), RIM + 10 * Math.sin(t * Math.PI / 180)];
+  const feet = [30, 40, 50, 60, 70, 80, 90, 100].map(rimPt);
+  const SL = planted(ST, [feet[3], feet[2], feet[1], feet[0], feet[4], feet[5], feet[6], feet[7]], [36, 64, 84, 84, 36, 64, 84, 84]);
+  body += mini(ST.x, ST.y, ST.s, { lid: "sly", mouth: "grin", look: [-0.6, 0.8] }, { legs: SL });
+  // a speech bubble with no words, just an ellipsis
+  body += path("M296 48 Q296 26 322 26 Q350 26 350 46 Q350 64 324 64 Q316 64 310 62 L292 72 L300 58 Q296 54 296 48 Z", C.cream, C.ink, 3) + circ(312, 46, 3, C.ink) + circ(323, 46, 3, C.ink) + circ(334, 46, 3, C.ink);
+  save("creature-goldfish", VB, "The Goldfish: a round-eyed, blissfully blank goldfish in a glass bowl on a table, listening to a tiny spider talking from the bowl's rim", body);
+}
