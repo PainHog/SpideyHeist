@@ -176,7 +176,10 @@ function planSpots(ends) {
     const prefs = SPOTS[id];
     const room = freeIn - SAFETY_IN;
     if (!prefs || room - MIN_GAP_IN < MIN_SPOT_IN) continue;
-    const art = prefs.find(a => !used.has(a) && existsSync(join(ART, `${a}.svg`))) ?? prefs.find(a => existsSync(join(ART, `${a}.svg`)));
+    // preferred spots first, then any spot not used yet, and only then a repeat
+    const all = [...new Set(Object.values(SPOTS).flat())];
+    const have = a => existsSync(join(ART, `${a}.svg`));
+    const art = prefs.find(a => !used.has(a) && have(a)) ?? all.find(a => !used.has(a) && have(a)) ?? prefs.find(have);
     if (!art) continue;
     used.add(art);
     const h = +Math.min(MAX_SPOT_IN, room - MIN_GAP_IN).toFixed(2);
