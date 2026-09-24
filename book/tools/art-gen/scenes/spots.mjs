@@ -525,3 +525,243 @@ export function spot_jar_rescue() {
   s += `<ellipse cx="96" cy="380" rx="11" ry="3.4" fill="${C.edge}" opacity=".6" transform="rotate(-8 96 380)"/>`;
   return V("Two spiders on a cookie tin lever the lid off a jar to free a trapped crewmate", `<g transform="translate(0 -14)">${s}</g>`);
 }
+
+// ================================================================
+// 5. Silk swing: a spider swings on a line anchored under a wall shelf, over the gap between counters
+// ================================================================
+export function spot_silk_swing() {
+  const P = "sss";
+  let s = glow(P, 300, 220, 295, 215);
+  const CT = 300, CB = 270, gap0 = 222, gap1 = 378; // counter front edge, counter back (wall line), gap
+  // tiled backsplash wall
+  {
+    let c = `<rect x="20" y="104" width="560" height="${CB - 104}" fill="${C.cream}"/>`;
+    let d = "";
+    for (let y = CB - 34; y > 104; y -= 34) d += `M20 ${y}H580`;
+    for (let x = 30; x < 580; x += 34) d += `M${x} 104V${CB}`;
+    c += `<path d="${d}" stroke="${C.edge}" stroke-width="2.2"/>`;
+    c += stipple(8, 300, 190, 270, 80, 90, .9, C.edge, .6);
+    s += faded(`${P}-tl`, 20, 580, c, { top: [104, 150] });
+  }
+  // the gap between the counters: a dark drop, fading out below
+  {
+    s += `<defs><linearGradient id="${P}-gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.soft}"/><stop offset=".35" stop-color="${C.deep}"/><stop offset="1" stop-color="${C.deep}" stop-opacity="0"/></linearGradient></defs>`;
+    s += `<rect x="${gap0}" y="${CB}" width="${gap1 - gap0}" height="${450 - CB - 6}" fill="url(#${P}-gp)"/>`;
+  }
+  // the two counters: top surface, stone front edge, cabinet doors fading out below
+  const counter = (x0, x1, id, knobSide) => {
+    let c = `<rect x="${x0}" y="${CB}" width="${x1 - x0}" height="${CT - CB}" fill="${C.parch}"/>`;
+    c += `<path d="M${x0} ${CB}H${x1}" stroke="${C.ink}" stroke-width="1.6" opacity=".6"/>`;
+    c += `<rect x="${x0}" y="${CT}" width="${x1 - x0}" height="16" fill="${C.plum}"/>`;
+    c += `<path d="M${x0} ${CT}H${x1}M${x0} ${CT + 16}H${x1}" stroke="${C.ink}" stroke-width="2.6"/>`;
+    c += `<rect x="${x0}" y="${CT + 16}" width="${x1 - x0}" height="${450 - CT - 20}" fill="${C.edge}"/>`;
+    const dx0 = x0 + 12, dx1 = x1 - 12, mid = (dx0 + dx1) / 2;
+    c += `<path d="M${dx0} ${CT + 26}H${mid - 4}V446H${dx0}zM${mid + 4} ${CT + 26}H${dx1}V446H${mid + 4}z" fill="${C.parch}" stroke="${C.ink}" stroke-width="2.2"/>`;
+    c += `<path d="M${dx0 + 12} ${CT + 38}H${mid - 16}V446M${dx0 + 12} ${CT + 38}V446M${mid + 16} ${CT + 38}H${dx1 - 12}V446M${mid + 16} ${CT + 38}V446" stroke="${C.ink}" stroke-width="1.2" fill="none" opacity=".4"/>`;
+    c += `<rect x="${mid - 14}" y="${CT + 44}" width="5" height="22" rx="2.5" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.4"/><rect x="${mid + 9}" y="${CT + 44}" width="5" height="22" rx="2.5" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.4"/>`;
+    c += `<path d="M${x0} ${CB}V446M${x1} ${CB}V446" stroke="${C.ink}" stroke-width="2.6"/>`;
+    const mx0 = knobSide === "L" ? x0 - 20 : x0, mx1 = knobSide === "L" ? x1 : x1 + 20;
+    return `<defs>${fadeMask(id, mx0, mx1, { edge: knobSide === "L" ? .2 : 0, top: null })}<linearGradient id="${id}-b" x1="0" y1="0" x2="0" y2="1"><stop offset=".62" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="${id}-v" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="450"><rect x="0" y="0" width="600" height="450" fill="url(#${id}-b)"/></mask></defs><g mask="url(#${id}-v)">${c}</g>`;
+  };
+  // horizontal fade for the outer ends only: left counter fades left, right counter fades right
+  const cL = counter(20, gap0, `${P}-cl`, "L"), cR = counter(gap1, 580, `${P}-cr`, "R");
+  s += `<defs>${fadeMask(`${P}-ch`, 20, 580, { edge: .1 })}</defs><g mask="url(#${P}-ch)">${cL}${cR}</g>`;
+
+  // wall shelf on two screwed L-brackets, with a jar and a mug on it
+  const SX0 = 150, SX1 = 450, ST = 84, SF = 98, SU = 106; // shelf top, front-edge bottom, underside
+  s += `<path d="M205 ${ST + 6}V${ST - 42}q0 -6 6 -6h28q6 0 6 6V${ST + 6}z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.4" opacity=".95"/>`;
+  s += `<rect x="202" y="${ST - 50}" width="46" height="10" rx="3" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<path d="M211 ${ST - 26}h28" stroke="${C.gold}" stroke-width="10" opacity=".5"/>`;
+  s += `<path d="M352 ${ST + 6}V${ST - 30}h40V${ST + 6}z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<path d="M392 ${ST - 22}q16 0 16 12t-16 12" stroke="${C.ink}" stroke-width="7" fill="none"/><path d="M392 ${ST - 22}q16 0 16 12t-16 12" stroke="${C.soft}" stroke-width="3" fill="none"/>`;
+  s += `<path d="M${SX0} ${SF}L${SX0 + 10} ${SU}H${SX1 - 10}L${SX1} ${SF}z" fill="${C.edge}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += `<rect x="${SX0}" y="${ST}" width="${SX1 - SX0}" height="${SF - ST}" fill="${C.gold}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += line(`M${SX0 + 20} ${ST + 7}h90M${SX0 + 150} ${ST + 9}h110`, 1.4, C.goldB, ` opacity=".8"`);
+  for (const bx of [190, 410]) {
+    s += `<path d="M${bx - 5} ${SU}V${SU + 50}h10V${SU + 14}h0z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.2" stroke-linejoin="round"/>`;
+    s += `<path d="M${bx + 5} ${SU + 40}L${bx + (bx < 300 ? 32 : -32)} ${SU}" stroke="${C.ink}" stroke-width="6" stroke-linecap="round"/><path d="M${bx + 5} ${SU + 40}L${bx + (bx < 300 ? 32 : -32)} ${SU}" stroke="${C.soft}" stroke-width="2.6" stroke-linecap="round"/>`;
+    s += `<rect x="${bx - (bx < 300 ? 5 : 40)}" y="${SU - 3}" width="45" height="6" fill="${C.soft}" stroke="${C.ink}" stroke-width="2"/>`;
+    s += `<circle cx="${bx}" cy="${SU + 16}" r="2.4" fill="${C.ink}"/><circle cx="${bx}" cy="${SU + 38}" r="2.4" fill="${C.ink}"/>`;
+  }
+
+  // the swing: silk anchored under the shelf, spider on the arc over the gap
+  const A = [300, SU + 1], R = 160, th = 11 * Math.PI / 180, sc = .92;
+  const S = [A[0] + R * Math.sin(th), A[1] + R * Math.cos(th)];
+  const rdeg = -11, rr = rdeg * Math.PI / 180;
+  const cx = S[0] - 39 * sc * Math.sin(rr), cy = S[1] + 39 * sc * Math.cos(rr);
+  // the path its body has swung along, dashed: from a take-off on the left counter, down through the gap
+  {
+    const Rb = Math.hypot(cx - A[0], cy - A[1]), a0 = -41 * Math.PI / 180, a1 = 1 * Math.PI / 180;
+    s += `<path d="M${n(A[0] + Rb * Math.sin(a0))} ${n(A[1] + Rb * Math.cos(a0))}A${n(Rb)} ${n(Rb)} 0 0 0 ${n(A[0] + Rb * Math.sin(a1))} ${n(A[1] + Rb * Math.cos(a1))}" stroke="${C.goldB}" stroke-width="2.4" fill="none" stroke-dasharray="4 8" stroke-linecap="round"/>`;
+    const t0 = [A[0] + Rb * Math.sin(a0), A[1] + Rb * Math.cos(a0)];
+    // take-off scuffs on the counter top
+    s += line(`M${n(t0[0] - 20)} ${CB + 16}l6 -5M${n(t0[0] - 6)} ${CB + 18}l2 -7M${n(t0[0] + 8)} ${CB + 17}l-3 -6`, 1.8, C.ink, ` opacity=".5"`);
+  }
+  s += `<circle cx="${A[0]}" cy="${A[1] + 1}" r="3" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.2"/>`;
+  s += line(`M${A[0]} ${A[1] + 2}L${n(S[0])} ${n(S[1])}`, 1.8, C.goldB);
+  s += line(`M${n(cx - 62)} ${n(cy + 4)}l-24 -4M${n(cx - 56)} ${n(cy + 20)}l-20 -5M${n(cx - 60)} ${n(cy - 14)}l-16 -3`, 2.4, C.cream, ` opacity=".7"`);
+  s += sp({ x: cx, y: cy, s: sc, r: rdeg, pose: "tuck", look: [1, .2], mouth: "big", brow: "up", mark: "chevron",
+    legOverride: {
+      R0: [[9, -6], [28, -26], [52, -18]], R1: [[12, -2], [38, -14], [60, 0]], R2: [[13, 3], [40, 4], [56, 22]], R3: [[10, 7], [30, 18], [40, 38]],
+      L0: [[-9, -6], [-24, -24], [-40, -30]], L1: [[-12, -2], [-34, -14], [-50, -8]], L2: [[-13, 3], [-36, 2], [-50, 16]], L3: [[-10, 7], [-28, 16], [-36, 34]] } });
+
+  // the goal on the right counter: a cookie on a saucer
+  s += shadow(510, CB + 22, 50, 6, .25);
+  s += `<ellipse cx="510" cy="${CB + 18}" rx="46" ry="10" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<ellipse cx="510" cy="${CB + 17}" rx="30" ry="6" fill="none" stroke="${C.edge}" stroke-width="1.6"/>`;
+  s += flatCookie(510, CB + 20, 26, 7, false, { shade: false }) + sparkle(540, CB - 22, 7);
+  // salt shaker on the left counter
+  s += shadow(70, CB + 20, 22, 4, .25);
+  s += `<path d="M56 ${CB + 16}V${CB - 22}q0 -12 14 -12t14 12V${CB + 16}q-14 5 -28 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2"/>`;
+  s += `<path d="M56 ${CB - 18}q14 5 28 0" stroke="${C.ink}" stroke-width="1.6" fill="none"/>`;
+  s += `<circle cx="66" cy="${CB - 28}" r="1.4" fill="${C.ink}"/><circle cx="72" cy="${CB - 30}" r="1.4" fill="${C.ink}"/><circle cx="76" cy="${CB - 26}" r="1.4" fill="${C.ink}"/>`;
+  return V("A spider swings on a silk line from under a wall shelf across the gap between two counters", s);
+}
+
+// ================================================================
+// 6. Lockpick: a spider picks a jewellery-box drawer lock with a bent pin (and a tension pin)
+// ================================================================
+export function spot_lockpick() {
+  const P = "slp";
+  let s = glow(P, 300, 225, 295, 210);
+  const TY = 404;
+  s += tabletop(P, TY, 26, 574, { depth: 150, thick: 20, top: C.edge, edge: C.gold });
+  const X0 = 136, X1 = 464, D = [44, -44];
+  const FEET = 388, PL = 372, PLT = 356, BOT = 350, TOPB = 196, LID = 164;
+  // contact shadow and bun feet
+  s += shadow(X0 + (X1 - X0) / 2 + 18, FEET - 2, (X1 - X0) / 2 + 30, 12, .32);
+  for (const fx of [X0 + 18, X1 - 18]) s += `<path d="M${fx - 14} ${PL}q-2 16 14 16q16 0 14 -16z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<path d="M${X1 + D[0] * .8 - 9} ${PL + D[1] * .8 - 2}q-1 14 9 14q10 0 9 -14z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2"/>`;
+  // right side face
+  s += `<path d="M${X1} ${LID}L${X1 + D[0]} ${LID + D[1]}V${PL + D[1]}L${X1} ${PL}z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += hatch(`${P}-sd`, `<path d="M${X1} ${LID}L${X1 + D[0]} ${LID + D[1]}V${PL + D[1]}L${X1} ${PL}z"/>`, X1, LID + D[1], X1 + D[0], PL, 6, 70, C.ink, 1.2, .35);
+  // lid top face and lid front
+  s += `<path d="M${X0 - 6} ${LID}L${X0 - 6 + D[0]} ${LID + D[1]}H${X1 + 6 + D[0]}L${X1 + 6} ${LID}z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s += `<path d="M${X0 + 30} ${LID - 10}L${X0 + 30 + D[0] * .6} ${LID - 10 + D[1] * .6}H${X1 - 30 + D[0] * .6}L${X1 - 30} ${LID - 10}z" fill="none" stroke="${C.gold}" stroke-width="2"/>`;
+  s += `<rect x="${X0 - 6}" y="${LID}" width="${X1 - X0 + 12}" height="${TOPB - LID}" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += line(`M${X0 + 8} ${LID + 8}H${X1 - 60}`, 2.2, C.soft, ` opacity=".8"`);
+  // clasp
+  s += `<rect x="288" y="${TOPB - 16}" width="24" height="24" rx="4" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/><circle cx="300" cy="${TOPB - 4}" r="3" fill="${C.ink}"/>`;
+  // carcass front and two drawers
+  s += `<rect x="${X0}" y="${TOPB}" width="${X1 - X0}" height="${BOT - TOPB}" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  const drawer = (y0, y1, key) => {
+    let d = `<rect x="${X0 + 12}" y="${y0}" width="${X1 - X0 - 24}" height="${y1 - y0}" rx="3" fill="${C.soft}" stroke="${C.ink}" stroke-width="2.4"/>`;
+    d += `<rect x="${X0 + 22}" y="${y0 + 8}" width="${X1 - X0 - 44}" height="${y1 - y0 - 16}" rx="2" fill="none" stroke="${C.gold}" stroke-width="1.6"/>`;
+    d += line(`M${X0 + 16} ${y0 + 4}H${X1 - 16}`, 2, C.cream, ` opacity=".35"`);
+    for (const kx of [X0 + 64, X1 - 64]) d += `<circle cx="${kx}" cy="${(y0 + y1) / 2}" r="7" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/><circle cx="${kx - 2}" cy="${(y0 + y1) / 2 - 2}" r="2.4" fill="${C.goldB}"/>`;
+    if (key) {
+      const ky = (y0 + y1) / 2;
+      d += `<g transform="translate(300 ${ky}) scale(1.3) translate(-300 ${-ky})">`;
+      d += `<path d="M291 ${ky - 16}h18q4 0 4 4v26q0 4 -4 4h-18q-4 0 -4 -4v-26q0 -4 4 -4z" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
+      d += `<circle cx="300" cy="${ky - 3}" r="4.4" fill="${C.ink}"/><path d="M297.4 ${ky - 1}l-2 11h9.2l-2 -11z" fill="${C.ink}"/>`;
+      d += `<circle cx="300" cy="${ky - 12}" r="1.2" fill="${C.ink}"/><circle cx="300" cy="${ky + 14}" r="1.2" fill="${C.ink}"/>`;
+      d += line(`M292 ${ky - 13}v10`, 1.8, C.goldB) + `</g>`;
+    }
+    return d;
+  };
+  s += drawer(TOPB + 10, 270, false);
+  s += drawer(280, BOT - 8, true);
+  // plinth with a ledge along the front
+  s += `<path d="M${X0 - 8} ${PLT}L${X0 - 8 + 10} ${BOT}H${X1 + 8 - 10}L${X1 + 8} ${PLT}z" fill="${C.soft}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += `<rect x="${X0 - 8}" y="${PLT}" width="${X1 - X0 + 16}" height="${PL - PLT}" fill="${C.plum}" stroke="${C.ink}" stroke-width="2.6"/>`;
+  s += line(`M${X0 - 2} ${PLT + 5}H${X1 + 2}`, 1.6, C.gold, ` opacity=".8"`);
+  // a gold chain caught in the top drawer, hanging straight down with its pendant
+  {
+    let c = "";
+    for (let y = TOPB + 12; y < 252; y += 7) c += `<ellipse cx="${X1 - 110}" cy="${y}" rx="2.6" ry="4" fill="none" stroke="${C.goldB}" stroke-width="1.8"/>`;
+    s += `<g stroke="${C.ink}">${c.replace(/stroke="#f0cf6b"/g, `stroke="${C.ink}" stroke-opacity=".0"`)}</g>`;
+    s += c;
+    s += `<path d="M${X1 - 110} 252l-9 12 9 12 9 -12z" fill="${C.goldB}" stroke="${C.ink}" stroke-width="1.8" stroke-linejoin="round"/>`;
+    s += sparkle(X1 - 96, 258, 6);
+  }
+
+  // the spider on the plinth ledge beside the lock, working two bent pins with its forelegs
+  const ky = (280 + BOT - 8) / 2;
+  {
+    const sc = 1.02, x = 372, gy = PLT + 2;
+    // tension pin: short end in the bottom of the keyhole, bent to run right to the second left leg
+    const tw = `M${300} ${ky + 10}v5H${340}`;
+    // pick: hooked tip in the top of the keyhole, shaft up-right to the first left leg, round head
+    const pk = `M${300} ${ky - 2}l5 -4L${346} ${ky - 22}`;
+    s += line(tw, 5.4, C.ink) + line(tw, 2.6, C.cream);
+    s += line(pk, 5.4, C.ink) + line(pk, 2.6, C.cream);
+    s += `<circle cx="${349}" cy="${ky - 23.5}" r="5.2" fill="${C.goldB}" stroke="${C.ink}" stroke-width="2"/>`;
+    const feet = { L0: [334, ky - 17], L1: [332, ky + 15] }, kn = { L0: [318, ky - 36], L1: [316, ky - 2] };
+    s += shadow(x, gy, 62, 5, .3);
+    s += sp({ ...standOn(x, gy, sc, feet, kn), look: [-1, -.6], mouth: "flat", brow: "down", mark: "chevron", mask: true });
+    s += line(`M280 ${ky - 34}l-6 -6M296 ${ky - 40}v-8M312 ${ky - 36}l4 -6`, 2, C.goldB);
+  }
+  // a ring lying flat on the dresser top (right), and a perfume bottle
+  s += shadow(530, 392, 16, 4, .25) + `<ellipse cx="530" cy="388" rx="14" ry="5" fill="none" stroke="${C.ink}" stroke-width="5"/><ellipse cx="530" cy="388" rx="14" ry="5" fill="none" stroke="${C.goldB}" stroke-width="2.4"/>`;
+  s += `<path d="M524 382l6 -8 6 8z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.4"/>`;
+  s += shadow(78, 380, 26, 5, .25);
+  s += `<path d="M58 378V338q0 -8 8 -8h24q8 0 8 8V378q-20 5 -40 0z" fill="${C.cream}" stroke="${C.ink}" stroke-width="2.2" opacity=".95"/>`;
+  s += `<path d="M62 346h32v26q-16 4 -32 0z" fill="${C.gold}" opacity=".5"/>`;
+  s += `<rect x="70" y="316" width="16" height="14" rx="2" fill="${C.gold}" stroke="${C.ink}" stroke-width="2"/>`;
+  s += line(`M64 340v22`, 3, "#fff", ` opacity=".7"`);
+  return V("A masked spider picks the lock of a jewellery-box drawer with two bent pins", s);
+}
+
+// ================================================================
+// 7. Loot haul: two spiders carry one cookie, flat and overhead, across the floor
+// ================================================================
+export function spot_loot_haul() {
+  const P = "slh";
+  let s = glow(P, 300, 230, 295, 210);
+  const GY = 402;
+  s += room(P, { sk: 214, skH: 44, gy: GY });
+  s += floor(P, GY, 24, 576);
+  // their destination: a gap under the skirting board (right), dark inside
+  s += `<path d="M470 214V198q0 -16 18 -16h30q18 0 18 16V214z" fill="${C.deep}" stroke="${C.ink}" stroke-width="2.4"/>`;
+  s += `<path d="M472 184l-6 -6M534 186l6 -5" stroke="${C.ink}" stroke-width="1.8" stroke-linecap="round"/>`;
+  // a trail of crumbs behind them, lying on the floor
+  { const R = rng(21); let c = "";
+    for (const [x, y] of [[58, 372], [84, 380], [104, 366], [130, 384], [150, 372], [66, 390], [118, 394]]) {
+      const w = 3 + R() * 4;
+      c += `<ellipse cx="${x}" cy="${y + 2}" rx="${n(w + 2)}" ry="1.8" fill="${C.ink}" opacity=".2"/><path d="M${n(x - w)} ${y + 1}l${n(w * .6)} ${n(-w * .9)}l${n(w * 1.2)} ${n(w * .2)}l${n(w * .3)} ${n(w * .7)}z" fill="${C.gold}" stroke="${C.ink}" stroke-width="1.2" stroke-linejoin="round"/>`;
+    }
+    s += c; }
+
+  const cx = 302, r = 104, cyBot = 322; // cookie centre x, radius, lowest point of its edge
+  const ry = r * .34, t = r * .17, yTop = cyBot - t - ry;
+  const rimBot = x => yTop + t + ry * Math.sqrt(Math.max(0, 1 - ((x - cx) / r) ** 2));
+  // (the porters and their cookie are drawn in a group scaled up about the floor line)
+  const s0 = s; s = "";
+  // the cookie's shadow on the floor beneath it
+  s += `<ellipse cx="${cx + 8}" cy="${GY - 8}" rx="${r + 10}" ry="16" fill="${C.ink}" opacity=".16"/>`;
+  // two porters: four legs walking, forelegs and second legs raised to hold the cookie up
+  const sc = 1.02, porters = [
+    { x: 240, look: [.3, -.6], mouth: "flat", brow: "down", mark: "stripe" },
+    { x: 366, look: [-.2, -.6], mouth: "grin", brow: "up", mark: "chevron", hat: "goggles" },
+  ];
+  for (const p of porters) {
+    const x = p.x, y = GY - 26 * sc;
+    const up = { R0: [x + 16, rimBot(x + 16) - 5], L0: [x - 16, rimBot(x - 16) - 5], R1: [x + 34, rimBot(x + 34) - 5], L1: [x - 34, rimBot(x - 34) - 5] };
+    const kn = { R0: [x + 34, y - 22], L0: [x - 34, y - 22], R1: [x + 56, y - 12], L1: [x - 56, y - 12] };
+    s += shadow(x + 2, GY, 64, 6, .28);
+    s += sp({ ...standOn(x, GY, sc, { ...up, R2: [x + 48, GY], L2: [x - 46, GY], R3: [x + 64, GY], L3: [x - 62, GY] }, kn), ...p });
+  }
+  // the cookie (drawn over the raised feet: they press on its underside)
+  {
+    const cy = yTop, band = `M${cx - r} ${n(cy)}v${n(t)}A${r} ${n(ry)} 0 0 0 ${cx + r} ${n(cy + t)}v${n(-t)}z`;
+    s += `<path d="${band}" fill="${C.gold}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>`;
+    s += `<path d="${band}" fill="${C.ink}" opacity=".22"/>`;
+    s += `<ellipse cx="${cx}" cy="${n(cy)}" rx="${r}" ry="${n(ry)}" fill="${C.gold}" stroke="${C.ink}" stroke-width="3"/>`;
+    s += `<ellipse cx="${cx - 26}" cy="${n(cy - 8)}" rx="${r * .5}" ry="${n(ry * .45)}" fill="${C.goldB}" opacity=".45"/>`;
+    s += stipple(31, cx, cy, r * .9, ry * .85, 90, 1, C.ox, .45);
+    s += line(`M${cx - 60} ${n(cy + 10)}q10 -6 22 -2M${cx + 30} ${n(cy - 14)}q12 4 20 -2M${cx + 52} ${n(cy + 14)}q-8 -6 -18 -4`, 1.6, C.ox, ` opacity=".7"`);
+    const R = rng(4);
+    for (let i = 0; i < 11; i++) {
+      const a = R() * 6.28, u = .15 + R() * .7, ex = cx + Math.cos(a) * r * u, ey = cy + Math.sin(a) * ry * u, w = r * (.05 + R() * .03);
+      s += `<ellipse cx="${n(ex)}" cy="${n(ey)}" rx="${n(w)}" ry="${n(w * .55)}" fill="${C.deep}"/><ellipse cx="${n(ex - w * .3)}" cy="${n(ey - w * .2)}" rx="${n(w * .3)}" ry="${n(w * .15)}" fill="${C.soft}"/>`;
+    }
+    for (const fx of [-.8, -.35, .2, .66]) { const ex = cx + fx * r, ey = cy + t * .5 + ry * Math.sqrt(1 - fx * fx); s += `<ellipse cx="${n(ex)}" cy="${n(ey)}" rx="5" ry="3.4" fill="${C.deep}"/>`; }
+  }
+  s += sparkle(cx + 70, yTop - 40, 9) + sparkle(cx - 88, yTop - 24, 5);
+  // effort: a bead of sweat falling from the left porter, strain ticks
+  s += `<path d="M206 342q-4 6 0 9q4 -3 0 -9z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.2"/>`;
+  s += line(`M168 326l-8 -4M166 338l-9 0`, 2, C.ink, ` opacity=".5"`);
+  s += line(`M438 326l8 -4M440 338l9 0`, 2, C.ink, ` opacity=".5"`);
+  s = s0 + `<g transform="translate(300 ${GY}) scale(1.18) translate(-300 ${-GY})">${s}</g>`;
+  return V("Two spiders carry a cookie overhead across the floor", s);
+}
