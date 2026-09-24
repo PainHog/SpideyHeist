@@ -3,9 +3,9 @@
 A full read of *Heisty Spideys — First Edition* v4.1 (32 pp., `book/original/Heisty_Spideys_v4_1.pdf`).
 Page numbers refer to that PDF.
 
-The rule for the v4.2 edit: **fix what the book itself already answers; flag everything that
-needs a design decision.** No rule, number, name or flavour text was invented. Part B items
-are untouched in v4.2 until you decide them.
+The v4.2 edit fixed only what the book itself already answers (Part A). For v4.3 you
+asked for every open question to be resolved too; Part B records each ruling and its exact
+wording so any of them can be overruled.
 
 ---
 
@@ -29,56 +29,64 @@ are untouched in v4.2 until you decide them.
 
 ---
 
-## B. Needs your decision (not changed)
+## B. Resolved in v4.3 (your call: "fix it all")
 
-### B1. Contradictions — two parts of the book disagree
+Every Part B question is now ruled. Each ruling gives the **exact wording** used
+in the book (and mirrored in the Foundry system), and the reason. They are
+design choices made on your behalf, so overrule any of them and both the book
+and the system get updated together.
 
-1. **Player count.** Cover: "For 2–6 players *plus* one Storyteller". Ch 1 "What You Need" (p4): "2–6 players, *one of them* the Storyteller." Is it 3–7 people or 2–6?
-2. **Critical and movement.** Ch 3 (p6) and the Quick Reference: "Being Hurt *or Critical* cuts your Speed in half." Ch 10 (p18): Critical means "you can't move effectively under your own power — a crewmate must help you move." Can a Critical spider move at half Speed or not?
-3. **Who can patch Vitality?** Ch 10 (p19) gives *every Tinkerer* an at-will patch (Engineering Difficulty 2, as their Action, threats present or not). But **Field Repair** is a Tinkerer *Perk* doing the same thing *once per scene*, which is strictly worse than the baseline. Ch 3 also lists "patch a crewmate" as a generic Action. Is patching a Tinkerer baseline ability, a Perk, or open to everyone?
-4. **Planning never auto-wins vs. Contingency.** Ch 11 (p19): "Nothing in Planning auto-beats an obstacle." The Lookout's **Contingency** Perk (p11): the trigger "activates automatically as a success."
-5. **Heist 1's second tin.** ST Prep (p27): "two identical tins *on that shelf*." Obstacle 4: "The cookie tin is in *the other cabinet*." Which is it?
-6. **Heist 1's human.** Score (p26): gets up "twice a night for water." Casing intel (p27): "roughly every ninety minutes."
-7. **House Cat sleep.** Ch 14 patrol example (p23): asleep "~80% of the time." Stat block (p24): "~70%."
-8. **Pet stores.** The Alert Limit table (p17) lists "A pet store with several animals" under **Hard (6)**. Heist 3, The Pet Store Problem, is **Standard (8)**.
-9. **Easy locations.** The Limit table (p17): Easy = "One cat, and it's elderly." Heist 1 (Easy) has "a young cat… new."
-10. **Waiting Web replacements.** Ch 10 (p19): "Same Role, Attributes, Skills, and Perks… optionally the species." A new species changes the Attribute bonus and Speed, so the Attributes can't stay the same. The Flaw isn't mentioned. Does the replacement keep it?
-11. **Easily Distracted.** Heist 5 (p28): "spiders with Easily Distracted *roll* on entry." The Flaw (p15) has no roll; the ST delays an action once per heist.
-12. **Guard spiders are "hired".** The obstacle table (p24) and stat block (p25) say so. Heist 4 (p28): "not hired, just lives here." Intentional variation, maybe, but the stat block's Passive line doesn't allow it.
+| # | Ruling — exact new wording | Why |
+|---|---|---|
+| 1 | Ch 1 *What You Need*: "2–6 players, **plus** one Storyteller." | Matches the cover: a crew of 2–6 spiders, plus the ST. |
+| 2 | Ch 3 Speed bullet: "Being Hurt cuts your Speed in half (round down). At Critical you can't move on your own — an adjacent crewmate can bring you along at half their Speed. See Chapter 10." Ch 10 Critical row unchanged. Quick Ref: "Hurt: Speed halved (round down) · Critical: moves only with a crewmate's help, at half their Speed." | Keeps Ch 10's "must be assisted" and gives it a number; the Wheelman's *Passenger* Perk (full Speed) now has a clear edge. |
+| 3 | Ch 10 Recovery: "A Tinkerer with the **Field Repair** Perk can also patch you actively: Engineering, Difficulty 2, as their Action, while adjacent — one level recovered on a success, threats present or not." | Patching is what the Perk buys; it is no longer a free baseline that makes the Perk pointless. |
+| 4 | Ch 11 Preparation: "Nothing in Planning auto-beats an obstacle — except the Lookout's *Contingency* Perk, which buys exactly one pre-arranged success." | The Perk is a chosen investment; the rule now names it as the single exception. |
+| 5 | Heist 1 obstacle 4: "(Unknown) It's the sewing tin. The cookies are in its twin, right beside it. Recalibrate." | Matches the ST Prep: two identical tins on the same shelf. |
+| 6 | Heist 1 Score: "…and a human who gets up for water during the night." | Casing still reveals the precise "every ninety minutes". |
+| 7 | Ch 14 patrol example: "asleep on the living-room couch ~70% of the time." | Matches the House Cat stat block. |
+| 8–9 | After the Alert Limit table (Ch 9): "The examples are typical, not fixed — the same kind of place can be easier or harder. A pet store at night with its animals caged is Standard; the same store with animals loose is Hard." | Resolves the pet-store and young-cat mismatches without changing the heists. |
+| 10 | Ch 10 Waiting Web: "Change the name, and optionally the species — if you do, swap the old species' Attribute bonus and Speed for the new one's (no Attribute above 5). The replacement keeps the Flaw." | Otherwise "same Attributes" and "new species" contradict. |
+| 11 | Heist 5: "(a spider with Easily Distracted may have it triggered on entry)". | The Flaw has no roll; this uses the Flaw as written. |
+| 12 | Guard Spider Passive: "**Usually** hired by someone who knew a heist was possible." | Heist 4's resident guard spider now fits the stat block. |
+| 13 | Advancement: "Easy 2 · Standard 3 · Hard 5 · **Absurd 6** · Legendary 8" (Ch 11 table and Quick Ref). Loot tiers: "Crumb (Easy)", "Trinket (Easy)", "Prize (Standard)", "Treasure (Hard or Absurd)", "**The Big Score** (Legendary)". | Every difficulty now pays; loot tiers use the Limit table's names. |
+| 14 | Heist 5 becomes "(Restaurant · Hard)", "Alert Limit: 6". | 7 wasn't a Limit; "maximum disaster" fits Hard. |
+| 15 | Ch 11 Debrief gains **Spending AP**: "1 AP: +1 to a Skill · 2 AP: +1 to an Attribute · 3 AP: a new Perk from your Role list (no maximum). After creation, Skills and Attributes can reach 5 (Attributes include the species bonus); the creation cap of 3 no longer applies. You start every heist with WIT + NERVE Silk Points, using your current WIT and NERVE." | The rule only existed in the Quick Reference; caps and Silk now defined. |
+| 16 | Ch 12 Silk Line: "As your Action, roll GRACE + Acrobatics against Difficulty 2 (or spend 1 SP to skip the roll)…" | Names the roll that was implied. |
+| 17 | Ch 3 adds a height bullet: "**Height:** crossing somewhere a fall would really hurt — a curtain rod, a shelf edge over the kitchen floor — adds +1 Difficulty to Acrobatics rolls." | Gives *Don't Look Down* a penalty to remove. |
+| 18 | *That All You Got?*: "roll BODY + Endurance (Difficulty 3)." | Every other roll is Attribute + Skill. |
+| 19 | *Unfazed*: "Ignore the −1 die penalty from being Rattled." | "First" had no meaning. |
+| 20 | *Thunderous Entrance* and *Make a Scene* each gain "Once per scene." | Both were unlimited. |
+| 21 | Curious Child *Capture Result*: "…The Alert immediately rises by 3 (this replaces, not adds to, the usual +2 for a spider going Out)…" *Damage Control*: "reduce one Alert spike of +2 or more by 1." | Stops +5 stacking; Damage Control works on any big spike. |
+| 22 | Ch 9 *What Raises the Alert* gains a row: "+X — A creature's own contribution each round it's active (see its stat block). A creature is *active* when its Escalation says it's awake, hunting or pursuing." | Creature Alert is now in the rules, and "active" is defined. |
+| 23 | Guard Spider: "Raises the Alert **by 1** the moment it spots the crew." Complication 6: "The Alert rises **by 1** anyway." | Amounts were missing. |
+| 24 | Ch 11 Loss row adds: "(Replacements arrive at the next obstacle, so a Loss means every spider is Out at the same time.)" | Explains how a Loss happens with the Waiting Web. |
+| 25 | Ch 16 gains stat blocks for the **Corn Snake**, **Alert Parrot**, **The Rat**, **The Exterminator** and **Goldfish**, and a line: "Other threats in the ready-to-run heists use what's already here: the library cat is a House Cat; the librarian, restaurant staff and cleaning crew are Human Obstacles (Ch 15); a rival crew is built like the players' spiders." | Every major threat now has a block; the Foundry creatures now come from the book. |
+| 26 | *Improvise* (2 SP): "Swap the called-for Skill for one of yours that could plausibly work — Engineering to rig a hoist instead of Athletics to climb, Deception instead of Stealth — at +1 Difficulty. A last resort for working outside your specialty." | It used to be worse than rolling a Skill of 0 for free. |
+| 27 | *That's Not What Happened*: adds "It also cancels any Alert increase that roll would have caused." | Gives the 2 SP a concrete payoff. |
+| 28 | Critical Success: "…and the Alert drops by 1 (only on a roll of Difficulty 2 or higher)." Quick Ref likewise. | No farming Alert off Trivial rolls. |
+| 29 | Recovery: "Spend a full round with no threat able to reach or target you — or the quiet gap between obstacles — and you recover one level, once per obstacle." | Bounds free healing; works without turn order. |
+| 30 | After the Alert Thresholds table: "At a Limit of 6 or less, the location hits Full Alert before Lockdown — lower Limits skip the later bands entirely. That's what makes them hard." | Answers the question tables will ask. |
+| 31 | *I Called It*: "…whoever makes that roll gets +1 die. If it's genuinely plausible and fits what's been established, +2 instead…" | One roll, one bonus. |
+| 32 | *Tactical Feed*: adds "It's a free action and doesn't count as the roll's Assist." | Clarifies stacking. |
+| 33 | Loot tier renamed **The Big Score** (see 13). The Ch 7 example spider **Silk** is renamed **Filament** (from the book's own name table). | No more name collisions. |
+| 34 | Ch 5: "Heisty Spideys has seven — fewer than Ocean's Eleven, and considerably more legs." | The joke now adds up. |
 
-### B2. Rules gaps — the book doesn't say
+### New stat blocks (ruling 25)
 
-13. **The Absurd difficulty has no reward.** Advancement Points (p20, p32): Easy 2 · Standard 3 · Hard 5 · Legendary 8. The Loot tiers (p21) run Crumb/Trivial → Score/Legendary with no Absurd tier either, and add a "Trivial" location that the Limit table doesn't have.
-14. **Heist 5's Limit of 7** ("Standard/Hard") isn't on the Limit table, so its AP and Loot tier are undefined.
-15. **Spending AP** appears only in the Quick Reference (p32), never in Ch 11's Debrief. Is there a cap after creation (Skills 5? Attributes 5?), and do Silk Points recalculate when WIT or NERVE rises?
-16. **Silk Line without Silk Points.** Ch 12 (p20): "As your Action (or for 1 SP to skip the roll)". What is the roll: which Skill, what Difficulty?
-17. **Don't Look Down** (Wheelman Perk, p12) removes "the penalty from height-based Acrobatics rolls". No height penalty exists anywhere in the rules.
-18. **That All You Got?** (Bruiser, p11): "roll Endurance (Difficulty 3)". Endurance alone, or BODY + Endurance like every other roll?
-19. **Unfazed** (Bruiser, p10): "Ignore the first −1 die penalty from being Rattled." Rattled is a single −1. Does "first" mean the first roll while Rattled, or always?
-20. **Thunderous Entrance** (Bruiser, p10) and **Make a Scene** (Bruiser Signature, p9) have no usage limit. Make a Scene costs nothing and gives everyone else +2 dice for +1 Alert. Every round?
-21. **Stacking big Alert jumps.** The Curious Child's capture is +3 (p25), but the Alert table tops out at +2. Is a captured spider also "Out" (+2 more, so +5)? Does Damage Control ("one +2 spike → +1") work on a +3?
-22. **Creature Alert per round.** Stat blocks add Alert "+1 per round while active" (Cat), "+2 per round" (Dog), and so on, but these aren't in the "What Raises the Alert" table. "Active" also means both a creature's state and the Alert band 5–6. With a Dog active, a Standard location (8) can fill in two or three rounds. Intended?
-23. **Unspecified amounts.** The Guard Spider "raises the Alert the moment it spots the crew" (by how much?). Mid-Heist Complication 6: "The Alert rises anyway" (by how much?).
-24. **Losing the heist.** "Loss: the whole crew went Out before escaping" (p20). But Out spiders are replaced from the Waiting Web at the next obstacle, so a Loss only happens if everyone is Out within one obstacle. Worth saying so.
-25. **Missing stat blocks.** Ch 16 says "every major threat has a stat block", but the heists use the corn snake, the parrot, the rat, the librarian, the library cat, the Exterminator, restaurant staff, the cleaning crew and the rival crew, and none have one. (See C1.)
+Written for v4.3. The numbers follow the book's existing scale (House Cat and Guard Spider as anchors).
 
-### B3. Balance and clarity questions
-
-26. **Improvise is worse than doing nothing.** 2 SP: "Attempt any check on your Attribute alone — no Skill — at +1 Difficulty." But a Skill of 0 already rolls the Attribute alone at *normal* Difficulty, for free (p13).
-27. **"That's Not What Happened"** (Face Signature, p9) costs 2 SP but explicitly doesn't change the mechanical result. What does the spend buy: preventing an Alert rise? Undoing a consequence?
-28. **Trivial rolls can farm Alert reduction.** A Critical on Difficulty 1 needs only 2 Successes and drops the Alert. "When Not to Roll" helps, but a table rule ("no Criticals below Difficulty 2", or "only uncertain rolls") would close it.
-29. **Recovery is very generous.** One quiet turn heals a level, for free. Since most of a heist runs without turns (Ch 3), when does a "turn" happen out of combat?
-30. **Short Limits skip bands.** At Hard (6) Lockdown can never trigger; at Absurd (4) neither can Active; at Legendary (2) there is only Calm. That may be intended; if so, a sentence saying so would stop tables asking.
-31. **I Called It** (Lookout, p11): "the whole crew gets +1 die on that roll", but it's one roll. Is it +1 die to that one roll, or to each crew member's next roll?
-32. **Tactical Feed** (+1 die, once per round) vs "Only one spider can Assist a given roll." Is Tactical Feed an Assist, and does it take the Lookout's Action?
-33. **Name collisions.** "The Score" is both Phase 1 and the Legendary loot tier. "Silk" is the example spider's name *and* the core resource (Silk Points).
-34. **Nit:** Ch 5: "seven — more than Ocean's Eleven per head". Seven is fewer than eleven. If the joke is legs per head, maybe "and considerably more legs" alone lands better.
+- **Corn Snake — "Slow to Commit. Then Very Much Committed."** Threat Level: Standard · Alert Contribution: +1 per round while active · Speed: 4. Pools: Perception 3 · Strike (Brawl) 4. Passive: coiled in its display tank; the lid is loose. Senses: notices movement within 3 squares of the tank. Escalation: Alert 3, tongue flicks toward the crew. Alert 5, noses at the loose lid. Alert 7, out of the tank and hunting. Weakness: a heat lamp to bask under, a lid that's actually shut. Note: a Strike that lands drops a Vitality level like any hit.
+- **Alert Parrot — "It Will Describe You. In Detail. At Volume."** Threat Level: Standard · Alert Contribution: +1 each round it's repeating something · Speed: 0 (caged). Pools: Perception 4 · Mimicry (Deception) 3. Passive: repeats what it hears, loudly and at length. Senses: sees the whole front of the store from its cage. Escalation: Alert 3, mutters. Alert 5, repeats every noise it hears. Alert 7, shrieks — the Alert rises by 2 once. Weakness: a cloth over the cage, a cracker (Persuasion, Difficulty 1).
+- **The Rat — "Runs Protection for the Block."** Threat Level: Standard · Alert Contribution: none while the deal holds; +2 if it goes bad · Speed: 6. Pools: Perception 3 · Brawl 4 · Haggle (Persuasion) 4. Passive: lives under the dishwasher; nothing crosses the kitchen without his say-so. Weakness: food, a favour owed, being treated like a professional. Note: he wants something. Work out what. It's a negotiation, not a fight — until it is.
+- **The Exterminator — "Came Prepared."** Threat Level: High · Alert Contribution: +1 per round while on the map · Speed: 6. Pools: Perception 5 · Spray (Athletics) 5. Passive: only appears once the Alert has reached Lockdown (7+), and only if the ST decides the humans called someone. Senses: a flashlight and a professional's habit of checking corners. Weakness: can't fit anywhere small; leaves once the job looks done. Note: a Spray that lands drops a Vitality level; a spider caught in the open by one is Out.
+- **Goldfish — "Will Cooperate. Cannot Help."** Threat Level: None · Alert Contribution: none · Speed: 3 (within its bowl). Pools: Perception 1. Passive: will cooperate with anything the crew asks. Has a three-second memory. Weakness: none that matter. Note: persuading it is Difficulty 1. It will agree. It will forget. It cannot actually help with anything.
 
 ---
 
 ## C. The Foundry system vs. the book
 
-1. **Invented creature stats (breaks the "never invent content" rule).** The Foundry *Creature Compendium* has 10 creatures; the book has stat blocks for 5.
+1. **Resolved in v4.3 (ruling 25).** Originally the system had **invented creature stats**, which broke the "never invent content" rule. The Foundry *Creature Compendium* has 10 creatures; the book has stat blocks for 5.
    - The other five have numbers the book never gives:
      - **Alert Parrot:** Perception 4, Speed 0, Standard.
      - **Corn Snake:** Strike 4, Speed 4, Standard.
