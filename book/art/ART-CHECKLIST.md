@@ -1,12 +1,20 @@
 # Art checklist — every piece must pass every item
 
-Author feedback that created this list: floating cookies, a cat with one eye, a towel
+Author feedback that created this list: a pencil half on a notepad with its other end
+hovering over the table, floating cookies, a cat with one eye, a towel
 with no rack, a half-drawn hook cut off by the frame, a bottle cap at an impossible
 angle, a launcher that couldn't work, and scenes too sparse on detail.
 
 ## Physics
 1. **Gravity & support.** Every object rests on a surface, hangs from a mounted fixture,
-   or is visibly held. Nothing floats. Items drawn *on* another object (labels, decals)
+   or is visibly held. Nothing floats.
+   **Partial support counts as floating.** Check *every* end and edge of *every* object:
+   a pencil, spoon, toothpick, ruler, card or board that is on a surface at one end must
+   be supported at the other too (or clearly lie wholly on the surface, or be propped/held).
+   An object overhanging an edge must have its centre of mass over the support, and the
+   overhanging part must not sit at the upper surface's height over empty space. When an
+   object lies on another (pencil on pad, cup on saucer), it must lie *within* the lower
+   object's outline. Items drawn *on* another object (labels, decals)
    must read as printed on it, never as a separate floating thing.
 2. **Contact.** Feet, bases and edges touch their surface; add a contact shadow.
 3. **Silk.** Anchored above to something real (or exits the top of the frame); hangs
@@ -41,3 +49,11 @@ angle, a launcher that couldn't work, and scenes too sparse on detail.
 
 ## Text
 14. No garbled pseudo-text; squiggles may stand in for writing.
+
+## How to audit (mandatory method)
+For each piece, write an **object table**: every object (including small props, crumbs,
+tools, furniture and each character's feet), its contact point(s), and what is directly
+underneath or holding each contact point. Any row where an end, edge or foot has nothing
+under it — or where the object sits outside the outline of what supports it — is a defect.
+Looking at the picture as a whole is not enough; the mistakes the author found were all
+small props at the edges of scenes.

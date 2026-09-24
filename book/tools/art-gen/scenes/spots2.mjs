@@ -191,7 +191,8 @@ export function spot_dice_push() {
     s += `<path d="${d}" stroke="${C.soft}" stroke-width="1.4" fill="none"${NS}/>`;
     s += `<path d="M.06 .1H.94" stroke="${C.ink}" stroke-width="1.6"${NS}/><path d="M.7 .16V.94" stroke="${C.edge}" stroke-width="1.4"${NS}/>`;
     s += `<path d="M.76 .5l.04 .08l.08 -.2" stroke="${C.good}" stroke-width="2" fill="none"${NS}/></g>`;
-    s += pencil([60, 342], [176, 314], 10);
+    // the pencil lies wholly on the pad (both ends inside the pad outline), never overhanging
+    s += pencil([72, 321], [164, 300], 10);
   }
   // the die, resting flat on the table, being shoved to the left
   const dx = 262, yb = 352, sz = 144, D = [58, -44];
