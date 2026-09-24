@@ -2,6 +2,11 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.5.1] — Author credit
+
+### Changed
+- Author credited as Richard Moore (manifest and license).
+
 ## [1.5.0] — Heist-noir look
 
 ### Changed
