@@ -378,6 +378,11 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
 .chapter.heists { columns: auto; }
 .heist-intro, .heist { columns: 2; column-gap: 0.3in; column-fill: balance; }
 .heist { break-before: page; }
+/* the opener page: the short opener balances over both columns, the map key spans them (its list in two
+   columns) so neither column is left with a hole beside it, and the planning-board illustration finishes the page */
+.heist-intro .box { column-span: all; }
+.heist-intro .box ul { columns: 2; column-gap: 0.3in; }
+.heist-intro .box li { break-inside: avoid; }
 /* the opener page (chapter head + intro) is finished by the planning-board illustration */
 figure.heist-intro-art { margin: 0.3in auto 0; display: flex; justify-content: center; break-inside: avoid; }
 figure.heist-intro-art svg { height: 100%; width: auto; max-width: 100%; }

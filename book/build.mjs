@@ -179,7 +179,7 @@ const SPOTS = {
 const PT_PER_IN = 72;
 const BOTTOM_LIMIT_PT = (0.78 + BLEED_IN) * PT_PER_IN;   // @page bottom margin: content must end above this
 const TEXT_H_IN = 11 - 0.72 - 0.78;   // the text area's height (the print bleed adds to both the page and its margins)
-const MIN_SPOT_IN = 1.5, MAX_SPOT_IN = 5.3, SAFETY_IN = 0.2, MIN_GAP_IN = 0.22;  // 5.3in = 4:3 art at full text width
+const MIN_SPOT_IN = 1.3, MAX_SPOT_IN = 5.3, SAFETY_IN = 0.2, MIN_GAP_IN = 0.22;  // 5.3in = 4:3 art at full text width
 
 function planSpots(ends) {
   const used = new Set(), plan = {};
@@ -324,7 +324,6 @@ try {
   if (missing.length) throw new Error(`could not locate on any page: ${missing.join(", ")}`);
 
   // Pass 2: place spot illustrations; drop any that would move a page, and re-check.
-  if (process.env.SPOT_DEBUG) console.log(JSON.stringify(p1.ends));
   let spots = planSpots(p1.ends);
   for (let attempt = 0; attempt < 4; attempt++) {
     const pass2 = join(DIST, ".pass2.pdf");
@@ -332,7 +331,6 @@ try {
     const p2 = await pageMap(pass2);
     const moved = Object.keys(spots).filter(id => p2.ends[id]?.page !== p1.ends[id]?.page);
     const shifted = entries.filter(e => p2.found[e.id] !== p1.found[e.id]).map(e => e.id);
-    if (process.env.SPOT_DEBUG) console.log('attempt', attempt, JSON.stringify(spots), 'moved', moved, 'shifted', shifted, p2.pages, p1.pages);
     if (!moved.length && !shifted.length && p2.pages === p1.pages) break;
     if (attempt === 3) throw new Error(`spot illustrations keep moving pages: ${[...moved, ...shifted].join(", ")}`);
     for (const id of moved) delete spots[id];
@@ -363,7 +361,7 @@ try {
     const sp = spots[e.id];
     console.log(`  p${String(p1.found[e.id]).padStart(3)}  ${e.label ? e.label + " — " : ""}${e.title}${sp ? `   [+ ${sp.art} ${sp.h}in]` : ""}`);
   }
-  const gaps = Object.entries(p1.ends).filter(([id, v]) => !spots[id] && v.freeIn > 3).map(([id, v]) => `${id} (${v.freeIn.toFixed(1)}in free)`);
+  const gaps = Object.entries(p1.ends).filter(([id, v]) => !spots[id] && v.freeIn > 3 && v.freeIn <= TEXT_H_IN - 0.3).map(([id, v]) => `${id} (${v.freeIn.toFixed(1)}in free)`);
   if (gaps.length) console.warn(`  ! large gaps with no spot: ${gaps.join(", ")}`);
   for (const w of warn) console.warn(`  ! ${w}`);
 } finally {
