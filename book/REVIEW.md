@@ -216,8 +216,8 @@ simulator (P4H + the rulings marked *P5*; `sim/params.mjs`, `sim/BALANCE.md` §1
 unchanged and `npm test` passes (35 tests).
 
 **Balance check (5,000 runs per heist, seed 1).** On the v4.6 heist data, P4H 87.9 / 76.7 / 55.5% →
-**P5 88.6 / 78.8 / 57.0%** (Easy / Standard / Hard wins). On the v4.7 Chapter 19 heist data in the
-working tree when this was written, P4H 89.2 / 75.7 / 57.9% → **P5 89.5 / 77.7 / 59.3%**. Every
+**P5 88.6 / 78.8 / 57.0%** (Easy / Standard / Hard wins). On the v4.7 Chapter 19 heist data (commit
+86fd603), P4H 90.1 / 75.7 / 57.9% → **P5 90.1 / 77.7 / 59.3%**. Every
 label stays within about 2 points of 88 / 77 / 58.
 
 **Sources.** H1-n: Heist 1 playtest; H2 I-n: Heist 2; H5 X-n: Heist 5 (`sim/playtests/`).

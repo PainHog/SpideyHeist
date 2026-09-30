@@ -349,7 +349,7 @@ P5 is P4H plus every Part E ruling that changes a roll the simulator makes. Each
 | Heist data | P4H easy · std · hard | P5 easy · std · hard | P5 Hard Loss |
 |---|---|---|---|
 | v4.6 Chapter 19 (committed `heists.mjs`) | 87.9 · 76.7 · 55.5% | **88.6 · 78.8 · 57.0%** | 0.11% |
-| v4.7 Chapter 19 draft (working tree, Part F) | 89.2 · 75.7 · 57.9% | **89.5 · 77.7 · 59.3%** | 1.86% |
+| v4.7 Chapter 19 (commit 86fd603, REVIEW Part F) | 90.1 · 75.7 · 57.9% | **90.1 · 77.7 · 59.3%** | 1.86% |
 
 On the v4.6 heists: Critical 18.0%, Failure 9.6%, 82% of spiders spend at least half their Silk, mean starting Silk 5.9 (unchanged).
 
