@@ -153,8 +153,15 @@ HEISTY.alertTriggers = [
   { delta: 2, text: "A spider goes Out. The location notices something is very wrong." },
   { delta: 2, text: "A Loud Failure — something loud breaks, a crash that carries." },
   { delta: null, text: "+X — a creature's own contribution each round it's active (see its stat block). A creature is active from the first Escalation step the Alert has reached — or from the start, if the heist says it is awake or aware — and stays active for the rest of the heist. It adds its +X at the end of every round the crew spends at its obstacle, and at every obstacle once it roams." },
-  { delta: -1, text: "A Critical Success on a roll of Difficulty 3 or higher, never at Full Alert. The only thing that lowers the Alert during a heist." }
+  { delta: -1, text: "A Critical Success on a roll of Difficulty 3 or higher (after every modifier), never at Full Alert and never below 0. The only thing that lowers the Alert during a heist." }
 ];
+
+/**
+ * One event, one trigger (rulebook v4.7): a single roll or moment raises the
+ * Alert once, by its largest entry — a Failure that gets you spotted is +1,
+ * not +2.
+ */
+HEISTY.alertOneTrigger = "One event, one trigger: a single roll or moment raises the Alert once, by its largest entry. A Failure that gets you spotted is +1, not +2.";
 
 /* -------------------------------------------- */
 /*  Silk Points                                 */
@@ -164,17 +171,17 @@ HEISTY.alertTriggers = [
 HEISTY.silkSpends = [
   { cost: 1, label: "Extra Die", text: "Add 1 die to a roll before it's made. The most common spend, and a good one. Silk dice don't count toward the +2 bonus-dice limit." },
   { cost: 1, label: "Silk Line", text: "Run a silk line between two points up to 5 squares apart without the roll (GRACE + Acrobatics, Difficulty 2)." },
-  { cost: 2, label: "Reroll", text: "After rolling, reroll up to 3 dice and keep the better result." },
+  { cost: 2, label: "Reroll", text: "After rolling, reroll up to 3 dice that didn't succeed. Your Successes stay, so it can only help." },
   { cost: 2, label: "Web Structure", text: "Build a small web structure with no roll — a net, a tripwire, a platform, a hammock." },
-  { cost: 2, label: "Improvise", text: "Swap the called-for Skill for one of yours that could plausibly work — Engineering to rig a hoist instead of Athletics to climb, Deception instead of Stealth — at +1 Difficulty." },
-  { cost: 3, label: "Silk Clutch", text: "After a failed roll, succeed anyway. The Alert rises by 1." },
-  { cost: 3, label: "Damage Control", text: "The crew reduces one Alert spike of +2 or more by 1. Once per heist." },
+  { cost: 2, label: "Improvise", text: "Swap the called-for Skill for one of yours that could plausibly work — Engineering to rig a hoist instead of Athletics to climb, Deception instead of Stealth — at +1 Difficulty, rolled with the new Skill's own Attribute." },
+  { cost: 3, label: "Silk Clutch", text: "After a Failure (a Partial isn't one), turn it into a Success. The Alert rises by 1." },
+  { cost: 3, label: "Damage Control", text: "The crew spends 3 SP between them, split any way, to reduce one Alert spike of +2 or more by 1. Once per heist." },
   { cost: 4, label: "Not Part of the Plan", text: "Negate one complication the ST just introduced. Once per heist." }
 ];
 
 /** Ways to earn Silk Points back. */
 HEISTY.silkEarns = [
-  { reward: 1, label: "Flaw Moment", text: "Your Flaw causes a genuine problem the crew has to deal with." },
+  { reward: 1, label: "Flaw Moment", text: "Your Flaw causes a genuine problem the crew has to deal with — once each time it fires; no Flaw pays twice." },
   { reward: 1, label: "Spectacular Failure", text: "You fail in a way that genuinely makes the table laugh. ST's call." },
   { reward: 1, label: "Creative Species Use", text: "You use your species ability in a way nobody saw coming, and it works." },
   { reward: 2, label: "Brilliant Plan", text: "You describe a plan that makes the whole table lean in and say 'oh, that's good.'" }
@@ -186,10 +193,10 @@ HEISTY.silkEarns = [
 
 /** Outcome categories produced by the dice engine. */
 HEISTY.results = {
-  critical: { label: "Critical Success", css: "critical", alert: -1, blurb: "You did it perfectly — and the Alert drops by 1 (only on a roll of Difficulty 3 or higher, never at Full Alert). Savor it." },
+  critical: { label: "Critical Success", css: "critical", alert: -1, blurb: "You did it perfectly — and the Alert drops by 1 (only on a roll of Difficulty 3 or higher after every modifier, never at Full Alert, never below 0). Savor it." },
   success: { label: "Full Success", css: "success", alert: 0, blurb: "It worked. The thing happens. The Alert is still right there." },
-  partial: { label: "Partial Success", css: "partial", alert: 1, blurb: "It worked, but. Progress, and a complication lands: +1 Alert, or a complication that costs as much — never both." },
-  failure: { label: "Failure", css: "failure", alert: 1, blurb: "It did not work — fewer than half the Successes you needed. No progress, and something gets worse." },
+  partial: { label: "Partial Success", css: "partial", alert: 1, blurb: "It worked, but. Progress, and a complication lands: +1 Alert, or a complication that costs as much — never both. A Partial is never a failed roll: it passes a pass-or-fail check, and it can't be Clutched." },
+  failure: { label: "Failure", css: "failure", alert: 1, blurb: "It did not work — fewer than half the Successes you needed. No progress, and something gets worse. A Silk Clutch (3 SP, +1 Alert) can turn this Failure into a Success." },
   botch: { label: "Botch", css: "botch", alert: 2, blurb: "Everything that could go wrong did, plus one new thing." },
   cleanfail: { label: "Clean Failure", css: "cleanfail", alert: 0, blurb: "You fail — but no bonus disaster. This time." }
 };
@@ -215,15 +222,48 @@ HEISTY.species = {
 /*  Roles (mechanical summary)                  */
 /* -------------------------------------------- */
 
-/** Mechanical summary of the seven Crew Roles. Full prose lives in compendium. */
+/**
+ * Mechanical summary of the seven Crew Roles. Full prose lives in compendium.
+ * `quickPick` is the Role's Chapter 20 skill package (on top of both core
+ * skills at 3); `perks` is its Perk table in book order (the 1d6 Perk roll
+ * counts down this list).
+ */
 HEISTY.roles = {
-  face: { label: "The Face", coreSkills: ["deception", "persuasion"], signature: "That's Not What Happened" },
-  ghost: { label: "The Ghost", coreSkills: ["stealth", "acrobatics"], signature: "Phase Through" },
-  tinkerer: { label: "The Tinkerer", coreSkills: ["engineering", "perception"], signature: "I Made a Thing" },
-  bruiser: { label: "The Bruiser", coreSkills: ["brawl", "endurance"], signature: "Make a Scene" },
-  lookout: { label: "The Lookout", coreSkills: ["perception", "tactics"], signature: "I Called It" },
-  wheelman: { label: "The Wheelman", coreSkills: ["acrobatics", "tactics"], signature: "I Know a Way" },
-  grifter: { label: "The Grifter", coreSkills: ["deception", "disguise"], signature: "You're Looking at the Wrong Spider" }
+  face: {
+    label: "The Face", coreSkills: ["deception", "persuasion"], signature: "That's Not What Happened",
+    quickPick: { stealth: 3, perception: 2, disguise: 2, intimidation: 2 },
+    perks: ["Silver Tongue", "Read the Room", "Plausible Deniability", "Fast Talk", "Actually, I Planned This", "Familiar Face"]
+  },
+  ghost: {
+    label: "The Ghost", coreSkills: ["stealth", "acrobatics"], signature: "Phase Through",
+    quickPick: { perception: 3, athletics: 2, deception: 2, engineering: 2 },
+    perks: ["Silk Trail", "Dead Drop", "Soundless", "Second-Story Spider", "Ghost Protocol", "I Was Never Here"]
+  },
+  tinkerer: {
+    label: "The Tinkerer", coreSkills: ["engineering", "perception"], signature: "I Made a Thing",
+    quickPick: { stealth: 3, acrobatics: 2, tactics: 2, athletics: 2 },
+    perks: ["Jury-Rig", "Spider-Sense… Sort Of", "Overclock", "Field Repair", "Trap Architect", "I See How This Works"]
+  },
+  bruiser: {
+    label: "The Bruiser", coreSkills: ["brawl", "endurance"], signature: "Make a Scene",
+    quickPick: { athletics: 3, stealth: 2, intimidation: 2, perception: 2 },
+    perks: ["Take the Hit", "Unfazed", "Thunderous Entrance", "Negotiating Position", "Silk Grapple", "That All You Got?"]
+  },
+  lookout: {
+    label: "The Lookout", coreSkills: ["perception", "tactics"], signature: "I Called It",
+    quickPick: { stealth: 3, acrobatics: 2, engineering: 2, deception: 2 },
+    perks: ["Early Warning", "Tactical Feed", "Pattern Recognition", "Contingency", "Escape Routes", "Counter-Surveillance"]
+  },
+  wheelman: {
+    label: "The Wheelman", coreSkills: ["acrobatics", "tactics"], signature: "I Know a Way",
+    quickPick: { athletics: 3, stealth: 2, perception: 2, endurance: 2 },
+    perks: ["Always a Way Out", "Shortcut", "Don't Look Down", "Passenger", "Drafting", "Abort, Abort"]
+  },
+  grifter: {
+    label: "The Grifter", coreSkills: ["deception", "disguise"], signature: "You're Looking at the Wrong Spider",
+    quickPick: { stealth: 3, persuasion: 2, perception: 2, acrobatics: 2 },
+    perks: ["Method Actor", "Double Bluff", "Planted Evidence", "Quick Change", "The Long Con", "Smoke and Mirrors"]
+  }
 };
 
 /**
@@ -245,13 +285,17 @@ HEISTY.advancement = {
   }
 };
 
-/** Loot tiers. */
+/**
+ * Loot tiers. `carry` is the rulebook v4.7 "Carrying It" column. Carriers
+ * still act; handing loot over is free, picking it up takes an Action, and
+ * anything bigger than a Trinket won't fit a squeeze (`fitsSqueeze`).
+ */
 HEISTY.lootTiers = {
-  crumb: { label: "Crumb", difficulty: "Easy", hint: "A single bit of food, a small charm, a coin." },
-  trinket: { label: "Trinket", difficulty: "Easy", hint: "A small shiny thing, a memory stick, a piece of jewelry." },
-  prize: { label: "Prize", difficulty: "Standard", hint: "Something significant — the main event of a proper heist." },
-  treasure: { label: "Treasure", difficulty: "Hard or Absurd", hint: "High value, high security, genuinely dangerous to take." },
-  score: { label: "The Big Score", difficulty: "Legendary", hint: "The kind of job spiders tell the spiderlings about." }
+  crumb: { label: "Crumb", difficulty: "Easy", hint: "A single bit of food, a small charm, a coin.", carry: "One spider, full Speed.", fitsSqueeze: true },
+  trinket: { label: "Trinket", difficulty: "Easy", hint: "A small shiny thing, a memory stick, a piece of jewelry.", carry: "One spider, full Speed.", fitsSqueeze: true },
+  prize: { label: "Prize", difficulty: "Standard", hint: "Something significant — the main event of a proper heist.", carry: "One at half Speed, or two at full.", fitsSqueeze: false },
+  treasure: { label: "Treasure", difficulty: "Hard or Absurd", hint: "High value, high security, genuinely dangerous to take.", carry: "Two at half Speed, or a silk sled (1 SP) at full.", fitsSqueeze: false },
+  score: { label: "The Big Score", difficulty: "Legendary", hint: "The kind of job spiders tell the spiderlings about.", carry: "Everyone, and a plan.", fitsSqueeze: false }
 };
 
 /** Item type labels for sheet headers and drop hints. */

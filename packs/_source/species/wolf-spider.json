@@ -5,7 +5,7 @@
   "system": {
     "speciesKey": "wolf",
     "ability": "Run It Again",
-    "abilityText": "<p>When you fail or partially succeed on a chase, pursuit, or physical-confrontation roll, immediately reroll all your failed dice and keep the better result. Once per scene.</p><p>Wolf Spiders do not accept the first result. They would like you to know they don't accept the second one either, but the rules only give them the one reroll.</p>",
+    "abilityText": "<p>When you fail or partially succeed on a chase, pursuit, or physical-confrontation roll &mdash; a shrug-off counts &mdash; immediately reroll every die that didn't come up a Success. The Successes you had stay, so it only gets better. Once per scene.</p><p>Wolf Spiders do not accept the first result. They would like you to know they don't accept the second one either, but the rules only give them the one reroll.</p>",
     "speed": 7,
     "bonuses": {
       "body": 2,

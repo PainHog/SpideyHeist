@@ -21,7 +21,7 @@
       }
     ],
     "senses": "<p>A flashlight and a professional's habit of checking corners.</p>",
-    "passive": "<p>Only appears once the Alert has reached Lockdown (7+), and only if the ST decides the humans called someone.</p>",
+    "passive": "<p>Only appears once the Alert has reached Lockdown (7+) or Full Alert, and only if the ST decides the humans called someone.</p>",
     "escalation": "",
     "weakness": "<p>Can't fit anywhere small; leaves once the job looks done.</p>",
     "notes": "<p><strong>Note:</strong> a Spray that lands drops a Vitality level; a spider caught in the open by one is Out.</p>",

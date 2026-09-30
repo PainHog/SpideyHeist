@@ -1,0 +1,30 @@
+{
+  "key": "human",
+  "name": "Human",
+  "img": "systems/heisty-spideys/assets/icons/human.svg",
+  "system": {
+    "threatLevel": "Low (asleep) to High (broom)",
+    "alertContribution": "none of its own",
+    "speed": {
+      "value": 10
+    },
+    "rolls": [
+      {
+        "label": "Swat",
+        "pool": 3,
+        "note": "its attack: fail a roll within its reach and you're swatted"
+      },
+      {
+        "label": "Perception",
+        "pool": 3,
+        "note": "its own checks only (a Decoy, a surprise); it never rolls to spot you"
+      }
+    ],
+    "senses": "<p>Sees anything in its room not in cover. A sleeper only hears.</p>",
+    "passive": "<p>Sleeping, distracted, alert or armed with a broom &mdash; its Chapter 15 row. You roll against that row's Difficulty; it never rolls to spot you.</p><table><thead><tr><th>Row</th><th>Your roll</th><th>Notes</th></tr></thead><tbody><tr><td>Sleeping Human</td><td>Stealth (2)</td><td>Asleep and fine &mdash; stay quiet. At Alert 5 they stir; at 7, or Full Alert, they're up and turning on lights.</td></tr><tr><td>Distracted Human</td><td>Stealth (1)</td><td>On their phone, watching TV. Use the window. It closes.</td></tr><tr><td>Alert Human</td><td>Deception or Stealth (4)</td><td>Looking for something. Possibly for you. Do not get spotted.</td></tr><tr><td>Human With Broom</td><td>Athletics (3)</td><td>The broom has already swung once. Keep moving.</td></tr></tbody></table>",
+    "escalation": "<p>Stirs at 5; up with the lights on at 7 or Full Alert. Its row stays the same.</p>",
+    "weakness": "<p>Its phone, the TV, and a deep conviction that it imagined you.</p>",
+    "notes": "<p><strong>Note:</strong> a glimpse of a spider is &ldquo;spotted&rdquo; (+1); loot moving on its own is a confirmed alert (+2). Fail a roll within its reach and you're swatted (a hit, Swat 3). A Critical spider it hits ends up under a glass: Out.</p><p><strong>No opposed roll:</strong> don't pick a Human in the roll dialog's <em>Opposed by</em> list to sneak past it &mdash; set the Difficulty from its row instead. Its Perception 3 is only for its own checks, and like any NPC check it needs the full Difficulty.</p>",
+    "biography": "<p><em>&ldquo;Ten Thousand Times Your Size.&rdquo;</em></p><p>The librarian, the restaurant staff, the cleaning crew and the human who gets up for water: every human in a heist uses this block, at its Chapter 15 Difficulty.</p>"
+  }
+}

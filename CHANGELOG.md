@@ -2,6 +2,30 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.7.0] — Rulebook v4.7 rules update
+
+The system now follows **Heisty Spideys v4.7**: every open playtest item resolved (`book/REVIEW.md` Part E, rulings E1–E44) and the five ready-to-run heists finished (Part F: maps, obstacle Difficulties, suggested Escapes).
+
+### Changed — spiders and the Character Builder
+- **Starting Silk = WIT + NERVE + 1, counting only the points you placed — not the species bonus** (E10: "Silk is practice, not anatomy"). The sheet's Silk maximum is derived this way from the current WIT and NERVE minus the worn Species' bonus, so Attribute advances still count. The builder's Attributes and Finish steps show the new number, and the sheet's hint says so. *Existing spiders keep their current Silk; their maximum updates on its own.*
+- **Skills step:** the Role's 3 bonus points go on the two core skills first, in any split (3/0 is fine), then your own 12; max 3 per skill, Role points included (E30). The accounting already worked this way; the text now says it.
+- **Chapter 20 random tables and quick picks** (E9): new **Roll 1d6** on the Attributes step (a 10-point spread, the first number on your Role's Attribute, species overflow moved to your lowest), **Quick Pick** on the Skills step (both core skills at 3, then the Role's 3·2·2·2 package), and **Roll 1d6 ×2** on the Perks step (down the Role's Perk list in book order; a repeat is rerolled). The Role roll now uses the book's table (1–5, and a 6 rolls again for Wheelman or Grifter). Perks are listed in book order.
+- The Flaw step explains the Flaw Moment: +1 SP each time the Flaw fires; no Flaw pays twice (E12).
+
+### Changed — dice, chat cards and the Alert meter
+- The Failure card notes that a **Silk Clutch** (3 SP, +1 Alert) turns a Failure into a Success; the Partial card says a Partial is never a failed roll, passes a pass-or-fail check, and can't be Clutched (E1, E12). There is no Clutch or reroll button; these stay table actions.
+- A threat's roll card says its roll is just a count: it never Partials, Criticals or Botches (E21). Critical texts say "after every modifier" and "never below 0" (E39). The Alert meter's tooltips mention one event, one trigger (E37).
+- Config data (`HEISTY.silkSpends`, `silkEarns`, `alertTriggers`, `results`, `lootTiers`) carries the v4.7 wording. Loot tiers gain the **Carrying It** column (E5).
+
+### Changed — compendium content (matches the book)
+- **Creature Compendium:** new **Human** (Speed 10, Swat 3, Perception 3 for its own checks only, no Alert of its own; spotted/confirmed, swatted, under a glass; its Chapter 15 rows included; new icon) (E4). **Guard Spider:** senses 6 squares in line of sight; aware on spotting the crew (+1, then +1 a round) until paid off; a beaten guard's backup; "+2 if it calls for backup" removed; Fast Talk and Deception still work; anyone but the Face may talk (E24, E33). **Vacuum:** Pursuit is its attack. **Exterminator:** Lockdown (7+) or Full Alert (E43).
+- **Heists:** all five rebuilt from Chapter 19 — each has a **Map** page (the book's gridded map, shipped in `assets/maps/`), the Casing intel, ST Prep pages (Heist 1's human and water run; Heist 2's guard loop; Heist 4's librarian; Heist 5's staff table and **the Rat's deal**), the unknown obstacle (Heist 1's secret d6 for the twin tin; Heist 2's cleaners upstairs; Heist 4's rival crew in the reference room; Heist 5's sleeper and wake trigger), and a **Suggested Obstacles** table with a **Roll (Difficulty)** column and the two suggested Escapes, **E1** and **E2**. Heist 5's loot is Treasure. New entry: **Reading the Maps and Tables**.
+- **Rules Reference:** Core Rules (Failure vs Partial, Pass or fail, Critical after every modifier, Assist Skill choice, opposed rolls count only, humans never roll to spot you, and a new **Your Turn & the Grid** page: sneaking is an Action, one roll covers one thing, free actions on the ST's turn, glass, heights, squeezes under pressure); The Alert (never below 0, one event one trigger, the clock, penalties follow the current number, describe the change); Silk Points (start WIT + NERVE + 1, rerolls keep Successes, Improvise uses the new Skill's Attribute, Silk Clutch only after a Failure, Damage Control split any way, Flaw Moment); Vitality (threats with no attack pool, falls, Waiting Web entry next to a crewmate, lost loot, bring back either spider); Five Phases (one Preparation per spider, the clock, incomplete loot, AP carry over, Full Alert costs nothing extra, the Loot table's **Carrying It** column); and the Quick Reference.
+- New Rules Reference entries: **Creatures, Humans & Patrols** (Escalation and Full Alert, driving a creature off, the Human, the Chapter 14 lap roll, the clock) and **Random Tables** (Chapter 20: name, species, Role, Attributes, Skills and Perks quick pick, Flaw, and the Mid-Heist Complication table with its new Effect column and triggers).
+- **Species, Roles, Perks, Flaws, Gadgets:** Wolf Spider's Run It Again (a shrug-off counts; reroll the dice that didn't succeed, keep the Successes); That's Not What Happened (a Failure still made no progress); Phase Through (a Cellar Spider takes the loot through); Make a Scene (+1 Alert only); Take the Hit (declare before the shrug-off); Actually, I Planned This (every crewmate); Dead Drop; Early Warning; Contingency; Drafting; Planted Evidence; Allergic to Dust; Butterfingers; Show-Off; Silk Line (skip the roll free with nothing watching or closing in; a pre-placed line costs no SP).
+
+*Worlds that already imported compendium items, creatures or journals keep their old copies. **Re-import them from the compendiums** to get the v4.7 text — especially the heists, the Rules Reference and the Guard Spider — and import the new Human.*
+
 ## [1.6.0] — Rulebook v4.6 rules update
 
 The system now follows **Heisty Spideys v4.6**: the clarified rules and the balance package chosen after the simulator runs and playtests (see `sim/BALANCE.md`, §1 and package P4H).

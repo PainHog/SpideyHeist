@@ -12,7 +12,20 @@
       },
       "text": {
         "format": 1,
-        "content": "<p><em>Restaurant &middot; Hard</em></p><p><strong>Alert Limit:</strong> 6 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> any session wanting maximum disaster</p><h3>The Objective</h3><p>The chef's personal recipe notebook, kept in the back office. A rival baker &mdash; a wasp, and nobody is happy about it &mdash; hired the crew. The place closes at 11; the crew moves at midnight. Except dinner service ran late.</p><h3>What the Crew Sees at the Score</h3><p>A mid-sized restaurant &mdash; kitchen, dining room, bar, small office. In plain sight: two closing staff finishing cleanup, and a kitchen that is still warm and smells extraordinary (a spider with Easily Distracted may have it triggered on entry).</p>"
+        "content": "<p><em>Restaurant &middot; Hard</em></p><p><strong>Alert Limit:</strong> 6 &middot; <strong>Loot:</strong> Treasure &middot; <strong>For:</strong> any session wanting maximum disaster</p><h3>The Objective</h3><p>The chef's personal recipe notebook, kept in the back office. A rival baker &mdash; a wasp, and nobody is happy about it &mdash; hired the crew. The place closes at 11; the crew moves at midnight. Except dinner service ran late.</p><h3>What the Crew Sees at the Score</h3><p>A mid-sized restaurant &mdash; kitchen, dining room, bar, small office. In plain sight: two closing staff finishing cleanup, and a kitchen that is still warm and smells extraordinary (a spider with Easily Distracted may have it triggered on entry). Two ways in: the alley vent over the bar, or under the kitchen's back door.</p><p><em>Present only what's visible. The intel, the threats, and the unknown obstacle are ST information &mdash; let Planning reveal the rest.</em></p>"
+      }
+    },
+    {
+      "key": "map",
+      "name": "Map",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><img src=\"systems/heisty-spideys/assets/maps/map-restaurant.svg\" alt=\"The Restaurant Rush map\" style=\"width:100%;height:auto\" /></p><p><em>The restaurant. A: the alley vent, behind the bar. B: the gap under the back door. H: the two closing staff. R: the rat, under the dishwasher, beside the corridor door. The kitchen floor is freshly mopped (sheen); the steel counters are slippery (glints); the stove is hot. The swinging door and the serving hatch both join the dining room to the kitchen; the corridor door and the pipe gap behind the dishwasher both lead out of it, and both pass the rat. Storyteller's copy: anything dashed in red is the unknown obstacle &mdash; keep it off what the crew sees.</em></p><p>One square = one spider. Gold letters are entry points, red tokens are where threats start, numbered circles are the Suggested Obstacles, and E1/E2 lie on the dashed gold escape route.</p>"
       }
     },
     {
@@ -25,7 +38,33 @@
       },
       "text": {
         "format": 1,
-        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The staff move unpredictably with no set route.</li><li>A rat lives under the dishwasher and runs protection for the block &mdash; he'll want something.</li><li>The office door sticks.</li></ul>"
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The staff move unpredictably with no set route.</li><li>A rat lives under the dishwasher and runs protection for the block &mdash; he'll want something.</li><li>The office door sticks.</li><li>The snap trap by the back door is new this week; it caught the rat's cousin.</li><li>The kitchen floor was mopped at closing.</li></ul>"
+      }
+    },
+    {
+      "key": "st-prep-the-staff",
+      "name": "ST Prep — The Staff",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Two closing staff, Alert Humans, starting in the dining room. At the end of each round &mdash; outside turn order, each exchange of crew actions (Chapter 9) &mdash; roll 1d6 for each: 1&ndash;2, the dining room; 3&ndash;4, the kitchen; 5, the corridor; 6, a trash run out the back door, which stays propped open until the next 6.</p><p><strong>Each round:</strong> [[/gmr 1d6]]{Staffer 1} [[/gmr 1d6]]{Staffer 2}</p>"
+      }
+    },
+    {
+      "key": "st-prep-the-rats-deal",
+      "name": "ST Prep — The Rat's Deal",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>He wants the trap gone, and to be treated like a professional. The crew gets one pitch: Persuasion, opposed by his Haggle 4; offering the trap, food or a favour owed is &minus;1 Difficulty. On a Success, he grants safe passage and stays out of it. On a Partial, the deal holds, but the trap comes first (jamming it is Engineering 3). On a Failure there's no deal: he blocks the way out of the kitchen, and getting past him is a fight. The deal goes bad the moment there's a fight, or if the crew leaves with the trap still set: the Alert rises by 2, once, and he fights (Brawl 4).</p>"
       }
     },
     {
@@ -38,7 +77,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>A third staff member fell asleep in the break room and will wake at the worst moment.</p>"
+        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>A third staff member fell asleep in the break room. They wake the first time the crew makes noise within 4 squares of the break room &mdash; any Partial or Failure there, a sneeze, the sticking office door &mdash; or when the Alert reaches 5 (Chapter 15: they stir). Awake, they're an Alert Human, and they head straight for the office: their phone is on the desk.</p>"
       }
     },
     {
@@ -51,7 +90,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<ol><li>The dining room &mdash; two staff moving unpredictably, no patrol pattern. They are Alert Humans (Deception or Stealth 4).</li><li>The kitchen &mdash; warm, incredible smells. Easily Distracted triggers. Also, the rat.</li><li>The rat. Negotiations. He wants something. Work out what.</li><li><strong>(Unknown)</strong> The sleeping staffer wakes exactly when the crew is in the office.</li></ol>"
+        "content": "<p>Obstacles 1&ndash;4 are the heist: each takes two successful rolls (Partial or better). <strong>E1</strong> and <strong>E2</strong> are the suggested Escape obstacles: one successful roll each, and at least one of them never needs Athletics. Difficulties are for a calm location; the Alert raises them. <em>Opposed</em> means the creature rolls first, and its Successes + 1 are your Difficulty.</p><table><thead><tr><th>#</th><th>Obstacle</th><th>Roll (Difficulty)</th></tr></thead><tbody><tr><td>1</td><td>The dining room &mdash; two staff moving unpredictably, no patrol pattern. They are Alert Humans (Deception or Stealth 4).</td><td>Stealth or Deception (4); the tables are cover (Chapter 3)</td></tr><tr><td>2</td><td>The kitchen &mdash; warm, incredible smells. Easily Distracted triggers. And the floor has just been mopped.</td><td>Cross unseen: Stealth (2), the dishwasher's hum covers you &mdash; (4) if a staffer's in here &middot; the wet floor: double movement, or Acrobatics (2)</td></tr><tr><td>3</td><td>The rat. Negotiations. He wants something. Work out what.</td><td>His deal: Persuasion, opposed (Haggle 4) &middot; no deal: Brawl, opposed (his Brawl 4), and it's gone bad</td></tr><tr><td>4</td><td><strong>(Unknown)</strong> The office door sticks, and the staffer asleep next door wakes at the first noise nearby, or at Alert 5 &mdash; and comes for their phone.</td><td>The notebook won't fit under the door. Ease it: Engineering (3) &middot; shove it: Athletics (3), and it scrapes: +1 Alert &middot; once they're up: Stealth or Deception (4)</td></tr><tr><td>E1</td><td>Back up the corridor with the notebook, the staff still on the move.</td><td>Stealth or Deception (4)</td></tr><tr><td>E2</td><td>The back door. The notebook won't fit under it, so get it open &mdash; or wait for a trash run to prop it. And the trap, if the crew still owes the rat.</td><td>Work the handle with a silk line: Engineering (3) &middot; hang on it together: Athletics (3) &middot; jam the trap: Engineering (3)</td></tr></tbody></table>"
       }
     }
   ]

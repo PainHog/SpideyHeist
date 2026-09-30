@@ -17,7 +17,7 @@
       {
         "label": "Pursuit",
         "pool": 3,
-        "note": ""
+        "note": "its attack: whatever it catches takes the hit"
       }
     ],
     "senses": "<p>Notices nothing. Navigates by bumping into things.</p>",

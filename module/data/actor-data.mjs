@@ -6,6 +6,7 @@
  */
 
 import { HEISTY } from "../config.mjs";
+import { startingSilk } from "../logic/rules.mjs";
 
 /** A player spider: four Attributes, twelve Skills, Speed, Silk, Vitality. */
 export class SpiderData extends foundry.abstract.TypeDataModel {
@@ -58,10 +59,18 @@ export class SpiderData extends foundry.abstract.TypeDataModel {
   }
 
   prepareDerivedData() {
-    // Starting Silk Points = WIT + NERVE (derived). We never mutate the stored
-    // silk.value here — the +/- control clamps it on write; recomputing stored,
-    // spendable state in derived data risks losing it.
-    this.silk.max = this.attributes.wit.value + this.attributes.nerve.value;
+    // A worn Species item supplies Speed and the Attribute bonuses.
+    const species = this.parent?.items?.find(i => i.type === "species");
+
+    // Starting Silk Points = WIT + NERVE + 1, counting only the points placed —
+    // the species bonus doesn't count (rulebook v4.7: "Silk is practice, not
+    // anatomy"). The stored Attributes include the bonus, so take it back off.
+    // We never mutate the stored silk.value here — the +/- control clamps it on
+    // write; recomputing stored, spendable state in derived data risks losing it.
+    this.silk.max = startingSilk(
+      { wit: this.attributes.wit.value, nerve: this.attributes.nerve.value },
+      species?.system?.bonuses ?? {}
+    );
 
     // Resolve the Vitality state into its mechanical effects.
     const v = HEISTY.vitality[this.vitality.state] ?? HEISTY.vitality.unharmed;
@@ -73,7 +82,6 @@ export class SpiderData extends foundry.abstract.TypeDataModel {
     this.vitality.order = v.order;
 
     // A worn Species item sets Speed; otherwise the stored value stands.
-    const species = this.parent?.items?.find(i => i.type === "species");
     const baseSpeed = (species?.system?.speed ?? this.speed.value) || 0;
     this.speed.base = baseSpeed;
 

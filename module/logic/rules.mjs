@@ -138,3 +138,103 @@ export function skillBudget(skills, coreSkills = []) {
   const generalSpent = total - roleBonusUsed;
   return { total, coreSum, roleBonusUsed, generalSpent, generalMax: 12, roleBonusMax: 3 };
 }
+
+/**
+ * Starting Silk Points (rulebook v4.7): WIT + NERVE + 1, counting only the
+ * points the player placed — the species bonus doesn't count ("Silk is
+ * practice, not anatomy"). After creation it uses the current WIT and NERVE,
+ * still without the species bonus.
+ * @param {{wit?:number, nerve?:number}} attributes  Final Attribute values (species bonus included).
+ * @param {{wit?:number, nerve?:number}} [bonuses]  The species' Attribute bonuses.
+ * @returns {number}
+ */
+export function startingSilk(attributes, bonuses = {}) {
+  const placed = k => Math.max(0, (Number(attributes?.[k]) || 0) - (Number(bonuses?.[k]) || 0));
+  return placed("wit") + placed("nerve") + 1;
+}
+
+/* -------------------------------------------- */
+/*  Chapter 20 creation tables                  */
+/* -------------------------------------------- */
+
+/** Attributes (roll 1d6): six 10-point spreads, highest number first. */
+export const ATTRIBUTE_SPREADS = {
+  1: [4, 2, 2, 2],
+  2: [3, 3, 2, 2],
+  3: [4, 3, 2, 1],
+  4: [3, 3, 3, 1],
+  5: [5, 2, 2, 1],
+  6: [4, 4, 1, 1]
+};
+
+/** Role (roll 1d6; on a 6, roll again: 1–3 Wheelman, 4–6 Grifter). */
+export function roleFromRoll(first, second = 1) {
+  const table = { 1: "face", 2: "ghost", 3: "tinkerer", 4: "bruiser", 5: "lookout" };
+  const r = Math.min(6, Math.max(1, Math.round(Number(first) || 1)));
+  if (r < 6) return table[r];
+  return Number(second) <= 3 ? "wheelman" : "grifter";
+}
+
+/**
+ * Place a Chapter 20 Attribute spread. The first number goes on `primary` (the
+ * Attribute the Role's core skills use), the rest on the other three in the
+ * given order. Then the species bonus: anything it would push past 5 moves to
+ * the lowest Attribute. Returns the placed points (bonus not included) — they
+ * still total 10.
+ * @param {number[]} spread     Four numbers, e.g. ATTRIBUTE_SPREADS[3].
+ * @param {string} primary      Attribute key for the first number.
+ * @param {object} [bonuses]    Species bonuses by Attribute key.
+ * @param {string[]} [others]   The other three keys, in the order to fill them.
+ * @returns {{body:number, wit:number, nerve:number, grace:number}}
+ */
+export function placeAttributeSpread(spread, primary, bonuses = {}, others = null) {
+  const keys = ["body", "wit", "nerve", "grace"];
+  const rest = (others ?? keys).filter(k => k !== primary && keys.includes(k));
+  for (const k of keys) if (k !== primary && !rest.includes(k)) rest.push(k);
+  const base = {};
+  base[primary] = spread[0];
+  rest.slice(0, 3).forEach((k, i) => { base[k] = spread[i + 1]; });
+  const bonus = k => Number(bonuses?.[k]) || 0;
+  const final = k => base[k] + bonus(k);
+  // Move each point of overflow, one at a time, to the lowest final Attribute.
+  for (let guard = 0; guard < 20; guard++) {
+    const over = keys.find(k => final(k) > 5 && base[k] > 1);
+    if (!over) break;
+    const lowest = keys.filter(k => k !== over && final(k) < 5)
+      .sort((a, b) => final(a) - final(b))[0];
+    if (!lowest) break;
+    base[over] -= 1;
+    base[lowest] += 1;
+  }
+  return base;
+}
+
+/**
+ * Skills (Quick Pick): both core skills at 3 (the Role's 3 points plus 3 of
+ * the 12), then the Role's fixed 3·2·2·2 package for the other 9.
+ * @param {string[]} coreSkills  The Role's two core skills.
+ * @param {object} quickPick     The Role's package, e.g. { stealth: 3, perception: 2, … }.
+ * @returns {object}             Skill ratings for all twelve Skills.
+ */
+export function quickPickSkills(coreSkills, quickPick) {
+  const out = Object.fromEntries(Object.keys(HEISTY.skills).map(k => [k, 0]));
+  for (const k of coreSkills ?? []) if (k in out) out[k] = 3;
+  for (const [k, v] of Object.entries(quickPick ?? {})) if (k in out) out[k] = Math.max(out[k], Number(v) || 0);
+  return out;
+}
+
+/**
+ * Perks: roll 1d6 twice on the Role's Perk table, counting down the list, and
+ * reroll a repeat. `rollD6` supplies the dice (for tests).
+ * @param {() => number} rollD6
+ * @param {number} [count]  Perks to pick (2 at creation).
+ * @returns {number[]}      Zero-based indices into the Role's Perk list.
+ */
+export function rollPerkIndices(rollD6, count = 2) {
+  const picks = [];
+  for (let guard = 0; picks.length < count && guard < 200; guard++) {
+    const i = Math.min(6, Math.max(1, Math.round(Number(rollD6()) || 1))) - 1;
+    if (!picks.includes(i)) picks.push(i);
+  }
+  return picks;
+}

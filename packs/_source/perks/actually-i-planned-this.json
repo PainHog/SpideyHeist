@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "face",
-    "effect": "<p>Once per heist, after a plan visibly falls apart, declare it was the plan. The crew gets +1 die on their next roll as everyone commits to the lie.</p>"
+    "effect": "<p>Once per heist, after a plan visibly falls apart, declare it was the plan. Every crewmate gets +1 die on their next roll as everyone commits to the lie.</p>"
   }
 }

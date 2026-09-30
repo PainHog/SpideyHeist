@@ -4,7 +4,7 @@
   "img": "systems/heisty-spideys/assets/icons/guard-spider.svg",
   "system": {
     "threatLevel": "High",
-    "alertContribution": "+1 per round aware, +2 if it calls for backup",
+    "alertContribution": "+1 per round aware",
     "speed": {
       "value": 6
     },
@@ -30,11 +30,11 @@
         "note": ""
       }
     ],
-    "senses": "",
+    "senses": "<p>Spots movement within 6 squares in line of sight.</p>",
     "passive": "<p>Usually hired by someone who knew a heist was possible. Patrols actively.</p>",
-    "escalation": "",
-    "weakness": "<p>Bribery (the crew must produce something valuable on the spot), the Grifter's Decoy (works once), the Bruiser (works, but loudly).</p>",
-    "notes": "<p><strong>Note:</strong> cannot be charmed by the Face &mdash; professional courtesy. Raises the Alert by 1 the moment it spots the crew.</p><p><strong>Note:</strong> guard spiders aren't evil. They're working. The crew could try talking to one. The Difficulty is 4. Worth one attempt.</p>",
+    "escalation": "<p>Aware the moment it spots the crew: +1 Alert (its &ldquo;spotted,&rdquo; not an extra), then +1 a round, and it follows the crew. Aware lasts the heist, unless it's paid off.</p>",
+    "weakness": "<p>Bribery (the crew must produce something valuable on the spot), the Grifter's Decoy (works once), the Bruiser (works, but loudly &mdash; and a beaten guard calls for backup: a fresh one, already aware, takes its post).</p>",
+    "notes": "<p><strong>Note:</strong> cannot be charmed by the Face &mdash; professional courtesy. Fast Talk and Deception still work.</p><p><strong>Note:</strong> guard spiders aren't evil. They're working. Anyone but the Face could try talking to one. The Difficulty is 4. Worth one attempt.</p>",
     "biography": "<p><em>&ldquo;Professional. Unfortunately.&rdquo;</em></p><p>Another spider, usually hired by someone who knew a heist was possible. It knows what you are and what you're doing, and it is simply working.</p>"
   }
 }

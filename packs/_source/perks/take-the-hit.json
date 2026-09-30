@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "bruiser",
-    "effect": "<p>Once per scene, redirect a physical consequence meant for an adjacent crewmate to yourself. You chose this.</p>"
+    "effect": "<p>Once per scene, redirect a physical consequence meant for an adjacent crewmate to yourself. Declare it before the shrug-off: the hit is yours, and so is the roll. You chose this.</p>"
   }
 }

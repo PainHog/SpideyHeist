@@ -12,7 +12,20 @@
       },
       "text": {
         "format": 1,
-        "content": "<p><em>Office &middot; Standard</em></p><p><strong>Alert Limit:</strong> 8 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> a second or third session</p><h3>The Objective</h3><p>A memory stick in the desk drawer of the corner office. Empty after 6 p.m. except for a cleaning crew that comes through at 8.</p><h3>What the Crew Sees at the Score</h3><p>A small open-plan office with a corner room for the manager, two floors, entry from the ground-floor ventilation. In plain sight: a motion-sensor light system across the main floor, and a guard spider working the overnight shift.</p>"
+        "content": "<p><em>Office &middot; Standard</em></p><p><strong>Alert Limit:</strong> 8 &middot; <strong>Loot:</strong> Prize &middot; <strong>For:</strong> a second or third session</p><h3>The Objective</h3><p>A memory stick in the desk drawer of the corner office. Empty after 6 p.m. except for a cleaning crew that comes through at 8.</p><h3>What the Crew Sees at the Score</h3><p>A small open-plan office with a corner room for the manager, two floors, entry from the ground-floor ventilation. In plain sight: a motion-sensor light system across the main floor, and a guard spider working the overnight shift. The second way in is the gap under the service door.</p><p><em>Present only what's visible. The intel, the threats, and the unknown obstacle are ST information &mdash; let Planning reveal the rest.</em></p>"
+      }
+    },
+    {
+      "key": "map",
+      "name": "Map",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><img src=\"systems/heisty-spideys/assets/maps/map-office.svg\" alt=\"The Office After Hours map\" style=\"width:100%;height:auto\" /></p><p><em>The office. A: the ground-floor vent. B: the gap under the service door, a squeeze. Red dashes: the two sensor beams. G: the guard spider and its loop. The stairs and the cable riser join the floors; the riser comes up inside the corner office. The manager's desk is 3 squares tall. Storyteller's copy: anything dashed in red is the unknown obstacle &mdash; keep it off what the crew sees.</em></p><p>One square = one spider. Gold letters are entry points, red tokens are where threats start, numbered circles are the Suggested Obstacles, and E1/E2 lie on the dashed gold escape route.</p>"
       }
     },
     {
@@ -25,7 +38,20 @@
       },
       "text": {
         "format": 1,
-        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The sensor beam covers a known line of squares with a fixed timing gap.</li><li>The guard spider's patrol loops the perimeter every few rounds.</li><li>The drawer uses a standard lock.</li></ul>"
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The two sensor beams each cover a known line of squares with a fixed timing gap.</li><li>The guard spider's patrol loops the perimeter every few rounds.</li><li>The drawer uses a standard lock.</li><li>The cable riser comes up behind the manager's desk.</li></ul>"
+      }
+    },
+    {
+      "key": "st-prep-the-guard-spider",
+      "name": "ST Prep — The Guard Spider",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>It knows someone's inside, not where. Until it spots the crew (Chapter 16), it walks its loop of the upper floor from the stair landing: 28 squares, about 5 rounds at Speed 6, past the office door. Roll at the end of each lap (Chapter 14); on a 5&ndash;6, it takes the stairs down and walks the ground floor's east end.</p><p><strong>Lap roll</strong> (1&ndash;2 the lap backwards, 3&ndash;4 rests a round, 5&ndash;6 the ground floor's east end): [[/gmr 1d6]]{Guard's lap}</p>"
       }
     },
     {
@@ -38,7 +64,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>The cleaning crew came at 7 tonight, not 8. They're already here.</p>"
+        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>The cleaning crew came at 7 tonight, not 8. They're already here &mdash; upstairs, doing the corner office: a cleaner vacuuming inside with headphones on, the cart wedged in the doorway. They finish 6 rounds after the crew reaches the upper floor, then take the stairs down, park the cart across the vent, and prop the service door open for their bags.</p>"
       }
     },
     {
@@ -51,7 +77,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<ol><li>The motion sensors. Pattern known, timing tight.</li><li>The guard spider. Professional, alert, doing the job &mdash; it is aware of the crew from the moment they're inside (+1 Alert each round it can see them). First real opposed roll.</li><li>The locked desk drawer. Engineering moment.</li><li><strong>(Unknown)</strong> The cleaning cart is parked across the vent the crew planned to leave through.</li></ol>"
+        "content": "<p>Obstacles 1&ndash;4 are the heist: each takes two successful rolls (Partial or better). <strong>E1</strong> and <strong>E2</strong> are the suggested Escape obstacles: one successful roll each, and at least one of them never needs Athletics. Difficulties are for a calm location; the Alert raises them. <em>Opposed</em> means the creature rolls first, and its Successes + 1 are your Difficulty.</p><table><thead><tr><th>#</th><th>Obstacle</th><th>Roll (Difficulty)</th></tr></thead><tbody><tr><td>1</td><td>The motion sensors: two beams across the ground floor. Pattern known, timing tight.</td><td>Cross in the gap: Stealth (3) &middot; jam an emitter: Engineering (3), one beam per roll</td></tr><tr><td>2</td><td>The guard spider. Professional, alert, doing the job &mdash; it is aware of the crew from the moment they're inside (+1 Alert each round it can see them). First real opposed roll.</td><td>Stealth, opposed (its Perception 4) &middot; fight: Brawl, opposed (its Brawl 3) &mdash; fights are loud &middot; talk: Persuasion (4), not the Face &middot; bribe: its Weakness (Chapter 16)</td></tr><tr><td>3</td><td><strong>(Unknown)</strong> The cleaners, in the corner office. The cart blocks the doorway; the vacuum is running.</td><td>Past the cleaner: Stealth (1) &middot; past the vacuum: Athletics or Tactics (2) &middot; over the cart: Acrobatics (2)</td></tr><tr><td>4</td><td>The locked desk drawer. Engineering moment.</td><td>Engineering (3) &middot; force it: Athletics (3), +1 Alert</td></tr><tr><td>E1</td><td>Down with the stick &mdash; riser or stairs &mdash; and back through the beams.</td><td>Stealth (3) &middot; jam a beam for everyone: Engineering (3)</td></tr><tr><td>E2</td><td>The cleaning cart is parked across the vent the crew planned to leave through. Out the propped service door instead, past the cleaners.</td><td>Past the cleaners: Stealth (1) &middot; time the vacuum: Tactics (2) &middot; shove the cart: Athletics (3), +1 Alert</td></tr></tbody></table>"
       }
     }
   ]

@@ -3,7 +3,7 @@
     <h2>Choose Your Flaw</h2>
     <button type="button" class="btn-random" data-action="randomFlaw"><i class="fa-solid fa-dice"></i> Roll 1d10</button>
   </div>
-  <p class="step-blurb">Take exactly one. It's a real constraint, and it will come up — and it pays you 1 Silk Point when it causes the crew a genuine problem.</p>
+  <p class="step-blurb">Take exactly one. It's a real constraint, and it will come up — and each time it causes the crew a genuine problem it pays you 1 Silk Point — the Flaw Moment, once each time it fires; no Flaw pays twice.</p>
   <div class="flaw-list">
     {{#each flaws}}
     <button type="button" class="flaw-choice {{#if this.selected}}selected{{/if}}" data-action="selectFlaw" data-id="{{this.id}}">

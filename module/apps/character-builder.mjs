@@ -10,9 +10,18 @@
 
 import { HEISTY } from "../config.mjs";
 import { requestSpiderCreation } from "../helpers/socket.mjs";
-import { skillBudget as calcSkillBudget, finalAttributes as calcFinalAttributes, attributesSpent } from "../logic/rules.mjs";
+import {
+  skillBudget as calcSkillBudget, finalAttributes as calcFinalAttributes, attributesSpent, startingSilk,
+  ATTRIBUTE_SPREADS, roleFromRoll, placeAttributeSpread, quickPickSkills, rollPerkIndices
+} from "../logic/rules.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+/** One d6. */
+const d6 = () => 1 + Math.floor(Math.random() * 6);
+
+/** Perk names compare equal across straight and curly apostrophes. */
+const normName = s => String(s ?? "").replace(/[\u2018\u2019]/g, "'").trim().toLowerCase();
 
 /** The book's 2d6 Spider Name table (Chapter 20). */
 const NAME_TABLE = {
@@ -66,6 +75,9 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       randomSpecies: CharacterBuilder.#onRandomSpecies,
       randomRole: CharacterBuilder.#onRandomRole,
       randomFlaw: CharacterBuilder.#onRandomFlaw,
+      randomAttributes: CharacterBuilder.#onRandomAttributes,
+      quickPickSkills: CharacterBuilder.#onQuickPickSkills,
+      randomPerks: CharacterBuilder.#onRandomPerks,
       randomName: CharacterBuilder.#onRandomName,
       goStep: CharacterBuilder.#onGoStep,
       next: CharacterBuilder.#onNext,
@@ -241,14 +253,19 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
 
     // Perks step
     const roleKey = this.roleDoc?.system?.roleKey;
+    // In book order, so the Chapter 20 roll ("counting down the list") matches what's shown.
+    const perkOrder = (HEISTY.roles[roleKey]?.perks ?? []).map(normName);
+    const perkRank = p => { const i = perkOrder.indexOf(normName(p.name)); return i < 0 ? 99 : i; };
     context.rolePerks = this._perks
       .filter(p => !roleKey || p.system.role === roleKey)
+      .sort((a, b) => perkRank(a) - perkRank(b))
       .map(p => ({
         id: p.id, name: p.name, effect: p.system.effect,
         selected: this.state.perkIds.includes(p.id),
         disabled: !this.state.perkIds.includes(p.id) && this.state.perkIds.length >= 2
       }));
     context.needsRole = !this.roleDoc;
+    context.attrSilk = startingSilk(finals, bonus);
     context.perkCount = this.state.perkIds.length;
 
     // Flaw step
@@ -266,7 +283,7 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       species: this.speciesDoc?.name ?? "—",
       role: this.roleDoc?.name ?? "—",
       speed: this.speciesDoc?.system?.speed ?? 5,
-      silk: (finals.wit ?? 0) + (finals.nerve ?? 0),
+      silk: startingSilk(finals, bonus),
       attributes: Object.entries(HEISTY.attributes).map(([k, a]) => ({ abbr: a.abbr, value: finals[k] })),
       perks: this.state.perkIds.map(id => this._perks.find(p => p.id === id)?.name).filter(Boolean),
       flaw: this._flaws.find(fl => fl.id === this.state.flawId)?.name ?? "—"
@@ -414,7 +431,10 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
   }
   static #onRandomRole() {
     if (!this._roles.length) return;
-    const pick = this._roles[Math.floor(Math.random() * this._roles.length)];
+    // Chapter 20: 1d6 (1 Face … 5 Lookout); on a 6, roll again: 1–3 Wheelman, 4–6 Grifter.
+    const key = roleFromRoll(d6(), d6());
+    const pick = this._roles.find(r => r.system?.roleKey === key)
+      ?? this._roles[Math.floor(Math.random() * this._roles.length)];
     if (this.state.roleId !== pick.id) this.state.perkIds = [];
     this.state.roleId = pick.id;
     this.render();
@@ -424,6 +444,49 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
     this.state.flawId = this._flaws[Math.floor(Math.random() * this._flaws.length)].id;
     this.render();
   }
+  /**
+   * Attributes (Chapter 20, 1d6): a 10-point spread. The first number goes on
+   * the Attribute the Role's core skills use (one of the two, at random, if
+   * they use two), the rest on the others in random order; the species bonus
+   * goes on top, and anything past 5 moves to the lowest Attribute.
+   */
+  static #onRandomAttributes() {
+    const keys = Object.keys(HEISTY.attributes);
+    const coreAttrs = [...new Set(this.coreSkills.map(k => HEISTY.skills[k]?.attr).filter(Boolean))];
+    const pool = coreAttrs.length ? coreAttrs : keys;
+    const primary = pool[Math.floor(Math.random() * pool.length)];
+    const others = keys.filter(k => k !== primary).sort(() => Math.random() - 0.5);
+    this.state.attributes = placeAttributeSpread(ATTRIBUTE_SPREADS[d6()], primary, this.speciesBonuses, others);
+    this.render();
+  }
+
+  /** Skills (Chapter 20 Quick Pick): both core skills at 3, then the Role's package. */
+  static #onQuickPickSkills() {
+    const key = this.roleDoc?.system?.roleKey;
+    const role = HEISTY.roles[key];
+    if (!role) {
+      ui.notifications?.warn("Choose a Crew Role first — the Quick Pick is per Role.");
+      return;
+    }
+    this.state.skills = quickPickSkills(this.coreSkills, role.quickPick);
+    this.render();
+  }
+
+  /** Perks (Chapter 20): 1d6 twice on the Role's Perk table, counting down the list; reroll a repeat. */
+  static #onRandomPerks() {
+    const role = HEISTY.roles[this.roleDoc?.system?.roleKey];
+    if (!role) {
+      ui.notifications?.warn("Choose a Crew Role first — Perks come from your Role's list.");
+      return;
+    }
+    const byName = new Map(this._perks.map(p => [normName(p.name), p]));
+    const ids = rollPerkIndices(d6, 2)
+      .map(i => byName.get(normName(role.perks[i]))?.id)
+      .filter(Boolean);
+    if (ids.length) this.state.perkIds = ids;
+    this.render();
+  }
+
   static #onRandomName() {
     const roll = (1 + Math.floor(Math.random() * 6)) + (1 + Math.floor(Math.random() * 6));
     this.state.name = NAME_TABLE[roll] ?? "Gerald";
@@ -456,7 +519,7 @@ export class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) 
       },
       skills: Object.fromEntries(Object.keys(HEISTY.skills).map(k => [k, { value: this.state.skills[k] }])),
       speed: { value: speciesDoc?.system?.speed ?? 5 },
-      silk: { value: finals.wit + finals.nerve, max: finals.wit + finals.nerve },
+      silk: { value: startingSilk(finals, this.speciesBonuses), max: startingSilk(finals, this.speciesBonuses) },
       vitality: { state: "unharmed" },
       details: { pronouns: this.state.pronouns }
     };

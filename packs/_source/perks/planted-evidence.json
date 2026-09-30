@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "grifter",
-    "effect": "<p>During Planning, place one false piece of information on the known map. The first NPC to find it believes it completely.</p>"
+    "effect": "<p>During Planning, place one false piece of information on the known map. The first NPC to find it believes it completely &mdash; a human for the heist, an animal for one scene.</p>"
   }
 }

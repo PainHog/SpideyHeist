@@ -1,0 +1,110 @@
+{
+  "key": "random-tables",
+  "name": "Random Tables",
+  "pages": [
+    {
+      "key": "using-the-tables",
+      "name": "Using the Tables",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Roll when you want the universe to decide. Play uses only d6s, but these creation tables use a d10 and a pair of d6s &mdash; this is character setup, not the heist. Rolled a name, Role or Flaw someone on the crew already has? Roll again, or keep it; two Faces is a choice, not a typo.</p><p>The Character Builder rolls these for you: the <strong>Roll</strong> buttons on the Species, Role, Attributes, Perks and Flaw steps, <strong>Quick Pick</strong> on the Skills step, and <strong>2d6</strong> for the name.</p>"
+      }
+    },
+    {
+      "key": "spider-name",
+      "name": "Spider Name (2d6)",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Roll</th><th>Name</th><th>Background</th></tr></thead><tbody><tr><td><strong>2</strong></td><td>Gerald</td><td>A real spider. Has been through things. Don't ask about the incident.</td></tr><tr><td><strong>3</strong></td><td>Pebbles</td><td>Found near the front walk. Named after the first thing they saw.</td></tr><tr><td><strong>4</strong></td><td>Dusty</td><td>Lives in the dust. One with the dust. Is, arguably, mostly dust.</td></tr><tr><td><strong>5</strong></td><td>Crinkle</td><td>Makes a noise when they move. Nobody knows why, least of all them.</td></tr><tr><td><strong>6</strong></td><td>Jar Lid</td><td>Was trapped in a jar once. Has made peace with it. Jar Lid is fine.</td></tr><tr><td><strong>7</strong></td><td>The Architect</td><td>A self-given title. The crew uses it unironically because it fits.</td></tr><tr><td><strong>8</strong></td><td>Filament</td><td>Silk specialist. Particular about quality. Will discuss thread count.</td></tr><tr><td><strong>9</strong></td><td>Nook</td><td>Prefers corners. All corners. Any corner. A corner is home.</td></tr><tr><td><strong>10</strong></td><td>Cassette</td><td>Found in a box of old electronics. Has absorbed some energy from it.</td></tr><tr><td><strong>11</strong></td><td>Widow</td><td>Not a Black Widow. Just has a certain vibe. Nobody asks.</td></tr><tr><td><strong>12</strong></td><td>Eight</td><td>Simple. Honest. Eight legs, one name. What more do you want.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "species",
+      "name": "Species (1d6)",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Roll</th><th>Species &amp; Vibe</th></tr></thead><tbody><tr><td><strong>1</strong></td><td><strong>Jumping Spider</strong> &mdash; bold, visible, magnetic. Will jump at an inopportune moment.</td></tr><tr><td><strong>2</strong></td><td><strong>Orb Weaver</strong> &mdash; methodical, architectural. Strong feelings about structure.</td></tr><tr><td><strong>3</strong></td><td><strong>Wolf Spider</strong> &mdash; fast, physical, doesn't spin webs, considers this a personality.</td></tr><tr><td><strong>4</strong></td><td><strong>Cellar Spider</strong> &mdash; thin and folding, fits through anything, already inside the wall.</td></tr><tr><td><strong>5</strong></td><td><strong>Spitting Spider</strong> &mdash; precise, patient, excellent aim, almost never misses.</td></tr><tr><td><strong>6</strong></td><td><strong>Crab Spider</strong> &mdash; sideways thinker, excellent at waiting, less good at stopping.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "role",
+      "name": "Role (1d6)",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Roll</th><th>Role &amp; Summary</th></tr></thead><tbody><tr><td><strong>1</strong></td><td><strong>The Face</strong> &mdash; you talk. To everyone. Especially the cat.</td></tr><tr><td><strong>2</strong></td><td><strong>The Ghost</strong> &mdash; you disappear. Into walls, vents, the gap behind the fridge.</td></tr><tr><td><strong>3</strong></td><td><strong>The Tinkerer</strong> &mdash; you build things out of other things. They mostly work.</td></tr><tr><td><strong>4</strong></td><td><strong>The Bruiser</strong> &mdash; you solve problems physically. Plan B is also physical.</td></tr><tr><td><strong>5</strong></td><td><strong>The Lookout</strong> &mdash; you watch, you notice, you warn the crew thirty seconds early.</td></tr><tr><td><strong>6</strong></td><td><strong>Roll again:</strong> 1&ndash;3 Wheelman (you know every exit), 4&ndash;6 Grifter (nothing is what it seems, especially you).</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "attributes",
+      "name": "Attributes (1d6)",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Roll</th><th>Spread (10 points)</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>4 · 2 · 2 · 2</td></tr><tr><td><strong>2</strong></td><td>3 · 3 · 2 · 2</td></tr><tr><td><strong>3</strong></td><td>4 · 3 · 2 · 1</td></tr><tr><td><strong>4</strong></td><td>3 · 3 · 3 · 1</td></tr><tr><td><strong>5</strong></td><td>5 · 2 · 2 · 1</td></tr><tr><td><strong>6</strong></td><td>4 · 4 · 1 · 1</td></tr></tbody></table><p>The first number goes on the Attribute your Role's core skills use (pick one if they use two), the rest wherever you like. Add your species bonus; if that pushes anything past 5, move the extra to your lowest Attribute.</p>"
+      }
+    },
+    {
+      "key": "skills-and-perks",
+      "name": "Skills and Perks (Quick Pick)",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Role</th><th>Both core skills at 3, then:</th></tr></thead><tbody><tr><td>Face</td><td>Stealth 3 · Perception 2 · Disguise 2 · Intimidation 2</td></tr><tr><td>Ghost</td><td>Perception 3 · Athletics 2 · Deception 2 · Engineering 2</td></tr><tr><td>Tinkerer</td><td>Stealth 3 · Acrobatics 2 · Tactics 2 · Athletics 2</td></tr><tr><td>Bruiser</td><td>Athletics 3 · Stealth 2 · Intimidation 2 · Perception 2</td></tr><tr><td>Lookout</td><td>Stealth 3 · Acrobatics 2 · Engineering 2 · Deception 2</td></tr><tr><td>Wheelman</td><td>Athletics 3 · Stealth 2 · Perception 2 · Endurance 2</td></tr><tr><td>Grifter</td><td>Stealth 3 · Persuasion 2 · Perception 2 · Acrobatics 2</td></tr></tbody></table><p>Perks: roll 1d6 twice on your Role's Perk table, counting down the list; reroll a repeat.</p>"
+      }
+    },
+    {
+      "key": "flaw",
+      "name": "Flaw (1d10)",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<table><thead><tr><th>Roll</th><th>Flaw &amp; Note</th></tr></thead><tbody><tr><td><strong>1</strong></td><td><strong>Arachnophobe Magnet</strong> &mdash; humans look at you more than other spiders. A documented phenomenon.</td></tr><tr><td><strong>2</strong></td><td><strong>Overconfident</strong> &mdash; you've handled worse. (You haven't handled this.)</td></tr><tr><td><strong>3</strong></td><td><strong>Loud</strong> &mdash; not physically loud. Operationally loud. Things break near you.</td></tr><tr><td><strong>4</strong></td><td><strong>Dramatic</strong> &mdash; everything is an event. You know. You can't stop.</td></tr><tr><td><strong>5</strong></td><td><strong>Allergic to Dust</strong> &mdash; you will sneeze at the worst moment, at least once.</td></tr><tr><td><strong>6</strong></td><td><strong>Compulsive Planner</strong> &mdash; you must revise the plan, ideally right now, ideally out loud.</td></tr><tr><td><strong>7</strong></td><td><strong>Butterfingers</strong> &mdash; you will drop the thing. The important thing. At the important moment.</td></tr><tr><td><strong>8</strong></td><td><strong>Fear of Vacuums</strong> &mdash; vacuums cause immediate, total panic.</td></tr><tr><td><strong>9</strong></td><td><strong>Easily Distracted</strong> &mdash; shiny objects and interesting smells derail you.</td></tr><tr><td><strong>10</strong></td><td><strong>Show-Off</strong> &mdash; you'll take the flashier, harder approach. Sometimes it even works.</td></tr></tbody></table>"
+      }
+    },
+    {
+      "key": "mid-heist-complication",
+      "name": "Mid-Heist Complication (1d6)",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Roll when the crew starts a third round at one obstacle &mdash; the world doesn't wait &mdash; or when the night needs a nudge. Clock times in a heist (every ninety minutes, the cleaners at 8) arrive this way, or at a threshold. An entry that doesn't fit becomes its nearest equivalent: in a restaurant, the &ldquo;cat&rdquo; is the Rat.</p><table><thead><tr><th>Roll</th><th>Complication</th><th>Effect</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>The cat woke up. Not because of anything the crew did. Just because.</td><td>The nearest sleeping creature is active now. Nothing asleep? +1 Alert.</td></tr><tr><td><strong>2</strong></td><td>A drawer slid open on its own. Something's in it. Maybe the objective. Maybe not.</td><td>The ST gives the crew one detail they didn't case (never the unknown obstacle).</td></tr><tr><td><strong>3</strong></td><td>A human got up for water. They're in the kitchen. Right now. Everyone freeze.</td><td>Stealth +1 Difficulty here, this round and next.</td></tr><tr><td><strong>4</strong></td><td>The vacuum switched on. Its cycle begins. Fear of Vacuums triggers.</td><td>Its roar covers you: Stealth &minus;1 Difficulty this round.</td></tr><tr><td><strong>5</strong></td><td>A phone lit up on the counter. The room is briefly, brightly visible.</td><td>No cover this round.</td></tr><tr><td><strong>6</strong></td><td>Something fell off a shelf across the location. Not the crew's fault. The Alert rises by 1 anyway.</td><td>That's the effect.</td></tr></tbody></table><p><strong>Roll it:</strong> [[/r 1d6]]{Mid-Heist Complication}</p>"
+      }
+    }
+  ]
+}

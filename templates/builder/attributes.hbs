@@ -1,9 +1,12 @@
 <section class="tab builder-step step-attributes {{tabs.attributes.cssClass}}" data-tab="attributes" data-group="primary">
   <div class="step-head">
     <h2>Distribute Attributes</h2>
-    <span class="budget {{#if (heEq attrRemaining 0)}}done{{else}}pending{{/if}}">{{attrSpent}} / 10 spent</span>
+    <div class="budget-group">
+      <span class="budget {{#if (heEq attrRemaining 0)}}done{{else}}pending{{/if}}">{{attrSpent}} / 10 spent</span>
+      <button type="button" class="btn-random" data-action="randomAttributes" title="Chapter 20: roll a 10-point spread; the first number goes on your Role's Attribute"><i class="fa-solid fa-dice"></i> Roll 1d6</button>
+    </div>
   </div>
-  <p class="step-blurb">10 points to spread, minimum 1 in each, maximum 5 including your species bonus.</p>
+  <p class="step-blurb">10 points to spread, minimum 1 in each, maximum 5 including your species bonus. Starting Silk is WIT + NERVE + 1 from the points you place here — the species bonus doesn't count (now <strong>{{attrSilk}}</strong>).</p>
   <div class="attr-buy">
     {{#each attributes}}
     <div class="attr-buy-row">

@@ -12,7 +12,20 @@
       },
       "text": {
         "format": 1,
-        "content": "<p><em>Library &middot; Hard</em></p><p><strong>Alert Limit:</strong> 6 &middot; <strong>Loot:</strong> Treasure &middot; <strong>For:</strong> an experienced crew</p><h3>The Objective</h3><p>A rare book in the locked reference section of a public library. It contains a spider map &mdash; a generational silk record of every web in the city. Someone wants it back. Someone else wants it more.</p><h3>What the Crew Sees at the Score</h3><p>Three floors; the reference section is on the second, behind a locked glass case. In plain sight: a head librarian who stays late and is extraordinarily observant, and the library cat &mdash; enormous, and it has seen things.</p>"
+        "content": "<p><em>Library &middot; Hard</em></p><p><strong>Alert Limit:</strong> 6 &middot; <strong>Loot:</strong> Treasure &middot; <strong>For:</strong> an experienced crew</p><h3>The Objective</h3><p>A rare book in the locked reference section of a public library. It contains a spider map &mdash; a generational silk record of every web in the city. Someone wants it back. Someone else wants it more.</p><h3>What the Crew Sees at the Score</h3><p>Three floors; the reference section is on the second, behind a locked glass case. In plain sight: a head librarian who stays late and is extraordinarily observant, and the library cat &mdash; enormous, and it has seen things. Two ways in on the ground floor: the book-return slot in the front door, or the gap under the staff door.</p><p><em>Present only what's visible. The intel, the threats, and the unknown obstacle are ST information &mdash; let Planning reveal the rest.</em></p>"
+      }
+    },
+    {
+      "key": "map",
+      "name": "Map",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p><img src=\"systems/heisty-spideys/assets/maps/map-library.svg\" alt=\"The Library Job map\" style=\"width:100%;height:auto\" /></p><p><em>The library. A: the book-return slot. B: the gap under the staff door. G: the resident guard spider, in its web. H: the librarian; red dots mark the centre-aisle walk on each floor. Red paw: the library cat, asleep on the landing. The two stairwells and the dumbwaiter join the floors; the reference room holds the locked glass case. Storyteller's copy: anything dashed in red is the unknown obstacle &mdash; keep it off what the crew sees.</em></p><p>One square = one spider. Gold letters are entry points, red tokens are where threats start, numbered circles are the Suggested Obstacles, and E1/E2 lie on the dashed gold escape route.</p>"
       }
     },
     {
@@ -25,7 +38,20 @@
       },
       "text": {
         "format": 1,
-        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The librarian's route covers every floor on an irregular schedule.</li><li>The case uses an antique lock (Engineering, Difficulty 4).</li><li>There are two stairwells and a dumbwaiter between floors.</li></ul>"
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The librarian's route covers every floor on an irregular schedule.</li><li>The case uses an antique lock (Engineering, Difficulty 4).</li><li>There are two stairwells and a dumbwaiter between floors.</li><li>The dumbwaiter still runs, worked by a pulley inside the shaft.</li></ul>"
+      }
+    },
+    {
+      "key": "st-prep-the-librarian",
+      "name": "ST Prep — The Librarian",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>An Alert Human (Chapter 15). Roll 1d6 as each obstacle begins, and at the end of each round in turn order: 1&ndash;2, the ground floor; 3&ndash;4, the second floor; 5&ndash;6, the third floor, off the map. On a floor, they walk its centre aisle from one stairwell to the other and back. The library cat is a House Cat (Chapter 16), asleep on the second-floor landing; it wakes on its Escalation.</p><p><strong>Where are they?</strong> [[/gmr 1d6]]{Librarian's floor}</p>"
       }
     },
     {
@@ -38,7 +64,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>Another crew is already inside, after the same book.</p>"
+        "content": "<p><em>ST information. Don't foreshadow it in the Score &mdash; let it arrive.</em></p><p>Another crew is already inside, after the same book. Four spiders built like the players', rolling 5 dice at whatever they do (Attribute 3 + Skill 2). They got here first, found the antique lock beyond them, and are hiding in the reference room, waiting for someone else to open the case. When it opens, they step out.</p>"
       }
     },
     {
@@ -51,7 +77,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<ol><li>Entry &mdash; a guard spider (not hired, just lives here) near the entry point, with feelings about the reference section.</li><li>The librarian's late-night route. Every floor, irregular timing.</li><li>The locked case. Antique lock, Engineering Difficulty 4.</li><li><strong>(Unknown)</strong> The other crew. Negotiate, compete, or recruit &mdash; all three are valid.</li></ol>"
+        "content": "<p>Obstacles 1&ndash;4 are the heist: each takes two successful rolls (Partial or better). <strong>E1</strong> and <strong>E2</strong> are the suggested Escape obstacles: one successful roll each, and at least one of them never needs Athletics. Difficulties are for a calm location; the Alert raises them. <em>Opposed</em> means the creature rolls first, and its Successes + 1 are your Difficulty.</p><table><thead><tr><th>#</th><th>Obstacle</th><th>Roll (Difficulty)</th></tr></thead><tbody><tr><td>1</td><td>Entry &mdash; a guard spider (not hired, just lives here) near the entry point, with feelings about the reference section. Its web overlooks the lobby.</td><td>Stealth, opposed (its Perception 4) &middot; fight: Brawl, opposed (its Brawl 3) &mdash; fights are loud &middot; talk: Persuasion (4), not the Face (Chapter 16)</td></tr><tr><td>2</td><td>The librarian's late-night route. Every floor, irregular timing.</td><td>Stealth or Deception (4)</td></tr><tr><td>3</td><td>The locked case. Antique lock, Engineering Difficulty 4. It's this heist's key lock, so Bypass doesn't help (Chapter 5).</td><td>Engineering (4)</td></tr><tr><td>4</td><td><strong>(Unknown)</strong> The other crew. Negotiate, compete, or recruit &mdash; all three are valid.</td><td>Negotiate or recruit: Persuasion, opposed (their Face, 5 dice) &middot; compete: Deception or Tactics, opposed (5 dice)</td></tr><tr><td>E1</td><td>Down two floors with a book that outweighs the crew.</td><td>The dumbwaiter: Engineering (3) &middot; the stairs: Athletics (3)</td></tr><tr><td>E2</td><td>The lobby: the guard's web on one side, maybe the librarian on the other.</td><td>Stealth or Deception (4) &middot; feed the book out through the return slot and follow it: Engineering (3)</td></tr></tbody></table>"
       }
     }
   ]
