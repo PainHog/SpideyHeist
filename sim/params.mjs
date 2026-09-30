@@ -76,6 +76,20 @@ export const PARAMS = {
     doc: "Failure is 'no progress' and nothing in the rules ends a run of failures except the Alert. After this many rounds: a heist obstacle is abandoned (objective lost if not yet taken); spiders stuck in the Escape are left behind (Out).",
     ref: "Ch 2 'Failure is a beat, not a wall'; Ch 13 'Make failure a door'"
   },
+  obstacleSteps: {
+    default: 1,
+    alts: [2, 3],
+    title: "How many successful rolls a heist obstacle needs",
+    doc: "1 = one roll that meets it (a Partial counts: 'the lock opens, but you made noise'). 2 or 3 = the ST calls for a roll at each beat (approach, work, get clear) — each needs a Partial or better. Applies to single-roll obstacles; individual obstacles still need one pass per spider.",
+    ref: "Ch 11 'each with a clear goal'; Ch 2 'When Not to Roll' — the book never says how many rolls an obstacle is"
+  },
+  crewSize: {
+    default: 5,
+    alts: [3],
+    title: "Crew size",
+    doc: "The brief is a crew of 5; the book supports 2–6 players.",
+    ref: "Ch 1 What You Need"
+  },
   intelValue: {
     default: "firstRoll",
     alts: ["none", "allRolls"],
