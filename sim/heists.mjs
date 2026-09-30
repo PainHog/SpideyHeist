@@ -6,7 +6,8 @@
  * marked `assumed: true` with a reason. Sources:
  *   - Ch 15 Obstacle Toolkit (Difficulties "assume a calm location")
  *   - Ch 16 Creature Compendium (stat blocks, Escalation, Alert Contribution)
- *   - Ch 19 heist text (Alert Limit, loot, intel, suggested obstacles)
+ *   - Ch 19 heist text (Alert Limit, loot, intel, suggested obstacles with their
+ *     Difficulties, and the suggested Escape obstacles E1–E2 — v4.7, REVIEW.md Part F)
  *   - Ch 3 (Squeezing: Acrobatics D2; Height: +1 Difficulty to Acrobatics)
  *
  * Approach `mode`:
@@ -71,11 +72,19 @@ export const CREATURES = {
 const A = (skill, diff, mode, extra = {}) => ({ skill, diff, mode, ...extra });
 
 /**
- * Generated Escape obstacles. The ready-to-run heists give none (Ch 19), so
- * these follow Ch 11 / Ch 17: lean, about pace; at least one solvable without
- * Athletics; several answers per obstacle. All `assumed`.
+ * The Escape obstacles. Since v4.7 every Ch 19 heist suggests its own E1–E2
+ * (`heist.escape`); those are used, the first `count` of them, with `diffShift`
+ * added to every Difficulty. A heist without them (none now) falls back to the
+ * generic pair below, which follows Ch 11 / Ch 17: lean, about pace; at least one
+ * solvable without Athletics; several answers per obstacle. All `assumed`.
  */
 export function makeEscape(heist, count = 2, diffShift = 0) {
+  if (heist.escape?.length) {
+    return heist.escape.slice(0, Math.max(1, count)).map(o => ({
+      ...o, kind: o.kind ?? "environment", phase: "escape", threats: o.threats ?? [],
+      approaches: o.approaches.map(a => ({ ...a, diff: a.diff + diffShift }))
+    }));
+  }
   const d = (heist.limit >= 10 ? 2 : 3) + diffShift;
   const run = {
     id: "E1", name: heist.escapeRun ?? "Run for the exit", kind: "environment", phase: "escape",
@@ -115,103 +124,141 @@ export const HEISTS = [
     ref: "Ch 19 Heist 1",
     creatures: ["house-cat"],
     intel: [
-      { text: "The counter was wiped down this evening and is slippery (Acrobatics to climb).", obstacle: "O2" },
+      { text: "The counter and the cabinet were wiped down this evening and are slippery (Acrobatics to climb).", obstacle: "O2" },
       { text: "The cat's bed is 9 squares from the cabinet.", obstacle: "O1" },
-      { text: "The human's water runs roughly every ninety minutes.", obstacle: null }
+      { text: "The human's water runs roughly every ninety minutes.", obstacle: null },
+      { text: "The bottle cap on the floor is exactly the kind of shiny thing the cat can't ignore.", obstacle: "O1" }
     ],
     obstacles: [
       {
-        id: "O1", name: "Cross the living room (cat awake, watching the door)", kind: "creature",
+        id: "O1", name: "Cross the kitchen floor (cat awake, watching the door)", kind: "creature",
         tags: ["movement", "stealth"], threats: ["house-cat"], awake: ["house-cat"],
         approaches: [
-          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 15 House Cat: Stealth or Persuasion (3)" }),
-          A("persuasion", 3, "single", { opposed: "perception", ref: "Ch 15 House Cat (charming it is 'hard' but the table gives 3)" })
+          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19: 'Stealth, opposed (its Perception 4)'; Ch 15 House Cat (3) where the cat doesn't roll" }),
+          A("persuasion", 3, "single", { opposed: "perception", ref: "Ch 19: 'charm it: Persuasion, opposed'; Ch 15 House Cat (3)" })
         ],
         improvise: ["deception", "acrobatics", "disguise"]
       },
       {
         id: "O2", name: "Climb the cabinet (slippery, freshly wiped)", kind: "environment",
         tags: ["movement", "climb", "slippery", "height"], threats: [],
-        approaches: [A("acrobatics", 2, "individual", { ref: "Ch 15 Slippery Surface: Acrobatics (2); Ch 19 intel 'Acrobatics to climb'" })],
-        improvise: ["athletics", "engineering"],
-        assumed: true, reason: "Height +1 (Ch 3) assumed: a cabinet above the counter is 'a shelf edge over the kitchen floor'."
+        approaches: [A("acrobatics", 2, "individual", { ref: "Ch 19: 'Acrobatics (2), +1 for the height' — the height tag adds the +1 (Ch 3)" })],
+        improvise: ["athletics", "engineering"]
       },
       {
         id: "O3", name: "Open the tin quietly (tight lid)", kind: "mechanism",
         tags: ["smallMech"], threats: [],
         approaches: [
-          A("engineering", 3, "single"),
-          A("athletics", 3, "single", { loud: 1 })
+          A("engineering", 3, "single", { ref: "Ch 19: 'Engineering (3)'" }),
+          A("athletics", 3, "single", { loud: 1, ref: "Ch 19: 'force it: Athletics (3), and the lid pops: +1 Alert'" })
         ],
-        improvise: ["brawl", "perception"],
-        assumed: true, reason: "No Difficulty given. Locked Drawer analogue (Ch 15: Engineering 3); forcing it with Athletics assumed noisy (+1 Alert), as the Bruiser on the drawer 'raises the Alert'."
+        improvise: ["brawl", "perception"]
       },
       {
-        id: "O4", name: "(Unknown) It's the sewing tin — open its twin", kind: "mechanism", unknown: true, objective: true,
+        id: "O4", name: "(Unknown) It's the sewing tin — sniff out or open its twin", kind: "mechanism", unknown: true, objective: true,
         tags: ["smallMech"], threats: [],
         approaches: [
-          A("engineering", 3, "single"),
+          A("perception", 4, "single", { ref: "Ch 19: 'Sniff out the butter first: Perception (4)'" }),
+          A("engineering", 3, "single", { ref: "Ch 19: 'open the twin: as obstacle 3'" }),
           A("athletics", 3, "single", { loud: 1 })
         ],
-        improvise: ["brawl", "perception"],
-        assumed: true, reason: "No Difficulty given; the twin has the same tight lid as O3."
+        improvise: ["brawl", "tactics"]
       }
     ],
-    escapeRun: "Back across the living room", escapeExit: "Out through the entry vent",
-    escapeThreats: ["house-cat"]
+    escape: [
+      {
+        id: "E1", name: "Back across with the cookie (the cat still watching)", kind: "creature",
+        tags: ["movement", "stealth", "escape"], threats: ["house-cat"],
+        approaches: [
+          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19 E1: 'Stealth, opposed (the cat)'" }),
+          A("tactics", 3, "single", { ref: "Ch 19 E1: 'one spider times its head-turns for everyone: Tactics (3)'" })
+        ],
+        improvise: ["acrobatics", "deception"]
+      },
+      {
+        id: "E2", name: "A crumbly cookie, and the way out is a squeeze", kind: "mechanism",
+        tags: ["escape"], threats: [],
+        approaches: [
+          A("engineering", 2, "single", { ref: "Ch 19 E2: 'Wrap it in silk first: Engineering (2)'" }),
+          A("acrobatics", 2, "single", { ref: "Ch 19 E2: 'ease it through: Acrobatics (2)'" })
+        ],
+        improvise: ["tactics", "athletics"],
+        note: "Ch 19 E2's third answer (shove it and leave the crumbs: incomplete loot, no roll) isn't modelled."
+      }
+    ]
   },
   {
     id: "office", n: 2, name: "The Office After Hours", difficulty: "standard", limit: 8, loot: "Prize",
     ref: "Ch 19 Heist 2",
     creatures: ["guard-spider"],
     intel: [
-      { text: "The sensor beam covers a known line of squares with a fixed timing gap.", obstacle: "O1" },
+      { text: "The two sensor beams each cover a known line of squares with a fixed timing gap.", obstacle: "O1" },
       { text: "The guard spider's patrol loops the perimeter every few rounds.", obstacle: "O2" },
-      { text: "The drawer uses a standard lock.", obstacle: "O3" }
+      { text: "The drawer uses a standard lock.", obstacle: "O4" },
+      { text: "The cable riser comes up behind the manager's desk.", obstacle: "O2" }
     ],
     obstacles: [
       {
-        id: "O1", name: "The motion sensors", kind: "mechanism",
+        id: "O1", name: "The motion sensors (two beams)", kind: "mechanism",
         tags: ["movement", "sensor", "smallMech"], threats: [],
         approaches: [
-          A("engineering", 3, "single", { ref: "Ch 15 Motion Sensor: Engineering or Stealth (3) — jam it" }),
-          A("stealth", 3, "individual", { tags: ["stealth"], ref: "Ch 15 Motion Sensor — 'cross it very, very slowly'" })
+          A("engineering", 3, "single", { ref: "Ch 19: 'jam an emitter: Engineering (3), one beam per roll'; Ch 15 Motion Sensor (3)" }),
+          A("stealth", 3, "individual", { tags: ["stealth"], ref: "Ch 19: 'Cross in the gap: Stealth (3)'" })
         ],
         improvise: ["acrobatics", "perception"]
       },
       {
-        id: "O2", name: "The guard spider", kind: "creature",
-        tags: ["movement", "stealth"], threats: ["guard-spider"],
+        id: "O2", name: "The guard spider (aware from the start)", kind: "creature",
+        tags: ["movement", "stealth"], threats: ["guard-spider"], awake: ["guard-spider"],
         approaches: [
-          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 15 Guard Spider: Brawl or Stealth (3); Ch 19 'First real opposed roll'" }),
-          A("brawl", 3, "single", { opposed: "brawl", loud: 1, ref: "Ch 15 Guard Spider (3); Ch 16 weakness 'the Bruiser (works, but loudly)' → +1 Alert assumed" }),
-          A("persuasion", 4, "single", { excludeRoles: ["face"], ref: "Ch 16: 'could try talking to one. The Difficulty is 4'; 'cannot be charmed by the Face'" })
+          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19: 'Stealth, opposed (its Perception 4)'; Ch 15 Guard Spider (3)" }),
+          A("brawl", 3, "single", { opposed: "brawl", loud: 1, ref: "Ch 19: 'fight: Brawl, opposed (its Brawl 3) — works, but loudly: +1 Alert'" }),
+          A("persuasion", 4, "single", { excludeRoles: ["face"], ref: "Ch 19: 'talk: Persuasion (4), not the Face'" })
         ],
         improvise: ["deception", "intimidation", "acrobatics"]
       },
       {
-        id: "O3", name: "The locked desk drawer", kind: "mechanism", objective: true,
-        tags: ["lock", "smallMech"], threats: [],
+        id: "O3", name: "(Unknown) The cleaners, in the corner office", kind: "human", unknown: true,
+        tags: ["movement", "stealth", "human"], threats: [],
         approaches: [
-          A("engineering", 3, "single", { ref: "Ch 15 Locked Drawer: Engineering (3)" }),
-          A("brawl", 3, "single", { loud: 1, ref: "Ch 15 Locked Drawer: 'Or the Bruiser's, which raises the Alert' (+1 assumed)" })
+          A("stealth", 1, "individual", { tags: ["stealth"], ref: "Ch 19: 'Past the cleaner: Stealth (1)' (Ch 15 Distracted Human)" }),
+          A("tactics", 2, "single", { ref: "Ch 19: 'past the vacuum: Athletics or Tactics (2)' (Ch 15 Vacuum)" }),
+          A("athletics", 2, "individual", { ref: "Ch 19 / Ch 15 Vacuum (2)" }),
+          A("acrobatics", 2, "individual", { ref: "Ch 19: 'over the cart: Acrobatics (2)'" })
         ],
-        improvise: ["perception", "athletics"]
+        improvise: ["deception", "engineering"]
       },
       {
-        id: "O4", name: "(Unknown) Cleaning cart across the exit vent", kind: "human", unknown: true, postObjective: true,
-        tags: ["human"], threats: [],
+        id: "O4", name: "The locked desk drawer", kind: "mechanism", objective: true,
+        tags: ["lock", "smallMech"], threats: [],
         approaches: [
-          A("tactics", 3, "single"),
-          A("athletics", 3, "single", { loud: 1 }),
-          A("stealth", 2, "individual", { tags: ["stealth"] })
+          A("engineering", 3, "single", { ref: "Ch 19: 'Engineering (3)'; Ch 15 Locked Drawer" }),
+          A("athletics", 3, "single", { loud: 1, ref: "Ch 19: 'force it: Athletics (3), +1 Alert'" })
         ],
-        improvise: ["engineering", "deception"],
-        assumed: true, reason: "No Difficulty given. Find another route (Tactics 3), shift the cart (Athletics 3, noisy), or slip past the cleaners (Human obstacle; Sleeping/Distracted-level Stealth 2)."
+        improvise: ["perception", "brawl"]
       }
     ],
-    escapeRun: "Back across the main floor", escapeExit: "The long way out",
-    escapeThreats: ["guard-spider"]
+    escape: [
+      {
+        id: "E1", name: "Down with the stick and back through the beams", kind: "mechanism",
+        tags: ["movement", "stealth", "sensor", "escape"], threats: ["guard-spider"],
+        approaches: [
+          A("stealth", 3, "individual", { tags: ["stealth"], ref: "Ch 19 E1: 'Stealth (3)'" }),
+          A("engineering", 3, "single", { ref: "Ch 19 E1: 'jam a beam for everyone: Engineering (3)'" })
+        ],
+        improvise: ["acrobatics", "tactics"]
+      },
+      {
+        id: "E2", name: "The cart is across the vent: out the propped service door, past the cleaners", kind: "human",
+        tags: ["movement", "stealth", "human", "escape"], threats: [],
+        approaches: [
+          A("stealth", 1, "individual", { tags: ["stealth"], ref: "Ch 19 E2: 'Past the cleaners: Stealth (1)'" }),
+          A("tactics", 2, "single", { ref: "Ch 19 E2: 'time the vacuum: Tactics (2)'" }),
+          A("athletics", 3, "single", { loud: 1, ref: "Ch 19 E2: 'shove the cart: Athletics (3), +1 Alert'" })
+        ],
+        improvise: ["deception", "acrobatics"]
+      }
+    ]
   },
   {
     id: "petstore", n: 3, name: "The Pet Store Problem", difficulty: "standard", limit: 8, loot: "Prize",
@@ -220,52 +267,72 @@ export const HEISTS = [
     intel: [
       { text: "The snake is slow to commit but fast once it does.", obstacle: "O2" },
       { text: "The parrot's cage is 5 squares off the main aisle.", obstacle: "O3" },
-      { text: "The feeder bin sits behind the counter with one narrow approach.", obstacle: "O4" }
+      { text: "The feeder bin sits behind the counter with one narrow approach.", obstacle: "O4" },
+      { text: "The parrot's cover is folded on the shelf beside its cage; there's a box of crackers on the counter.", obstacle: "O3" },
+      { text: "The snake's heat lamp is off for the night.", obstacle: "O2" }
     ],
     obstacles: [
       {
         id: "O1", name: "Enter through the loading dock (a gap; opinionated insects)", kind: "environment",
         tags: ["movement", "squeeze"], threats: [],
         approaches: [
-          A("acrobatics", 2, "individual", { ref: "Ch 3 Squeezing: Acrobatics (2); Cellar Spiders ignore it" }),
-          A("persuasion", 2, "single"),
-          A("intimidation", 2, "single")
+          A("acrobatics", 2, "individual", { ref: "Ch 19: 'Squeeze the gap: Acrobatics (2)'; Ch 3 Squeezing (Cellar Spiders ignore it)" }),
+          A("persuasion", 2, "single", { ref: "Ch 19: 'hush the insects: Persuasion or Intimidation (2)'" }),
+          A("intimidation", 2, "single", { ref: "Ch 19" })
         ],
-        improvise: ["deception", "athletics"],
-        assumed: true, reason: "The insects 'have opinions' — a Difficulty 2 social alternative is assumed."
+        improvise: ["deception", "athletics"]
       },
       {
-        id: "O2", name: "Cross the floor past the snake tank", kind: "creature",
+        id: "O2", name: "Cross the floor past the snake tank (aware: active from the start)", kind: "creature",
         tags: ["movement", "stealth"], threats: ["corn-snake"], awake: ["corn-snake"],
-        approaches: [A("stealth", 3, "individual", { opposed: "perception" })],
-        improvise: ["acrobatics", "disguise"],
-        assumed: true, reason: "No Toolkit entry for the snake: Stealth at Moderate (3), matching its Perception 3. 'The snake is aware of you' → active here."
+        approaches: [
+          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19: 'Stealth, opposed (its Perception 3)'" }),
+          A("engineering", 4, "single", { ref: "Ch 19: 'its Weakness — shut the heavy lid properly, or reach the heat lamp's switch over the snake: Engineering (4)'" })
+        ],
+        improvise: ["acrobatics", "disguise"]
       },
       {
         id: "O3", name: "The parrot (it has seen you)", kind: "creature",
         tags: [], threats: ["alert-parrot"], awake: ["alert-parrot"],
         approaches: [
-          A("persuasion", 1, "single", { ref: "Ch 16 Alert Parrot weakness: a cracker (Persuasion, Difficulty 1)" }),
-          A("acrobatics", 2, "single", { assumed: true }),
-          A("stealth", 4, "individual", { tags: ["stealth"], opposed: "perception", assumed: true })
+          A("persuasion", 1, "single", { ref: "Ch 19 / Ch 16 Alert Parrot weakness: a cracker (Persuasion, Difficulty 1)" }),
+          A("acrobatics", 2, "single", { ref: "Ch 19: 'drop the cover over the cage: Acrobatics (2)'" }),
+          A("stealth", 4, "individual", { tags: ["stealth"], opposed: "perception", ref: "Ch 19: 'sneak by: Stealth, opposed (its Perception 4)'" })
         ],
-        improvise: ["deception", "engineering"],
-        assumed: true, reason: "Cloth over the cage (Acrobatics 2) and sneaking past its Perception 4 (Stealth 4) are assumed; the cracker is the book's."
+        improvise: ["deception", "engineering"]
       },
       {
         id: "O4", name: "(Unknown) Forty-seven identical crickets", kind: "social", unknown: true, objective: true,
         tags: ["social"], threats: [],
         approaches: [
-          A("persuasion", 3, "single"),
-          A("deception", 3, "single"),
-          A("perception", 3, "single")
+          A("persuasion", 3, "single", { ref: "Ch 19: 'Persuasion or Deception (3)'" }),
+          A("deception", 3, "single", { ref: "Ch 19" }),
+          A("intimidation", 3, "single", { loud: 1, ref: "Ch 19: 'Intimidation (3), and they all chirp: +1 Alert'" })
         ],
-        improvise: ["intimidation", "tactics"],
-        assumed: true, reason: "'A social encounter now' — no Difficulty given; Moderate (3)."
+        improvise: ["perception", "tactics"]
       }
     ],
-    escapeRun: "Back past the snake tank", escapeExit: "Out through the loading dock",
-    escapeThreats: ["corn-snake"]
+    escape: [
+      {
+        id: "E1", name: "Back past the tank, carrying a live cricket", kind: "creature",
+        tags: ["movement", "stealth", "height", "escape"], threats: ["corn-snake"],
+        approaches: [
+          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19 E1: 'Stealth, opposed (the snake)'" }),
+          A("acrobatics", 2, "individual", { ref: "Ch 19 E1: 'along the shelf tops: Acrobatics (2), +1 for the height' (height tag)" })
+        ],
+        improvise: ["athletics", "disguise"]
+      },
+      {
+        id: "E2", name: "The cricket won't stop chirping", kind: "social",
+        tags: ["social", "escape"], threats: [],
+        approaches: [
+          A("persuasion", 2, "single", { ref: "Ch 19 E2: 'Calm it: Persuasion (2)'" }),
+          A("engineering", 2, "single", { ref: "Ch 19 E2: 'a gentle silk muffle: Engineering (2)'" }),
+          A("athletics", 3, "single", { loud: 1, ref: "Ch 19 E2: 'just run: Athletics (3), and it chirps: +1 Alert'" })
+        ],
+        improvise: ["deception", "intimidation"]
+      }
+    ]
   },
   {
     id: "library", n: 4, name: "The Library Job", difficulty: "hard", limit: 6, loot: "Treasure",
@@ -275,16 +342,17 @@ export const HEISTS = [
     intel: [
       { text: "The librarian's route covers every floor on an irregular schedule.", obstacle: "O2" },
       { text: "The case uses an antique lock (Engineering, Difficulty 4).", obstacle: "O3" },
-      { text: "There are two stairwells and a dumbwaiter between floors.", obstacle: "E1" }
+      { text: "There are two stairwells and a dumbwaiter between floors.", obstacle: "E1" },
+      { text: "The dumbwaiter still runs, worked by a pulley inside the shaft.", obstacle: "E1" }
     ],
     obstacles: [
       {
         id: "O1", name: "Entry — the resident guard spider", kind: "creature",
         tags: ["movement", "stealth"], threats: ["guard-spider"],
         approaches: [
-          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 15 Guard Spider: Brawl or Stealth (3)" }),
-          A("brawl", 3, "single", { opposed: "brawl", loud: 1 }),
-          A("persuasion", 4, "single", { excludeRoles: ["face"], ref: "Ch 16 Guard Spider: talking Difficulty 4; not the Face" })
+          A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19: 'Stealth, opposed (its Perception 4)'; Ch 15 Guard Spider (3)" }),
+          A("brawl", 3, "single", { opposed: "brawl", loud: 1, ref: "Ch 19: 'fight: Brawl, opposed (its Brawl 3), loudly: +1 Alert'" }),
+          A("persuasion", 4, "single", { excludeRoles: ["face"], ref: "Ch 19: 'talk: Persuasion (4) (Chapter 16)'; Ch 16: not the Face" })
         ],
         improvise: ["deception", "intimidation", "acrobatics"]
       },
@@ -292,84 +360,122 @@ export const HEISTS = [
         id: "O2", name: "The librarian's late-night route", kind: "human",
         tags: ["movement", "stealth", "human"], threats: [],
         approaches: [
-          A("stealth", 4, "individual", { ref: "Ch 15 Alert Human: Deception or Stealth (4) — 'extraordinarily observant'" }),
-          A("deception", 4, "single", { ref: "Ch 15 Alert Human" })
+          A("stealth", 4, "individual", { ref: "Ch 19: 'Stealth or Deception (4)' (Ch 15 Alert Human)" }),
+          A("deception", 4, "single", { ref: "Ch 19 (Ch 15 Alert Human)" })
         ],
         improvise: ["disguise", "acrobatics"]
       },
       {
-        id: "O3", name: "The locked case (antique lock)", kind: "mechanism", objective: true,
+        id: "O3", name: "The locked case (antique lock, the heist's key lock)", kind: "mechanism", objective: true,
         tags: ["lock", "complexLock", "smallMech"], threats: [],
-        approaches: [A("engineering", 4, "single", { ref: "Ch 19: 'Antique lock, Engineering Difficulty 4'" })],
+        approaches: [A("engineering", 4, "single", { ref: "Ch 19: 'Antique lock, Engineering Difficulty 4' — the key lock, so no Bypass (Ch 5)" })],
         improvise: ["perception", "brawl"]
       },
       {
-        id: "O4", name: "(Unknown) The other crew", kind: "social", unknown: true, postObjective: true,
+        id: "O4", name: "(Unknown) The other crew, waiting for someone to open the case", kind: "social", unknown: true, postObjective: true,
         tags: ["social"], threats: [],
         approaches: [
-          A("persuasion", 3, "single", { opposed: "rival" }),
-          A("deception", 3, "single", { opposed: "rival" }),
-          A("tactics", 3, "single", { opposed: "rival" })
+          A("persuasion", 3, "single", { opposed: "rival", ref: "Ch 19: 'Persuasion, opposed (their Face, 5 dice)'" }),
+          A("deception", 3, "single", { opposed: "rival", ref: "Ch 19: 'compete: Deception or Tactics, opposed (5 dice)'" }),
+          A("tactics", 3, "single", { opposed: "rival", ref: "Ch 19" })
         ],
         improvise: ["intimidation", "brawl"],
-        assumed: true, reason: "'Negotiate, compete, or recruit' — no Difficulty; Moderate (3). Opposed variant: a rival pool of 5 ('built like the players' spiders': Attribute 3 + Skill 2)."
+        note: "Ch 19: they step out when the case opens, so this comes at the objective, before the Escape. Where the rival doesn't roll, Difficulty 3 = 5 dice' average Successes (1.7) + 1, rounded."
       }
     ],
-    escapeRun: "Down the stairwell / dumbwaiter", escapeExit: "Out past the entry",
-    escapeThreats: ["guard-spider", "house-cat"]
+    escape: [
+      {
+        id: "E1", name: "Down two floors with the book", kind: "environment",
+        tags: ["escape"], threats: ["house-cat"],
+        approaches: [
+          A("engineering", 3, "single", { ref: "Ch 19 E1: 'The dumbwaiter: Engineering (3)'" }),
+          A("athletics", 3, "single", { tags: ["chase"], ref: "Ch 19 E1: 'the stairs: Athletics (3)'" })
+        ],
+        improvise: ["tactics", "acrobatics"]
+      },
+      {
+        id: "E2", name: "The lobby: the guard's web, maybe the librarian", kind: "human",
+        tags: ["movement", "stealth", "human", "escape"], threats: ["guard-spider"],
+        approaches: [
+          A("stealth", 4, "individual", { ref: "Ch 19 E2: 'Stealth or Deception (4)'" }),
+          A("deception", 4, "single", { ref: "Ch 19 E2" }),
+          A("engineering", 3, "single", { ref: "Ch 19 E2: 'feed the book out through the return slot and follow it: Engineering (3)'" })
+        ],
+        improvise: ["disguise", "acrobatics"]
+      }
+    ]
   },
   {
-    id: "restaurant", n: 5, name: "The Restaurant Rush", difficulty: "hard", limit: 6, loot: "Prize",
+    id: "restaurant", n: 5, name: "The Restaurant Rush", difficulty: "hard", limit: 6, loot: "Treasure",
     ref: "Ch 19 Heist 5",
     creatures: ["protection-rat"],
     intel: [
       { text: "The staff move unpredictably with no set route.", obstacle: "O1" },
       { text: "A rat lives under the dishwasher and runs protection — he'll want something.", obstacle: "O3" },
-      { text: "The office door sticks.", obstacle: "O4" }
+      { text: "The office door sticks.", obstacle: "O4" },
+      { text: "The snap trap by the back door is new this week; it caught the rat's cousin.", obstacle: "O3" },
+      { text: "The kitchen floor was mopped at closing.", obstacle: "O2" }
     ],
     obstacles: [
       {
-        id: "O1", name: "The dining room — two staff, no pattern", kind: "human",
+        id: "O1", name: "The dining room — two staff, no pattern (Alert Humans)", kind: "human",
         tags: ["movement", "stealth", "human"], threats: [],
         approaches: [
-          A("stealth", 3, "individual"),
-          A("deception", 3, "single")
+          A("stealth", 4, "individual", { ref: "Ch 19: 'They are Alert Humans (Deception or Stealth 4)'" }),
+          A("deception", 4, "single", { ref: "Ch 19 (Ch 15 Alert Human)" })
         ],
         improvise: ["disguise", "acrobatics"],
-        assumed: true, reason: "Working closing staff sit between Ch 15's Distracted Human (1) and Alert Human (4): Moderate (3)."
+        note: "The staff d6 table (Ch 19 ST Prep) isn't modelled: the staff are treated as present at O1 and absent from O2."
       },
       {
-        id: "O2", name: "The kitchen — warm, incredible smells (and the rat)", kind: "environment",
-        tags: ["movement", "stealth"], threats: ["protection-rat"], flawTrigger: "easily-distracted",
-        approaches: [A("stealth", 2, "individual")],
+        id: "O2", name: "The kitchen — warm smells, a freshly mopped floor", kind: "environment",
+        tags: ["movement", "stealth", "slippery"], threats: ["protection-rat"], flawTrigger: "easily-distracted",
+        approaches: [A("stealth", 2, "individual", { ref: "Ch 19: 'Cross unseen: Stealth (2), the dishwasher's hum covers you'" })],
         improvise: ["acrobatics", "disguise"],
-        assumed: true, reason: "No Difficulty given; an empty, noisy kitchen is Easy (2). Easily Distracted fires on entry (Ch 19 / ruling B11)."
+        note: "The wet floor is a movement cost here (Ch 19: 'double movement, or Acrobatics (2)'); a staffer in the kitchen (Stealth 4) isn't modelled."
       },
       {
         id: "O3", name: "The rat. Negotiations.", kind: "creature",
         tags: ["social"], threats: ["protection-rat"], ratDeal: true,
         approaches: [
-          A("persuasion", 3, "single", { opposed: "haggle" }),
-          A("deception", 3, "single", { opposed: "haggle" }),
-          A("brawl", 4, "single", { opposed: "brawl", loud: 1 })
+          A("persuasion", 3, "single", { opposed: "haggle", ref: "Ch 19 rat's deal: 'one pitch: Persuasion, opposed by his Haggle 4'" }),
+          A("brawl", 4, "single", { opposed: "brawl", loud: 1, ref: "Ch 19: 'no deal: Brawl, opposed (his Brawl 4), and it's gone bad'" })
         ],
-        improvise: ["intimidation", "tactics"],
-        assumed: true, reason: "Rat has no Toolkit entry: negotiation at Moderate (3) (opposed variant vs Haggle 4); a fight at 4 (vs Brawl 4), loud. A Failure makes the deal 'go bad' (+2)."
+        improvise: ["deception", "intimidation"],
+        note: "The engine sends the deal bad (+2, once) on a Failure here, as Ch 19 does (a failed pitch means a fight). Not modelled: the −1 Difficulty for offering the trap, food or a favour, and 'one pitch' (the engine lets the crew retry)."
       },
       {
-        id: "O4", name: "(Unknown) The office — the sleeping staffer wakes", kind: "human", unknown: true, objective: true,
+        id: "O4", name: "(Unknown) The office: the sticking door, and the staffer asleep next door", kind: "human", unknown: true, objective: true,
         tags: ["human"], threats: [],
         approaches: [
-          A("stealth", 3, "single", { tags: ["stealth"] }),
-          A("deception", 3, "single"),
-          A("athletics", 3, "single", { loud: 1 })
+          A("engineering", 3, "single", { ref: "Ch 19: 'The notebook won't fit under the door. Ease it: Engineering (3)'" }),
+          A("athletics", 3, "single", { loud: 1, ref: "Ch 19: 'shove it: Athletics (3), and it scrapes: +1 Alert'" })
         ],
-        improvise: ["disguise", "engineering"],
-        assumed: true, reason: "A just-woken staffer: Moderate (3). The sticking door (intel) is folded in; forcing it (Athletics) is noisy."
+        note: "The sleeper (Ch 19: wakes on noise within 4 squares or at Alert 5; then Stealth or Deception 4) isn't modelled beyond the loud shove.",
+        improvise: ["deception", "perception"]
       }
     ],
-    escapeRun: "Back through the kitchen", escapeExit: "Out the back",
-    escapeThreats: ["protection-rat"]
+    escape: [
+      {
+        id: "E1", name: "Back up the corridor with the notebook", kind: "human",
+        tags: ["movement", "stealth", "human", "escape"], threats: [],
+        approaches: [
+          A("stealth", 4, "individual", { ref: "Ch 19 E1: 'Stealth or Deception (4)'" }),
+          A("deception", 4, "single", { ref: "Ch 19 E1" })
+        ],
+        improvise: ["disguise", "intimidation"]
+      },
+      {
+        id: "E2", name: "The back door: the notebook won't fit under it (and the trap, if the rat's still owed)", kind: "environment",
+        tags: ["escape"], threats: ["protection-rat"],
+        approaches: [
+          A("engineering", 3, "single", { ref: "Ch 19 E2: 'Work the handle with a silk line: Engineering (3)'" }),
+          A("athletics", 3, "single", { ref: "Ch 19 E2: 'hang on it together: Athletics (3)'" })
+        ],
+        note: "Not modelled: waiting for a trash run (a 6 on the staff roll) to prop the door.",
+        improvise: ["tactics", "acrobatics"]
+      }
+    ]
   }
 ];
 
@@ -392,6 +498,8 @@ export const HEIST_TWEAKS = {
     heist: "office",
     text: "Heist 2: the unknown obstacle (the cleaners) sits before the drawer, not after it.",
     apply: h => {
+      // Since v4.7 Ch 19 already puts the cleaners before the drawer: nothing to move.
+      if (h.obstacles.findIndex(o => o.unknown) < h.obstacles.findIndex(o => o.objective)) return h;
       const [o1, o2, o3, o4] = h.obstacles;
       return { ...h, obstacles: [o1, o2, { ...o4, id: "O3", postObjective: false }, { ...o3, id: "O4" }],
         intel: h.intel.map(i => (i.obstacle === "O3" ? { ...i, obstacle: "O4" } : i)) };
@@ -425,7 +533,7 @@ export const HEIST_TWEAKS = {
   "petstore-wedge-lid": {
     heist: "petstore",
     text: "Heist 3: 'The lid is loose' is also the answer — one spider can wedge it (Engineering 3) so the crew crosses unseen.",
-    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.awake?.includes("corn-snake") ? { ...o, approaches: [...o.approaches, { skill: "engineering", diff: 3, mode: "single", assumed: true }] } : o)) })
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.awake?.includes("corn-snake") && !o.approaches.some(a => a.skill === "engineering") ? { ...o, approaches: [...o.approaches, { skill: "engineering", diff: 3, mode: "single", assumed: true }] } : o)) })
   }
 };
 
