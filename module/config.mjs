@@ -130,27 +130,30 @@ HEISTY.alertLimits = {
 /**
  * Alert threshold bands. Each band carries the mechanical effect at that range.
  * `stealth` / `all` are Difficulty increases. Note the classic trap: Active
- * (5–6) turns threats ON but adds no roll penalty; only Lockdown (7+) raises
- * Difficulty. Penalties stack, so at 7+ Stealth is +2 total.
+ * (5–6) turns threats ON but adds no NEW roll penalty — the Stirring Stealth +1
+ * carries on through it; only Lockdown (7+) adds more. Penalties stack, so at
+ * 7+ Stealth is +2 total. Full Alert (at the Limit) always brings the Lockdown
+ * penalties, whatever the Limit — see getAlertState.
  */
 HEISTY.alertBands = [
   { key: "calm", min: 0, max: 2, label: "Calm", stealth: 0, all: 0, description: "The plan is working. Enjoy it. It won't last." },
   { key: "stirring", min: 3, max: 4, label: "Stirring", stealth: 1, all: 0, description: "Something feels off. Stealth rolls are +1 Difficulty." },
-  { key: "active", min: 5, max: 6, label: "Active", stealth: 1, all: 0, description: "A threat has woken up. It's moving now — no new roll penalty yet." },
+  { key: "active", min: 5, max: 6, label: "Active", stealth: 1, all: 0, description: "A threat has woken up. It's moving now. The Stirring Stealth +1 still applies; no new penalty yet." },
   { key: "lockdown", min: 7, max: Infinity, label: "Lockdown", stealth: 2, all: 1, description: "Everything is wrong. All rolls +1 (Stealth +2, stacked)." }
 ];
 
 /** What pushes the Alert up (and the one thing that pulls it down). `delta: null` varies by creature. */
 HEISTY.alertTriggers = [
   { delta: 1, text: "A roll fails with a consequence — noise, attention, evidence." },
+  { delta: 1, text: "A Partial Success's complication (unless the ST chose another cost)." },
   { delta: 1, text: "Spotted briefly — an NPC notices something's off but isn't sure." },
   { delta: 1, text: "A Silk Clutch is used. The universe keeps score." },
   { delta: 2, text: "A Botch. Everything that could go wrong did, plus one new thing." },
   { delta: 2, text: "A confirmed alert — an NPC knows something is happening." },
   { delta: 2, text: "A spider goes Out. The location notices something is very wrong." },
   { delta: 2, text: "A Loud Failure — something loud breaks, a crash that carries." },
-  { delta: null, text: "+X — a creature's own contribution each round it's active (see its stat block). A creature is active when its Escalation says it's awake, hunting or pursuing." },
-  { delta: -1, text: "A Critical Success on a roll of Difficulty 2 or higher. The only thing that lowers the Alert during a heist." }
+  { delta: null, text: "+X — a creature's own contribution each round it's active (see its stat block). A creature is active from the first Escalation step the Alert has reached — or from the start, if the heist says it is awake or aware — and stays active for the rest of the heist. It adds its +X at the end of every round the crew spends at its obstacle, and at every obstacle once it roams." },
+  { delta: -1, text: "A Critical Success on a roll of Difficulty 3 or higher, never at Full Alert. The only thing that lowers the Alert during a heist." }
 ];
 
 /* -------------------------------------------- */
@@ -159,7 +162,7 @@ HEISTY.alertTriggers = [
 
 /** Ways to spend Silk Points. */
 HEISTY.silkSpends = [
-  { cost: 1, label: "Extra Die", text: "Add 1 die to a roll before it's made. The most common spend, and a good one." },
+  { cost: 1, label: "Extra Die", text: "Add 1 die to a roll before it's made. The most common spend, and a good one. Silk dice don't count toward the +2 bonus-dice limit." },
   { cost: 1, label: "Silk Line", text: "Run a silk line between two points up to 5 squares apart without the roll (GRACE + Acrobatics, Difficulty 2)." },
   { cost: 2, label: "Reroll", text: "After rolling, reroll up to 3 dice and keep the better result." },
   { cost: 2, label: "Web Structure", text: "Build a small web structure with no roll — a net, a tripwire, a platform, a hammock." },
@@ -183,10 +186,10 @@ HEISTY.silkEarns = [
 
 /** Outcome categories produced by the dice engine. */
 HEISTY.results = {
-  critical: { label: "Critical Success", css: "critical", alert: -1, blurb: "You did it perfectly — and the Alert drops by 1 (only on a roll of Difficulty 2 or higher). Savor it." },
+  critical: { label: "Critical Success", css: "critical", alert: -1, blurb: "You did it perfectly — and the Alert drops by 1 (only on a roll of Difficulty 3 or higher, never at Full Alert). Savor it." },
   success: { label: "Full Success", css: "success", alert: 0, blurb: "It worked. The thing happens. The Alert is still right there." },
-  partial: { label: "Partial Success", css: "partial", alert: 1, blurb: "It worked, but. Progress, and a complication lands." },
-  failure: { label: "Failure", css: "failure", alert: 1, blurb: "It did not work. No progress, and something gets worse." },
+  partial: { label: "Partial Success", css: "partial", alert: 1, blurb: "It worked, but. Progress, and a complication lands: +1 Alert, or a complication that costs as much — never both." },
+  failure: { label: "Failure", css: "failure", alert: 1, blurb: "It did not work — fewer than half the Successes you needed. No progress, and something gets worse." },
   botch: { label: "Botch", css: "botch", alert: 2, blurb: "Everything that could go wrong did, plus one new thing." },
   cleanfail: { label: "Clean Failure", css: "cleanfail", alert: 0, blurb: "You fail — but no bonus disaster. This time." }
 };
@@ -262,7 +265,10 @@ HEISTY.itemTypes = {
 
 /**
  * Resolve the Alert band for a given Alert value and Limit.
- * At or above the Limit the location is at Full Alert regardless of band.
+ * At or above the Limit the location is at Full Alert regardless of band, and
+ * every roll takes the Lockdown penalties (all +1, Stealth +2) whatever the
+ * Limit — a Limit of 6 or less reaches Full Alert before Lockdown, and Full
+ * Alert brings the Lockdown penalties with it.
  * @param {number} value  Current Alert.
  * @param {number} limit  The location's Alert Limit.
  * @returns {{key:string,label:string,stealth:number,all:number,description:string,atLimit:boolean}}
@@ -275,13 +281,14 @@ HEISTY.getAlertState = function (value, limit) {
   for (const b of HEISTY.alertBands) {
     if (v >= b.min && v <= b.max) { band = b; break; }
   }
+  const lockdown = HEISTY.alertBands.find(b => b.key === "lockdown");
   return {
     key: atLimit ? "fullalert" : band.key,
     label: atLimit ? "Full Alert" : band.label,
-    stealth: band.stealth,
-    all: band.all,
+    stealth: atLimit ? Math.max(band.stealth, lockdown.stealth) : band.stealth,
+    all: atLimit ? Math.max(band.all, lockdown.all) : band.all,
     description: atLimit
-      ? "The location is compromised. The objective is out of reach — escape is the only play."
+      ? "The location is compromised for the rest of the heist. The Alert is locked at the Limit, every roll takes the Lockdown penalties (all +1, Stealth +2), and a failed Escape roll gets that spider caught. Escape is the only play."
       : band.description,
     atLimit
   };

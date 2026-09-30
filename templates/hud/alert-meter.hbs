@@ -22,11 +22,11 @@
 
     {{#if isGM}}
     <div class="am-controls">
-      <button type="button" data-action="bump" data-delta="-1" title="Critical Success at Difficulty 2+ (−1)">−1</button>
-      <button type="button" data-action="bump" data-delta="1" title="Failure / spotted (+1)">+1</button>
-      <button type="button" data-action="bump" data-delta="2" title="Botch / spider Out (+2)">+2</button>
-      <input type="number" name="alertValue" value="{{value}}" min="0" title="Set exact Alert" />
-      <button type="button" data-action="reset" title="Reset to 0"><i class="fa-solid fa-rotate-left"></i></button>
+      <button type="button" data-action="bump" data-delta="-1" {{#if atLimit}}disabled title="Full Alert: nothing lowers the Alert for the rest of the heist"{{else}}title="Critical Success at Difficulty 3+ (−1)"{{/if}}>−1</button>
+      <button type="button" data-action="bump" data-delta="1" {{#if atLimit}}disabled title="Full Alert: the Alert stays at the Limit"{{else}}title="Failure / Partial / spotted (+1)"{{/if}}>+1</button>
+      <button type="button" data-action="bump" data-delta="2" {{#if atLimit}}disabled title="Full Alert: the Alert stays at the Limit"{{else}}title="Botch / spider Out (+2)"{{/if}}>+2</button>
+      <input type="number" name="alertValue" value="{{value}}" min="0" max="{{limit}}" title="Set exact Alert (stops at the Limit; locked at Full Alert)" {{#if atLimit}}disabled{{/if}} />
+      <button type="button" data-action="reset" title="Reset to 0 (new heist — also clears Full Alert)"><i class="fa-solid fa-rotate-left"></i></button>
     </div>
     <div class="am-limit-row">
       <label>Limit</label>

@@ -63,7 +63,7 @@ Every SVG has a `viewBox` and **no** fixed width or height; the CSS sizes it.
 - `map-cookie`: Heist 1 sample map (grid; see the spec in the art brief)
 - `alert-track`: the Alert bands, Calm → Full Alert (wide)
 - `vitality-track`: Unharmed → Out (wide)
-- `dice-success`: a d6 row showing that 4/5/6 are Successes (wide)
+- `dice-success`: a d6 row showing that 5/6 are Successes (wide)
 - `orn-divider`: a horizontal section divider (very wide, thin)
 - `orn-corner`: a cobweb corner flourish (square; the top-left corner, CSS flips it)
 - `orn-spider`: a tiny dangling spider on a thread (tall, narrow)

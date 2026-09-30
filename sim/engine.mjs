@@ -15,7 +15,7 @@
  */
 
 import { HEISTY } from "../module/config.mjs";
-import { countSuccesses, classifyResult, classifyBotch, alertForResult } from "../module/logic/rules.mjs";
+import { countSuccesses, classifyResult, classifyBotch, alertForResult, getAlertState } from "./rules-v45.mjs";
 import { SKILL_ATTR } from "./character.mjs";
 import { CREATURES, makeEscape, applyHeistTweaks } from "./heists.mjs";
 
@@ -241,7 +241,7 @@ export class HeistRun {
   /** Alert band modifiers (config.mjs), with the Active-band Stealth reading as a parameter. */
   band() {
     if (this.lockedFull) return { key: "fullalert", stealth: 2, all: 1 };
-    const st = HEISTY.getAlertState(this.alert, this.limit);
+    const st = getAlertState(this.alert, this.limit);
     if (this.alert >= 5 && this.alert <= 6 && !this.P.activeBandStealth) return { ...st, stealth: 0 };
     return st;
   }

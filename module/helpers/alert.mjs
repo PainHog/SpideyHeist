@@ -10,9 +10,14 @@
  * The HUD is a plain fixed-position DOM element we manage directly, rather than
  * an ApplicationV2 window — that gives us reliable, framework-independent drag
  * and placement.
+ *
+ * Full Alert (rulebook v4.6): once the Alert reaches the Limit it stays there
+ * for the rest of the heist — it never goes past the Limit and nothing lowers
+ * it. Only the GM's Reset (a new heist) or a new, higher Limit releases it.
  */
 
 import { HEISTY } from "../config.mjs";
+import { nextAlertValue } from "../logic/rules.mjs";
 
 const renderTemplate = (path, data) => foundry.applications.handlebars.renderTemplate(path, data);
 
@@ -28,9 +33,23 @@ export const HeistyAlert = {
     return HEISTY.getAlertState(this.value, this.limit);
   },
 
-  async set(v) {
+  /**
+   * Set the Alert. Clamped to 0…Limit, and locked once at Full Alert.
+   * @param {number} v
+   * @param {object} [options]
+   * @param {boolean} [options.force]  Bypass the Full Alert lock (the GM's Reset for a new heist).
+   */
+  async set(v, { force = false } = {}) {
     if (!game.user.isGM) return;
-    const val = Math.max(0, Math.round(Number(v) || 0));
+    const current = this.value;
+    const limit = this.limit;
+    const val = force
+      ? Math.max(0, Math.round(Number(v) || 0))
+      : nextAlertValue(current, v, limit);
+    if (!force && current >= limit && Math.round(Number(v) || 0) < limit) {
+      ui.notifications?.info("Full Alert: the Alert is locked at the Limit for the rest of the heist. Use Reset for a new heist.");
+    }
+    if (val === current) { ui.heistyAlert?.render(); return; }
     await game.settings.set(HEISTY.id, "alert", val);
     this._announce(val);
   },
@@ -164,7 +183,7 @@ export class AlertMeter {
         ev.preventDefault();
         if (action === "toggle") { this.collapsed = !this.collapsed; this.render(); }
         else if (action === "bump") await HeistyAlert.applyDelta(Number(btn.dataset.delta ?? 1));
-        else if (action === "reset") { if (game.user.isGM) await HeistyAlert.set(0); }
+        else if (action === "reset") { if (game.user.isGM) await HeistyAlert.set(0, { force: true }); }
       });
     });
 

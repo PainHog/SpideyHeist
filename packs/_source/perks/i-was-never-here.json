@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "ghost",
-    "effect": "<p>Increase the Difficulty for any NPC to remember seeing you by 2. You are deeply, fundamentally forgettable.</p>"
+    "effect": "<p>Any roll to make an NPC forget or doubt that it saw you is at &minus;2 Difficulty. You are deeply, fundamentally forgettable.</p>"
   }
 }

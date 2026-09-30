@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/silk-star.svg",
   "system": {
     "role": "face",
-    "effect": "<p>You've been here before. You know one true detail about the target or location that wasn't in the briefing.</p>"
+    "effect": "<p>You've been here before. You know one true detail about the target or location that wasn't in the briefing (never the unknown obstacle).</p>"
   }
 }

@@ -96,3 +96,105 @@ Written for v4.3. The numbers follow the book's existing scale (House Cat and Gu
      - (a) You write official stat blocks for them in the book (answers B2-25), and the system is updated to match.
      - (b) Their numbers are stripped from the system, leaving them as text-only reference entries.
 2. Everything else in the system (species, roles, perks, flaws, the Silk/Alert/Vitality rules, dice resolution) matches the book as written. Once you rule on any Part B item, the system should be updated in the same release as the book.
+
+---
+
+## D. Applied in v4.6 (approved by Richard Moore)
+
+The playtests (`sim/playtests/*.md`) and the rules simulator (`sim/BALANCE.md`) found
+ambiguities and a game that was far too easy (Hard heists won ~100% of the time). Richard
+approved the clarified baseline (C1–C12), balance package **P4H**, three extras, and a set of
+wording fixes. Wording follows `sim/BALANCE.md` §8 wherever §8 gives it; every old quote was
+checked against the v4.5 text before it was replaced. Source key: **PT** = playtest issue
+(H1-n Heist 1, H2 I-n Heist 2, H5 X-n Heist 5), **Sim** = simulator (BALANCE.md section).
+
+### D1. Clarified rulings (C1–C12)
+
+| # | Ruling | Where | What changed | Source |
+|---|---|---|---|---|
+| C1 | A scene is one obstacle; Planning is its own scene | Ch 11 Phase 3 (new paragraph); Ch 12 Silk Line | "A **scene** is one obstacle — heist or Escape. Planning is its own scene, and silk placed during Planning lasts until the heist ends or it’s broken." Silk Line: "…or the scene ends (a line placed during Planning lasts the heist)." | PT H1-5, H2 I-6, H5 R-10; Sim §1 |
+| C2 | When a creature is active; per-round Alert outside turn order | Ch 9 What Raises the Alert, +X row | Active from the first Escalation step reached (or from the start if the heist says awake/aware), stays active; adds +X each round at its obstacle, and everywhere once it roams; outside turn order one exchange of actions = one round | PT H1-1, H2 I-8, I-33; Sim §1 |
+| C3 | Opposed rolls: creature's Successes + 1 = your Difficulty | Ch 2 Opposed Rolls | Replaces "both sides roll, most Successes wins". Modifiers (cover, Alert band, Perks, Flaws) then apply; the roll reads Partial/Success/Critical. Humans use their Ch 15 Difficulty. The "(exception is taking a hit…)" aside is gone (see D3) | PT H1-2, H2 I-1, I-2, H5 R-2, R-3; Sim §1 |
+| C4 | Group checks | Ch 2, new **Group Checks** paragraph after Assists | Every spider rolls and passes on its own result; the Alert rises once, by the worst result; a Critical lowers it only if every roll was a Critical | PT H1-3, H2 I-5, H5 R-1; Sim §1 |
+| C5 | Retrying and stalled obstacles | Ch 2 Failure | "You may try again next round, and an engaged threat that sees you fail lands a hit… after five rounds at one obstacle, the ST ends it…" | Sim §1 |
+| C6 | What a Partial costs | Ch 2 Partial Success; Ch 9 table (new +1 row); Ch 21 Alert row | Default complication is noise (+1 Alert); the ST may swap in an equal cost, never both | PT H5 R-4, H1-3; Sim §1 |
+| C7 | Full Alert is permanent | Ch 9 intro, At Limit row, the note after the table; Ch 21 (new Full Alert row) | The Alert stays at the Limit (nothing raises or lowers it), Lockdown penalties apply whatever the Limit, creatures act as at 7+; no Critical drop at Full Alert. "If they do have it, they just need to get out" removed (see R6) | PT H1-6, H2 I-37, H5 R-6, R-7; Sim §1 |
+| C8 | Casing is capped and never reveals the unknown | Ch 11 Casing; Ch 5 Familiar Face; Ch 17 Running Planning; Ch 21 Planning row | "Casing reveals at most what the ST is holding — extra Successes buy nothing — and it never reveals the unknown obstacle." Familiar Face: "(never the unknown obstacle)". Ch 17 and Ch 21 say the same so the ST chapter doesn't contradict it | PT H1-8, H2 I-3, H5 P-1; Sim §1 |
+| C9 | Planning Silk Line lowers Difficulty by 1 | Ch 11 Preparation | "It lowers that obstacle’s Difficulty by 1; it doesn’t skip it." | PT H1-7; Sim §1 |
+| C10 | Spitting Spider jam/pin once per scene | Ch 4 Precision Application | "Once per scene, …" and "A jammed sensor stops sensing; a jammed lock or latch stays shut." | PT H2 I-10; Sim §1 |
+| C11 | Bypass is a roll at −1 Difficulty | Ch 5 I Made a Thing | Bypass now gives the Engineering roll −1 Difficulty; not on a lock the heist names as its key obstacle | PT H2 I-12; Sim §1 |
+| C12 | Stirring's Stealth +1 continues through Active | Ch 9 Active row and Storyteller Note; Ch 21 Thresholds | "The Stirring Stealth +1 still applies; no new penalty yet." The ST note now says Active "adds no new Difficulty" and Lockdown "raises Difficulty again" | PT H1-15, H2 I-4; Sim §1 |
+
+### D2. Balance package P4H
+
+| # | Rule | Where | What changed | Source |
+|---|---|---|---|---|
+| R1 | A Success is a **5 or 6** | Ch 2 Core Mechanic and The One Rule; Ch 16 intro ("count 5+"); Ch 21 Success; Ch 2 art | Every "4, 5, or 6" / "4+" now reads 5 or 6. The Botch die keeps 1–3 / 4–6. **Worked example (Ch 2, Pebbles):** 7 dice vs Difficulty 3 now rolls "three Successes" (was five): a Full Success, 42% likely at 7 dice (a Critical needs 6, ~1%). **Art:** the Ch 2 chapter piece (`ch-dice`) no longer lights up the airborne 4 (only the 5 and 6 glint; alt text updated); the unused `dice-success` diagram now highlights 5–6 only. Both regenerated from `tools/art-gen/scenes/` (`vig1.mjs`, `diagrams.mjs`); nothing else in either file changed. No other worked example or the character sheet quotes dice faces or odds | Sim §2, §8b |
+| R2 | A Partial needs at least half the Difficulty (round up) | Ch 2 Partial and Failure; Ch 21 | "At least half the Successes you need (round up), but fewer than all of them." Failure: "Fewer than half the Successes you need (at Difficulty 1–2, zero)." | Sim §8b |
+| R3 | A heist obstacle takes two successful rolls | Ch 11 Phase 3 (new paragraph, with C1); Ch 21 Phase 3 | One to get into position, one to do the job; group checks are still one roll per spider; Escape obstacles take one | Sim §8b |
+| R4 | A Critical lowers the Alert only at Difficulty 3+ | Ch 2 Critical; Ch 9 intro; Ch 21 Critical and Reduction | "Difficulty 2 or higher" → "Difficulty 3 or higher" | PT H2 I-13, H1-16; Sim §8b |
+| R5 | At most +2 bonus dice per roll, Silk dice exempt | Ch 2 (after Assists); Ch 21 Pool | "…at most +2 bonus dice from Assists, Perks, Signature Moves and intel together. Silk Point dice (Overclock’s included) don’t count toward that limit." "Overclock’s included" follows the simulator, which counts Overclock's SP-bought dice as Silk dice | PT H1-18; Sim §8b |
+| R6 | A failed roll in a Full Alert Escape = caught | Ch 9 At Limit row; Ch 21 Thresholds | "During a Full Alert Escape, a spider who fails a roll is caught — Out." | PT H2 I-37, H5 R-6; Sim §8b |
+| R7 | Spend your Silk | Ch 8 Silk Point Management | The "early on, hoard" advice is replaced by "The classic mistake is finishing a heist with Silk still in the pool…" (§8 wording) | PT H2 I-21; Sim §5 |
+| H2 | Heist 2's guard spider starts aware | Ch 19 Heist 2, obstacle 2 | "…— it is aware of the crew from the moment they’re inside (+1 Alert each round it can see them)." | Sim §6 |
+| H5 | Heist 5's closing staff are Alert Humans | Ch 19 Heist 5, obstacle 1 | "They are Alert Humans (Deception or Stealth 4)." | Sim §6 |
+
+The optional P4H extra (Heist 2's cleaners before the drawer) was **not** applied; it wasn't approved.
+
+### D3. Extras
+
+| Change | Where | What changed | Source |
+|---|---|---|---|
+| Plausible Deniability once per heist | Ch 5 Face Perks | "Once per scene" → "Once per heist" | PT H5 R-17; Sim §7 |
+| Shrug-off ties go to the threat | Ch 10 Taking Hits; Ch 2 Opposed Rolls; Ch 21 Taking a hit | "You beat…" shrugs it off; "The attack ties you or beats you by 1 or 2" drops one level; "Ties go to the threat." The Ch 2 aside is removed (C3). **Check of "more often than not":** at 5–6 Successes with ties to the threat, a Pounce 4 lands on a 3-die shrug 75% of the time, 4 dice 65%, 5 dice 55%; only a 6–7-die Bruiser shrugs it more often than not. The sentence is now true for most spiders and was left as written (under v4.5 rules a 4-die shrug stopped it 64% of the time) | Sim §7, §8d |
+| Silk advice rewritten from hoarding to spending | Ch 8 | See R7 | Sim §5 |
+
+### D4. Contradictions and wording fixes (no new content)
+
+| Fix | Where | What changed | Source |
+|---|---|---|---|
+| 1-SP Silk Line: instant or your Action? | Ch 8 Spending Silk Points | "Instantly run a silk line… No roll." → "Run a silk line… No roll, but it still takes your Action." Ch 12 (ruling B16), Ch 3 ("spit silk" is an Action) and the Orb Weaver ("As an Action, spin silk") all make silk-running an Action; the SP buys off the roll, not the Action | PT H1-24 |
+| Botch said Lockdown reduces your pool | Ch 2 The Botch | "by Vitality penalties, Lockdown, or a situation…" → "by Vitality penalties or a situation…". Lockdown raises Difficulty; it never removes dice | PT H2 I-38 |
+| Active band "No roll penalty yet" | Ch 9, Ch 21 | See C12 | PT H1-15, H2 I-4 |
+| Heist 1 text vs its map | Ch 19 Heist 1 | The map puts the cabinet (C) three squares past the counter's end in a single kitchen room, and draws the counter with a wet sheen. Now: "the cabinet just past the end of the counter" (was "above the counter"); intel "the counter and the cabinet were wiped down this evening and are slippery" (was the counter only, while obstacle 2 said the cabinet); obstacle 1 "Cross the kitchen floor" (was "living room"; the map's one room holds the counter and the cat's bed, and the Objective says "in the kitchen"). The map is unchanged | PT H1-14 |
+| Heist 5 loot label | Ch 19 Heist 5 | "Loot: Prize" → "Loot: Treasure". Ruling B14 made Heist 5 Hard; ruling B13 set "Treasure (Hard or Absurd)" (Ch 12), and Heist 4, also Hard, is Treasure | PT H5 H-6; REVIEW B13, B14 |
+| Is "once per heist" per spider? | Ch 11 Phase 3 (new paragraph) | "Once per scene" and "once per heist" count for each player's spider; a Waiting Web replacement carries on with the uses its player has left; Damage Control and Not Part of the Plan are the crew's, once per heist between them. This is the reading the P4H numbers were simulated under (`replacementResets: false`, `nptpScope: "crew"`) | PT H2 I-35 |
+| Are AP per spider? | Ch 11 Debrief | "AP are per spider: every player earns the full amount below. It isn’t split." | PT H2 I-31, H5 R-20 |
+| "Difficulty to spot you" had nothing to act on | Ch 3 Cover; Ch 4 Crab Spider; Ch 7 Arachnophobe Magnet; Ch 5 I Was Never Here; Ch 21 Cover | All now on the spider's side of the roll, so they work with C3 and with Ch 15 Difficulties. Cover: "Your Stealth Difficulty against anything you have cover from drops by 2, and anything trying to target you rolls at +2 Difficulty." Crab: "your Stealth Difficulty drops by 2 until you move." Arachnophobe Magnet: "Your Stealth Difficulty against humans is increased by 1 at all times." I Was Never Here (about memory, not spotting): "Any roll to make an NPC forget or doubt that it saw you is at −2 Difficulty." | PT H2 I-2, H5 R-2 |
+
+### D5. Layout and version
+
+- Version 4.6: `build.mjs` `VERSION`, the credits edition line, `README.md`.
+- The Ch 21 Grid table is marked `flow` so it can split between the columns. Without it the
+  longer Alert table no longer fit p44 and jumped to p45, leaving a gap on p44 and no room for
+  the end-of-chapter spot. The page count (47 digital, 46 print) and every chapter's start page
+  are unchanged from v4.5.
+- The Ch 11 paragraph order in Phase 3: the original text, then "Obstacles aren’t scripted scenes…",
+  then the new scene/two-rolls paragraph, then the once-per-heist paragraph.
+
+### D6. Playtest issues still open (not approved for v4.6)
+
+Not changed, because each needs new rules or content: Silk Clutch/"failed roll" on a Partial (H1-4, H5 R-8);
+Stealth and movement vs your one Action (H1-10, H5 R-12, H2 I-40); heights on the grid (H1-11, H2 I-16);
+humans with no Speed/pool/attack, human Alert contribution, and hits from pool-less hazards (H1-12, H2 I-9,
+H5 H-2, R-13, R-18); loot size and carrying, "incomplete loot" (H1-13, H2 I-18, H5 H-9, R-9); Heist 1's single
+entry, missing sink/door destination and obstacle Difficulties (H1-14, rest); perk timing in hit rolls
+(Wolf, Take the Hit, "keep the better result"; H1-17, H2 I-28, I-32, H5 R-22); Assist Skill choice (H1-19);
+Ch 7's "random tables for every step" (H1-20); starting Silk by species (H1-21, H2 I-23); Drafting's terms
+(H1-22); Flaw SP and pass/fail wording (H1-23, H2 I-27, H5 R-5); Show-Off (H1-25, H2 I-26); Mid-Heist
+Complication triggers and effects (H1-26, H2 I-29, H5 R-24); Preparations count and Dead Drop overlap
+(H1-27, H2 I-17, H5 P-2); AP banking (H1-28); Full Alert cost at the Debrief (H1-29); Waiting Web gaps
+(H1-30, H2 I-39); Early Warning and "active" (H1-31); Improvise's Attribute (H1-32, H5 R-21); NPC
+Partials and Criticals in opposed rolls (H1-33, H2 I-19); Crab speed on slick ground (H1-34); creatures'
+defeat state (H2 I-7); Guard Spider Senses/Escalation and backup (H2 I-8); patrol variability and waiting
+being free, no clock (H2 I-11, I-36, H5 R-23); Heist 2's unknown after the objective, no maps for Heists
+2–5, single entries (H2 I-14, I-15, H5 H-1); Alert falling back below a threshold (H2 I-33, only partly
+answered by C7); squeeze/Silk Line rolls vs "When Not to Roll" (H2 I-20); Cellar/Ghost overlap (H2 I-22);
+Role bonus split (H2 I-24, H5 C-4); duplicate roles, flaws and names (H2 I-25, H5 C-1–C-3); Make a Scene
+and humans (H2 I-30); the Face vs the Guard Spider (H2 I-34); glass and line of sight (H2 I-41); Heist 5's
+unpredictable staff, obstacles 2/3 overlap, scripted wake-up, the Rat's deal, no Escape given (H5 H-3–H-5,
+H-7, H-8); free actions on the ST's turn (H5 R-11); one event, one Alert trigger (H5 R-14); That's Not
+What Happened on a Failure (H5 R-15); Criticals wasted at Alert 0 or bought by Perk reductions (H5 R-16,
+partly answered by R4); Actually, I Planned This scope (H5 R-19); announce vs describe the Alert
+(H5 R-25); Damage Control payment split (H5 R-26); escalations keyed to 7 at Limits ≤ 6 (H5 R-27, partly
+answered by C7's "creatures act as at Alert 7+").

@@ -12,7 +12,7 @@ export function dice_success() {
   const sz = 104, gap = 34, x0 = (900 - (6 * sz + 5 * gap)) / 2, y0 = 34;
   let s = "";
   for (let v = 1; v <= 6; v++) {
-    const x = x0 + (v - 1) * (sz + gap), hot = v >= 4, cx = x + sz / 2, cy = y0 + sz / 2;
+    const x = x0 + (v - 1) * (sz + gap), hot = v >= 5, cx = x + sz / 2, cy = y0 + sz / 2;
     if (hot) s += `<rect x="${x - 7}" y="${y0 - 7}" width="${sz + 14}" height="${sz + 14}" rx="22" fill="${C.goldB}" opacity=".45"/>`;
     s += `<rect x="${x + 4}" y="${y0 + 6}" width="${sz}" height="${sz}" rx="17" fill="${C.ink}" opacity="${hot ? .3 : .1}"/>`;
     s += `<rect x="${x}" y="${y0}" width="${sz}" height="${sz}" rx="17" fill="${hot ? C.plum : C.parch}" stroke="${hot ? C.ink : C.edge}" stroke-width="${hot ? 3.4 : 3}"/>`;
@@ -20,7 +20,7 @@ export function dice_success() {
     for (const [px, py] of pipsFor(v, sz * .26)) s += `<circle cx="${n(cx + px)}" cy="${n(cy + py)}" r="${n(sz * .085)}" fill="${hot ? C.goldB : C.edge}"/>`;
     if (hot) { s += sparkle(x + sz - 2, y0 + 2, 11); s += text(cx, y0 + sz + 36, "Success", 20, { weight: "bold", fill: C.plum }); }
   }
-  return svg("0 0 900 200", "Dice faces one to six: four, five and six are Successes", s);
+  return svg("0 0 900 200", "Dice faces one to six: five and six are Successes", s);
 }
 
 export function alert_track() {

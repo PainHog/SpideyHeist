@@ -26,7 +26,7 @@ const ROOT = join(BOOK, "..");
 const SRC = join(BOOK, "src");
 const ART = join(BOOK, "art");
 const DIST = join(BOOK, "dist");
-const VERSION = "4.5";
+const VERSION = "4.6";
 const DRAFT = process.argv.includes("--draft");
 // --print: print-on-demand files — an interior with 0.125in bleed on every edge
 // (no covers, even page count) plus separate front and back covers with bleed.

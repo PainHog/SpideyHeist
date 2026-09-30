@@ -67,7 +67,7 @@ export function ch_dice() {
   // airborne dice: tumbling (tilted), with faint shadows on the table below
   s += shadow(262, GY, 26, 3, .1) + shadow(656, GY, 28, 3, .1);
   s += die3d(262, 112, 56, 1, { r: 30 });
-  s += die3d(656, 118, 60, 4, { r: -24, hot: true, glint: true });
+  s += die3d(656, 118, 60, 4, { r: -24 });   // a 4 is not a Success (5 or 6 is)
   // motion ticks trail behind each die (on the side it came from)
   s += line("M326 92l16 -8M328 112l20 0M716 104l18 6M712 122l16 2", 2.4, C.ink, ` opacity=".7"`);
   // thrower spider (right), one leg flung up
@@ -75,7 +75,7 @@ export function ch_dice() {
   s += spider({ x: 770, y: 222, s: 1.5, look: [-1, -.6], mouth: "big", brow: "up", mark: "dots",
     legOverride: { L0: [[-9, -6], [-26, -30], [-44, -50]], L1: [[-12, -2], [-34, -24], [-52, -30]] } });
   s += sparkle(360, 150, 6) + sparkle(620, 160, 5);
-  return V("Six-sided dice tumbling, the fours, fives and sixes glinting", s);
+  return V("Six-sided dice tumbling, the fives and sixes glinting", s);
 }
 
 export function ch_grid() {

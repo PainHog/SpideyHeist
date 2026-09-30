@@ -2,6 +2,36 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.6.0] — Rulebook v4.6 rules update
+
+The system now follows **Heisty Spideys v4.6**: the clarified rules and the balance package chosen after the simulator runs and playtests (see `sim/BALANCE.md`, §1 and package P4H).
+
+### Changed — dice
+- **Successes are 5s and 6s.** Every roll (spiders and threats) counts a die showing 5 or 6 as a Success. The Botch die is unchanged (1–3 Botch, 4–6 clean failure).
+- **A Partial needs at least half the Difficulty (round up).** Fewer is a Failure — at Difficulty 1–2 that still means zero. A Critical is still double the Difficulty.
+- **Criticals lower the Alert only at Difficulty 3+**, and never at Full Alert. The roll card stops suggesting −1 below Difficulty 3.
+- **A Partial suggests +1 Alert**, or a complication that costs as much — never both (the result text says so).
+- **At most +2 bonus dice per roll** from Assists, Perks, Signature Moves and intel together. The roll dialog now has a separate **Silk dice** field (uncapped) next to **Bonus dice**. It shows the limit, warns when you enter more than +2, and the chat card notes when the bonus was capped.
+- **Opposed rolls:** the roll dialog has an **Opposed by** list of threats (on the viewed scene; the GM also sees every threat in the Actors directory). Pick one of a creature's pools and it rolls first; its Successes + 1 become your Difficulty. A new **Difficulty modifier** field (cover −2 on Stealth, Perks, Flaws) and the Alert then apply as usual. A threat's own roll card now shows the Difficulty it sets.
+
+### Changed — the Alert
+- **Full Alert is permanent.** The Alert stops at the Limit. Once it gets there, nothing raises or lowers it, whether from the HUD buttons, the chat-card buttons or the number field. The GM's **Reset** (a new heist) or a higher Limit releases it.
+- **Full Alert brings the Lockdown penalties** (all +1, Stealth +2) whatever the Limit, so Hard, Absurd and Legendary locations (Limit 6 or less) now get them at Full Alert too.
+- The HUD's −1 tooltip reads "Critical Success at Difficulty 3+". Its buttons are disabled at Full Alert.
+- The Active band (5–6) text now says the Stirring Stealth +1 still applies (no new penalty), as the engine already did.
+- New Alert trigger row: a Partial Success's complication, +1.
+
+### Changed — compendium text (matches the book)
+- **Rules Reference:** Core Rules, The Alert, Silk Points, Vitality, The Five Phases and the Quick Reference carry the v4.6 wording. That covers 5–6 Successes, half-Difficulty Partials, the Failure retry and five-round limit, Group Checks, the new opposed rolls and cover, the +2 bonus-dice limit, and the Critical floor at Difficulty 3. It also covers the permanent Full Alert (a failed Escape roll at Full Alert gets that spider caught), creatures staying active, and what a scene is. Two more rules land here: a heist obstacle takes two successful rolls, and Casing is capped. The Silk advice is now "spend it", and shrug-off ties go to the threat.
+- **Spitting Spider:** Precision Application is once per scene; a jammed sensor stops sensing, a jammed lock stays shut.
+- **The Tinkerer / "I Made a Thing":** Bypass is now an Engineering roll at −1 Difficulty, and it doesn't work on the heist's key lock.
+- **Plausible Deniability** is once per heist. **Familiar Face** never reveals the unknown obstacle.
+- **Silk Line:** a line placed during Planning lasts the heist, and it lowers that obstacle's Difficulty by 1 instead of skipping it.
+- **Crab Spider, Arachnophobe Magnet, I Was Never Here** are written from the spider's side of the roll (your Stealth Difficulty).
+- **Heists:** Casing reveals at most the listed intel. In Heist 2 the guard spider is aware from the start. In Heist 5 the two closing staff are Alert Humans (Difficulty 4).
+
+*Worlds that already imported compendium items or journals keep their old copies. Re-import them from the compendiums to get the v4.6 text.*
+
 ## [1.5.1] — Author credit
 
 ### Changed

@@ -5,7 +5,7 @@
   "system": {
     "speciesKey": "spitting",
     "ability": "Precision Application",
-    "abilityText": "<p>Fire a precise silk-and-venom strand up to 6 squares, no roll to hit, as long as you have line of sight. Use it to jam a small mechanism (a lock, a sensor, a latch), snag a light object, or pin a small target in place for one round.</p><p>The range is exactly 6 squares. That is most of a room.</p>",
+    "abilityText": "<p>Once per scene, fire a precise silk-and-venom strand up to 6 squares, no roll to hit, as long as you have line of sight. Use it to jam a small mechanism (a lock, a sensor, a latch), snag a light object, or pin a small target in place for one round. A jammed sensor stops sensing; a jammed lock or latch stays shut.</p><p>The range is exactly 6 squares. That is most of a room.</p>",
     "speed": 5,
     "bonuses": {
       "body": 0,

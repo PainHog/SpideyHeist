@@ -21,12 +21,17 @@
   </div>
 
   <p class="hrc-blurb">{{blurb}}</p>
+  {{#if opposed}}<p class="hrc-note"><i class="fa-solid fa-scale-balanced"></i> Opposed by {{opposed.name}} ({{opposed.label}}): {{opposed.successes}} Success{{#if (heNeq opposed.successes 1)}}es{{/if}} + 1 = Difficulty {{opposed.difficulty}}.</p>{{/if}}
+  {{#if bonusCapped}}<p class="hrc-note"><i class="fa-solid fa-hand"></i> Bonus dice capped at +{{bonusCap}} (asked for +{{bonusRequested}}). Silk dice don't count toward the limit.</p>{{/if}}
+  {{#if fullAlert}}<p class="hrc-note warn"><i class="fa-solid fa-lock"></i> Full Alert: the Alert is locked at the Limit. During the Escape, a failed roll gets this spider caught (Out).</p>{{/if}}
 
   <div class="hrc-breakdown">
     <span class="chip">{{pool}}d6</span>
     {{#if vitPenalty}}<span class="chip warn">Vitality {{heSigned vitPenalty}}</span>{{/if}}
-    {{#if bonus}}<span class="chip good">bonus +{{bonus}}</span>{{/if}}
+    {{#if bonus}}<span class="chip good">bonus +{{bonus}}{{#if bonusCapped}} (cap){{/if}}</span>{{/if}}
+    {{#if silk}}<span class="chip good">Silk +{{silk}}</span>{{/if}}
     {{#if penalty}}<span class="chip warn">penalty −{{penalty}}</span>{{/if}}
+    {{#if modifier}}<span class="chip">Diff {{heSigned modifier}}</span>{{/if}}
     {{#if alertApplied}}<span class="chip warn">Alert +{{alertDiff}} Diff</span>{{/if}}
   </div>
 

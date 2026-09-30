@@ -25,7 +25,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The staff move unpredictably with no set route.</li><li>A rat lives under the dishwasher and runs protection for the block &mdash; he'll want something.</li><li>The office door sticks.</li></ul>"
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The staff move unpredictably with no set route.</li><li>A rat lives under the dishwasher and runs protection for the block &mdash; he'll want something.</li><li>The office door sticks.</li></ul>"
       }
     },
     {
@@ -51,7 +51,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<ol><li>The dining room &mdash; two staff moving unpredictably, no patrol pattern.</li><li>The kitchen &mdash; warm, incredible smells. Easily Distracted triggers. Also, the rat.</li><li>The rat. Negotiations. He wants something. Work out what.</li><li><strong>(Unknown)</strong> The sleeping staffer wakes exactly when the crew is in the office.</li></ol>"
+        "content": "<ol><li>The dining room &mdash; two staff moving unpredictably, no patrol pattern. They are Alert Humans (Deception or Stealth 4).</li><li>The kitchen &mdash; warm, incredible smells. Easily Distracted triggers. Also, the rat.</li><li>The rat. Negotiations. He wants something. Work out what.</li><li><strong>(Unknown)</strong> The sleeping staffer wakes exactly when the crew is in the office.</li></ol>"
       }
     }
   ]

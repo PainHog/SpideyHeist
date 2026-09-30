@@ -5,7 +5,7 @@
     <h2>The Alert</h2>
   </header>
   <p class="opener">The <strong>Alert</strong> is a single number that tracks how awake the location is. It starts at <strong>0</strong> and climbs toward a <strong>Limit</strong> the Storyteller sets before the heist. When it reaches the Limit, the place goes to Full Alert: the objective is lost, and the only goal left is getting out with your legs attached.</p>
-  <p>The Alert only goes up during a heist. The one exception is a Critical Success, which drops it by 1 (only on a roll of Difficulty 2 or higher). Everything else is upward pressure. Plan accordingly.</p>
+  <p>The Alert only goes up during a heist. The one exception is a Critical Success, which drops it by 1 (only on a roll of Difficulty 3 or higher) — and never once the location is at Full Alert. Everything else is upward pressure. Plan accordingly.</p>
   <p>The Alert is the location’s overall state of alertness, not any one creature’s senses. When Stealth gets harder at Alert 3, the cat didn’t suddenly grow better ears — the cat is awake and moving, covering ground it wasn’t before. Higher Alert means more things are active, in more places. The fiction justifies the number; the number just keeps score.</p>
 
   <h3>The Alert Limit</h3>
@@ -26,13 +26,14 @@
     <thead><tr><th>Amount</th><th>Trigger</th></tr></thead>
     <tbody>
       <tr><td class="num">+1</td><td>A roll fails with a consequence — noise, attention, evidence.</td></tr>
+      <tr><td class="num">+1</td><td>A Partial Success’s complication (unless the ST chose another cost).</td></tr>
       <tr><td class="num">+1</td><td>Spotted briefly — an NPC notices something’s off but isn’t sure.</td></tr>
       <tr><td class="num">+1</td><td>A Silk Clutch is used. The universe keeps score.</td></tr>
       <tr><td class="num">+2</td><td>A Botch. Everything that could go wrong did, plus one new thing.</td></tr>
       <tr><td class="num">+2</td><td>A confirmed alert — an NPC knows something is happening, even if not what.</td></tr>
       <tr><td class="num">+2</td><td>A spider goes Out. The location notices something is very wrong.</td></tr>
       <tr><td class="num">+2</td><td>A Loud Failure — something loud breaks, a crash that carries across the location.</td></tr>
-      <tr><td class="num">+X</td><td>A creature’s own contribution each round it’s active (see its stat block). A creature is <em>active</em> when its Escalation says it’s awake, hunting or pursuing.</td></tr>
+      <tr><td class="num">+X</td><td>A creature’s own contribution each round it’s active (see its stat block). A creature is <em>active</em> from the first Escalation step the Alert has reached — or from the start, if the heist says it is awake or aware — and it stays active for the rest of the heist. It adds its +X at the end of every round the crew spends at its obstacle, and at every obstacle once it roams (a cat once awake, anything hunting, a guard once aware). Outside turn order, each exchange of crew actions at an obstacle is one round.</td></tr>
     </tbody>
   </table>
 
@@ -42,18 +43,18 @@
     <tbody>
       <tr><td>0–2 — Calm</td><td>The plan is working. Enjoy it. It won’t last.</td></tr>
       <tr><td>3–4 — Stirring</td><td>Something feels off. Stealth rolls have their Difficulty increased by 1.</td></tr>
-      <tr><td>5–6 — Active</td><td>A threat has woken up — the cat is on its feet, a human checked the kitchen, the vacuum changed its route. No roll penalty yet.</td></tr>
+      <tr><td>5–6 — Active</td><td>A threat has woken up — the cat is on its feet, a human checked the kitchen, the vacuum changed its route. The Stirring Stealth +1 still applies; no new penalty yet.</td></tr>
       <tr><td>7+ — Lockdown</td><td>Everything is wrong. All rolls have their Difficulty increased by 1. Multiple NPCs are active.</td></tr>
-      <tr><td>At Limit — Full Alert</td><td>The location is compromised. If the crew doesn’t have the objective yet, it’s out of reach. Escape is the only play, and it will be memorable. If they do have it, they just need to get out.</td></tr>
+      <tr><td>At Limit — Full Alert</td><td>The location is compromised for the rest of the heist: the Alert stays at the Limit — nothing raises or lowers it — every roll takes the Lockdown penalties (all +1, Stealth +2) whatever the Limit, and creatures act as at Alert 7+. If the crew doesn’t have the objective yet, it’s out of reach. Escape is the only play, and it will be memorable. During a Full Alert Escape, a spider who fails a roll is caught — Out.</td></tr>
     </tbody>
   </table>
-  <p>At a Limit of 6 or less, the location hits Full Alert before Lockdown — lower Limits skip the later bands entirely. That’s what makes them hard.</p>
+  <p>At a Limit of 6 or less, the location hits Full Alert before it ever reaches Lockdown — and Full Alert brings the Lockdown penalties with it. That’s what makes them hard.</p>
   <figure class="art diagram" data-art="alert-track"></figure>
 
   <aside class="box st">
     <h4>Storyteller Note — Two Thresholds People Confuse</h4>
     <p>Penalties stack. At Alert 7+, Stealth is +2 Difficulty total (the Stirring penalty and the Lockdown penalty both apply). Track them separately so the crew always knows what they’re facing.</p>
-    <p>The critical distinction: <strong>Active (5–6) turns threats on — it does not raise Difficulty.</strong> The cat wakes; the human stirs; nothing gets mechanically harder to roll yet. <strong>Only Lockdown (7+) raises Difficulty.</strong> This is the single most misread rule in the game. Active means something is now moving. Lockdown means everything is now harder.</p>
+    <p>The critical distinction: <strong>Active (5–6) turns threats on — it adds no new Difficulty.</strong> The cat wakes; the human stirs; the Stirring +1 to Stealth carries on, but nothing else gets harder to roll yet. <strong>Only Lockdown (7+) raises Difficulty again.</strong> This is the single most misread rule in the game. Active means something is now moving. Lockdown means everything is now harder.</p>
     <p>The Alert should feel like pressure, not punishment. At 3, foreshadow — a creak, one open eye. At 5, escalate — make something active and specific. At 7, hard but survivable. At the Limit, the heist is over but the escape is its own story. Never just say “the Alert hit 8, you lose.” Make the lockdown land.</p>
   </aside>
 </section>

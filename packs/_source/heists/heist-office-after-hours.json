@@ -25,7 +25,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success:</p><ul><li>The sensor beam covers a known line of squares with a fixed timing gap.</li><li>The guard spider's patrol loops the perimeter every few rounds.</li><li>The drawer uses a standard lock.</li></ul>"
+        "content": "<p>Intel the crew can uncover by Casing &mdash; one true detail per Success, and never more than this list (extra Successes buy nothing; Casing never reveals the unknown obstacle):</p><ul><li>The sensor beam covers a known line of squares with a fixed timing gap.</li><li>The guard spider's patrol loops the perimeter every few rounds.</li><li>The drawer uses a standard lock.</li></ul>"
       }
     },
     {
@@ -51,7 +51,7 @@
       },
       "text": {
         "format": 1,
-        "content": "<ol><li>The motion sensors. Pattern known, timing tight.</li><li>The guard spider. Professional, alert, doing the job. First real opposed roll.</li><li>The locked desk drawer. Engineering moment.</li><li><strong>(Unknown)</strong> The cleaning cart is parked across the vent the crew planned to leave through.</li></ol>"
+        "content": "<ol><li>The motion sensors. Pattern known, timing tight.</li><li>The guard spider. Professional, alert, doing the job &mdash; it is aware of the crew from the moment they're inside (+1 Alert each round it can see them). First real opposed roll.</li><li>The locked desk drawer. Engineering moment.</li><li><strong>(Unknown)</strong> The cleaning cart is parked across the vent the crew planned to leave through.</li></ol>"
       }
     }
   ]

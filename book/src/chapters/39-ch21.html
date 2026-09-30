@@ -9,26 +9,28 @@
   <table class="tbl qr">
     <thead><tr><th>Term</th><th>Rule</th></tr></thead>
     <tbody>
-      <tr><td><strong>Pool</strong></td><td>Attribute + Skill (+ any bonus dice)</td></tr>
-      <tr><td><strong>Success</strong></td><td>Each die showing 4, 5, or 6</td></tr>
+      <tr><td><strong>Pool</strong></td><td>Attribute + Skill (+ at most 2 bonus dice, plus any Silk dice)</td></tr>
+      <tr><td><strong>Success</strong></td><td>Each die showing 5 or 6</td></tr>
       <tr><td><strong>Difficulty</strong></td><td>1 Trivial · 2 Easy · 3 Moderate · 4 Hard · 5 Absurd</td></tr>
-      <tr><td><strong>Partial</strong></td><td>1+ Successes but short of the target: succeed with a complication</td></tr>
-      <tr><td><strong>Failure</strong></td><td>0 Successes: fail, a consequence occurs</td></tr>
-      <tr><td><strong>Critical</strong></td><td>Double the required Successes: succeed + bonus + Alert −1 (Difficulty 2+ only)</td></tr>
+      <tr><td><strong>Partial</strong></td><td>At least half the target (round up) but short of it: succeed with a complication</td></tr>
+      <tr><td><strong>Failure</strong></td><td>Fewer than half the target: fail, a consequence occurs</td></tr>
+      <tr><td><strong>Critical</strong></td><td>Double the required Successes: succeed + bonus + Alert −1 (Difficulty 3+ only)</td></tr>
       <tr><td><strong>Botch</strong></td><td>Pool at 0 or below: roll 1 die. 1–3 fail + Alert +2. 4–6 clean fail.</td></tr>
       <tr><td><strong>Assist</strong></td><td>Adjacent ally rolls Skill only (min 1, max 3 dice). Each Success = +1 die.</td></tr>
+      <tr><td><strong>Opposed</strong></td><td>The creature’s Successes + 1 = your Difficulty</td></tr>
+      <tr><td><strong>Group check</strong></td><td>Everyone rolls; the Alert takes the worst result, once</td></tr>
     </tbody>
   </table>
 
   <h3>The Grid</h3>
-  <table class="tbl qr">
+  <table class="tbl qr flow">
     <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
     <tbody>
       <tr><td><strong>Scale</strong></td><td>1 square = 1 spider. Distances are counted in squares.</td></tr>
       <tr><td><strong>Speed</strong></td><td>Squares per turn, set by species. Most 5 · Wolf 7 · Jumping 6 · Crab 4.</td></tr>
       <tr><td><strong>Your turn</strong></td><td>Move up to Speed (may split) + one Action. Diagonals count as 1.</td></tr>
       <tr><td><strong>Adjacency</strong></td><td>The 8 surrounding squares. Brawl and Assist need adjacency.</td></tr>
-      <tr><td><strong>Cover</strong></td><td>A solid object between you and a viewer: +2 Difficulty to spot/target you.</td></tr>
+      <tr><td><strong>Cover</strong></td><td>A solid object between you and a viewer: your Stealth Difficulty −2; +2 Difficulty to target you.</td></tr>
       <tr><td><strong>Climbing</strong></td><td>Normal cost on walls/ceilings. Slick/hostile surfaces cost double or a roll.</td></tr>
       <tr><td><strong>Hurt/Critical</strong></td><td>Hurt: Speed halved (round down) · Critical: moves only with a crewmate’s help, at half their Speed.</td></tr>
       <tr><td><strong>Turn order</strong></td><td>Only when timing is tight: crew acts (any order), then the ST’s threats.</td></tr>
@@ -39,9 +41,10 @@
   <table class="tbl qr">
     <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
     <tbody>
-      <tr><td><strong>Only goes up</strong></td><td>+1 failed roll w/ consequence, spotted briefly, Silk Clutch · +2 Botch, confirmed alert, spider Out, Loud Failure · +X each round a creature is active (its stat block)</td></tr>
-      <tr><td><strong>Thresholds</strong></td><td>3–4 Stirring: Stealth +1 · 5–6 Active: threat wakes, no roll penalty · 7+ Lockdown: all rolls +1 (Stealth +2, stacks) · Limit: Full Alert</td></tr>
-      <tr><td><strong>Reduction</strong></td><td>Critical Success only (Difficulty 2+): Alert −1</td></tr>
+      <tr><td><strong>Only goes up</strong></td><td>+1 failed roll w/ consequence, a Partial’s complication, spotted briefly, Silk Clutch · +2 Botch, confirmed alert, spider Out, Loud Failure · +X each round a creature is active (its stat block)</td></tr>
+      <tr><td><strong>Thresholds</strong></td><td>3–4 Stirring: Stealth +1 · 5–6 Active: threat wakes, Stealth +1 continues · 7+ Lockdown: all rolls +1 (Stealth +2, stacks) · Limit: Full Alert (a failed Escape roll = caught)</td></tr>
+      <tr><td><strong>Reduction</strong></td><td>Critical Success only (Difficulty 3+): Alert −1</td></tr>
+      <tr><td><strong>Full Alert</strong></td><td>Permanent; Lockdown penalties; the Alert stops at the Limit</td></tr>
       <tr><td><strong>Limits</strong></td><td>Easy 10 · Standard 8 · Hard 6 · Absurd 4 · Legendary 2</td></tr>
     </tbody>
   </table>
@@ -68,7 +71,7 @@
       <tr><td><strong>Hurt</strong></td><td>−2 dice, half Speed.</td></tr>
       <tr><td><strong>Critical</strong></td><td>−3 dice, must be assisted to move.</td></tr>
       <tr><td><strong>Out</strong></td><td>Remove from heist. Alert +2. Activate the Waiting Web.</td></tr>
-      <tr><td><strong>Taking a hit</strong></td><td>Drop 1 level. Shrug off with BODY+Endurance vs the attack: meet/beat = no drop; lose by 3+ = drop 2. Ties to you.</td></tr>
+      <tr><td><strong>Taking a hit</strong></td><td>Drop 1 level. Shrug off with BODY+Endurance vs the attack: beat = no drop; tie or lose by 1–2 = drop 1; lose by 3+ = drop 2.</td></tr>
     </tbody>
   </table>
 
@@ -77,8 +80,8 @@
     <thead><tr><th>Phase</th><th>Summary</th></tr></thead>
     <tbody>
       <tr><td><strong>1 — The Score</strong></td><td>ST presents the job and the visible map. Roleplay only. No rolls, no Alert.</td></tr>
-      <tr><td><strong>2 — Planning</strong></td><td>Case for intel (a Success = one true detail). Make Preparations (setup, not auto-wins, except a Contingency; each gets a complication).</td></tr>
-      <tr><td><strong>3 — The Heist</strong></td><td>3–4 obstacles. The Alert climbs. At least one thing the crew didn’t uncover.</td></tr>
+      <tr><td><strong>2 — Planning</strong></td><td>Case for intel (a Success = one true detail, never the unknown). Make Preparations (setup, not auto-wins, except a Contingency; each gets a complication).</td></tr>
+      <tr><td><strong>3 — The Heist</strong></td><td>3–4 obstacles, two successful rolls each. The Alert climbs. At least one thing the crew didn’t uncover.</td></tr>
       <tr><td><strong>4 — The Escape</strong></td><td>1–2 obstacles. Alert carries over. At least one must be solvable without Athletics.</td></tr>
       <tr><td><strong>5 — Debrief</strong></td><td>Count loot, award AP, argue about what happened, take the next job.</td></tr>
     </tbody>

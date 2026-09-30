@@ -1,6 +1,6 @@
 # Heisty Spideys — Foundry VTT System
 
-> *A tabletop roleplaying game of eight-legged larceny. Roll a handful of d6s, count every 4, 5, or 6 as a Success, and try not to get vacuumed.*
+> *A tabletop roleplaying game of eight-legged larceny. Roll a handful of d6s, count every 5 or 6 as a Success, and try not to get vacuumed.*
 
 The official companion game system for **Heisty Spideys, First Edition** — built for **Foundry VTT v13 & v14** on the modern ApplicationV2 + DataModel architecture.
 
@@ -11,8 +11,8 @@ The official companion game system for **Heisty Spideys, First Edition** — bui
 ## What's in the box
 
 - **Spider character sheet** — four Attributes, twelve Skills, Speed, Silk Points, and the Vitality ladder. Click any Skill or Attribute to roll its pool; shift-click to skip the dialog.
-- **The dice engine** — the whole engine, faithfully: pools of d6s, 4/5/6 = Success, with automatic handling of **Critical** (double the required Successes, Alert −1 at Difficulty 2+), **Partial**, **Failure**, and the **Botch** (when your pool bottoms out). Vitality penalties and the current Alert are folded in for you.
-- **The Alert meter** — a shared, always-visible HUD tracking how awake the location is. The Storyteller nudges it; everyone sees it climb through Calm → Stirring → Active → Lockdown → **Full Alert**. Roll cards offer one-click Alert adjustments.
+- **The dice engine** — the whole engine, faithfully: pools of d6s, 5/6 = Success, with automatic handling of **Critical** (double the required Successes, Alert −1 at Difficulty 3+), **Partial** (at least half the Difficulty), **Failure**, and the **Botch** (when your pool bottoms out). Vitality penalties and the current Alert are folded in for you.
+- **The Alert meter** — a shared, always-visible HUD tracking how awake the location is. The Storyteller nudges it; everyone sees it climb through Calm → Stirring → Active → Lockdown → **Full Alert**, where it locks at the Limit and brings the Lockdown penalties. Roll cards offer one-click Alert adjustments.
 - **The Character Builder** — a guided, step-by-step wizard (Species → Role → Attributes → Skills → Perks → Flaw → Name) with live point-buy counters, the book's random-roll tables, and full validation. Finishes by exporting a complete, ready-to-play spider.
 - **Eight compendiums, ready to run** — all 6 Species, 7 Crew Roles, 42 Perks, 10 Flaws, Silk & Gadgets, the full Creature Compendium, the five ready-to-run Heists (as multi-page journals), and a Rules Reference.
 - **Threat sheets** for the cat, the dog, the vacuum, the curious child, and the professionally-unfortunate guard spider.
@@ -31,9 +31,9 @@ https://github.com/PainHog/SpideyHeist/releases/latest/download/system.json
 
 - **Build a spider:** click **🕷 Build a Spider** at the bottom of the **Actors** sidebar, or the **spider tool** in the canvas toolbar, or run the macro `game.heistySpideys.openBuilder()`. Walk the steps; the builder won't let you finish an illegal build. Hit **Create Spider** and the finished sheet opens.
   - *Players and permissions:* Foundry doesn't grant players the "Create New Actors" permission by default. This system handles that automatically — when a player finishes the builder, the request is passed to the **online Storyteller (GM)**, who creates the spider and hands ownership back to the player (no action needed on the GM's part). If you'd rather let players create actors directly, turn on **Game Settings → Configure Permissions → Create New Actors** for the Player role. Either way works; if no GM is online, the player is told to try again when one is.
-- **Roll:** on the sheet, click a Skill name (Attribute + Skill) or an Attribute's die. Set the Difficulty (Successes needed) and any bonus/penalty dice; Vitality and the Alert are applied automatically. Results post a themed card to chat.
+- **Roll:** on the sheet, click a Skill name (Attribute + Skill) or an Attribute's die. Set the Difficulty (Successes needed) — or pick the creature opposing you, which rolls first and sets it — plus bonus dice (capped at +2), Silk dice and penalty dice; Vitality and the Alert are applied automatically. Results post a themed card to chat.
 - **Run the Alert:** as Storyteller, use the floating **Alert** meter (drag it anywhere) or the ±1/±2 buttons on any roll card. Set the location's Alert **Limit** to pick its difficulty (Easy 10 · Standard 8 · Hard 6 · Absurd 4 · Legendary 2).
-- **Threats:** drag any creature from the *Creature Compendium* onto a scene. Its sheet lists action pools — click to roll them against the crew.
+- **Threats:** drag any creature from the *Creature Compendium* onto a scene. Its sheet lists action pools — click to roll them against the crew; a spider acting against it needs its Successes + 1.
 
 ## Developing / building
 

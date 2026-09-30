@@ -5,8 +5,8 @@ printed to PDF by Chromium (`npm run build:book`). Every chapter is one file in
 `book/src/chapters/NN-slug.html`, concatenated in filename order.
 
 **Text is canon.** Transcribe the author's words exactly (including jokes,
-em dashes, curly quotes, italics). Only apply edits listed in `book/REVIEW.md`
-under "Applied in v4.2". Never add rules, numbers, names or flavour text.
+em dashes, curly quotes, italics). Only apply edits recorded in `book/REVIEW.md`
+(Parts A, B and D). Never add rules, numbers, names or flavour text.
 
 ## Structure
 

@@ -5,7 +5,7 @@
   "system": {
     "speciesKey": "crab",
     "ability": "Wait, Was That There Before?",
-    "abilityText": "<p>Hold completely still for one full turn and your coloring shifts to match your surroundings. It's not perfect &mdash; you're a spider the color of a countertop &mdash; but the Difficulty to spot you increases by 2 until you move.</p><p>Crab Spiders are excellent at waiting. They are worse at stopping.</p>",
+    "abilityText": "<p>Hold completely still for one full turn and your coloring shifts to match your surroundings. It's not perfect &mdash; you're a spider the color of a countertop &mdash; but your Stealth Difficulty drops by 2 until you move.</p><p>Crab Spiders are excellent at waiting. They are worse at stopping.</p>",
     "speed": 4,
     "bonuses": {
       "body": 0,
