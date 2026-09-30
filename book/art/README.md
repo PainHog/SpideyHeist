@@ -57,7 +57,7 @@ Every SVG has a `viewBox` and **no** fixed width or height; the CSS sizes it.
 **Portraits and badges** (square)
 - Species: `species-jumping`, `species-orb`, `species-wolf`, `species-cellar`, `species-spitting`, `species-crab`
 - Roles: `role-face`, `role-ghost`, `role-tinkerer`, `role-bruiser`, `role-lookout`, `role-wheelman`, `role-grifter`
-- Creatures: `creature-cat`, `creature-dog`, `creature-vacuum`, `creature-child`, `creature-guard-spider`, `creature-snake`, `creature-parrot`, `creature-rat`, `creature-exterminator`, `creature-goldfish`
+- Creatures: `creature-cat`, `creature-dog`, `creature-vacuum`, `creature-child`, `creature-guard-spider`, `creature-snake`, `creature-parrot`, `creature-rat`, `creature-exterminator`, `creature-goldfish`, `creature-human`
 
 **Diagrams and ornaments**
 - `map-cookie`, `map-office`, `map-petstore`, `map-library`, `map-restaurant`: the Ch 19 heist maps (Heists 1–5),

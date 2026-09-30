@@ -372,6 +372,16 @@ p.opener::first-line { font-variant: small-caps; letter-spacing: .03em; font-wei
   padding-top: 0.06in;
   border-top: 2.5px solid var(--gold);
 }
+/* One heist per page. Chromium ignores page breaks inside a multi-column box, so Chapter 19's
+   section is a single column and the intro and each heist are their own two-column boxes; each
+   heist starts a fresh page, so its text, map and obstacle table read together. */
+.chapter.heists { columns: auto; }
+.heist-intro, .heist { columns: 2; column-gap: 0.3in; column-fill: auto; }
+.heist { break-before: page; }
+/* the opener page (chapter head + intro) is finished by the planning-board illustration */
+figure.heist-intro-art { margin: 0.3in auto 0; display: flex; justify-content: center; break-inside: avoid; }
+figure.heist-intro-art svg { height: 100%; width: auto; max-width: 100%; }
+.heist > .keep:first-child, .heist > h3, .heist > .heist-meta { column-span: all; }
 .heist h3 { font-size: 14.5pt; color: var(--plum-deep); }
 .heist .tag {
   display: inline-block; vertical-align: 2px;

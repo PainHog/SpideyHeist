@@ -681,3 +681,97 @@ function taper(pts, w0, w1, col, ink = 2.5) {
   body += path("M296 48 Q296 26 322 26 Q350 26 350 46 Q350 64 324 64 Q316 64 310 62 L292 72 L300 58 Q296 54 296 48 Z", C.cream, C.ink, 3) + circ(312, 46, 3, C.ink) + circ(323, 46, 3, C.ink) + circ(334, 46, 3, C.ink);
   save("creature-goldfish", VB, "The Goldfish: a round-eyed, blissfully blank goldfish in a glass bowl on a table, listening to a tiny spider talking from the bowl's rim", body);
 }
+
+// ---------------- human ----------------
+// A kitchen counter at night, from spider height: a huge right hand, palm down, has an upturned
+// tumbler by its base and is lowering it over a tiny spider on the counter ("under a glass: Out").
+// The hand is seen from the front: four fingers drape down the near face of the glass (pinky on the
+// viewer's left, index on the right) and the thumb runs down the glass's right side, as a palm-down
+// right hand reaching toward the viewer has it. The phone (its Weakness) lies face-up on the counter.
+{
+  setPrefix("cr-human");
+  const v = oval();
+  const SKIN = C.parch, SKIN_SH = C.edge;
+  let body = v.bg + `<g clip-path="${v.clip}">`;
+  // backsplash tiles (night: charcoal), the counter's back edge, the countertop
+  body += path("M0 0 H480 V250 H0 Z", C.plum, "none", 0);
+  { let d = ""; for (const y of [26, 82, 138, 194]) d += `M0 ${y} H480`; for (let r = 0; r < 5; r++) { const y0 = r ? 26 + (r - 1) * 56 : -30, y1 = y0 + (r ? 56 : 56); for (let x = (r % 2) * 28 - 28; x < 480; x += 56) d += `M${x} ${Math.max(0, y0)} V${Math.min(250, y1)}`; } body += path(d, "none", C.deep, 4); }
+  body += path("M0 236 H480 V250 H0 Z", C.soft, C.ink, 2.5);
+  body += path("M0 250 H480 V400 H0 Z", C.edge, "none", 0) + line([0, 250], [480, 250], C.ink, 3);
+  body += strokes([[30, 290, 120, 290], [360, 372, 450, 372], [150, 384, 240, 384], [400, 276, 460, 276]], C.gold, 2);
+  // the phone, lying face-up on the counter, screen lit; a glow spills round it on the countertop
+  // (it lies wholly inside the frame, clear of the glass's shadow)
+  body += `<g transform="translate(50 0)">`;
+  const PH = [[34, 300], [138, 292], [158, 322], [46, 332]];
+  body += ell(96, 314, 92, 26, C.glint, C.ink, 0, ` opacity="0.35"`);
+  body += shadow(100, 336, 64, 5, C.ink, 0.3);
+  body += path(poly([PH[3], PH[2], [158, 328], [46, 338]]) + "Z", C.soft, C.ink, 2.5);
+  body += path(poly(PH) + "Z", C.ink, C.ink, 2.5);
+  body += path(poly([[44, 302], [134, 295], [150, 319], [54, 327]]) + "Z", C.glint, "none", 0);
+  body += path("M62 306 L106 302 M66 312 L122 307 M72 319 L100 316", "none", C.gold, 2.4);
+  body += circ(143, 297, 2, C.soft);
+  body += `</g>`;
+  // a salt cellar standing at the back of the counter, and two crumbs lying flat by the spider
+  body += shadow(416, 266, 20, 4, C.ink, 0.3) + path("M400 264 L404 222 Q416 214 428 222 L432 264 Q416 270 400 264 Z", C.cream, C.ink, 3) + path("M404 224 Q416 230 428 224 L426 206 Q416 200 406 206 Z", C.edge, C.ink, 2.5) + circ(412, 208, 1.4, C.ink) + circ(420, 208, 1.4, C.ink);
+  for (const [x, y] of [[226, 362], [372, 314]]) body += shadow(x + 3, y + 3, 6, 1.8, C.ink, 0.3) + path(`M${x} ${y} l8 -3 l4 4 l-8 3 Z`, C.gold, C.ink, 1.6);
+  // the glass's shadow on the counter, straight below its mouth: the spider stands inside it
+  const gx = 300, gTop = 130, gRim = 280, wT = 60, wR = 74;
+  body += ell(gx, 334, wR + 4, 15, C.ink, C.ink, 0, ` opacity="0.32"`);
+  body += `</g>`;
+  // the tiny spider, frozen, looking straight up into the glass
+  body += mini(gx - 4, 322, 0.17, { lid: "worry", mouth: "o", look: [0, -1] }, { rim: { col: C.cream, w: 1.6 }, feetShadow: { rx: 11, ry: 4, op: 0.3 } });
+  body += drop(gx - 26, 308, 0.4) + drop(gx + 18, 306, 0.36);
+  // --- the tumbler, upside down: mouth (wide) at the bottom, heavy base (narrow) on top
+  const gk = uid("glass");
+  const G = `M${gx - wT} ${gTop} L${gx - wR} ${gRim} A${wR} 11 0 0 0 ${gx + wR} ${gRim} L${gx + wT} ${gTop} Z`;
+  body += `<clipPath id="${gk}"><path d="${G}"/></clipPath>`;
+  body += path(G, C.cream, "none", 0, ` opacity="0.22"`);
+  body += `<g clip-path="url(#${gk})">` + path(`M${gx - 80} ${gTop} H${gx + 80} V${gTop + 22} H${gx - 80} Z`, C.cream, "none", 0, ` opacity="0.45"`) + `</g>`;
+  body += ell(gx, gTop + 22, wT + 1.5, 8, "none", C.ink, 1.6, ` opacity="0.5"`);           // inside of the thick base
+  body += path(`M${gx - wR} ${gRim} A${wR} 11 0 0 1 ${gx + wR} ${gRim}`, "none", C.ink, 2, ` opacity="0.55"`); // far half of the rim, seen through the glass
+  body += path(G, "none", C.ink, 3.5);
+  body += path(`M${gx - wR} ${gRim} A${wR} 11 0 0 0 ${gx + wR} ${gRim}`, "none", C.cream, 2, ` opacity="0.8" transform="translate(0 -3)"`);
+  body += path(`M${gx - 50} 150 L${gx - 60} 262 M${gx - 38} 170 L${gx - 44} 226`, "none", C.cream, 6, ` opacity="0.8"`) + path(`M${gx + 56} 170 L${gx + 62} 240`, "none", C.cream, 3.5, ` opacity="0.7"`);
+  // --- forearm and pyjama sleeve, rising out of the top of the frame (the hand group sits 18 lower)
+  body += `<g transform="translate(0 18)">`;
+  const armClip = uid("arm");
+  body += `<clipPath id="${armClip}">${ell(240, 184, 224, 184, "#000")}</clipPath>`;
+  body += `<g clip-path="url(#${armClip})">`;
+  body += path(`M${gx - 16} 64 L${gx - 4} -40 L${gx + 88} -40 L${gx + 70} 60 Z`, SKIN, C.ink, 3.5);
+  body += path(`M${gx - 24} 30 L${gx - 14} -40 L${gx + 98} -40 L${gx + 80} 24 Q${gx + 28} 40 ${gx - 24} 30 Z`, C.cream, C.ink, 3.5);
+  body += path(`M${gx - 4} 32 L${gx + 4} -40 M${gx + 26} 34 L${gx + 32} -40 M${gx + 56} 30 L${gx + 62} -40`, "none", C.ox, 6);
+  body += path(`M${gx - 24} 30 Q${gx + 28} 40 ${gx + 80} 24`, "none", C.ink, 3.5) + path(`M${gx - 22} 22 Q${gx + 28} 32 ${gx + 80} 16`, "none", C.edge, 2);
+  body += `</g>`;
+  // --- the hand. Fingers and thumb are drawn first, their roots running up under the back of the hand,
+  // so each one grows out of it; knuckle bumps then roll over the hand's front edge (the rim of the base).
+  // four fingers draped down the near face of the glass: pinky (left, shortest), ring, middle (longest), index (right)
+  const F = [{ x: gx - 45, len: 70, w: 19, a: 8 }, { x: gx - 18, len: 90, w: 22, a: 3 }, { x: gx + 10, len: 100, w: 23, a: 0 }, { x: gx + 38, len: 88, w: 22, a: -4 }];
+  for (const f of F) {
+    const top = 108, h = f.w / 2, bot = top + f.len;
+    let s = path(`M${f.x - h} ${top - 20} L${f.x - h + 1} ${bot - h} Q${f.x - h + 1} ${bot + 2} ${f.x} ${bot + 2} Q${f.x + h - 1} ${bot + 2} ${f.x + h - 1} ${bot - h} L${f.x + h} ${top - 20} Z`, SKIN, C.ink, 3.5);
+    s += path(`M${f.x - h + 4} ${bot - h * 1.5} Q${f.x - h + 4} ${bot - 3} ${f.x} ${bot - 3} Q${f.x + h - 4} ${bot - 3} ${f.x + h - 4} ${bot - h * 1.5} Q${f.x} ${bot - h * 2.1} ${f.x - h + 4} ${bot - h * 1.5} Z`, C.cream, C.ink, 2.2); // nail
+    s += path(`M${f.x - h * 0.5} ${top + f.len * 0.36} q${h * 0.5} 3 ${h} 0 M${f.x - h * 0.45} ${top + f.len * 0.62} q${h * 0.45} 3 ${h * 0.9} 0`, "none", C.ink, 2);   // knuckle creases
+    body += `<g transform="rotate(${f.a} ${f.x} ${top})">${s}</g>`;
+  }
+  // the thumb: from the hand's right side down the glass's right flank, its nail on the outer edge near the tip
+  const T = `M${gx + 44} 90 Q${gx + 92} 96 ${gx + 88} 140 L${gx + 84} 176 Q${gx + 80} 192 ${gx + 68} 188 Q${gx + 60} 184 ${gx + 62} 168 L${gx + 56} 124 Z`;
+  body += path(T, SKIN, C.ink, 3.5);
+  body += path(`M${gx + 86} 160 Q${gx + 88} 178 ${gx + 80} 186 Q${gx + 74} 180 ${gx + 76} 162 Z`, C.cream, C.ink, 2);
+  body += path(`M${gx + 66} 146 q8 3 16 0`, "none", C.ink, 2);
+  // back of the hand, over the glass's base (the wrist runs up into the sleeve)
+  const hand = `M${gx - 66} 118 Q${gx - 72} 94 ${gx - 44} 74 Q${gx - 26} 60 ${gx - 16} 46 L${gx + 70} 42 Q${gx + 74} 64 ${gx + 74} 84 Q${gx + 78} 104 ${gx + 62} 118 Q${gx} 126 ${gx - 66} 118 Z`;
+  body += path(hand, SKIN, C.ink, 4);
+  body += path(`M${gx - 50} 96 Q${gx - 30} 72 ${gx - 4} 62`, "none", C.cream, 4, ` opacity="0.8"`);
+  body += path(`M${gx - 10} 72 Q${gx + 4} 90 ${gx + 8} 108 M${gx + 24} 70 Q${gx + 34} 90 ${gx + 36} 108`, "none", SKIN_SH, 3);   // tendons
+  // knuckle bumps: skin over the hand's edge line between each finger's sides, outlined along the top
+  for (const f of F) {
+    const h = f.w / 2 + 1.5;
+    body += `<g transform="rotate(${f.a} ${f.x} 108)">` + path(`M${f.x - h} 128 L${f.x - h} 118 Q${f.x} 100 ${f.x + h} 118 L${f.x + h} 128 Z`, SKIN, "none", 0) +
+      path(`M${f.x - h + 1} 129 L${f.x - h} 121 Q${f.x} 100 ${f.x + h} 121 L${f.x + h - 1} 129`, "none", C.ink, 3) + path(`M${f.x - h + 5} 116 Q${f.x} 106 ${f.x + h - 5} 116`, "none", SKIN_SH, 2.5) + `</g>`;
+  }
+  // it is coming down: speed lines trailing above both sides of the hand
+  body += strokes([[gx - 96, 60, gx - 96, 96], [gx - 110, 84, gx - 110, 110], [gx + 108, 58, gx + 108, 92], [gx + 122, 80, gx + 122, 106]], C.cream, 3.5);
+  body += `</g>`;
+  body += v.ring;
+  save("creature-human", VB, "The Human, seen from spider height: a huge hand in a pyjama sleeve lowering an upturned glass over a tiny frozen spider on a night-time kitchen counter, a phone glowing beside it", body);
+}

@@ -26,7 +26,7 @@ const ROOT = join(BOOK, "..");
 const SRC = join(BOOK, "src");
 const ART = join(BOOK, "art");
 const DIST = join(BOOK, "dist");
-const VERSION = "4.6";
+const VERSION = "4.7";
 const DRAFT = process.argv.includes("--draft");
 // --print: print-on-demand files — an interior with 0.125in bleed on every edge
 // (no covers, even page count) plus separate front and back covers with bleed.
@@ -168,8 +168,9 @@ const SPOTS = {
   "ch-01": ["spot-crew-huddle"], "ch-02": ["spot-dice-push"], "ch-03": ["spot-silk-swing"],
   "ch-05": ["spot-dust-bunny"], "ch-06": ["spot-lockpick"], "ch-09": ["spot-alarm-freeze"],
   "ch-10": ["spot-jar-rescue"], "ch-11": ["spot-loot-haul"], "ch-16": ["spot-couch-sneak"],
-  "ch-18": ["spot-lookout-sill"], "ch-19": ["spot-map-board"], "ch-20": ["spot-vacuum-ride"],
+  "ch-18": ["spot-lookout-sill"], "ch-20": ["spot-vacuum-ride"],
   "ch-21": ["spot-debrief"],
+  // (Ch 19 places spot-map-board itself, on its opener page: each heist fills a page of its own)
   // chapters that normally end with too little room for a spot; if a layout change ever
   // leaves them a gap, the spare piece (or any other unused one) fills it
   "ch-04": ["spot-cat-nap"], "ch-07": ["spot-cat-nap"], "ch-08": ["spot-cat-nap"], "ch-12": ["spot-cat-nap"],
@@ -177,6 +178,7 @@ const SPOTS = {
 };
 const PT_PER_IN = 72;
 const BOTTOM_LIMIT_PT = (0.78 + BLEED_IN) * PT_PER_IN;   // @page bottom margin: content must end above this
+const TEXT_H_IN = 11 - 0.72 - 0.78;   // the text area's height (the print bleed adds to both the page and its margins)
 const MIN_SPOT_IN = 1.5, MAX_SPOT_IN = 5.3, SAFETY_IN = 0.2, MIN_GAP_IN = 0.22;  // 5.3in = 4:3 art at full text width
 
 function planSpots(ends) {
@@ -186,6 +188,9 @@ function planSpots(ends) {
     const prefs = SPOTS[id];
     const room = freeIn - SAFETY_IN;
     if (!prefs || room - MIN_GAP_IN < MIN_SPOT_IN) continue;
+    // a chapter that fills its last page exactly pushes its zero-height end marker to the top of
+    // the next page (the next chapter's opener): that reads as a whole free page, but there is no room
+    if (freeIn > TEXT_H_IN - 0.3) continue;
     // preferred spots first, then any spot not used yet; never a repeat (the same
     // illustration twice in one book reads as a mistake)
     const all = [...new Set(Object.values(SPOTS).flat())];
@@ -319,6 +324,7 @@ try {
   if (missing.length) throw new Error(`could not locate on any page: ${missing.join(", ")}`);
 
   // Pass 2: place spot illustrations; drop any that would move a page, and re-check.
+  if (process.env.SPOT_DEBUG) console.log(JSON.stringify(p1.ends));
   let spots = planSpots(p1.ends);
   for (let attempt = 0; attempt < 4; attempt++) {
     const pass2 = join(DIST, ".pass2.pdf");
@@ -326,6 +332,7 @@ try {
     const p2 = await pageMap(pass2);
     const moved = Object.keys(spots).filter(id => p2.ends[id]?.page !== p1.ends[id]?.page);
     const shifted = entries.filter(e => p2.found[e.id] !== p1.found[e.id]).map(e => e.id);
+    if (process.env.SPOT_DEBUG) console.log('attempt', attempt, JSON.stringify(spots), 'moved', moved, 'shifted', shifted, p2.pages, p1.pages);
     if (!moved.length && !shifted.length && p2.pages === p1.pages) break;
     if (attempt === 3) throw new Error(`spot illustrations keep moving pages: ${[...moved, ...shifted].join(", ")}`);
     for (const id of moved) delete spots[id];
