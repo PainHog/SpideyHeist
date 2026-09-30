@@ -475,6 +475,56 @@ export const PARAMS = {
     title: "P5 — Face Perks don't work on a Guard Spider",
     doc: "true = Fast Talk can't distract a Guard Spider (tested and rejected: Office −3.6 pts; v4.7 reads 'charm' as Persuasion only).",
     ref: "Ch 16 Guard Spider (v4.7); playtest H2-I-34"
+  },
+
+  /* ---- v4.8 rulings (REVIEW.md Part G, the verify-v4.7 playtest N-items), package P6. Defaults = P5 behaviour. */
+  groupOpposed: {
+    default: "each", alts: ["once"], pkg: true,
+    title: "P6 — a creature against a group check",
+    doc: "each = the creature rolls again for every spider (v4.7 sim). once = it rolls once for the round; that Difficulty applies to every spider in the group check.",
+    ref: "Ch 2 Opposed Rolls (v4.8); verify-v4.7 N2"
+  },
+  fullAlertPartial: {
+    default: "alert", alts: ["cost"], pkg: true,
+    title: "P6 — a Partial at Full Alert",
+    doc: "alert = the Partial's +1 Alert, which the Limit swallows: free (v4.7). cost = never Alert: a hit from an engaged creature or human if there is one, otherwise −1 die on the spider's next roll; in a group check every Partial pays its own.",
+    ref: "Ch 2 Partial; Ch 9 Full Alert (v4.8); verify-v4.7 N14"
+  },
+  weaknessHold: {
+    default: false, alts: [true], pkg: true,
+    title: "P6 — a Weakness that shuts a creature in holds it",
+    doc: "true = an obstacle cleared by an approach marked `hold` (the snake's lid or heat lamp, the parrot's cage cover) holds that creature for the rest of the heist: not active, no +X, no attacks, no shriek.",
+    ref: "Ch 16 Driving one off (v4.8); verify-v4.7 N3"
+  },
+  parrotSight: {
+    default: false, alts: [true], pkg: true,
+    title: "P6 — the parrot shrieks only at a spider it can see",
+    doc: "true = the Alert-7 shriek (+2 once) happens only while the parrot sees a spider: at its own obstacle, or on an approach marked `seenBy` (the Pet Store's shelf tops); a covered (held) parrot never shrieks. false = it shrieks the moment the Alert reaches 7, wherever the crew is.",
+    ref: "Ch 16 Alert Parrot; Ch 19 Heist 3 (v4.8); verify-v4.7 N4, N6"
+  },
+  guardBeaten: {
+    default: false, alts: ["post"], pkg: true,
+    title: "P6 — beating a Guard Spider",
+    doc: "post = a guard beaten with Brawl is out of the heist; its backup (aware) holds the post and counts only at obstacles the guard is written into, never following the crew. The crew also values ending a following guard (bribe or fight): +0.25 to those approaches in the chooser. false = v4.7: the beaten guard sulks back at the next obstacle if it roams.",
+    ref: "Ch 16 Guard Spider (v4.8); verify-v4.7 N12"
+  },
+  crewSilk: {
+    default: false, alts: ["helper"], pkg: true,
+    title: "P6 — Silk from the spider Assisting you",
+    doc: "helper = the crewmate Assisting a roll may pay for its Silk (extra dice, a Reroll, the Clutch) when the roller's own pool runs short.",
+    ref: "Ch 8 (v4.8); verify-v4.7 N21"
+  },
+  silkLineRule: {
+    default: "bypass", alts: ["minus1"], pkg: true,
+    title: "P6 — a Silk Line spun during the heist",
+    doc: "bypass = the crew crosses a climb or gap on a 1 SP line with no roll (v4.7 Ch 12). minus1 = any Silk Line, spun in the scene or in Planning, lowers that climb's Difficulty by 1; the spinner spends the Action and 1 SP (or rolls D2). The Orb Weaver's Line and Silk Trail keep their no-roll wording.",
+    ref: "Ch 11 Preparation; Ch 12 Silk (v4.8); verify-v4.7 N15 (H1-7)"
+  },
+  engagedRule: {
+    default: "any", alts: ["before"], pkg: true,
+    title: "P6 — when a threat is engaged",
+    doc: "any = a threat that becomes aware because of the failed roll hits at once. before = only a threat already active when the roll failed, or one the spider was fighting, lands the hit.",
+    ref: "Ch 2 Failure; Ch 10 (v4.8); verify-v4.7 N18"
   }
 };
 
@@ -531,6 +581,16 @@ export const PACKAGES = {
       successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy", heistTweaks: ["office-guard-aware", "restaurant-alert-staff"],
       guardRules: "paid", silkStart: "base+1", stallClock: 3, lootCarry: "sled", passChecks: "partial",
       improviseAttr: "skill", wolfShrug: true, rerollFix: true, showOffRule: "plus1", earlyWarningAll: true
+    }
+  },
+  P6: {
+    title: "v4.8: P5 + the verify-v4.7 rulings that can move the dice (one creature roll per group check, Partials cost at Full Alert, a Weakness hold, the parrot's sight, a beaten guard stays beaten, Silk from your Assist, Silk Lines at −1, engaged means already active)",
+    rules: {
+      successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy", heistTweaks: ["office-guard-aware", "restaurant-alert-staff"],
+      guardRules: "paid", silkStart: "base+1", stallClock: 3, lootCarry: "sled", passChecks: "partial",
+      improviseAttr: "skill", wolfShrug: true, rerollFix: true, showOffRule: "plus1", earlyWarningAll: true,
+      groupOpposed: "once", fullAlertPartial: "cost", weaknessHold: true, parrotSight: true, guardBeaten: "post",
+      crewSilk: "helper", silkLineRule: "minus1", engagedRule: "before"
     }
   }
 };

@@ -227,6 +227,15 @@ export class HeistRun {
     sp.silkSpent = (sp.silkSpent ?? 0) + n;
     this.rec.spend(type, n);
   }
+  /** Silk the roller can reach: their own, plus (P6) the Assisting crewmate's. */
+  wallet(sp, donor = null) {
+    return Math.max(0, sp.silk) + (donor ? Math.max(0, donor.silk) : 0);
+  }
+  paySilk(sp, donor, type, n) {
+    const own = Math.min(n, Math.max(0, sp.silk));
+    if (own > 0) this.spend(sp, type, own);
+    if (n - own > 0 && donor) { this.spend(donor, type, n - own); this.rec.inc("crewSilkPaid", n - own); }
+  }
   earn(sp, type, n) {
     sp.silk += n;
     this.rec.earn(type, n);
@@ -318,7 +327,7 @@ export class HeistRun {
     this._inTriggers = true;
     // Parrot: Alert 7, shrieks — the Alert rises by 2 once.
     const parrot = this.cs["alert-parrot"];
-    if (parrot && !parrot.shrieked && this.alert >= CREATURES["alert-parrot"].shriekAt) {
+    if (parrot && !parrot.shrieked && this.alert >= CREATURES["alert-parrot"].shriekAt && this.parrotCanShriek()) {
       parrot.shrieked = true;
       const before = this.alert;
       this.addAlert(CREATURES["alert-parrot"].shriek, "shriek", { spike: true });
@@ -340,10 +349,19 @@ export class HeistRun {
 
   /* ------------------------------------------------------- creatures -- */
 
+  /** P6: the parrot shrieks only at a spider it can see, and never under its cover. */
+  parrotCanShriek() {
+    if (!this.P.parrotSight) return true;
+    const st = this.cs["alert-parrot"];
+    if (st.held && this.P.weaknessHold) return false;
+    return !!this.obs && (this.obs.threats?.includes("alert-parrot") || !!this.seenBy?.has("alert-parrot"));
+  }
+
   active(id) {
     const c = CREATURES[id], st = this.cs[id];
     if (!st.spawned) return false;
     if (st.paid || (st.driven && !this.lockedFull)) return false;
+    if (st.held && this.P.weaknessHold) return false;   // P6: shut in by its Weakness
     if (st.forced || st.textAwake) return true;
     const thr = this.P.creatureWake === "hunt" ? c.hunt : c.wake;
     if (this.escAlert >= thr) {
@@ -356,6 +374,7 @@ export class HeistRun {
   isHere(id) {
     const c = CREATURES[id], st = this.cs[id];
     if (this.obs.threats?.includes(id)) return true;
+    if (st.beaten && this.P.guardBeaten === "post") return !!this.h.guardPost?.includes(this.obs.id);   // P6: the backup holds the post
     if (this.P.creatureScope === "location") return true;
     if (this.P.creatureScope === "obstacle") return false;
     switch (c.mobile) {
@@ -505,6 +524,7 @@ export class HeistRun {
     let d = ch.jury ? 2 : (ch.rolledD ?? ch.appr.diff);
     if (ch.bypass) d -= 1;
     if (this.P.preLineRule === "minus1" && this.preLines.has(obs.id)) d -= 1;
+    else if (this.sceneLines?.has(obs.id) && ch.skill === "acrobatics") d -= 1;   // P6: a line spun in the scene
     if (showOff) {
       if (this.P.showOffRule === "plus1" && d >= 4) d += 1;
       else {
@@ -596,6 +616,7 @@ export class HeistRun {
     const st = this.band();
     let mod = (skill === "stealth" ? st.stealth + this.stallStealth() : st.all) + (improvise ? 1 : 0) - (ch.bypass ? 1 : 0);
     if (P.preLineRule === "minus1" && this.preLines.has(obs.id)) mod -= 1;
+    else if (this.sceneLines?.has(obs.id) && skill === "acrobatics") mod -= 1;
     if (skill === "acrobatics" && obs.tags.includes("height") && !sp.perks.has("dont-look-down")) mod += 1;
     if (skill === "stealth" && sp.flaw === "loud" && this.alert >= 5) mod += 1;
     if (skill === "stealth" && sp.flaw === "arachnophobe-magnet" && obs.tags.includes("human")) mod += 1;
@@ -628,9 +649,14 @@ export class HeistRun {
   /** Best choice for a spider among approaches of a mode, Improvise included. */
   bestFor(sp, mode) {
     let best = null;
+    const gd = this.cs["guard-spider"];
+    const endsGuard = a => this.P.guardBeaten === "post" && gd?.forced && !gd.paid && !gd.beaten && this.obs.threats?.includes("guard-spider")
+      && (a.skill === "brawl" || (a.skill === "persuasion" && this.P.guardRules));
     for (const a of this.approaches(mode)) {
       if (a.excludeRoles?.includes(sp.role)) continue;
       const ch = this.evalChoice(sp, a, a.skill, false);
+      if (endsGuard(a) && !this.P.xNoBonus) ch.est.v += 0.25;
+      if (this.P.xBribeBonus && a.skill === "persuasion" && gd?.forced && !gd.paid && this.obs.threats?.includes("guard-spider")) ch.est.v += 0.25;
       if (!best || ch.est.v > best.est.v) best = ch;
     }
     if (!best) return null;
@@ -664,7 +690,7 @@ export class HeistRun {
   }
 
   /** How many Silk Points to spend on extra dice before a roll. */
-  silkDice(sp, n, d, m, ch, important, maxDice = Infinity) {
+  silkDice(sp, n, d, m, ch, important, maxDice = Infinity, avail = sp.silk) {
     const P = this.P;
     if (P.silkPolicy === "hoard") return { k: 0, dice: 0 };
     const overclock = ch.skill === "engineering" && sp.perks.has("overclock");
@@ -673,8 +699,8 @@ export class HeistRun {
     else if (important) theta = 0.1;
     else if (this.pressure >= 0.5) theta = 0.14;
     else theta = 0.3;
-    const reserve = P.silkPolicy === "greedy" && !important && this.pressure < 0.6 ? Math.min(3, sp.silk) : 0;
-    const budget = Math.max(0, Math.min(3, sp.silk - reserve));
+    const reserve = P.silkPolicy === "greedy" && !important && this.pressure < 0.6 ? Math.min(3, avail) : 0;
+    const budget = Math.max(0, Math.min(3, avail - reserve));
     const base = this.value(n, d, m);
     let best = { k: 0, dice: 0, gain: 0 };
     for (let k = 1; k <= budget; k++) {
@@ -714,9 +740,16 @@ export class HeistRun {
     if (ch.bypass) { this.markScene(sp, "thing"); rec.use("sig:tinkerer", true); rec.inc("bypassRolls"); }
     // Clarified opposed roll: an actively resisting creature rolls its pool; its Successes + 1 are the Difficulty.
     if (P.creatureRolls === "rolled" && ch.appr.opposed && !ch.jury) {
-      ch.rolledD = this.succ(rng.dice(this.opposedPool(ch.appr.opposed))) + 1 + (P.obstacleDiffShift ?? 0);
-      rec.inc("rolledDiffRolls"); rec.inc("rolledDiffSum", ch.rolledD);
+      const g0 = this.group;
+      if (P.groupOpposed === "once" && g0 && g0.oppD?.[ch.appr.opposed] != null) ch.rolledD = g0.oppD[ch.appr.opposed];
+      else {
+        ch.rolledD = this.succ(rng.dice(this.opposedPool(ch.appr.opposed))) + 1 + (P.obstacleDiffShift ?? 0);
+        rec.inc("rolledDiffRolls"); rec.inc("rolledDiffSum", ch.rolledD);
+        if (P.groupOpposed === "once" && g0) (g0.oppD ??= {})[ch.appr.opposed] = ch.rolledD;
+      }
     }
+    // P6: an approach in a creature's sight (the Pet Store's shelf tops and the parrot).
+    if (ch.appr.seenBy?.length) { for (const id of ch.appr.seenBy) this.seenBy.add(id); this.triggers(); }
 
     const { d, flawMod } = this.difficulty(sp, ch, showOff);
     const m = P.creatureRolls === "opposed" && ch.appr.opposed ? this.opposedPool(ch.appr.opposed) : null;
@@ -776,9 +809,12 @@ export class HeistRun {
 
     // Silk: extra dice
     const maxSilkDice = P.bonusCapScope === "all" ? Math.max(0, P.bonusDiceCap - Math.max(0, n - base0)) : Infinity;
-    const buy = this.silkDice(sp, n, d, m, ch, important, maxSilkDice);
+    // P6: the spider Assisting you may pay for your Silk when your own runs short.
+    const donor = (P.crewSilk === "helper" || P.crewSilk === "clutch") && helper && !helper.out ? helper : null;
+    const donorAll = P.crewSilk === "helper" ? donor : null;
+    const buy = this.silkDice(sp, n, d, m, ch, important, maxSilkDice, this.wallet(sp, donorAll));
     if (buy.k > 0) {
-      this.spend(sp, buy.dice > buy.k ? "overclock" : "extraDie", buy.k);
+      this.paySilk(sp, donorAll, buy.dice > buy.k ? "overclock" : "extraDie", buy.k);
       if (buy.dice > buy.k) rec.use("perk:overclock");
       n += buy.dice;
     }
@@ -831,10 +867,10 @@ export class HeistRun {
       if (++this.persuadeRerolls === 2) rec.issue("PERSUADE_REROLL_UNLIMITED", this.where(sp));
     }
     // Silk Reroll (2 SP): up to 3 failed dice, keep the better.
-    if (faces && P.silkPolicy !== "hoard" && sp.silk >= 2 && (res === "failure" || (res === "partial" && P.partialCost === "alert" && this.critical(1)))) {
+    if (faces && P.silkPolicy !== "hoard" && this.wallet(sp, donorAll) >= 2 && (res === "failure" || (res === "partial" && P.partialCost === "alert" && this.critical(1)))) {
       const worth = P.silkPolicy === "spendy" || important || this.pressure >= 0.5;
       if (worth) {
-        this.spend(sp, "reroll", 2);
+        this.paySilk(sp, donorAll, "reroll", 2);
         const s2 = rerollFailed(3);
         const r2 = classify(s2);
         const flip = RANK[r2] > RANK[res];
@@ -851,13 +887,13 @@ export class HeistRun {
     }
     // Silk Clutch (3 SP): fail → succeed anyway, Alert +1.
     let clutched = false;
-    if ((res === "failure" || res === "botch" || res === "cleanfail") && sp.silk >= 3) {
+    if ((res === "failure" || res === "botch" || res === "cleanfail") && this.wallet(sp, donor) >= 3) {
       const worth = P.silkPolicy === "spendy" || important
         || (P.silkPolicy === "greedy" && (this.pressure >= 0.6 || sp.consecFail >= 2 || obs.phase === "escape"))
         || (P.silkPolicy === "hoard" && obs.objective);
       if (worth) {
         if (res === "botch") rec.issue("CLUTCH_ON_BOTCH", this.where(sp));
-        this.spend(sp, "clutch", 3);
+        this.paySilk(sp, donor, "clutch", 3);
         res = "success";
         clutched = true;
         rec.use("silk:clutch", true);
@@ -897,13 +933,15 @@ export class HeistRun {
       for (const id of obs.threats) if (this.cs[id] && !this.cs[id].driven) { this.cs[id].driven = true; rec.inc("creatureDrivenOff"); }
     }
     if (res === "partial") {
-      if (!g) this.partialComplication(sp);
+      if (P.fullAlertPartial === "cost" && this.lockedFull) this.fullAlertPartialCost(sp);
+      else if (!g) this.partialComplication(sp);
       else if (P.partialCost === "setback") sp.setback += 1;
       if (P.partialHit && this.attacker()) { rec.inc("partialHits"); this.threatAttack(sp); }
     }
     if (res === "failure" || res === "botch" || res === "cleanfail") {
       sp.consecFail++;
       if (sp.consecFail === 3) rec.issue("REPEATED_FAILURE", this.where(sp) + ` ${skill} pool ${n} vs D${d}`);
+      const engagedBefore = P.engagedRule === "before" ? this.attacker() : undefined;
       if (!g) {
         let cost = res === "botch" ? 2 : res === "failure" ? 1 : P.cleanFailAlert;
         if (ch.appr.loud && res !== "cleanfail") cost += ch.appr.loud;
@@ -916,7 +954,11 @@ export class HeistRun {
         rec.inc("fullAlertFailureHits");
         if (P.fullAlertFailure === "caught") this.goOut(sp, "caught at Full Alert");
         else { sp.vit = Math.min(OUT, sp.vit + 1); rec.inc("hits"); rec.inc("hitsDrop1"); if (sp.vit >= OUT) this.goOut(sp, "Full Alert hit"); }
-      } else if (res !== "cleanfail" && P.failureAttack) this.threatAttack(sp);
+      } else if (res !== "cleanfail" && P.failureAttack) {
+        // P6: only a threat already engaged (or the one you were fighting) lands the hit.
+        if (P.engagedRule !== "before" || engagedBefore || skill === "brawl") this.threatAttack(sp);
+        else rec.inc("hitsNotEngaged");
+      }
       if (res === "botch") { this.planFellApart(); if (rng.chance(P.spectacularFailure)) this.earn(sp, "spectacularFailure", 1); }
       else if (res === "failure" && rng.chance(P.spectacularFailure / 5)) this.earn(sp, "spectacularFailure", 1);
     } else {
@@ -940,7 +982,10 @@ export class HeistRun {
     rec.inc("groupChecks");
     rec.inc("groupCheckRolls", g.rolls.length);
     if (w.res === "critical") this.critDrop(w.d, w.sp, w.baseD);
-    else if (w.res === "partial") { if (P.partialCost === "alert") this.partialComplication(w.sp); else rec.inc("partials"); }
+    else if (w.res === "partial") {
+      if (P.fullAlertPartial === "cost" && this.lockedFull) { /* each Partial already paid its own cost (P6) */ }
+      else if (P.partialCost === "alert") this.partialComplication(w.sp); else rec.inc("partials");
+    }
     else if (w.res === "failure" || w.res === "botch" || w.res === "cleanfail") {
       let cost = w.res === "botch" ? 2 : w.res === "failure" ? 1 : P.cleanFailAlert;
       if (w.loud && w.res !== "cleanfail") cost += w.loud;
@@ -975,6 +1020,15 @@ export class HeistRun {
     return cost;
   }
 
+  /** P6: at Full Alert a Partial can't cost Alert — a hit from an engaged threat, or −1 die next roll. */
+  fullAlertPartialCost(sp) {
+    this.rec.inc("partials");
+    this.rec.inc("fullAlertPartials");
+    const atk = this.attacker();
+    if (atk && atk.id !== "pursuit") { this.rec.inc("fullAlertPartialHits"); this.threatAttack(sp); }
+    else sp.setback += 1;
+  }
+
   partialComplication(sp) {
     const P = this.P, rec = this.rec;
     rec.inc("partials");
@@ -1004,6 +1058,7 @@ export class HeistRun {
     const g = this.cs["guard-spider"];
     if (g && obs.threats?.includes("guard-spider") && !g.forced) {
       g.forced = true;   // aware
+      if (this.P.xUnaware) g.beaten = false;   // the backup spotted them: now it follows
       this.addAlert(CREATURES["guard-spider"].spotAlert, "spotted");
       this.rec.inc("guardAware");
     }
@@ -1141,6 +1196,7 @@ export class HeistRun {
     }
     for (const id of this.creatureIds) {
       const st = this.cs[id];
+      if (st.backupPending) { st.backupPending = false; st.forced = true; }   // P6: the beaten guard's backup takes its post
       st.textAwake = !!obs.awake?.includes(id);
       if (st.textAwake && P.creatureStaysActive) st.forced = true;
     }
@@ -1148,6 +1204,9 @@ export class HeistRun {
     if (this.drafting && obs.tags.includes("movement")) rec.use("perk:drafting");
     this.trailUp = false;
     this.decoyRounds = 0;
+    this.seenBy = new Set();        // P6: creatures that can see the crew here (beyond the obstacle's own threats)
+    this.sceneLines = new Set();    // P6: a Silk Line spun in this scene (−1 to the climb)
+    if (P.parrotSight) this.triggers();
     // Intel on this obstacle: cased, or a Perk that reads it.
     const crew = this.present();
     obs.known = this.known.has(obs.id);
@@ -1469,6 +1528,13 @@ export class HeistRun {
           rec.obstacle(obs.id).clearedBy[`roll:${ch.skill}${ch.improvise ? "(improvised)" : ""}`] = (rec.obstacle(obs.id).clearedBy[`roll:${ch.skill}${ch.improvise ? "(improvised)" : ""}`] ?? 0) + 1;
           if (obs.objective) this.takeObjective(sp);
           if (P.guardRules && ch.skill === "persuasion" && obs.threats?.includes("guard-spider")) { this.cs["guard-spider"].paid = true; rec.inc("guardPaid"); }
+          // P6: a guard beaten in a fight is gone; its backup, aware, holds the post.
+          if (P.guardBeaten === "post" && ch.skill === "brawl" && obs.threats?.includes("guard-spider")) {
+            const gs = this.cs["guard-spider"]; gs.beaten = true; rec.inc("guardBeaten");
+            if (P.xUnaware) gs.forced = false; else { gs.forced = false; gs.backupPending = true; }   // the backup arrives next obstacle, aware
+          }
+          // P6: a Weakness that shuts the creature in holds it for the rest of the heist.
+          if (P.weaknessHold && ch.appr.hold && this.cs[ch.appr.hold] && !(P.xHoldOnly && P.xHoldOnly !== ch.appr.hold)) { this.cs[ch.appr.hold].held = true; rec.inc(`held:${ch.appr.hold}`); }
           this.afterRound();
           return this.clear(obs, null, sp, true);
         }
@@ -1523,6 +1589,8 @@ export class HeistRun {
   tryBypass(obs, crew) {
     const P = this.P, rec = this.rec, t = obs.tags;
     const idle = crew.filter(sp => !sp.frozen && !sp.acted);
+    // P6: every threat here is shut in by its Weakness — nothing left to get past (Ch 2 When Not to Roll).
+    if (P.weaknessHold && !P.xNoFreePass && obs.threats?.length && obs.threats.every(id => this.cs[id]?.held)) return { method: "weaknessHeld" };
     if ((t.includes("climb") || t.includes("gap")) && P.silkLineBypass) {
       if (this.preLines.has(obs.id) && P.preLineRule !== "minus1") return { method: "preparedSilkLine" };
       if (this.trailUp) return { method: "perk:silk-trail" };
@@ -1534,7 +1602,13 @@ export class HeistRun {
       this.rec.obstacle(obs.id).rounds++;   // double movement: an extra round
       return { method: "doubleMovement" };
     }
-    if ((t.includes("climb") || t.includes("gap")) && P.silkLineBypass) {
+    if ((t.includes("climb") || t.includes("gap")) && P.silkLineBypass && P.silkLineRule === "minus1") {
+      // P6: a line spun in the scene lowers the climb by 1, like a Planning line; it doesn't skip it.
+      if (!this.preLines.has(obs.id) && !this.sceneLines.has(obs.id)) {
+        const payer = idle.filter(sp => sp.silk >= 1).sort((a, b) => b.silk - a.silk)[0];
+        if (payer && P.silkPolicy !== "hoard") { this.spend(payer, "silkLine", 1); payer.acted = true; payer.everActed = true; this.sceneLines.add(obs.id); rec.inc("sceneLines"); }
+      }
+    } else if ((t.includes("climb") || t.includes("gap")) && P.silkLineBypass) {
       // Silk Line: 1 SP, or GRACE + Acrobatics D2 as an Action.
       const payer = crew.filter(sp => sp.silk >= 1).sort((a, b) => b.silk - a.silk)[0];
       if (payer && P.silkPolicy !== "hoard") { this.spend(payer, "silkLine", 1); return { method: "silkLine(1 SP)", actor: payer }; }

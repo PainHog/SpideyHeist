@@ -191,6 +191,7 @@ export const HEISTS = [
     id: "office", n: 2, name: "The Office After Hours", difficulty: "standard", limit: 8, loot: "Prize",
     ref: "Ch 19 Heist 2",
     creatures: ["guard-spider"],
+    guardPost: ["O2", "O3", "O4", "E1"],   // v4.8 (P6): a beaten guard's backup walks the upper-floor loop (past the corner office) and the stairs
     intel: [
       { text: "The two sensor beams each cover a known line of squares with a fixed timing gap.", obstacle: "O1" },
       { text: "The guard spider's patrol loops the perimeter every few rounds.", obstacle: "O2" },
@@ -287,7 +288,7 @@ export const HEISTS = [
         tags: ["movement", "stealth"], threats: ["corn-snake"], awake: ["corn-snake"],
         approaches: [
           A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19: 'Stealth, opposed (its Perception 3)'" }),
-          A("engineering", 4, "single", { ref: "Ch 19: 'its Weakness — shut the heavy lid properly, or reach the heat lamp's switch over the snake: Engineering (4)'" })
+          A("engineering", 4, "single", { hold: "corn-snake", ref: "Ch 19: 'its Weakness — shut the heavy lid properly, or reach the heat lamp's switch over the snake: Engineering (4)'; v4.8 (P6): a Weakness that shuts it in holds it (Ch 16)" })
         ],
         improvise: ["acrobatics", "disguise"]
       },
@@ -296,7 +297,7 @@ export const HEISTS = [
         tags: [], threats: ["alert-parrot"], awake: ["alert-parrot"],
         approaches: [
           A("persuasion", 1, "single", { ref: "Ch 19 / Ch 16 Alert Parrot weakness: a cracker (Persuasion, Difficulty 1)" }),
-          A("acrobatics", 2, "single", { ref: "Ch 19: 'drop the cover over the cage: Acrobatics (2)'" }),
+          A("acrobatics", 2, "single", { hold: "alert-parrot", ref: "Ch 19: 'drop the cover over the cage: Acrobatics (2)'; v4.8 (P6): the cover holds it (Ch 16)" }),
           A("stealth", 4, "individual", { tags: ["stealth"], opposed: "perception", ref: "Ch 19: 'sneak by: Stealth, opposed (its Perception 4)'" })
         ],
         improvise: ["deception", "engineering"]
@@ -318,7 +319,7 @@ export const HEISTS = [
         tags: ["movement", "stealth", "height", "escape"], threats: ["corn-snake"],
         approaches: [
           A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19 E1: 'Stealth, opposed (the snake)'" }),
-          A("acrobatics", 2, "individual", { ref: "Ch 19 E1: 'along the shelf tops: Acrobatics (2), +1 for the height' (height tag)" })
+          A("acrobatics", 2, "individual", { seenBy: ["alert-parrot"], ref: "Ch 19 E1: 'along the shelf tops: Acrobatics (2), +1 for the height' (height tag); v4.8: up there the parrot can see you (P6 parrotSight)" })
         ],
         improvise: ["athletics", "disguise"]
       },
@@ -339,6 +340,7 @@ export const HEISTS = [
     ref: "Ch 19 Heist 4",
     creatures: ["guard-spider", "house-cat"],
     roaming: ["house-cat"],
+    guardPost: ["O1", "E2"],   // v4.8 (P6): a beaten guard's backup holds the lobby
     intel: [
       { text: "The librarian's route covers every floor on an irregular schedule.", obstacle: "O2" },
       { text: "The case uses an antique lock (Engineering, Difficulty 4).", obstacle: "O3" },
