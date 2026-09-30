@@ -17,7 +17,7 @@
 import { HEISTY } from "../module/config.mjs";
 import { countSuccesses, classifyResult, classifyBotch, alertForResult } from "../module/logic/rules.mjs";
 import { SKILL_ATTR } from "./character.mjs";
-import { CREATURES, makeEscape } from "./heists.mjs";
+import { CREATURES, makeEscape, applyHeistTweaks } from "./heists.mjs";
 
 /* ------------------------------------------------------------ constants -- */
 
@@ -31,26 +31,41 @@ const AP = HEISTY.advancement.awards;
 
 /* --------------------------------------------------------- probability -- */
 
-const PMF = [];
-for (let n = 0; n <= 60; n++) {
-  const row = new Array(n + 1).fill(0);
-  let c = 1;
-  for (let k = 0; k <= n; k++) {
-    row[k] = c / 2 ** n;
-    c = (c * (n - k)) / (k + 1);
+/** Binomial tables per success face (4 → p = 1/2, 5 → p = 1/3). */
+const PMFS = {};
+function pmfTable(face) {
+  if (PMFS[face]) return PMFS[face];
+  const q = (7 - face) / 6;
+  const t = [];
+  for (let n = 0; n <= 60; n++) {
+    const row = new Array(n + 1).fill(0);
+    let c = 1;
+    for (let k = 0; k <= n; k++) {
+      row[k] = c * q ** k * (1 - q) ** (n - k);
+      c = (c * (n - k)) / (k + 1);
+    }
+    t.push(row);
   }
-  PMF.push(row);
+  return (PMFS[face] = t);
 }
-const pmf = n => PMF[Math.max(0, Math.min(60, n))];
+const pmf = (n, face = 4) => pmfTable(face)[Math.max(0, Math.min(60, n))];
+
+/** Successes a Critical needs at Difficulty d. */
+export const critAt = (d, rule = "double") => (rule === "plus3" ? d + 3 : rule === "plus2" ? d + 2 : 2 * d);
 
 /** Outcome distribution of an n-dice pool against Difficulty d. */
-export function outcomeDist(n, d) {
+/** Fewest Successes that still count as a Partial at Difficulty d. */
+export const partialAt = (d, rule = "one") => (rule === "half" ? Math.max(1, Math.ceil(d / 2)) : 1);
+
+export function outcomeDist(n, d, face = 4, critRule = "double", partialRule = "one") {
   if (n <= 0) return { botch: 0.5, clean: 0.5, fail: 0, partial: 0, success: 0, crit: 0 };
   d = Math.max(1, d);
-  const p = pmf(n);
-  const o = { botch: 0, clean: 0, fail: p[0], partial: 0, success: 0, crit: 0 };
-  for (let k = 1; k <= n; k++) {
-    if (k >= 2 * d) o.crit += p[k];
+  const p = pmf(n, face);
+  const c = critAt(d, critRule), pm = partialAt(d, partialRule);
+  const o = { botch: 0, clean: 0, fail: 0, partial: 0, success: 0, crit: 0 };
+  for (let k = 0; k <= n; k++) {
+    if (k < pm) o.fail += p[k];
+    else if (k >= c) o.crit += p[k];
     else if (k >= d) o.success += p[k];
     else o.partial += p[k];
   }
@@ -58,9 +73,9 @@ export function outcomeDist(n, d) {
 }
 
 /** P(spider with n dice beats a creature with m dice); ties to the world. */
-export function opposedWin(n, m) {
+export function opposedWin(n, m, face = 4) {
   if (n <= 0) return 0;
-  const a = pmf(n), b = pmf(m);
+  const a = pmf(n, face), b = pmf(m, face);
   let cdf = 0, win = 0;
   for (let k = 0; k <= n; k++) {
     // P(creature < k)
@@ -81,18 +96,22 @@ export class HeistRun {
    * @param rec        Recorder
    */
   constructor(heist, templates, P, rng, rec) {
+    if (P.heistTweaks?.length) heist = applyHeistTweaks(heist, P.heistTweaks);
     this.h = heist;
     this.P = P;
     this.rng = rng;
     this.rec = rec;
-    this.limit = heist.limit;
+    this.limit = Math.max(1, heist.limit + (P.limitShift ?? 0));
     this.alert = 0;
     this.alertGained = 0;
     this.creatureAlert = 0;
     this.creatureAlertAtFull = null;
+    this.face = P.successFace ?? 4;
+    const shift = P.obstacleDiffShift ?? 0;
+    const sh = o => (shift ? { ...o, approaches: o.approaches.map(a => ({ ...a, diff: a.diff + shift })) } : o);
     this.seq = [
-      ...heist.obstacles.map(o => ({ ...o, phase: "heist" })),
-      ...makeEscape(heist, P.escapeCount, P.escapeDiffShift)
+      ...heist.obstacles.map(o => sh({ ...o, phase: "heist" })),
+      ...makeEscape(heist, P.escapeCount, P.escapeDiffShift).map(sh)
     ];
     this.objIdx = this.seq.findIndex(o => o.objective);
     this.objectiveTaken = false;
@@ -145,6 +164,33 @@ export class HeistRun {
     return sp;
   }
 
+  /** Successes on these faces (package param successFace; the book: 4–6). */
+  succ(faces) {
+    if (this.face === 4) return countSuccesses(faces);
+    let n = 0;
+    for (const f of faces) if (f >= this.face) n++;
+    return n;
+  }
+
+  /** Result of a normal roll (package param critRule; the book: Critical at 2× Difficulty). */
+  classify(s, d) {
+    if ((this.P.critRule ?? "double") === "double" && this.P.partialRule !== "half") return classifyResult(s, d);
+    d = Math.max(1, d);
+    if (s < partialAt(d, this.P.partialRule)) return "failure";
+    if (s >= critAt(d, this.P.critRule)) return "critical";
+    return s >= d ? "success" : "partial";
+  }
+
+  /** Full Alert under the clarified rule: permanent, capped at the Limit, Lockdown penalties. */
+  get lockedFull() {
+    return this.P.fullAlertRule === "locked" && (this.fullAlert || this.alert >= this.limit);
+  }
+
+  /** The Alert creatures' Escalations read: Full Alert counts as 7+ under the clarified rule. */
+  get escAlert() {
+    return this.lockedFull ? Math.max(this.alert, 7) : this.alert;
+  }
+
   log(msg) {
     if (this.trace) this.trace.push(`${this.obs ? this.obs.id + (this.round ? " r" + this.round : "") : "PLAN"} [A${this.alert}] ${msg}`);
   }
@@ -177,6 +223,7 @@ export class HeistRun {
 
   spend(sp, type, n) {
     sp.silk -= n;
+    sp.silkSpent = (sp.silkSpent ?? 0) + n;
     this.rec.spend(type, n);
   }
   earn(sp, type, n) {
@@ -193,6 +240,7 @@ export class HeistRun {
 
   /** Alert band modifiers (config.mjs), with the Active-band Stealth reading as a parameter. */
   band() {
+    if (this.lockedFull) return { key: "fullalert", stealth: 2, all: 1 };
     const st = HEISTY.getAlertState(this.alert, this.limit);
     if (this.alert >= 5 && this.alert <= 6 && !this.P.activeBandStealth) return { ...st, stealth: 0 };
     return st;
@@ -208,11 +256,14 @@ export class HeistRun {
   addAlert(n, cause, o = {}) {
     if (n <= 0) return 0;
     const P = this.P, rec = this.rec;
+    // Clarified Full Alert: the Alert stops at the Limit.
+    if (P.fullAlertRule === "locked" && this.alert >= this.limit) { rec.inc("alertCapped", n); return 0; }
     // Plausible Deniability — once per scene, a single +1 from something the crew did. Free: always used.
     if (n === 1 && o.crewAction) {
-      const pd = this.present().find(sp => sp.perks.has("plausible-deniability") && !this.usedScene(sp, "pd"));
+      const perHeist = this.P.pdLimit === "heist";
+      const pd = this.present().find(sp => sp.perks.has("plausible-deniability") && !(perHeist ? this.usedHeist(sp, "pd") : this.usedScene(sp, "pd")));
       if (pd) {
-        this.markScene(pd, "pd");
+        if (perHeist) this.markHeist(pd, "pd"); else this.markScene(pd, "pd");
         rec.use("perk:plausible-deniability", true);
         if (cause === "scene") rec.issue("MAKE_A_SCENE_FREE", this.where(pd));
         return 0;
@@ -235,6 +286,7 @@ export class HeistRun {
         rec.use("silk:damageControl", true);
       }
     }
+    if (P.fullAlertRule === "locked" && this.alert + n > this.limit) { rec.inc("alertCapped", this.alert + n - this.limit); n = this.limit - this.alert; }
     if (this.fullAlert) rec.issue("ALERT_PAST_LIMIT", `${this.h.id} ${this.obs?.id}: +${n} (${cause}) at Alert ${this.alert} ≥ Limit ${this.limit}`);
     this.alert += n;
     this.alertGained += n;
@@ -248,6 +300,8 @@ export class HeistRun {
   /** Critical Success: the only thing that lowers the Alert (Difficulty 2+). */
   critDrop(d, sp, baseD) {
     if (alertForResult("critical", d) === 0) { this.rec.issue("CRIT_D1_NO_ALERT", this.where(sp)); return; }
+    if (d < (this.P.critAlertMinDiff ?? 2)) { this.rec.inc("critDropBlockedByMinD"); return; }
+    if (this.lockedFull) { this.rec.inc("critDropBlockedByFullAlert"); return; }
     if (this.P.critAlertRule === "baseD3") {
       if (baseD < 3 || this.fullAlert || this.obs.critDropped) { this.rec.inc("critDropBlockedByFix"); return; }
       this.obs.critDropped = true;
@@ -283,7 +337,7 @@ export class HeistRun {
     if (!st.spawned) return false;
     if (st.forced || st.textAwake) return true;
     const thr = this.P.creatureWake === "hunt" ? c.hunt : c.wake;
-    if (this.alert >= thr) {
+    if (this.escAlert >= thr) {
       if (this.P.creatureStaysActive) st.forced = true;
       return true;
     }
@@ -297,7 +351,7 @@ export class HeistRun {
     if (this.P.creatureScope === "obstacle") return false;
     switch (c.mobile) {
       case "always": return true;
-      case "hunting": return this.alert >= c.hunt;
+      case "hunting": return this.escAlert >= c.hunt;
       case "aware": return st.forced;
       default: return false;
     }
@@ -325,9 +379,9 @@ export class HeistRun {
     for (const id of this.creatureIds) {
       const c = CREATURES[id], st = this.cs[id];
       if (!c.attack || !this.activeHere(id)) continue;
-      if (c.attackOnlyHunting && this.alert < c.hunt) continue;
+      if (c.attackOnlyHunting && this.escAlert < c.hunt) continue;
       if (c.attackOnlyBad && !st.bad) continue;
-      const engaged = this.obs.threats?.includes(id) || this.alert >= c.hunt || (this.obs.phase === "escape" && this.fullAlert);
+      const engaged = this.obs.threats?.includes(id) || this.escAlert >= c.hunt || (this.obs.phase === "escape" && this.fullAlert);
       if (!engaged) continue;
       if (!best || c.attack.pool > best.pool) best = { id, pool: c.attack.pool, label: `${c.name} ${c.attack.label}` };
     }
@@ -355,16 +409,16 @@ export class HeistRun {
       && (target.vit >= HURT || (b.attrs.body + b.skills.endurance) > (target.attrs.body + target.skills.endurance)));
     if (tth) { this.markScene(tth, "tth"); rec.use("perk:take-the-hit", true); target = tth; }
 
-    const aS = countSuccesses(rng.dice(atk.pool));
+    const aS = this.succ(rng.dice(atk.pool));
     const dPool = target.attrs.body + (target.skills.endurance ?? 0) - this.pen(target);
     let dS = 0;
     if (dPool <= 0) rec.issue("DEFENSE_POOL_ZERO", `${this.where(target)} defends vs ${atk.label} with pool ${dPool}`);
-    else dS = countSuccesses(rng.dice(dPool));
+    else dS = this.succ(rng.dice(dPool));
     const margin = aS - dS;
     this.log(`${atk.label} (${atk.pool} dice: ${aS}) hits ${target.name} (defence ${dPool}: ${dS})`);
     rec.inc("hits");
-    if (margin <= 0) { rec.inc("hitsShrugged"); return; }
-    let drop = margin <= 2 ? 1 : 2;
+    if (margin < 0 || (margin === 0 && this.P.hitTies !== "attacker")) { rec.inc("hitsShrugged"); return; }
+    let drop = margin <= 2 ? 1 : 2;   // a tie that goes to the attacker (hitTies) drops one level
     rec.inc(drop === 1 ? "hitsDrop1" : "hitsDrop2");
     if (atk.id === "the-exterminator" && this.obs.tags.includes("movement")) {
       rec.issue("EXTERMINATOR_OUT", this.where(target));
@@ -374,7 +428,7 @@ export class HeistRun {
     // That All You Got? — a hit that would drop you to Critical: BODY + Endurance (D3) → stop at Hurt.
     if (nv === CRITICAL && target.perks.has("that-all-you-got")) {
       const pool = target.attrs.body + target.skills.endurance - this.pen(target);
-      const s = pool > 0 ? countSuccesses(rng.dice(pool)) : 0;
+      const s = pool > 0 ? this.succ(rng.dice(pool)) : 0;
       const ok = s >= 3;
       rec.use("perk:that-all-you-got", ok);
       if (ok) nv = HURT;
@@ -431,7 +485,9 @@ export class HeistRun {
   /** Final Difficulty. Returns { d, raw, flawMod }. */
   difficulty(sp, ch, showOff = false) {
     const obs = this.obs;
-    let d = ch.jury ? 2 : ch.appr.diff;
+    let d = ch.jury ? 2 : (ch.rolledD ?? ch.appr.diff);
+    if (ch.bypass) d -= 1;
+    if (this.P.preLineRule === "minus1" && this.preLines.has(obs.id)) d -= 1;
     if (showOff) {
       if (d > 4) this.rec.issue("SHOWOFF_EASIER", this.where(sp) + ` — D${d} → D4`);
       d = 4;
@@ -489,36 +545,57 @@ export class HeistRun {
   value(n, d, m = null) {
     if (m != null) {
       if (n <= 0) return -0.75;
-      const w = opposedWin(n, m);
+      const w = opposedWin(n, m, this.face);
       return w - (1 - w) * 0.5;
     }
-    const o = outcomeDist(n, d);
+    const o = outcomeDist(n, d, this.face, this.P.critRule, this.P.partialRule);
     const pv = this.P.partialCost === "alert" ? 0.55 : this.P.partialCost === "setback" ? 0.8 : 1;
     return o.crit * (1 + (d >= 2 ? 0.3 : 0)) + o.success + o.partial * pv - o.fail * 0.5 - o.botch * 1 - o.clean * (this.P.cleanFailAlert ? 0.5 : 0.3);
   }
 
   pPass(n, d, m = null) {
     if (n <= 0) return 0;
-    if (m != null) return opposedWin(n, m);
-    return 1 - pmf(n)[0];
+    if (m != null) return opposedWin(n, m, this.face);
+    const pm = partialAt(Math.max(1, Math.round(d)), this.P.partialRule), row = pmf(n, this.face);
+    let f = 0;
+    for (let k = 0; k < pm && k <= n; k++) f += row[k];
+    return 1 - f;
   }
 
   /** Evaluate one spider on one approach (optionally Improvised). */
   evalChoice(sp, appr, skill, improvise) {
+    const P = this.P, obs = this.obs;
     const ch = { appr, skill, mode: appr.mode, improvise, calledSkill: improvise ? appr.skill : null };
+    const mech = obs.tags.includes("smallMech") || obs.tags.includes("lock") || obs.tags.includes("sensor");
     // Jury-Rig: Engineering at D2 on a small mechanical device / lock / sensor. Once per scene.
     if (!improvise && skill === "engineering" && sp.perks.has("jury-rig") && !this.usedScene(sp, "jury")
-      && (this.obs.tags.includes("smallMech") || this.obs.tags.includes("lock") || this.obs.tags.includes("sensor")) && appr.diff > 2) ch.jury = true;
+      && mech && appr.diff > 2) ch.jury = true;
+    // Clarified Bypass: the Tinkerer's gadget is an Engineering roll at −1 Difficulty.
+    if (P.bypassRule === "roll" && !ch.jury && !improvise && skill === "engineering" && sp.role === "tinkerer" && !this.usedScene(sp, "thing")
+      && mech && (!obs.tags.includes("complexLock") || P.bypassComplexLocks)) ch.bypass = true;
     const st = this.band();
-    let d = (ch.jury ? 2 : appr.diff) + (skill === "stealth" ? st.stealth : st.all) + (improvise ? 1 : 0);
-    if (skill === "acrobatics" && this.obs.tags.includes("height") && !sp.perks.has("dont-look-down")) d += 1;
-    if (skill === "stealth" && sp.flaw === "loud" && this.alert >= 5) d += 1;
-    if (skill === "stealth" && sp.flaw === "arachnophobe-magnet" && this.obs.tags.includes("human")) d += 1;
-    if (skill === "stealth" && sp.perks.has("soundless") && this.obs.tags.includes("movement")) d -= 1;
-    if (this.obs.phase === "escape") d -= (this.escapeRoutes && !this.escapeRoutes.out ? 1 : 0) + (this.iKnowAWay ? 1 : 0);
-    d = Math.max(1, d);
+    let mod = (skill === "stealth" ? st.stealth : st.all) + (improvise ? 1 : 0) - (ch.bypass ? 1 : 0);
+    if (P.preLineRule === "minus1" && this.preLines.has(obs.id)) mod -= 1;
+    if (skill === "acrobatics" && obs.tags.includes("height") && !sp.perks.has("dont-look-down")) mod += 1;
+    if (skill === "stealth" && sp.flaw === "loud" && this.alert >= 5) mod += 1;
+    if (skill === "stealth" && sp.flaw === "arachnophobe-magnet" && obs.tags.includes("human")) mod += 1;
+    if (skill === "stealth" && sp.perks.has("soundless") && obs.tags.includes("movement")) mod -= 1;
+    if (obs.phase === "escape") mod -= (this.escapeRoutes && !this.escapeRoutes.out ? 1 : 0) + (this.iKnowAWay ? 1 : 0);
     const n = this.basePool(sp, skill, ch.calledSkill) + this.knownBonus(sp, ch);
-    const m = this.P.creatureRolls === "opposed" && appr.opposed ? this.opposedPool(appr.opposed) : null;
+    if (P.creatureRolls === "rolled" && appr.opposed && !ch.jury) {
+      // Expected value over the creature's roll: Difficulty = its Successes + 1 (+ the location shift).
+      const m = this.opposedPool(appr.opposed), pk = pmf(m, this.face);
+      let v = 0, dd = 0;
+      for (let k = 0; k <= m; k++) {
+        const d = Math.max(1, k + 1 + (P.obstacleDiffShift ?? 0) + mod);
+        v += pk[k] * this.value(n, d);
+        dd += pk[k] * d;
+      }
+      ch.est = { n, d: dd, m: null, v, p: this.pPass(n, dd) };
+      return ch;
+    }
+    const d = Math.max(1, (ch.jury ? 2 : appr.diff) + mod);
+    const m = P.creatureRolls === "opposed" && appr.opposed ? this.opposedPool(appr.opposed) : null;
     ch.est = { n, d, m, v: this.value(n, d, m), p: this.pPass(n, d, m) };
     return ch;
   }
@@ -567,7 +644,7 @@ export class HeistRun {
   }
 
   /** How many Silk Points to spend on extra dice before a roll. */
-  silkDice(sp, n, d, m, ch, important) {
+  silkDice(sp, n, d, m, ch, important, maxDice = Infinity) {
     const P = this.P;
     if (P.silkPolicy === "hoard") return { k: 0, dice: 0 };
     const overclock = ch.skill === "engineering" && sp.perks.has("overclock");
@@ -582,6 +659,7 @@ export class HeistRun {
     let best = { k: 0, dice: 0, gain: 0 };
     for (let k = 1; k <= budget; k++) {
       const dice = k + (overclock ? 1 : 0);
+      if (dice > maxDice) break;
       const gain = this.value(n + dice, d, m) - base - k * theta;
       if (gain > best.gain + 1e-9) best = { k, dice, gain };
     }
@@ -613,6 +691,12 @@ export class HeistRun {
     }
     if (ch.improvise) { this.spend(sp, "improvise", 2); rec.issue("IMPROVISE_USED", this.where(sp) + ` — ${skill} for ${ch.appr.skill}`); rec.use("silk:improvise"); }
     if (ch.jury) { this.markScene(sp, "jury"); rec.use("perk:jury-rig", true); if (ch.appr.diff >= 3) rec.issue("JURY_RIG_LOCK", this.where(sp) + ` — D${ch.appr.diff} → D2`); }
+    if (ch.bypass) { this.markScene(sp, "thing"); rec.use("sig:tinkerer", true); rec.inc("bypassRolls"); }
+    // Clarified opposed roll: an actively resisting creature rolls its pool; its Successes + 1 are the Difficulty.
+    if (P.creatureRolls === "rolled" && ch.appr.opposed && !ch.jury) {
+      ch.rolledD = this.succ(rng.dice(this.opposedPool(ch.appr.opposed))) + 1 + (P.obstacleDiffShift ?? 0);
+      rec.inc("rolledDiffRolls"); rec.inc("rolledDiffSum", ch.rolledD);
+    }
 
     const { d, flawMod } = this.difficulty(sp, ch, showOff);
     const m = P.creatureRolls === "opposed" && ch.appr.opposed ? this.opposedPool(ch.appr.opposed) : null;
@@ -644,7 +728,8 @@ export class HeistRun {
     if (feeder) { this.feedUsedRound = true; n += 1; rec.use("perk:tactical-feed"); }
 
     // Assist: Skill only, 1–3 dice, each Success +1 die. One helper.
-    const uncertain = m != null ? this.pPass(n, d, m) < 0.9 : outcomeDist(n, d).success + outcomeDist(n, d).crit < 0.9;
+    const od = outcomeDist(n, d, this.face, P.critRule, P.partialRule);
+    const uncertain = m != null ? this.pPass(n, d, m) < 0.9 : od.success + od.crit < 0.9;
     const helper = this.pickHelper(sp, ch);
     if (helper) {
       let hs = 0;
@@ -654,7 +739,7 @@ export class HeistRun {
       const dice = Math.max(1, raw);
       helper.acted = true;
       helper.everActed = true;
-      const got = countSuccesses(rng.dice(dice));
+      const got = this.succ(rng.dice(dice));
       n += got;
       rec.inc("assists");
       rec.inc("assistDice", got);
@@ -670,7 +755,8 @@ export class HeistRun {
     if (n + sp.silk + overclockBonus + (helper ? 0 : 3) <= 0) rec.issue("HOPELESS_ROLL", this.where(sp) + ` ${skill} pool ${n}, ${sp.silk} SP`);
 
     // Silk: extra dice
-    const buy = this.silkDice(sp, n, d, m, ch, important);
+    const maxSilkDice = P.bonusCapScope === "all" ? Math.max(0, P.bonusDiceCap - Math.max(0, n - base0)) : Infinity;
+    const buy = this.silkDice(sp, n, d, m, ch, important, maxSilkDice);
     if (buy.k > 0) {
       this.spend(sp, buy.dice > buy.k ? "overclock" : "extraDie", buy.k);
       if (buy.dice > buy.k) rec.use("perk:overclock");
@@ -680,7 +766,7 @@ export class HeistRun {
     // Detectors on the final pool
     if (m == null) {
       if (d === 1) rec.issue("PARTIAL_IMPOSSIBLE", this.where(sp) + ` ${skill} D1`);
-      if (n > 0 && n < 2 * d) { rec.inc("critImpossible"); rec.issue("CRIT_IMPOSSIBLE", this.where(sp) + ` ${skill} pool ${n} vs D${d}`); }
+      if (n > 0 && n < critAt(d, P.critRule)) { rec.inc("critImpossible"); rec.issue("CRIT_IMPOSSIBLE", this.where(sp) + ` ${skill} pool ${n} vs D${d}`); }
     }
 
     rec.inc("poolSum", n); rec.inc("diffSum", d);
@@ -692,15 +778,15 @@ export class HeistRun {
       res = classifyBotch(rng.d6());
     } else {
       faces = rng.dice(n);
-      s = countSuccesses(faces);
-      if (m != null) { oppS = countSuccesses(rng.dice(m)); res = s > oppS ? "success" : "failure"; }
-      else res = classifyResult(s, d);
+      s = this.succ(faces);
+      if (m != null) { oppS = this.succ(rng.dice(m)); res = s > oppS ? "success" : "failure"; }
+      else res = this.classify(s, d);
     }
-    const classify = succ => (m != null ? (succ > oppS ? "success" : "failure") : classifyResult(succ, d));
+    const classify = succ => (m != null ? (succ > oppS ? "success" : "failure") : this.classify(succ, d));
     const rerollFailed = (maxDice) => {
       const fails = faces.filter(f => f < 4).length;
       const k = Math.min(maxDice, fails);
-      const s2 = s - 0 + countSuccesses(rng.dice(k));
+      const s2 = s - 0 + this.succ(rng.dice(k));
       return s2;
     };
 
@@ -717,7 +803,7 @@ export class HeistRun {
     }
     // Silver Tongue — fail a Persuasion roll: reroll it once. (No per-heist limit.)
     if (faces && res === "failure" && skill === "persuasion" && sp.perks.has("silver-tongue")) {
-      const s2 = countSuccesses(rng.dice(n));
+      const s2 = this.succ(rng.dice(n));
       const r2 = classify(s2);
       const flip = RANK[r2] > RANK[res];
       if (flip) { s = s2; res = r2; }
@@ -760,7 +846,7 @@ export class HeistRun {
 
     // Always-on Flaws (Loud, Arachnophobe Magnet): did the +1 Difficulty flip the result? → Flaw Moment.
     if (flawMod > 0 && faces && m == null && !clutched) {
-      const alt = classifyResult(s, Math.max(1, d - flawMod));
+      const alt = this.classify(s, Math.max(1, d - flawMod));
       if (RANK[alt] > RANK[res]) {
         this.earn(sp, "flawMoment", 1);
         rec.use(`flaw:${sp.flaw}`, true);
@@ -783,20 +869,31 @@ export class HeistRun {
       this.addAlert(1, "clutch", { crewAction: true });
       if (!this.fullAlert && before < this.limit && this.alert >= this.limit) rec.issue("CLUTCH_AT_LIMIT", this.where(sp));
     }
-    if (res === "critical") this.critDrop(d, sp, ch.jury ? 2 : ch.appr.diff);
+    // Clarified group check: the round's Alert comes from the worst result only (resolveGroup).
+    const g = this.group;
+    if (g) g.rolls.push({ sp, res, d, baseD: ch.jury ? 2 : ch.appr.diff, skill, loud: ch.appr.loud ?? 0 });
+    if (res === "critical" && !g) this.critDrop(d, sp, ch.jury ? 2 : ch.appr.diff);
     if (res === "partial") {
-      this.partialComplication(sp);
+      if (!g) this.partialComplication(sp);
+      else if (P.partialCost === "setback") sp.setback += 1;
       if (P.partialHit && this.attacker()) { rec.inc("partialHits"); this.threatAttack(sp); }
     }
     if (res === "failure" || res === "botch" || res === "cleanfail") {
       sp.consecFail++;
       if (sp.consecFail === 3) rec.issue("REPEATED_FAILURE", this.where(sp) + ` ${skill} pool ${n} vs D${d}`);
-      let cost = res === "botch" ? 2 : res === "failure" ? 1 : P.cleanFailAlert;
-      if (ch.appr.loud && res !== "cleanfail") cost += ch.appr.loud;
-      cost = this.cancelRollAlert(sp, skill, cost, res);
-      if (cost > 0) this.addAlert(cost, res === "botch" ? "botch" : "failure", { crewAction: cost === 1, spike: cost >= 2 });
-      this.onNpcFailure(sp);
-      if (res !== "cleanfail" && P.failureAttack) this.threatAttack(sp);
+      if (!g) {
+        let cost = res === "botch" ? 2 : res === "failure" ? 1 : P.cleanFailAlert;
+        if (ch.appr.loud && res !== "cleanfail") cost += ch.appr.loud;
+        cost = this.cancelRollAlert(sp, skill, cost, res);
+        if (cost > 0) this.addAlert(cost, res === "botch" ? "botch" : "failure", { crewAction: cost === 1, spike: cost >= 2 });
+        this.onNpcFailure(sp);
+      }
+      const caught = P.fullAlertFailure && P.fullAlertFailure !== "none" && obs.phase === "escape" && (this.fullAlert || this.alert >= this.limit) && res !== "cleanfail";
+      if (caught) {
+        rec.inc("fullAlertFailureHits");
+        if (P.fullAlertFailure === "caught") this.goOut(sp, "caught at Full Alert");
+        else { sp.vit = Math.min(OUT, sp.vit + 1); rec.inc("hits"); rec.inc("hitsDrop1"); if (sp.vit >= OUT) this.goOut(sp, "Full Alert hit"); }
+      } else if (res !== "cleanfail" && P.failureAttack) this.threatAttack(sp);
       if (res === "botch") { this.planFellApart(); if (rng.chance(P.spectacularFailure)) this.earn(sp, "spectacularFailure", 1); }
       else if (res === "failure" && rng.chance(P.spectacularFailure / 5)) this.earn(sp, "spectacularFailure", 1);
     } else {
@@ -808,6 +905,26 @@ export class HeistRun {
       this.onNpcSuccess(sp);
     }
     return { res, passed };
+  }
+
+  /** Group check (groupRolls = worstAlert): apply the worst result's Alert once for the round. */
+  resolveGroup() {
+    const g = this.group;
+    this.group = null;
+    if (!g || !g.rolls.length || this.loss) return;
+    const P = this.P, rec = this.rec;
+    const w = g.rolls.reduce((a, b) => (RANK[b.res] < RANK[a.res] ? b : a));
+    rec.inc("groupChecks");
+    rec.inc("groupCheckRolls", g.rolls.length);
+    if (w.res === "critical") this.critDrop(w.d, w.sp, w.baseD);
+    else if (w.res === "partial") { if (P.partialCost === "alert") this.partialComplication(w.sp); else rec.inc("partials"); }
+    else if (w.res === "failure" || w.res === "botch" || w.res === "cleanfail") {
+      let cost = w.res === "botch" ? 2 : w.res === "failure" ? 1 : P.cleanFailAlert;
+      if (w.loud && w.res !== "cleanfail") cost += w.loud;
+      cost = this.cancelRollAlert(w.sp, w.skill, cost, w.res);
+      if (cost > 0) this.addAlert(cost, w.res === "botch" ? "botch" : "failure", { crewAction: cost === 1, spike: cost >= 2 });
+      this.onNpcFailure(w.sp);
+    }
   }
 
   /** Roll-level Alert cancels: Smoke and Mirrors, Abort Abort, That's Not What Happened. */
@@ -900,21 +1017,24 @@ export class HeistRun {
     let succ = 0;
     for (const sp of crew) {
       const pool = Math.max(sp.attrs.wit + sp.skills.perception, sp.attrs.wit + sp.skills.tactics);
-      succ += countSuccesses(rng.dice(pool));
+      succ += this.succ(rng.dice(pool));
     }
     rec.inc("casingSuccesses", succ);
     const facts = rng.shuffle(h.intel);
     const got = facts.slice(0, succ);
     rec.inc("intelFacts", got.length);
-    if (succ > h.intel.length) { rec.inc("casingOverflowSuccesses", succ - h.intel.length); rec.issue("CASING_OVERFLOW", `${h.id}: ${succ} Successes for ${h.intel.length} facts`); }
+    if (succ > h.intel.length) {
+      rec.inc("casingOverflowSuccesses", succ - h.intel.length);
+      if (P.casingRule !== "capped") rec.issue("CASING_OVERFLOW", `${h.id}: ${succ} Successes for ${h.intel.length} facts`);
+    }
     for (const f of got) if (f.obstacle) this.known.add(f.obstacle);
     // Familiar Face: one true detail that wasn't in the briefing → the unknown obstacle.
     const ff = crew.find(sp => sp.perks.has("familiar-face"));
     const unknown = this.seq.find(o => o.unknown);
-    if (ff && unknown) { this.known.add(unknown.id); rec.use("perk:familiar-face", true); }
+    if (ff && unknown && P.casingRule !== "capped") { this.known.add(unknown.id); rec.use("perk:familiar-face", true); }
     // Preparation: pre-place a Silk Line on a known climb/gap.
     for (const o of this.seq) {
-      if (this.known.has(o.id) && (o.tags.includes("climb") || o.tags.includes("gap")) && P.silkLineBypass) {
+      if (this.known.has(o.id) && (o.tags.includes("climb") || o.tags.includes("gap")) && (P.silkLineBypass || P.preLineRule === "minus1")) {
         this.preLines.add(o.id);
         rec.inc("preparedLines");
       }
@@ -1015,7 +1135,7 @@ export class HeistRun {
     if (!obs.known && this.activeThreatsHere().length && crew.some(sp => sp.perks.has("early-warning"))) { obs.known = true; rec.use("perk:early-warning", true); }
     const cs = crew.find(sp => sp.perks.has("counter-surveillance"));
     if (!obs.known && cs && this.hasNPCs()) {
-      const s = countSuccesses(rng.dice(Math.max(0, cs.attrs.wit + cs.skills.perception - this.pen(cs))));
+      const s = this.succ(rng.dice(Math.max(0, cs.attrs.wit + cs.skills.perception - this.pen(cs))));
       if (s >= 2) { obs.known = true; rec.use("perk:counter-surveillance", true); }
     }
     // Ch 20 mid-heist complication (optional).
@@ -1096,7 +1216,7 @@ export class HeistRun {
     if (r === 4) {
       for (const sp of this.present()) {
         if (sp.flaw !== "fear-of-vacuums") continue;
-        const s = countSuccesses(this.rng.dice(Math.max(0, sp.attrs.nerve - this.pen(sp))));
+        const s = this.succ(this.rng.dice(Math.max(0, sp.attrs.nerve - this.pen(sp))));
         rec.use("flaw:fear-of-vacuums", s < 3);
         if (s < 3) { sp.frozenFirstRound = true; this.earn(sp, "flawMoment", 1); }
       }
@@ -1144,7 +1264,7 @@ export class HeistRun {
         const st = this.band();
         const d = 3 + st.stealth + (sp.flaw === "loud" && this.alert >= 5 ? 1 : 0);
         const pool = sp.attrs.nerve + sp.skills.stealth - this.pen(sp);
-        const s = pool > 0 ? countSuccesses(rng.dice(pool)) : 0;
+        const s = pool > 0 ? this.succ(rng.dice(pool)) : 0;
         if (s < d) { this.earn(sp, "flawMoment", 1); this.addAlert(1, "flaw", { crewAction: true }); }
       }
       if (this.flawDue(sp, "butterfingers") && this.lootHolder === sp) {
@@ -1164,7 +1284,7 @@ export class HeistRun {
       const te = crew.find(sp => sp.perks.has("thunderous-entrance") && !this.usedScene(sp, "te"));
       if (te && threats.length) {
         this.markScene(te, "te");
-        const frozen = threats.filter(id => countSuccesses(rng.dice(CREATURES[id].perception)) < 3);
+        const frozen = threats.filter(id => this.succ(rng.dice(CREATURES[id].perception)) < 3);
         this.suppress(frozen, 1, "perk:thunderous-entrance");
       }
     }
@@ -1208,7 +1328,7 @@ export class HeistRun {
         if (ch) { ch.sp = sp; indiv.push(ch); pAll *= ch.est.p; alertExp += 1 - ch.est.p; }
         else pAll = 0;
       }
-      indiv.score = pAll - 0.15 * alertExp;
+      indiv.score = pAll - 0.15 * (P.groupRolls === "worstAlert" ? 1 - pAll : alertExp);
     }
     const singleScore = single ? single.est.p - 0.15 * (1 - single.est.p) : -Infinity;
     const useSingle = single && (!indiv || !indiv.length || singleScore >= indiv.score);
@@ -1256,8 +1376,9 @@ export class HeistRun {
 
     // ---------- rolls (weakest first, so the best helpers go where they matter)
     rollers.sort((a, b) => a.est.p - b.est.p);
+    this.group = !useSingle && P.groupRolls === "worstAlert" ? { rolls: [] } : null;
     for (const ch of rollers) {
-      if (this.loss) return false;
+      if (this.loss) { this.group = null; return false; }
       const sp = ch.sp;
       if (sp.out || sp.acted || sp.frozen) continue;
       const r = this.attempt(sp, ch);
@@ -1278,6 +1399,8 @@ export class HeistRun {
         }
       }
     }
+    this.resolveGroup();
+    if (this.loss) return false;
     this.afterRound();
     const left = this.present().filter(sp => !sp.passed && !sp.escaped);
     if (!useSingle && !left.length) {
@@ -1319,7 +1442,7 @@ export class HeistRun {
     const P = this.P, rec = this.rec, t = obs.tags;
     const idle = crew.filter(sp => !sp.frozen && !sp.acted);
     if ((t.includes("climb") || t.includes("gap")) && P.silkLineBypass) {
-      if (this.preLines.has(obs.id)) return { method: "preparedSilkLine" };
+      if (this.preLines.has(obs.id) && P.preLineRule !== "minus1") return { method: "preparedSilkLine" };
       if (this.trailUp) return { method: "perk:silk-trail" };
       const orb = idle.find(sp => sp.species === "orbweaver" && !this.usedScene(sp, "orb"));
       if (orb) { this.markScene(orb, "orb"); this.species(orb, "species:orbweaver"); return { method: "species:orbweaver", actor: orb }; }
@@ -1350,7 +1473,7 @@ export class HeistRun {
         return { method: "species:spitting", actor: spit };
       }
       const tk = idle.find(sp => sp.role === "tinkerer" && !this.usedScene(sp, "thing"));
-      if (tk && (!t.includes("complexLock") || P.bypassComplexLocks)) {
+      if (tk && P.bypassRule !== "roll" && (!t.includes("complexLock") || P.bypassComplexLocks)) {
         this.markScene(tk, "thing");
         tk.acted = true;
         return { method: "sig:tinkerer", actor: tk };
@@ -1399,7 +1522,7 @@ export class HeistRun {
       if (rollerSet.has(gr)) { rollerSet.delete(gr); const i = rollers.findIndex(c => c.sp === gr); rollers.splice(i, 1); }
       gr.acted = true; gr.everActed = true;
       this.decoyRounds = 2;
-      const fooled = threats.filter(id => countSuccesses(rng.dice(CREATURES[id].perception)) < 3);
+      const fooled = threats.filter(id => this.succ(rng.dice(CREATURES[id].perception)) < 3);
       this.suppress(fooled, 2, "sig:grifter");
       if (obs.tags.includes("human")) rec.issue("NPC_NO_POOL", `${this.h.id} ${obs.id}: Decoy vs humans (no Perception pool)`);
       rec.use("sig:grifter", true);
@@ -1436,7 +1559,7 @@ export class HeistRun {
       if (patient) {
         this.markScene(fr, "fr"); fr.acted = true; fr.everActed = true;
         const pool = fr.attrs.wit + fr.skills.engineering - this.pen(fr);
-        const s = pool > 0 ? countSuccesses(rng.dice(pool)) : 0;
+        const s = pool > 0 ? this.succ(rng.dice(pool)) : 0;
         if (s >= 1) { patient.vit -= 1; rec.inc("recover:fieldRepair"); }
         rec.use("perk:field-repair", s >= 1);
       }
@@ -1457,9 +1580,9 @@ export class HeistRun {
         if (!pool.length || this.loss) break;
         const c = CREATURES[id], st = this.cs[id];
         if (!c.attack || !this.activeHere(id)) continue;
-        if (c.attackOnlyHunting && this.alert < c.hunt) continue;
+        if (c.attackOnlyHunting && this.escAlert < c.hunt) continue;
         if (c.attackOnlyBad && !st.bad) continue;
-        const engaged = this.obs.threats?.includes(id) || this.alert >= c.hunt || (this.obs.phase === "escape" && this.fullAlert);
+        const engaged = this.obs.threats?.includes(id) || this.escAlert >= c.hunt || (this.obs.phase === "escape" && this.fullAlert);
         if (!engaged) continue;
         seen.add(id);
         const live = pool.filter(sp => !sp.out);
@@ -1473,6 +1596,11 @@ export class HeistRun {
         if (live.length) { this.rec.inc("threatTurnAttacks"); this.resolveHit(this.rng.pick(live), { id: "pursuit", pool: this.P.fullAlertPursuit, label: "Full Alert pursuit" }); }
       }
       if (this.loss) return;
+    }
+    // Package: a human obstacle adds its own +X each round the crew spends in its sight.
+    if (this.P.humanAlert > 0 && this.obs.tags.includes("human") && !(this.decoyRounds > 0)) {
+      this.addAlert(this.P.humanAlert, "human");
+      this.rec.inc("humanRounds");
     }
     for (const id of this.creatureIds) {
       const st = this.cs[id], c = CREATURES[id];
@@ -1535,6 +1663,14 @@ export class HeistRun {
         rec.inc("silkStart", sp.silkStart);
         rec.inc("silkEnd", Math.max(0, sp.silk));
         rec.inc("spidersPlayed");
+        // Share of the starting Silk actually spent (gross spends; Silk earned mid-heist can push it past 1).
+        if (sp.silkStart > 0) {
+          const frac = (sp.silkSpent ?? 0) / sp.silkStart;
+          rec.inc(`silkFrac:${Math.min(10, Math.floor(10 * frac + 1e-9))}`);
+          if (frac >= 0.5) rec.inc("spidersSpentHalf");
+          rec.inc("silkSpentGross", sp.silkSpent ?? 0);
+          rec.inc("spidersWithSilk");
+        }
         if (sp.silkStart > 0 && sp.silk >= 0.75 * sp.silkStart) { rec.inc("spidersHoarded"); rec.issue("SILK_HOARDED", `${h.id}: ${sp.name} (${sp.role}) ended with ${sp.silk}/${sp.silkStart} SP`); }
         if (sp.isReplacement && !sp.everActed) rec.issue("REPLACEMENT_NEVER_ACTS", `${h.id}: ${sp.name} arrived at ${this.seq[sp.arrivedAt]?.id}`);
       }

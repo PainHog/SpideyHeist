@@ -378,3 +378,63 @@ export const AP_BY_DIFFICULTY = { easy: 2, standard: 3, hard: 5, absurd: 6, lege
 export function getHeist(idOrN) {
   return HEISTS.find(h => h.id === idOrN || h.n === Number(idOrN));
 }
+
+/* ------------------------------------------------------- heist tweaks -- */
+
+/**
+ * Candidate heist-level fixes (BALANCE.md §5), switched on by name through the
+ * package param `heistTweaks`. Each returns a modified copy of one heist.
+ */
+export const HEIST_TWEAKS = {
+  // Heist 2: "the cleaning crew came at 7 tonight, not 8. They're already here" — so the
+  // cleaners stand between the crew and the drawer (Ch 11: 3–4 obstacles before the objective).
+  "office-cleaners-first": {
+    heist: "office",
+    text: "Heist 2: the unknown obstacle (the cleaners) sits before the drawer, not after it.",
+    apply: h => {
+      const [o1, o2, o3, o4] = h.obstacles;
+      return { ...h, obstacles: [o1, o2, { ...o4, id: "O3", postObjective: false }, { ...o3, id: "O4" }],
+        intel: h.intel.map(i => (i.obstacle === "O3" ? { ...i, obstacle: "O4" } : i)) };
+    }
+  },
+  // Heist 2: "Professional, alert, doing the job" — the guard spider is aware from the start.
+  "office-guard-aware": {
+    heist: "office",
+    text: "Heist 2: the guard spider starts aware (+1 Alert per round while it can see the crew).",
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.threats?.includes("guard-spider") ? { ...o, awake: ["guard-spider"] } : o)) })
+  },
+  // Heist 1: the intel says "Acrobatics to climb" — the freshly wiped counter won't hold silk.
+  "cookie-wiped-counter": {
+    heist: "cookie",
+    text: "Heist 1: silk won't hold on the freshly wiped counter — the climb is an Acrobatics roll.",
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.tags.includes("climb") ? { ...o, tags: o.tags.filter(t => t !== "climb") } : o)) })
+  },
+  // Heist 5: "two staff moving unpredictably" are written as Ch 15 Alert Humans (Difficulty 4), not Moderate.
+  "restaurant-alert-staff": {
+    heist: "restaurant",
+    text: "Heist 5: the two closing staff are Alert Humans (Ch 15: Deception or Stealth 4).",
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.id === "O1" ? { ...o, approaches: o.approaches.map(a => ({ ...a, diff: 4 })) } : o)) })
+  },
+  // Heist 3: the snake is watching, not yet active — it wakes on its own Escalation (Alert 3).
+  "petstore-snake-escalation": {
+    heist: "petstore",
+    text: "Heist 3: 'the snake is aware of you' becomes 'the snake is watching' — it is active from its Escalation (Alert 3), not from the start.",
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.awake?.includes("corn-snake") ? { ...o, awake: o.awake.filter(x => x !== "corn-snake") } : o)) })
+  },
+  // Heist 3: the loose lid is a way through — one spider can wedge it while the crew crosses.
+  "petstore-wedge-lid": {
+    heist: "petstore",
+    text: "Heist 3: 'The lid is loose' is also the answer — one spider can wedge it (Engineering 3) so the crew crosses unseen.",
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.awake?.includes("corn-snake") ? { ...o, approaches: [...o.approaches, { skill: "engineering", diff: 3, mode: "single", assumed: true }] } : o)) })
+  }
+};
+
+export function applyHeistTweaks(heist, names = []) {
+  let h = heist;
+  for (const n of names) {
+    const t = HEIST_TWEAKS[n];
+    if (!t) throw new Error(`Unknown heist tweak ${n}`);
+    if (t.heist === h.id) h = t.apply(h);
+  }
+  return h;
+}

@@ -17,14 +17,14 @@ export const PARAMS = {
     default: "individual",
     alts: ["leader"],
     title: "Who rolls when the whole crew must get past something",
-    doc: "individual = every spider rolls for itself on movement/stealth obstacles (implied by Drafting 'each crewmate gets +1 die on movement rolls'). leader = one spider rolls for the crew.",
+    doc: "individual = every spider rolls for itself on movement/stealth obstacles (implied by Drafting 'each crewmate gets +1 die on movement rolls'). leader = one spider rolls for the crew. worstAlert (clarified baseline, not swept) = every spider rolls and passes on its own result, but the round's Alert comes only from the worst result, once.",
     ref: "Ch 2 (no group-roll rule); Ch 5 Drafting / Escape Routes / I Know a Way"
   },
   creatureRolls: {
     default: "static",
     alts: ["opposed"],
     title: "How creature obstacles are rolled",
-    doc: "static = Ch 15 Toolkit Difficulty. opposed = spider vs the creature's Ch 16 pool (most Successes wins, ties to the world; no Partial or Critical exists for an opposed roll).",
+    doc: "static = Ch 15 Toolkit Difficulty. opposed = spider vs the creature's Ch 16 pool (most Successes wins, ties to the world; no Partial or Critical exists for an opposed roll). rolled (clarified baseline, not swept) = the creature rolls its pool and its Successes + 1 become the Difficulty; every Difficulty modifier then applies and the roll reads Partial/Success/Critical as usual.",
     ref: "Ch 2 Opposed Rolls; Ch 15 vs Ch 16; Ch 19 Heist 2 'First real opposed roll'"
   },
   creatureWake: {
@@ -295,8 +295,164 @@ export const PARAMS = {
     title: "Crew building",
     doc: "distinct = five different Roles (the book: 'the crew wants variety'). ch20 = every spider rolled on the Ch 20 tables.",
     ref: "Ch 7; Ch 20"
+  },
+
+  /* ---- Rule-change parameters used by the balance packages (sim/packages.mjs, BALANCE.md).
+   * `pkg: true` keeps them out of run.mjs's sweeps; their defaults are the book as written,
+   * so every existing run is unchanged. */
+  successFace: {
+    default: 4, alts: [5], pkg: true,
+    title: "PACKAGE — lowest die face that counts as a Success",
+    doc: "4 = 4–6 (the book). 5 = 5–6. Applies to every roll: the crew's, creatures' attacks and pools, shrug-offs, Casing.",
+    ref: "Ch 2 The Core Mechanic; module/logic/rules.mjs SUCCESS_FACE"
+  },
+  critRule: {
+    default: "double", alts: ["plus3", "plus2"], pkg: true,
+    title: "PACKAGE — Successes a Critical needs",
+    doc: "double = 2× Difficulty (the book). plus3 = Difficulty + 3. plus2 = Difficulty + 2.",
+    ref: "Ch 2 Critical Success; module/logic/rules.mjs classifyResult"
+  },
+  partialRule: {
+    default: "one", alts: ["half"], pkg: true,
+    title: "PACKAGE — fewest Successes that still make a Partial",
+    doc: "one = at least one Success (the book: Failure is zero Successes). half = at least half the Difficulty, rounded up (Failure is fewer).",
+    ref: "Ch 2 Types of Results; module/logic/rules.mjs classifyResult"
+  },
+  critAlertMinDiff: {
+    default: 2, alts: [3], pkg: true,
+    title: "PACKAGE — lowest final Difficulty at which a Critical lowers the Alert",
+    doc: "2 = ruling B28. 3 = Moderate or harder only.",
+    ref: "Ch 2 Critical Success; module/logic/rules.mjs CRITICAL_ALERT_MIN_DIFFICULTY"
+  },
+  bonusCapScope: {
+    default: "nonSilk", alts: ["all"], pkg: true,
+    title: "PACKAGE — what bonusDiceCap counts",
+    doc: "nonSilk = Assist, intel, Perks, Signature Moves (the fix experiment). all = Silk extra dice (and Overclock) count against the same cap.",
+    ref: "Ch 2 Assists; Ch 8 Extra Die"
+  },
+  obstacleDiffShift: {
+    default: 0, alts: [1], pkg: true,
+    title: "PACKAGE — every obstacle's Difficulty shifted",
+    doc: "+1 to every heist and Escape obstacle approach (and to a creature's rolled Difficulty): the Toolkit's 'calm location' numbers move up one step.",
+    ref: "Ch 15 intro; Ch 19"
+  },
+  limitShift: {
+    default: 0, alts: [-2], pkg: true,
+    title: "PACKAGE — every location's Alert Limit shifted",
+    doc: "−2 = Easy 8, Standard 6, Hard 4 (the Limit table moves down one row).",
+    ref: "Ch 9 The Alert Limit"
+  },
+  humanAlert: {
+    default: 0, alts: [1], pkg: true,
+    title: "PACKAGE — a human obstacle's Alert Contribution",
+    doc: "0 = humans never add Alert per round (the book gives them no stat block). 1 = +1 per round the crew spends at a human obstacle (playtest H5-H-2 'Alert Contribution +1 per round while searching'); a Grifter's Decoy pauses it.",
+    ref: "Ch 15 Human Obstacles; Ch 16 closing line; playtests H2-I-9, H5-H-2"
+  },
+  pdLimit: {
+    default: "scene", alts: ["heist"], pkg: true,
+    title: "PACKAGE — Plausible Deniability frequency",
+    doc: "scene = once per scene (the book). heist = once per heist.",
+    ref: "Ch 5 The Face"
+  },
+  heistTweaks: {
+    default: [], alts: [["office-cleaners-first"]], pkg: true,
+    title: "PACKAGE — heist-level fixes (heists.mjs HEIST_TWEAKS)",
+    doc: "A list of named tweaks to the Ch 19 heists.",
+    ref: "Ch 19"
+  },
+  hitTies: {
+    default: "defender", alts: ["attacker"], pkg: true,
+    title: "PACKAGE — who wins a tie when you try to shrug off a hit",
+    doc: "defender = you (the book: 'ties go to you'). attacker = the threat: a tie drops one level.",
+    ref: "Ch 10 Taking Hits ('a solid hit from a real threat will get through more often than not')"
+  },
+  fullAlertFailure: {
+    default: "none", alts: ["hit", "caught"], pkg: true,
+    title: "PACKAGE — what a Failure in a Full Alert Escape costs",
+    doc: "none = the usual (an engaged threat's hit). hit = the location lands a hit that can't be shrugged off (−1 level). caught = the spider is caught: Out.",
+    ref: "Ch 9 At Limit ('it will be memorable'); Ch 13 'play the lockdown'"
+  },
+  fullAlertRule: {
+    default: "book", alts: ["locked"], pkg: true,
+    title: "CLARIFIED — what Full Alert is",
+    doc: "book = the simulator's literal reading: the Alert keeps counting past the Limit, Criticals can lower it, and a Limit ≤ 6 location never reaches the Lockdown band. locked = once the Alert reaches the Limit it stops there for the rest of the heist, Criticals no longer lower it, and every roll takes the Lockdown penalties (all +1, Stealth +2); creature Escalations read it as Alert 7+.",
+    ref: "Ch 9 At Limit; ruling B30; playtests H1-6, H2-I-37, H5-R-6/R-7"
+  },
+  casingRule: {
+    default: "book", alts: ["capped"], pkg: true,
+    title: "CLARIFIED — Casing cap",
+    doc: "book = each Success reveals a fact; Familiar Face can reveal the unknown obstacle. capped = at most the heist's listed intel, and nothing (Familiar Face included) reveals the unknown obstacle.",
+    ref: "Ch 11 Casing; Ch 13; playtests H1-8, H2-I-3, H5-P-1"
+  },
+  preLineRule: {
+    default: "bypass", alts: ["minus1"], pkg: true,
+    title: "CLARIFIED — a Silk Line pre-placed in Planning",
+    doc: "bypass = the known climb/gap needs no roll (when silkLineBypass). minus1 = it lowers that obstacle's Difficulty by 1 instead ('Nothing in Planning auto-beats an obstacle'). A line run during the heist keeps its no-roll effect (silkLineBypass).",
+    ref: "Ch 11 Preparation; Ch 12; playtest H1-7"
+  },
+  bypassRule: {
+    default: "auto", alts: ["roll"], pkg: true,
+    title: "CLARIFIED — I Made a Thing: Bypass",
+    doc: "auto = no roll (the book). roll = the Tinkerer's Engineering roll against that small mechanical obstacle at −1 Difficulty (uses the once-per-scene gadget).",
+    ref: "Ch 5 The Tinkerer; playtest H2-I-12"
   }
 };
+
+/**
+ * The clarified baseline (BALANCE.md §1): one resolution for every rule the
+ * playtests and REPORT.md found ambiguous. Packages sit on top of the strict
+ * reading plus these, so anything the clarified baseline does not decide is
+ * read against the crew.
+ */
+export const CLARIFIED = {
+  sceneIs: "obstacle",                 // C1 a scene is one obstacle
+  creatureWake: "escalation",          // C2 active from its Escalation step, or when the text says so…
+  creatureStaysActive: true,           //    …and it stays active
+  creatureScope: "presence",           //    its +X counts each round it can perceive the crew
+  creatureRolls: "rolled",             // C3 an actively resisting creature's Successes + 1 set the Difficulty
+  groupRolls: "worstAlert",            // C4 everyone rolls; the worst result sets the Alert, once
+  obstacleSteps: 1,                    // C5 one roll clears an obstacle (retries cost a round)…
+  failureAttack: true,                 //    …a Failure also draws an engaged threat's hit
+  partialCost: "alert",                // C6 a Partial costs +1 Alert (once per group check)…
+  partialHit: false,                   //    …or another complication of equal cost, never both
+  fullAlertRule: "locked",             // C7 Full Alert: stops at the Limit, permanent, Lockdown penalties
+  casingRule: "capped",                // C8 Casing is capped at the listed intel
+  preLineRule: "minus1",               // C9 a pre-placed Silk Line lowers the Difficulty by 1
+  silkLineBypass: true,                //    a Silk Line run during the heist still needs no roll
+  spittingLimit: "scene",              // C10 jam/pin once per scene
+  bypassRule: "roll",                  // C11 Bypass is an Engineering roll at −1 Difficulty
+  activeBandStealth: 1                 //    (Ch 9 Active band: the Stirring +1 carries on)
+};
+
+/**
+ * Candidate rule-change packages. Each one is applied on top of
+ * PRESETS.strict + CLARIFIED (see packageParams).
+ */
+export const PACKAGES = {
+  P0: { title: "Clarified baseline only", rules: {} },
+  P1: { title: "P0 + Successes on 5–6 (Critical still 2× Difficulty)", rules: { successFace: 5 } },
+  P2: { title: "P0 + at most +2 bonus dice per roll from every source (Assist, Perks, Signature Moves, intel, Silk) + a Critical lowers the Alert only at Difficulty 3+", rules: { bonusDiceCap: 2, bonusCapScope: "all", critAlertMinDiff: 3 } },
+  P3: { title: "P0 + every obstacle Difficulty +1 + a Critical needs Difficulty + 3 Successes", rules: { obstacleDiffShift: 1, critRule: "plus3" } },
+  P4: {
+    title: "Recommended: P0 + Successes on 5–6 + a Partial needs half the Difficulty + a heist obstacle takes two successful rolls + a Critical lowers the Alert only at Difficulty 3+ + at most +2 non-Silk bonus dice + a Failure in a Full Alert Escape gets you caught + Ch 8 'spend your Silk' advice",
+    rules: { successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy" }
+  },
+  P4B: {
+    title: "P4's rules with the book's current Silk advice (Ch 8: 'early on, hoard')",
+    rules: { successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught" }
+  },
+  P4H: {
+    title: "P4 + heist fixes: Heist 2's guard spider starts aware; Heist 5's closing staff are Alert Humans (4)",
+    rules: { successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy", heistTweaks: ["office-guard-aware", "restaurant-alert-staff"] }
+  }
+};
+
+/** Full parameter set for a package (or a bare rules object), with optional extra overrides. */
+export function packageParams(pkg, extra = {}) {
+  const rules = typeof pkg === "string" ? PACKAGES[pkg]?.rules : pkg;
+  if (!rules) throw new Error(`Unknown package ${pkg} (known: ${Object.keys(PACKAGES).join(", ")})`);
+  return defaultParams({ ...PRESETS.strict, ...CLARIFIED, ...rules, ...extra });
+}
 
 /**
  * Reading presets. `generous` reads every ambiguous rule in the crew's favour;

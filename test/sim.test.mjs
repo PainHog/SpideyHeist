@@ -165,3 +165,65 @@ test("whole heists are reproducible and produce a legal outcome", () => {
     }
   }
 });
+
+/* ---- balance packages (sim/BALANCE.md) ---- */
+import { packageParams, PACKAGES, CLARIFIED } from "../sim/params.mjs";
+
+test("package rule params: 5–6 Successes, half-Difficulty Partials, Critical at D+3", () => {
+  const run = parkedRun(4, { successFace: 5 });
+  assert.equal(run.succ([4, 4, 5, 6]), 2);
+  const half = parkedRun(4, { partialRule: "half" });
+  assert.equal(half.classify(1, 3), "failure");
+  assert.equal(half.classify(2, 3), "partial");
+  assert.equal(half.classify(1, 2), "partial");
+  const p3 = parkedRun(4, { critRule: "plus3" });
+  assert.equal(p3.classify(6, 3), "critical");
+  assert.equal(p3.classify(6, 4), "success");
+  assert.equal(p3.classify(7, 4), "critical");
+  assert.equal(outcomeDist(8, 3, 5).fail.toFixed(4), ((2 / 3) ** 8).toFixed(4));
+});
+
+test("clarified Full Alert: the Alert stops at the Limit, Criticals can't lower it, Lockdown penalties apply", () => {
+  const run = parkedRun(6, { fullAlertRule: "locked" });   // Heist 2, Limit 8
+  run.alert = 7;
+  run.addAlert(2, "failure");
+  assert.equal(run.alert, 8);
+  run.addAlert(1, "failure");
+  assert.equal(run.alert, 8);
+  run.attempt(run.present()[0], stealthRoll(2));             // all sixes: a Critical
+  assert.equal(run.alert, 8, "no Critical drop at Full Alert");
+  assert.deepEqual([run.band().stealth, run.band().all], [2, 1]);
+});
+
+test("Criticals lower the Alert only at the package's minimum Difficulty", () => {
+  const run = parkedRun(6, { critAlertMinDiff: 3 });
+  run.alert = 2;
+  run.attempt(run.present()[0], stealthRoll(2));
+  assert.equal(run.alert, 2);
+  run.attempt(run.present()[1], stealthRoll(3));
+  assert.equal(run.alert, 1);
+});
+
+test("clarified group check: only the worst result of the round raises the Alert, once", () => {
+  const run = parkedRun(1, { groupRolls: "worstAlert" });    // every die a 1: every roll fails
+  run.group = { rolls: [] };
+  for (const sp of run.present().slice(0, 3)) run.attempt(sp, stealthRoll(3));
+  assert.equal(run.alert, 0, "deferred");
+  run.resolveGroup();
+  assert.equal(run.alert, 1);
+});
+
+test("every package runs whole heists reproducibly", () => {
+  assert.ok(Object.keys(CLARIFIED).length > 5);
+  for (const name of Object.keys(PACKAGES)) {
+    const P = packageParams(name);
+    for (const h of HEISTS) {
+      const crew = buildCrew(makeRng(5, "crew"), 5);
+      const a = runHeist(h, crew, P, makeRng(5, h.id), new Recorder());
+      const b = runHeist(h, crew, P, makeRng(5, h.id), new Recorder());
+      assert.deepEqual({ ...a, trace: null }, { ...b, trace: null });
+      assert.ok(["win", "partial", "loss"].includes(a.outcome));
+      assert.ok(a.alert <= h.limit, `${name} ${h.id}: the Alert stops at the Limit`);
+    }
+  }
+});
