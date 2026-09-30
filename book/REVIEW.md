@@ -172,9 +172,14 @@ The optional P4H extra (Heist 2's cleaners before the drawer) was **not** applie
 - The Ch 11 paragraph order in Phase 3: the original text, then "Obstacles aren’t scripted scenes…",
   then the new scene/two-rolls paragraph, then the once-per-heist paragraph.
 
-### D6. Playtest issues still open (not approved for v4.6)
+### D6. Playtest issues still open after v4.6 — all resolved in v4.7
 
-Not changed, because each needs new rules or content: Silk Clutch/"failed roll" on a Partial (H1-4, H5 R-8);
+**Status (v4.7): every item below is resolved.** The rules items are ruled in Part E (one row each, E1–E44);
+the Chapter 19 heist-content items (Heist 1's entries, sink and Difficulties; maps for Heists 2–5 and single
+entries; Heist 2's unknown after the objective; Heist 5's staff, obstacles 2/3, wake-up, the Rat's deal and
+Escape) are handled with the Chapter 19 rewrite (Part F).
+
+Not changed in v4.6, because each needs new rules or content: Silk Clutch/"failed roll" on a Partial (H1-4, H5 R-8);
 Stealth and movement vs your one Action (H1-10, H5 R-12, H2 I-40); heights on the grid (H1-11, H2 I-16);
 humans with no Speed/pool/attack, human Alert contribution, and hits from pool-less hazards (H1-12, H2 I-9,
 H5 H-2, R-13, R-18); loot size and carrying, "incomplete loot" (H1-13, H2 I-18, H5 H-9, R-9); Heist 1's single
@@ -198,3 +203,146 @@ What Happened on a Failure (H5 R-15); Criticals wasted at Alert 0 or bought by P
 partly answered by R4); Actually, I Planned This scope (H5 R-19); announce vs describe the Alert
 (H5 R-25); Damage Control payment split (H5 R-26); escalations keyed to 7 at Limits ≤ 6 (H5 R-27, partly
 answered by C7's "creatures act as at Alert 7+").
+
+---
+
+## E. Rules rulings for v4.7 (the D6 items, authorised by Richard Moore)
+
+Richard asked for every open playtest issue to be resolved and authorised new rules content to do it.
+Each D6 rules item gets the smallest clear rule consistent with the book's intent — a clarification
+wherever one is enough, a short table where the book needed reference data. Chapter 19 is not
+touched here (see Part F). Anything that could move win rates was modelled as package **P5** in the
+simulator (P4H + the rulings marked *P5*; `sim/params.mjs`, `sim/BALANCE.md` §11). P0–P4H are
+unchanged and `npm test` passes (35 tests).
+
+**Balance check (5,000 runs per heist, seed 1).** On the v4.6 heist data, P4H 87.9 / 76.7 / 55.5% →
+**P5 88.6 / 78.8 / 57.0%** (Easy / Standard / Hard wins). On the v4.7 Chapter 19 heist data in the
+working tree when this was written, P4H 89.2 / 75.7 / 57.9% → **P5 89.5 / 77.7 / 59.3%**. Every
+label stays within about 2 points of 88 / 77 / 58.
+
+**Sources.** H1-n: Heist 1 playtest; H2 I-n: Heist 2; H5 X-n: Heist 5 (`sim/playtests/`).
+**Sim:** "none" means the rule changes no roll the simulator makes, or the simulator already
+played it this way.
+
+| # | D6 item (IDs) | Ruling | Where | Sim |
+|---|---|---|---|---|
+| E1 | Silk Clutch / "failed roll" on a Partial (H1-4, H5 R-8) | *Fail* always means a Failure (or Botch); a Partial is never a failed roll. Silk Clutch: "After a Failure (a Partial isn’t one), spend 3 SP to turn it into a Success." Silver Tongue, Smoke and Mirrors and Ch 9's "+1 A roll fails" read the same way. At Full Alert the Clutch's +1 is moot, but it still earns its 3 SP: a Clutched roll didn't fail, so R6 doesn't catch the spider | Ch 2 Failure; Ch 8 table; Ch 21 Failure, 3 SP | none (the sim Clutches only Failures) |
+| E2 | Stealth and movement vs one Action (H1-10, H5 R-12, H2 I-40) | Sneaking is an Action. **One roll covers one thing**: pick a lock in the cat's sight and a Failure means it noticed — no extra Stealth roll. Rolls forced on you (a dodge, a shrug-off, a Flaw's check) are free | Ch 3 Your Turn; Ch 21 Your turn | none (one roll per spider per round, as simulated) |
+| E3 | Heights on the grid (H1-11, H2 I-16) | Heights are squares: chair seat 2, counter or desk 3, tall shelf 6, ceiling 8. Up on a surface you have cover from below. Spiders anchor as they climb, so a failed climb is a slip; a real fall (knocked off, line cut) is a hit of 1 die per 2 squares. Maps note heights | Ch 3 bullet; Ch 14 map checklist; Ch 21 Heights | none (no grid; no simulated falls) |
+| E4 | Humans: no Speed, pool, attack or Alert; hits from pool-less hazards (H1-12, H2 I-9, H5 H-2, R-13, R-18) | New **Human** stat block: Threat Low (asleep) to High (broom); Alert Contribution none of its own; Speed 10; Swat 3; Perception 3 for its own checks only (Decoy, surprise). You roll against its Ch 15 row's Difficulty; it never rolls to spot you. Glimpsing a spider = spotted (+1); loot moving on its own = confirmed (+2). Failing a roll within its reach = swatted (a hit, Swat 3); a Critical spider it hits is under a glass: Out. Escalation: stirs at 5, up with lights at 7 or Full Alert; its row doesn't change. Ch 10: a threat with no attack pool rolls as many dice as its Ch 15 Difficulty; when you roll to avoid a hazard, a Failure is the hit, then you shrug. Vacuum: "Pursuit 3 (its attack…)" | Ch 16 Human block and closing line; Ch 2 Opposed; Ch 10 Taking Hits; Ch 21 | none: the strict reading already had humans hit with 3 dice on a Failure and add no per-round Alert (BALANCE §10: +1/round humans sent Hard to ~20%) |
+| E5 | Loot size and carrying; "incomplete loot" (H1-13, H2 I-18, H5 H-9, R-9) | Loot table gains **Carrying It**: Crumb/Trinket one spider, full Speed; Prize one at half Speed or two at full; Treasure two at half Speed, or a silk sled (1 SP) at full; Big Score everyone, and a plan. Carriers still act; handing over is free, picking up is an Action; bigger than a Trinket won't fit a squeeze. Incomplete = part left behind or destroyed, and the ST says so when it happens | Ch 12 The Loot; Ch 11 Debrief | *P5* `lootCarry`: Treasure costs 1 SP (sled) or an extra threat round in the first Escape obstacle. Hard −0.2 |
+| E6 | Heist 1's single entry, sink/door, Difficulties (H1-14 rest) | Chapter 19 content | Part F | — |
+| E7 | Perk timing in hit rolls (H1-17, H2 I-28, I-32, H5 R-22) | Wolf's Run It Again: a shrug-off counts as physical confrontation; it rerolls every die that didn't succeed and the Successes stay ("it only gets better"). Silk Reroll likewise. Take the Hit: "Declare it before the shrug-off: the hit is yours, and so is the roll." A shrug-off with no dice scores no Successes and can't Botch (H2 I-38's leftover) | Ch 4 Wolf; Ch 8 Reroll; Ch 5 Take the Hit; Ch 10; Ch 21 | *P5* `wolfShrug` (±0.1) and `rerollFix` (+0.2 Std, +0.3 Hard): the v4.6 sim rerolled only faces 1–3, leaving 4s under 5–6 Successes |
+| E8 | Assist Skill choice (H1-19) | The helper rolls one of their own Skills that plausibly helps — the ST's call, not necessarily the roller's | Ch 2 Assists; Ch 21 | none (the sim already picks the helper's best plausible Skill) |
+| E9 | Ch 7's "random tables for every step" (H1-20) | Promise kept: Ch 20 adds **Attributes (1d6)** — six 10-point spreads, first number on the Role's Attribute, species bonus on top, overflow to the lowest — **Skills and Perks (Quick Pick)**: per Role, core skills at 3 then a fixed 3·2·2·2 package, and "roll 1d6 twice on your Role's Perk table; reroll a repeat". Ch 7 says "a random table or a quick pick for every choice" | Ch 20; Ch 7 opener | none |
+| E10 | Starting Silk by species (H1-21, H2 I-23) | **Silk Points = WIT + NERVE + 1, counting only the points you placed (not the species bonus).** "Silk is practice, not anatomy." Spitting no longer starts 3 SP ahead of a Wolf; the +1 keeps the average where it was (5.9 SP) | Ch 7 Step 8 and checklist; Ch 8; Ch 11 Spending AP; Ch 21 Start; character sheet | *P5* `silkStart`: mean start 5.88 vs 5.9; Easy +0.6, Std +0.5, Hard −0.1 |
+| E11 | Drafting's terms (H1-22) | "When you lead a group check on the move (Athletics, Acrobatics, or Stealth while moving), each crewmate gets +1 die on it" | Ch 5 Wheelman | none (as simulated) |
+| E12 | Flaw SP and pass/fail wording (H1-23, H2 I-27, H5 R-5) | Every Flaw pays one Flaw Moment (+1 SP) each time it fires; none pays twice (Butterfingers' and Show-Off's SP lines are that Moment). **Pass or fail:** when a rule only asks whether you pass ("roll… or…", "on a success"), a Partial passes at no extra cost; an NPC's check needs the full Difficulty. Allergic to Dust on a pass: "everyone in earshot heard something and decided it was nothing" | Ch 2 Pass or fail; Ch 7 Step 7, Butterfingers, Allergic to Dust; Ch 21 | *P5* `passChecks` (Allergic to Dust, Fear of Vacuums, That All You Got?): Easy +1.1, Std +0.7, Hard +1.8 |
+| E13 | Show-Off (H1-25, H2 I-26) | "The ST may make one of your rolls Difficulty 4 (or +1, if it was already 4 or more)… Alert penalties still apply on top. It pays your Flaw Moment if it costs you — or if you Critical anyway." Its one-round delay uses C2's round | Ch 7 Flaw 10 | *P5* `showOffRule`: Std −0.6, Hard −0.5 |
+| E14 | Mid-Heist Complication triggers and effects (H1-26, H2 I-29, H5 R-24) | Roll when the crew starts a **third round at one obstacle** ("the world doesn't wait"), or when the night needs a nudge. New Effect column: 1 nearest sleeping creature active (nothing asleep: +1 Alert); 2 one uncased detail (never the unknown); 3 Stealth +1 here this round and next; 4 Stealth −1 this round (its roar covers you); 5 no cover this round; 6 +1 Alert. Entries that don't fit become their nearest equivalent (a restaurant's "cat" is the Rat) | Ch 20; Ch 17 Running the Heist; Ch 21 The clock | *P5* `stallClock: 3` (see E25) |
+| E15 | Preparations count, Dead Drop overlap (H1-27, H2 I-17, H5 P-2) | **One Preparation per spider.** Entry squares and anything a Perk grants are free; a pre-placed Silk Line costs no SP; a stash goes in a square you've cased. Dead Drop: "anywhere… no complication, and it isn't your Preparation." Contingency names the roll it replaces, which becomes a Success — no Alert, no complication. Planted Evidence: a human believes it for the heist, an animal for one scene | Ch 11 Preparation; Ch 5 Dead Drop, Contingency, Planted Evidence; Ch 21 | none (the sim's preparations were already within one per spider) |
+| E16 | AP banking (H1-28) | "Unspent AP carry over." | Ch 11 Spending AP; Ch 21 | none |
+| E17 | Full Alert cost at the Debrief (H1-29) | **No extra cost:** "Full Alert costs nothing extra here: getting out through it was the cost." Since v4.6 (C7, R6) a Full Alert Escape catches any spider who fails a roll; also docking AP would hit ~60–75% of wins | Ch 11 Debrief | none |
+| E18 | Waiting Web gaps (H1-30, H2 I-39) | Replacements enter at the start of the next obstacle **next to any crewmate**. Out in the last Escape obstacle: the replacement is waiting at the exit. Loot the caught spider carried alone "goes where they went — into the jar, up the hose — and is lost." Next heist the player may bring back either spider (AP are per player since D4) | Ch 10 Going Out | none (the strict reading already lost the loot with its carrier) |
+| E19 | Early Warning and "active" (H1-31) | "…which direction any threat there moves next, awake or not" | Ch 5 Lookout | *P5* `earlyWarningAll`: ~0 |
+| E20 | Improvise's Attribute (H1-32, H5 R-21) | "…at +1 Difficulty, rolled with the new Skill's own Attribute." (The Ch 8 example, Engineering to rig a hoist, is a WIT roll) | Ch 8; Ch 21 | *P5* `improviseAttr: "skill"` (strict used the called Attribute): Std +0.1, Hard +0.4 |
+| E21 | NPC Partials and Criticals in opposed rolls (H1-33, H2 I-19) | The creature's roll is just a count: it never Partials, Criticals or Botches; your roll reads normally (C3). An NPC's check against a Difficulty (a Decoy, a snare) needs the full Difficulty. The Alert never drops below 0 | Ch 2 Opposed Rolls, Pass or fail; Ch 9 intro; Ch 21 | none |
+| E22 | Crab speed on slick ground (H1-34) | **No change.** Speed 4 is the Crab's stated trade ("excellent at waiting… worse at stopping"), and the answer the playtest found — a Silk Line is safe footing for everyone — is already in the rules. Creature +X counts rounds at the obstacle (C2), so a slow spider costs the crew; that is the intended pressure to use silk | — | — |
+| E23 | Creatures' defeat state (H2 I-7) | **Driving one off:** "Spiders don't win fights with cats; they end them." Clear a creature's obstacle with Brawl or Intimidation and it backs off for the rest of that obstacle — no attacks, no +X there; if it roams, it's back at the next one, sulking. "Fights are loud: every roll of one that lands is +1 Alert, and a lost one is a Loud Failure" | Ch 16 intro | none: this is what the sim already did. Tested and rejected: a Brawl/Intimidation Critical drives it off for the whole heist (`creatureDefeat: "critical"`) — Office +14 pts |
+| E24 | Guard Spider Senses, Escalation, backup (H2 I-8) | Senses: movement within 6 squares, line of sight. Escalation: aware the moment it spots the crew, +1 Alert (that *is* its "spotted", not an extra), then +1 a round, and it follows the crew; aware lasts the heist unless it's paid off. **A bribe ends awareness.** Backup: "a beaten guard calls for backup: a fresh one, already aware, takes its post" — the fight's own noise is the cost, so the old "+2 if it calls for backup" is removed from Alert Contribution | Ch 16 Guard Spider | *P5* `guardRules: "paid"`: Std +0.1. Tested and rejected: backup at Alert 7 or Full Alert, +2 (`"full"`) — at Limit 8 that is nearly always Full Alert: Office −7 pts |
+| E25 | Patrol variability; waiting is free; no clock (H2 I-11, I-36, H5 R-23) | Ch 14: "A loop isn't a timetable: at the end of each lap, roll 1d6 — 1–2 it walks the lap backwards, 3–4 it rests a round, 5–6 it checks somewhere off its loop." **The clock** is the Mid-Heist Complication on the third round at one obstacle (E14). Clock times in a heist's text arrive as a complication or at a threshold; nobody converts rounds into minutes | Ch 14 Active Threats; Ch 20; Ch 17; Ch 21 | *P5* `stallClock: 3`: Easy −0.5, Std −0.7, Hard −1.0. Rolling again on round 5 changed nothing (obstacles rarely last that long). Patrol laps aren't simulated |
+| E26 | Heist 2's unknown after the objective; maps for Heists 2–5; single entries (H2 I-14, I-15, H5 H-1) | Chapter 19 content | Part F | — |
+| E27 | Alert falling back below a threshold (H2 I-33) | "Below Full Alert, penalties follow the current number: if a Critical pulls the Alert back under a band, that band's penalty lifts. Whatever woke up stays awake." | Ch 9 after thresholds; Ch 21 | none (as simulated) |
+| E28 | Squeeze/Silk Line rolls vs "When Not to Roll" (H2 I-20) | Both roll only under pressure: a squeeze "when something is watching or closing in; otherwise it just takes your move"; a Silk Line: "with nothing watching or closing in, skip [the roll] free" | Ch 3 Squeezing; Ch 12 Silk; Ch 21 Climbing | none (every simulated squeeze or climb has a watcher, or the insects of Heist 3) |
+| E29 | Cellar/Ghost overlap (H2 I-22) | Phase Through: "A Cellar Spider, who never needed the help, takes the loot through with it, whatever its size" — the Cellar Ghost's edge, and it works with E5 | Ch 5 Ghost | none. Tested and rejected: bringing an adjacent crewmate (`cellarPhase`) — Pet Store +1.4 |
+| E30 | Role bonus split (H2 I-24, H5 C-4) | "Place your Role's 3 bonus points first, on your two core skills in any split (3/0 is fine). Then spend your own 12 points. Maximum 3 in any one Skill at creation, Role points included." | Ch 7 Step 5 and checklist; character sheet | none |
+| E31 | Duplicate roles, flaws and names (H2 I-25, H5 C-1–C-3) | "Rolled a name, Role or Flaw someone on the crew already has? Roll again, or keep it; two Faces is a choice, not a typo." | Ch 20 intro | none (the sim builds five different Roles) |
+| E32 | Make a Scene and humans (H2 I-30) | "…the Alert goes up by 1 — the only Alert it costs, however many humans watched." | Ch 5 Bruiser | none |
+| E33 | The Face vs the Guard Spider (H2 I-34) | "Charmed" means the Face's Persuasion: "cannot be charmed by the Face — professional courtesy. Fast Talk and Deception still work." Anyone but the Face may try talking (Difficulty 4) | Ch 16 Guard Spider | none. Tested and rejected: Fast Talk also barred (`faceVsGuard`) — Office −3.6 |
+| E34 | Glass and line of sight (H2 I-41) | "Glass blocks silk, not sight: the cat can watch you through the window." | Ch 3 Line of Sight; Ch 21 Cover | none |
+| E35 | Heist 5's staff, obstacles 2/3, scripted wake-up, the Rat's deal, no Escape (H5 H-3–H-5, H-7, H-8) | Chapter 19 content. The rules it leans on are here: Humans (E4), driving creatures off (E23), the clock (E14) | Part F | — |
+| E36 | Free actions on the ST's turn (H5 R-11) | "Free actions and 'when…' Perks work on the ST's turn too." | Ch 3 | none |
+| E37 | One event, one Alert trigger (H5 R-14) | "A single roll or moment raises the Alert once, by its largest entry. A Failure that gets you spotted is +1, not +2." What a human seeing a spider or loot is worth is in the Human block (E4) | Ch 9 after the table; Ch 21 | none (as simulated) |
+| E38 | That's Not What Happened on a Failure (H5 R-15) | "A failed roll still made no progress, and the ST may still charge a cost that isn't Alert." | Ch 5 Face | none (as simulated) |
+| E39 | Criticals wasted at Alert 0, or bought by Perk reductions (H5 R-16) | Clarified, no banking: the Critical's Alert drop is judged on the Difficulty "after every modifier" (so a Perk that lowers a roll below 3 can cost you the drop, never buy one), and the Alert never drops below 0 — a Critical at 0 still gets its better-than-planned result. Banking a drop would be a new resource for a rare case | Ch 2 Critical; Ch 9 intro; Ch 21 | none |
+| E40 | Actually, I Planned This scope (H5 R-19) | "Every crewmate gets +1 die on their next roll" | Ch 5 Face | none (as simulated) |
+| E41 | Announce vs describe the Alert (H5 R-25) | Show the number on the tracker, describe the change aloud: Ch 17 "show it at once: move the tracker and describe what changed (Chapter 18)"; Ch 18 "let the tracker show the number and describe the change yourself" | Ch 17; Ch 18 | none |
+| E42 | Damage Control payment split (H5 R-26) | "The crew spends 3 SP between them, split any way" | Ch 8; Ch 21 | none (as simulated) |
+| E43 | Escalations keyed to Alert 7 at Limits ≤ 6 (H5 R-27) | "An Escalation step names an Alert level, and Full Alert counts as every step at once — at a low Limit, a creature can go straight from asleep to hunting." Sleeping Human "at 7, or Full Alert"; Exterminator "Lockdown (7+) or Full Alert" | Ch 16 intro, Exterminator; Ch 15 Sleeping Human | none (C7 already simulated Full Alert as 7+) |
+| E44 | Crew wipes are rare (BALANCE §7: Loss ≈ 0.2% at Hard) | **Left as is.** The book says "Loss is rare", and a Loss needs the whole crew Out at once. Making it common would mean slowing the Waiting Web, which breaks "Nobody Sits Out" (Ch 1). The real failure state is the Partial win (~40% of Hard heists). Under P5 on the v4.6 heists Hard Loss is 0.1%; on the v4.7 Chapter 19 data it is 1.9% (Restaurant 3.5%), because the new Escapes put Alert Humans in the way at Full Alert | — | measured, no change |
+
+Chapters edited for Part E: 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 20, 21 and the character
+sheet (not Chapter 19). The new Human stat block has no creature art; the art pass may add one
+(`data-art="creature-human"`). Page growth: about +1,500 words (~10%), most of it in compact tables
+(Ch 20 quick picks and complication effects, the Human block, the Loot column). The book build was
+not run; the final build should check the page count and the chapter art placement.
+
+---
+
+## F. Chapter 19 — the ready-to-run heists finished (v4.7, authorised by Richard Moore)
+
+Every Ch 19 item left open in D6 is resolved, and so is every other Ch 19 problem the playtests hit. Each heist now has:
+- a gridded map in Heist 1's style;
+- at least two entry points;
+- numbered obstacle locations that match its table;
+- a Roll (Difficulty) for every obstacle;
+- two suggested Escape obstacles.
+
+Numbers come from the Ch 15 Toolkit and the Ch 16 stat blocks. The text is checked against the v4.7 rules in the other chapters: heights (Ch 3), squeezes and loot sizes (Ch 12), the lap roll (Ch 14), the Human and Guard Spider blocks (Ch 16), and the complication table as the clock (Ch 20). The v4.6 changes are kept:
+- Heist 2's guard starts aware.
+- Heist 5's staff are Alert Humans at 4.
+- Heist 5's loot is Treasure.
+
+Source key as in Part D.
+
+### F1. Changes
+
+| # | Heist | Change | Source |
+|---|---|---|---|
+| F1 | All | New **Reading the Maps and Tables** box after the opener. It gives the map legend, says to leave the dashed unknown off the crew's copy, and explains: Difficulties are for a calm location; *opposed* = Successes + 1 (Ch 2); two rolls per heist obstacle, one per Escape obstacle (Ch 11) | PT H5 H-1, H2 I-15 |
+| F2 | All | Each **Suggested Obstacles** list becomes a three-column table (# · Obstacle · Roll (Difficulty)). The author's obstacle wording is kept, and each Difficulty comes from Ch 15/16 | PT H1-14, H5 H-1; D6 |
+| F3 | All | Two suggested **Escape obstacles (E1, E2)** per heist, drawn on each map's escape route. Every heist has at least one Escape answer that needs no Athletics | PT H5 H-8, H1 Phase 4, H2 Phase 4; D6 |
+| F4 | All | Five maps: `map-cookie` (reworked), `map-office`, `map-petstore`, `map-library`, `map-restaurant`. All are 16 squares wide, generated in one style by `tools/art-gen/scenes/maps.mjs`, and wired in as `<figure class="art map" data-art="…">` with a legend caption, as Heist 1's already was | PT H5 H-1, H2 I-15 |
+| F5 | 1 | **Second entry:** up through the sink drain (entry B). The Score names both ways in | PT H1-14 |
+| F6 | 1 | **Sink and door destination:** the sink sits in the counter's back row; the doorway leads "to the hall, the bathroom and the bedrooms". Both are on the map and in the caption. Heights: counter top 3, the tin's shelf 5 | PT H1-14, H1-11 |
+| F7 | 1 | **Difficulties:** 1 Stealth, opposed (the cat's Perception 4), or charm it (Persuasion, opposed). The cat is awake, so it is active from the start (Ch 9). 2 Acrobatics (2) +1 height. 3 Engineering (3), or Athletics (3) for +1 Alert. 4 Perception (4) to sniff out the butter; opening the twin is as obstacle 3 | PT H1-14 |
+| F8 | 1 | **The twin tin made fair:** the ST rolls a d6 before play for which tin holds the cookies; a nose (Perception 4) can tell. The author's "the hard way" and obstacle 4 are kept | PT H1-9 |
+| F9 | 1 | **The human's water run:** "A heist doesn't last ninety minutes". The next run comes at Alert 7, or on a Mid-Heist Complication 3: 2 rounds to the sink, 1 filling a glass, lights on, Stealth 2 | PT H1-12 |
+| F10 | 1 | New intel item: the bottle cap on the floor, which ties to the cat's Weakness | PT H1-8 |
+| F11 | 1 | Escapes: **E1** back across past the cat (Stealth, opposed · Tactics 3). **E2** the cookie is crumbly and the way out is a squeeze (Engineering 2 · Acrobatics 2 · or leave the crumbs: incomplete loot). A Crumb/Trinket fits a squeeze (Ch 12) | PT H1-13 |
+| F12 | 2 | **Unknown moved between entry and objective:** the cleaners are upstairs doing the corner office (cart in the doorway, a vacuum, headphones). They're invisible from the entry, which answers "why not seen at the Score". Obstacle order is now 1 sensors · 2 guard · 3 (Unknown) cleaners · 4 drawer. They finish 6 rounds after the crew reaches the upper floor, then move down, park the cart across the vent and prop the service door. The author's "cart across the vent" line becomes **E2** | PT H2 I-14; D6 |
+| F13 | 2 | **Map and entries:** two floors. Entries are the vent (A) and the gap under the service door (B). The two routes up are the stairs and a cable riser that comes up inside the corner office. There are two sensor beams | PT H2 I-15, I-16 |
+| F14 | 2 | **Guard loop:** 28 squares, about 5 rounds, from the stair landing. It knows someone's inside but not where until it spots them (Ch 16). The Ch 14 lap roll applies; its "off the loop" check is the ground floor's east end | PT H2 I-11 |
+| F15 | 2 | **Difficulties:** 1 Stealth (3), or jam an emitter with Engineering (3), one beam per roll. 2 Stealth or Brawl, opposed; Persuasion (4), not the Face; or a bribe. 3 Stealth (1), Athletics/Tactics (2) or Acrobatics (2). 4 Engineering (3), or Athletics (3) for +1 Alert. Escapes: **E1** back through the beams; **E2** out the propped service door past the cleaners. New intel: where the riser comes out | PT H2 I-3; D6 |
+| F16 | 3 | **Map and entries:** the gap in the loading-dock door (A, obstacle 1) or under the front door by the parrot (B). Both routes still meet at least three obstacles. The bin is behind the counter, with one narrow approach past the tank. Shelves are 6 tall | PT H5 H-1 (all heists) |
+| F17 | 3 | **Difficulties:** 1 squeeze (watched, Acrobatics 2) and hush the insects (Persuasion/Intimidation 2). 2 Stealth, opposed (Perception 3, within 3 squares), or the snake's Weakness, lid or heat lamp (Engineering **4**). 3 a cracker (Persuasion 1), the cage cover (Acrobatics 2), or Stealth, opposed. 4 Persuasion/Deception (3), or Intimidation (3) for +1 Alert. Escapes: **E1** back past the tank · **E2** the cricket won't stop chirping. New intel: the cover, the crackers, the heat lamp | Sim (below) |
+| F18 | 4 | **Map and entries:** the book-return slot (A) and the staff-door gap (B). Two stairwells and the dumbwaiter line up floor to floor. The guard's web sits in the lobby corner, the cat on the landing, and the case in the reference room | PT H5 H-1 (all heists) |
+| F19 | 4 | **Librarian procedure:** 1d6 per obstacle, and per round in turn order, for which floor they're on; on a floor they walk the centre aisle. The cat is a House Cat that wakes on its Escalation | PT H5 H-3 (same problem) |
+| F20 | 4 | **The unknown placed:** the rival crew (5 dice at what they do) is hiding in the reference room, waiting for someone else to open the antique lock; they step out when it opens. The author's order is kept (3 case, 4 crew). The case is named the **key lock**, so Bypass doesn't help (C11). Escapes: **E1** the dumbwaiter (Engineering 3) or the stairs (Athletics 3) · **E2** the lobby, where the book goes out the return slot (Engineering 3) | PT H2 I-12; Sim |
+| F21 | 5 | **Map and entries:** the alley vent behind the bar (A) and the gap under the back door (B). The dining room reaches the kitchen by the swinging door or the serving hatch. The kitchen reaches the corridor by the rat's door or a pipe gap behind the dishwasher, so both routes pass the rat (Ch 14 "two routes") | PT H5 H-1 |
+| F22 | 5 | **Unpredictable staff:** a 1d6 per staffer each round (outside turn order, each exchange): 1–2 dining · 3–4 kitchen · 5 corridor · 6 trash run, which props the back door | PT H5 H-3 |
+| F23 | 5 | **Obstacles 2/3 overlap fixed:** "Also, the rat." is removed from obstacle 2. The kitchen is now smells + a mopped floor: Stealth (2) under the dishwasher's hum, (4) if a staffer is in, and the wet floor is double movement or Acrobatics (2). The rat is obstacle 3 only | PT H5 H-4 |
+| F24 | 5 | **The rat's deal:** he wants the new snap trap gone (it caught his cousin) and respect. One pitch, Persuasion opposed by Haggle 4; the trap, food or a favour owed is −1 Difficulty. Success: passage. Partial: jam the trap first (Engineering 3). Failure: he blocks the way and it's a fight. The deal goes bad at a fight, or if the crew leaves with the trap set: +2 Alert **once**, then Brawl 4 | PT H5 H-7 |
+| F25 | 5 | **Fair wake-up:** the sleeper wakes at the first noise within 4 squares of the break room (a Partial or Failure there, a sneeze, the sticking door), or at Alert 5 (they stir). Then they head for their phone on the office desk. This replaces "wakes exactly when the crew is in the office" | PT H5 H-5 |
+| F26 | 5 | Obstacle 4: the notebook won't fit under the office door, so ease it (Engineering 3) or shove it (Athletics 3, +1 Alert). Escapes: **E1** the corridor (Stealth/Deception 4) · **E2** the back door, which the notebook won't fit under (Engineering 3 · Athletics 3 · or wait for a trash run), plus the trap if it's owed. New intel: the trap, the mopped floor | PT H5 H-8, H-9 |
+
+### F2. Simulator
+
+- `sim/heists.mjs` now matches Ch 19: Difficulties, approaches and intel. Each heist carries its own `escape` (E1–E2); `makeEscape` uses them (first `escapeCount`, plus `escapeDiffShift`) and falls back to the generic pair only when a heist has none.
+- Heist 2 is reordered (cleaners before the drawer). The `office-cleaners-first` and `petstore-wedge-lid` tweaks are now idempotent; the P4H tweaks were already folded into the data. `assumed` flags are gone except in the generic fallback. What isn't modelled is listed in `note` fields: the staff table, the offer discount, the sleeper beyond the loud shove, and the crumbs option.
+- P0–P4H package logic is unchanged. Three content numbers were set by simulation, so the heists stay on P4H's targets.
+- The Pet Store's Weakness approach is Engineering 4, not 3. At 3 it lifted the store to 83%; BALANCE §5 predicted this.
+- A failed rat pitch is a fight, not a sneak. With a sneak (Stealth vs Perception 3), the Restaurant reached 85%.
+- The Library's rival crew comes after the case. Before it, the Library fell to 39%.
+
+P4H at 5,000 runs, win rate, v4.6 data → v4.7 data:
+
+| Heist | Target | v4.6 data | v4.7 data |
+|---|---|---|---|
+| Cookie | Easy ~90 | 88.4% | 90.3% |
+| Office | Standard ~75 | 80.8% | 76.5% |
+| Pet Store | Standard ~75 | 72.9% | 77.6% |
+| Library | Hard | 46.1% | 49.1% |
+| Restaurant | Hard | 64.6% | 65.0% |
+
+The Hard average is 57% (target 55–60). The Restaurant's Loss rate rises from 0.3% to 2.5%. `npm test` passes.

@@ -4,7 +4,8 @@
     <p class="chapter-num">Chapter 16</p>
     <h2>Creature Compendium</h2>
   </header>
-  <p class="opener">Every major threat has a stat block: what it rolls, how fast it moves in squares, how fast it escalates, and how to run it. When a creature acts against the crew, roll the listed pool and count 5+; that’s what the crew is up against.</p>
+  <p class="opener">Every major threat has a stat block: what it rolls, how fast it moves in squares, how fast it escalates, and how to run it. When a creature acts against the crew, roll the listed pool and count 5+; that’s what the crew is up against. An Escalation step names an Alert level, and Full Alert counts as every step at once — at a low Limit, a creature can go straight from asleep to hunting.</p>
+  <p><strong>Driving one off.</strong> Spiders don’t win fights with cats; they end them. Clear a creature’s obstacle with Brawl or Intimidation and it backs off for the rest of that obstacle: no attacks, no +X there. If it roams, it’s back at the next one, sulking. Fights are loud: every roll of one that lands is +1 Alert, and a lost one is a Loud Failure.</p>
 
   <article class="statblock" id="cr-house-cat">
     <figure class="art creature" data-art="creature-cat"></figure>
@@ -50,7 +51,7 @@
       <div><dt>Alert Contribution</dt><dd>+1 per round in pursuit</dd></div>
       <div><dt>Speed</dt><dd>4 (slow, tireless)</dd></div>
     </dl>
-    <p class="pools">Navigation 2 · Pursuit 3</p>
+    <p class="pools">Navigation 2 · Pursuit 3 (its attack: whatever it catches takes the hit)</p>
     <dl class="traits">
       <dt>Passive</dt><dd>follows a programmed route. Predictable, loud, covers the same ground on a loop.</dd>
       <dt>Senses</dt><dd>notices nothing. Navigates by bumping into things.</dd>
@@ -82,15 +83,17 @@
     <h3>Guard Spider <span class="epithet">“Professional. Unfortunately.”</span></h3>
     <dl class="stats">
       <div><dt>Threat Level</dt><dd>High</dd></div>
-      <div><dt>Alert Contribution</dt><dd>+1 per round aware, +2 if it calls for backup</dd></div>
+      <div><dt>Alert Contribution</dt><dd>+1 per round aware</dd></div>
       <div><dt>Speed</dt><dd>6</dd></div>
     </dl>
     <p class="pools">Perception 4 · Brawl 3 · Stealth 2 · Deception 1</p>
     <dl class="traits">
       <dt>Passive</dt><dd>usually hired by someone who knew a heist was possible. Patrols actively.</dd>
-      <dt>Note</dt><dd>cannot be charmed by the Face — professional courtesy. Raises the Alert by 1 the moment it spots the crew.</dd>
-      <dt>Weakness</dt><dd>bribery (the crew must produce something valuable on the spot), the Grifter’s Decoy (works once), the Bruiser (works, but loudly).</dd>
-      <dt>Note</dt><dd>guard spiders aren’t evil. They’re working. The crew could try talking to one. The Difficulty is 4. Worth one attempt.</dd>
+      <dt>Senses</dt><dd>spots movement within 6 squares in line of sight.</dd>
+      <dt>Escalation</dt><dd>aware the moment it spots the crew: +1 Alert (its “spotted,” not an extra), then +1 a round, and it follows the crew. Aware lasts the heist, unless it’s paid off.</dd>
+      <dt>Note</dt><dd>cannot be charmed by the Face — professional courtesy. Fast Talk and Deception still work.</dd>
+      <dt>Weakness</dt><dd>bribery (the crew must produce something valuable on the spot), the Grifter’s Decoy (works once), the Bruiser (works, but loudly — and a beaten guard calls for backup: a fresh one, already aware, takes its post).</dd>
+      <dt>Note</dt><dd>guard spiders aren’t evil. They’re working. Anyone but the Face could try talking to one. The Difficulty is 4. Worth one attempt.</dd>
     </dl>
   </article>
 
@@ -155,7 +158,7 @@
     </dl>
     <p class="pools">Perception 5 · Spray (Athletics) 5</p>
     <dl class="traits">
-      <dt>Passive</dt><dd>only appears once the Alert has reached Lockdown (7+), and only if the ST decides the humans called someone.</dd>
+      <dt>Passive</dt><dd>only appears once the Alert has reached Lockdown (7+) or Full Alert, and only if the ST decides the humans called someone.</dd>
       <dt>Senses</dt><dd>a flashlight and a professional’s habit of checking corners.</dd>
       <dt>Weakness</dt><dd>can’t fit anywhere small; leaves once the job looks done.</dd>
       <dt>Note</dt><dd>a Spray that lands drops a Vitality level; a spider caught in the open by one is Out.</dd>
@@ -178,5 +181,22 @@
     </dl>
   </article>
 
-  <p class="span-all">Other threats in the ready-to-run heists use what’s already here: the library cat is a House Cat; the librarian, restaurant staff and cleaning crew are Human Obstacles (Ch 15); a rival crew is built like the players’ spiders.</p>
+  <article class="statblock" id="cr-human">
+    <h3>Human <span class="epithet">“Ten Thousand Times Your Size”</span></h3>
+    <dl class="stats">
+      <div><dt>Threat Level</dt><dd>Low (asleep) to High (broom)</dd></div>
+      <div><dt>Alert Contribution</dt><dd>none of its own</dd></div>
+      <div><dt>Speed</dt><dd>10</dd></div>
+    </dl>
+    <p class="pools">Swat 3 · Perception 3 (its own checks only — a Decoy, a surprise)</p>
+    <dl class="traits">
+      <dt>Passive</dt><dd>sleeping, distracted, alert or armed with a broom — its Chapter 15 row. You roll against that row’s Difficulty; it never rolls to spot you.</dd>
+      <dt>Senses</dt><dd>sees anything in its room not in cover. A sleeper only hears.</dd>
+      <dt>Escalation</dt><dd>stirs at 5; up with the lights on at 7 or Full Alert. Its row stays the same.</dd>
+      <dt>Note</dt><dd>a glimpse of a spider is “spotted” (+1); loot moving on its own is a confirmed alert (+2). Fail a roll within its reach and you’re swatted (a hit, Swat 3). A Critical spider it hits ends up under a glass: Out.</dd>
+      <dt>Weakness</dt><dd>its phone, the TV, and a deep conviction that it imagined you.</dd>
+    </dl>
+  </article>
+
+  <p class="span-all">Other threats in the ready-to-run heists use what’s already here: the library cat is a House Cat; the librarian, restaurant staff and cleaning crew are Humans, at their Chapter 15 Difficulty; a rival crew is built like the players’ spiders.</p>
 </section>

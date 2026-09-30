@@ -327,3 +327,39 @@ Other levers tried at 1,000 runs per heist and rejected:
 - Difficulty +1 with 5–6 Successes: Standard 95%, Hard 97%.
 - A +1/round Alert Contribution for humans: with two rolls per obstacle it sends Hard to ~20%.
 - Crew-wide rolls where every spider's Alert counts (the strict reading): only 3–4 pts harder than C4, and it contradicts the group-check fix the playtests asked for.
+
+## 11. Package P5 — the v4.7 rules rulings (REVIEW.md Part E)
+
+P5 is P4H plus every Part E ruling that changes a roll the simulator makes. Each is a `pkg: true` parameter whose default is the v4.6 behaviour, so P0–P4H are unchanged (P4H still reproduces 87.9 / 76.7 / 55.5).
+
+| Parameter (P5 value) | Ruling | Part E |
+|---|---|---|
+| `silkStart: "base+1"` | Silk = WIT + NERVE + 1, without the species bonus | E10 |
+| `stallClock: 3` | A Mid-Heist Complication when the crew starts a third round at one obstacle, with the new Effect column | E14, E25 |
+| `lootCarry: "sled"` | Treasure: 1 SP silk sled, or an extra threat round at the first Escape obstacle | E5 |
+| `passChecks: "partial"` | A Partial passes a pass/fail check (Allergic to Dust, Fear of Vacuums, That All You Got?) | E12 |
+| `guardRules: "paid"` | A bribed Guard Spider stops being aware | E24 |
+| `improviseAttr: "skill"` | Improvise uses the new Skill's own Attribute | E20 |
+| `wolfShrug: true`, `rerollFix: true` | Run It Again works on shrug-offs; rerolls reroll every non-Success die (the v4.6 sim left 4s) | E7 |
+| `showOffRule: "plus1"` | Show-Off: Difficulty 4, or +1 if already 4+ | E13 |
+| `earlyWarningAll: true` | Early Warning reads any threat at the obstacle | E19 |
+
+`node sim/packages.mjs --packages P4H,P5 --runs 5000 --seed 1`:
+
+| Heist data | P4H easy · std · hard | P5 easy · std · hard | P5 Hard Loss |
+|---|---|---|---|
+| v4.6 Chapter 19 (committed `heists.mjs`) | 87.9 · 76.7 · 55.5% | **88.6 · 78.8 · 57.0%** | 0.11% |
+| v4.7 Chapter 19 draft (working tree, Part F) | 89.2 · 75.7 · 57.9% | **89.5 · 77.7 · 59.3%** | 1.86% |
+
+On the v4.6 heists: Critical 18.0%, Failure 9.6%, 82% of spiders spend at least half their Silk, mean starting Silk 5.9 (unchanged).
+
+**Each ruling's weight** (P5 minus that one ruling, 2,000 runs per heist, v4.6 heists; Easy / Std / Hard points): pass/fail checks +1.1 / +0.7 / +1.8; starting Silk +0.6 / +0.5 / −0.1; the clock −0.5 / −0.7 / −1.0; Show-Off 0 / −0.6 / −0.5; rerolls 0 / +0.2 / +0.3; Improvise's Attribute 0 / +0.1 / +0.4; guard pay-off 0 / +0.1 / 0; Treasure carrying 0 / 0 / −0.2; Wolf on shrug-offs and Early Warning ±0.1.
+
+**Tested and rejected** (the parameters stay in `params.mjs` for the record):
+- `creatureDefeat: "critical"` — a Brawl or Intimidation Critical drives a creature off for the whole heist: Office +14 pts (the aware guard is its whole difficulty). v4.7 drives a creature off for its obstacle only, which the sim already did.
+- `guardRules: "full"` — backup at Alert 7 or Full Alert, +2: at Limit 8 that is Full Alert almost every time. Office −7.
+- `faceVsGuard: true` — Fast Talk can't distract the guard: Office −3.6. v4.7 reads "charm" as Persuasion only.
+- `cellarPhase: true` — a Cellar Ghost's Phase Through brings a crewmate: Pet Store +1.4. v4.7 gives the rider to the loot instead.
+- `stallEvery: 2` — the clock again on round 5: no measurable effect.
+
+**Loss** stays rare by design (REVIEW E44): 0.1% at Hard on the v4.6 heists. The v4.7 Chapter 19 Escapes raise it to about 2% (Restaurant 3.5%).

@@ -227,3 +227,23 @@ test("every package runs whole heists reproducibly", () => {
     }
   }
 });
+
+test("P5 (v4.7): starting Silk ignores species bonuses; the clock's complication moves Stealth; a paid guard stops counting", () => {
+  const crew = inertCrew();
+  const base = new HeistRun(getHeist("office"), crew, defaultParams(), new FixedRng(1), new Recorder());
+  const p5 = new HeistRun(getHeist("office"), crew, packageParams("P5"), new FixedRng(1), new Recorder());
+  for (let i = 0; i < crew.length; i++) {
+    assert.equal(base.slots[i].cur.silk, crew[i].attrs.wit + crew[i].attrs.nerve);
+    assert.equal(p5.slots[i].cur.silk, crew[i].base.wit + crew[i].base.nerve + 1);
+  }
+  // FixedRng(3) rolls a 3 on the complication table: Stealth +1 this round and next.
+  const run = parkedRun(3, { stallClock: 3 });
+  run.stallComplication();
+  assert.equal(run.difficulty(run.present()[0], stealthRoll(3)).d, 4);
+  // A bribed guard is no longer active (and adds no +X).
+  const g = parkedRun(1, { guardRules: "paid" });
+  g.cs["guard-spider"].forced = true;
+  assert.equal(g.active("guard-spider"), true);
+  g.cs["guard-spider"].paid = true;
+  assert.equal(g.active("guard-spider"), false);
+});

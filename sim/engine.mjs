@@ -150,7 +150,8 @@ export class HeistRun {
 
   makeSpider(slot, replacement) {
     const t = slot.tpl;
-    const silk = replacement ? Math.floor(t.silkMax / 2) : t.silkMax;
+    const max = this.P.silkStart === "base+1" ? t.base.wit + t.base.nerve + 1 : t.silkMax;
+    const silk = replacement ? Math.floor(max / 2) : max;
     const sp = {
       slot, tpl: t, name: t.name + (replacement ? ` II` : ""), role: t.role, species: t.species, flaw: t.flaw,
       perks: new Set(t.perks), attrs: t.attrs, skills: t.skills,
@@ -324,6 +325,13 @@ export class HeistRun {
       this.rec.use("creature:parrot-shriek");
       if (before < this.limit && this.alert >= this.limit) this.rec.issue("PARROT_SHRIEK", `${this.h.id} ${this.obs?.id}: Alert ${before} → ${this.alert} (Limit ${this.limit})`);
     }
+    // P5 Guard Spider: an aware guard calls for backup at Alert 7 (or Full Alert): +2 once.
+    const gd = this.cs["guard-spider"];
+    if (this.P.guardRules === "full" && gd && !gd.backup && this.escAlert >= 7 && this.active("guard-spider")) {
+      gd.backup = true;
+      this.rec.inc("guardBackup");
+      this.addAlert(2, "backup", { spike: true });
+    }
     // Exterminator: only at Lockdown, only if the ST calls him.
     const ex = this.cs["the-exterminator"];
     if (ex && !ex.spawned && this.alert >= 7) { ex.spawned = true; ex.forced = true; this.rec.use("creature:exterminator"); }
@@ -335,6 +343,7 @@ export class HeistRun {
   active(id) {
     const c = CREATURES[id], st = this.cs[id];
     if (!st.spawned) return false;
+    if (st.paid || (st.driven && !this.lockedFull)) return false;
     if (st.forced || st.textAwake) return true;
     const thr = this.P.creatureWake === "hunt" ? c.hunt : c.wake;
     if (this.escAlert >= thr) {
@@ -414,7 +423,15 @@ export class HeistRun {
     let dS = 0;
     if (dPool <= 0) rec.issue("DEFENSE_POOL_ZERO", `${this.where(target)} defends vs ${atk.label} with pool ${dPool}`);
     else dS = this.succ(rng.dice(dPool));
-    const margin = aS - dS;
+    let margin = aS - dS;
+    const lands = m => m > 0 || (m === 0 && this.P.hitTies === "attacker");
+    // P5: a shrug-off is a physical-confrontation roll — Run It Again rerolls the dice that didn't succeed.
+    if (this.P.wolfShrug && lands(margin) && dPool > dS && target.species === "wolf" && !this.usedScene(target, "wolf")) {
+      this.markScene(target, "wolf");
+      dS += this.succ(rng.dice(dPool - dS));
+      margin = aS - dS;
+      rec.use("species:wolf", !lands(margin));
+    }
     this.log(`${atk.label} (${atk.pool} dice: ${aS}) hits ${target.name} (defence ${dPool}: ${dS})`);
     rec.inc("hits");
     if (margin < 0 || (margin === 0 && this.P.hitTies !== "attacker")) { rec.inc("hitsShrugged"); return; }
@@ -429,7 +446,7 @@ export class HeistRun {
     if (nv === CRITICAL && target.perks.has("that-all-you-got")) {
       const pool = target.attrs.body + target.skills.endurance - this.pen(target);
       const s = pool > 0 ? this.succ(rng.dice(pool)) : 0;
-      const ok = s >= 3;
+      const ok = s >= (this.P.passChecks === "partial" ? partialAt(3, this.P.partialRule) : 3);
       rec.use("perk:that-all-you-got", ok);
       if (ok) nv = HURT;
     }
@@ -489,12 +506,15 @@ export class HeistRun {
     if (ch.bypass) d -= 1;
     if (this.P.preLineRule === "minus1" && this.preLines.has(obs.id)) d -= 1;
     if (showOff) {
-      if (d > 4) this.rec.issue("SHOWOFF_EASIER", this.where(sp) + ` — D${d} → D4`);
-      d = 4;
+      if (this.P.showOffRule === "plus1" && d >= 4) d += 1;
+      else {
+        if (d > 4) this.rec.issue("SHOWOFF_EASIER", this.where(sp) + ` — D${d} → D4`);
+        d = 4;
+      }
     }
     const skill = ch.skill;
     const st = this.band();
-    d += skill === "stealth" ? st.stealth : st.all;   // band.stealth is the Stealth total (as module/helpers/dice.mjs uses it)
+    d += skill === "stealth" ? st.stealth + this.stallStealth() : st.all;   // band.stealth is the Stealth total (as module/helpers/dice.mjs uses it)
     if (skill === "acrobatics" && obs.tags.includes("height") && !ch.noHeight) {
       if (sp.perks.has("dont-look-down")) this.rec.use("perk:dont-look-down", true);
       else d += 1;
@@ -574,7 +594,7 @@ export class HeistRun {
     if (P.bypassRule === "roll" && !ch.jury && !improvise && skill === "engineering" && sp.role === "tinkerer" && !this.usedScene(sp, "thing")
       && mech && (!obs.tags.includes("complexLock") || P.bypassComplexLocks)) ch.bypass = true;
     const st = this.band();
-    let mod = (skill === "stealth" ? st.stealth : st.all) + (improvise ? 1 : 0) - (ch.bypass ? 1 : 0);
+    let mod = (skill === "stealth" ? st.stealth + this.stallStealth() : st.all) + (improvise ? 1 : 0) - (ch.bypass ? 1 : 0);
     if (P.preLineRule === "minus1" && this.preLines.has(obs.id)) mod -= 1;
     if (skill === "acrobatics" && obs.tags.includes("height") && !sp.perks.has("dont-look-down")) mod += 1;
     if (skill === "stealth" && sp.flaw === "loud" && this.alert >= 5) mod += 1;
@@ -683,7 +703,7 @@ export class HeistRun {
 
     // Flaws that fire on a roll
     let showOff = false;
-    if (this.flawDue(sp, "show-off")) { showOff = ch.appr.diff !== 4; this.fireFlaw(sp); }
+    if (this.flawDue(sp, "show-off")) { showOff = ch.appr.diff !== 4 || P.showOffRule === "plus1"; this.fireFlaw(sp); }
     if (this.flawDue(sp, "dramatic")) {
       this.fireFlaw(sp);
       this.earn(sp, "flawMoment", 1);
@@ -784,7 +804,7 @@ export class HeistRun {
     }
     const classify = succ => (m != null ? (succ > oppS ? "success" : "failure") : this.classify(succ, d));
     const rerollFailed = (maxDice) => {
-      const fails = faces.filter(f => f < 4).length;
+      const fails = faces.filter(f => f < (P.rerollFix ? this.face : 4)).length;
       const k = Math.min(maxDice, fails);
       const s2 = s - 0 + this.succ(rng.dice(k));
       return s2;
@@ -856,7 +876,7 @@ export class HeistRun {
     if (ch.overconfident && RANK[res] <= RANK.partial) { this.earn(sp, "flawMoment", 1); rec.use("flaw:overconfident", true); }
     if (showOff) {
       if (res === "critical") { this.earn(sp, "showOff", 1); rec.use("flaw:show-off", true); }
-      else if (RANK[res] <= RANK.partial && ch.appr.diff < 4) { this.earn(sp, "flawMoment", 1); rec.use("flaw:show-off", true); }
+      else if (RANK[res] <= RANK.partial && (ch.appr.diff < 4 || P.showOffRule === "plus1")) { this.earn(sp, "flawMoment", 1); rec.use("flaw:show-off", true); }
     }
 
     rec.results[res]++;
@@ -873,6 +893,9 @@ export class HeistRun {
     const g = this.group;
     if (g) g.rolls.push({ sp, res, d, baseD: ch.jury ? 2 : ch.appr.diff, skill, loud: ch.appr.loud ?? 0 });
     if (res === "critical" && !g) this.critDrop(d, sp, ch.jury ? 2 : ch.appr.diff);
+    if (P.creatureDefeat === "critical" && res === "critical" && (skill === "brawl" || skill === "intimidation") && ch.appr.opposed && obs.threats?.length) {
+      for (const id of obs.threats) if (this.cs[id] && !this.cs[id].driven) { this.cs[id].driven = true; rec.inc("creatureDrivenOff"); }
+    }
     if (res === "partial") {
       if (!g) this.partialComplication(sp);
       else if (P.partialCost === "setback") sp.setback += 1;
@@ -1132,7 +1155,7 @@ export class HeistRun {
     if (!obs.known && crew.some(sp => sp.perks.has("read-the-room")) && (obs.kind === "social" || obs.approaches.some(a => a.skill === "persuasion"))) { obs.known = true; rec.use("perk:read-the-room", true); }
     if (!obs.known && mech && crew.some(sp => sp.perks.has("i-see-how-this-works"))) { obs.known = true; rec.use("perk:i-see-how-this-works", true); }
     if (!obs.known && obs.tags.includes("sensor") && crew.some(sp => sp.perks.has("spider-sense-sort-of"))) { obs.known = true; rec.use("perk:spider-sense-sort-of", true); }
-    if (!obs.known && this.activeThreatsHere().length && crew.some(sp => sp.perks.has("early-warning"))) { obs.known = true; rec.use("perk:early-warning", true); }
+    if (!obs.known && (this.activeThreatsHere().length || (P.earlyWarningAll && obs.threats?.length)) && crew.some(sp => sp.perks.has("early-warning"))) { obs.known = true; rec.use("perk:early-warning", true); }
     const cs = crew.find(sp => sp.perks.has("counter-surveillance"));
     if (!obs.known && cs && this.hasNPCs()) {
       const s = this.succ(rng.dice(Math.max(0, cs.attrs.wit + cs.skills.perception - this.pen(cs))));
@@ -1142,16 +1165,32 @@ export class HeistRun {
     if (P.midHeistComplications > 0 && rng.chance(P.midHeistComplications)) this.midComplication();
 
     this.round = 0;
+    this.stallMod = null;
     this.log(`— ${obs.name}${obs.known ? " (intel)" : ""}; crew: ${this.present().map(sp => sp.name + "/" + sp.role + (sp.vit ? "/" + VIT_KEYS[sp.vit] : "")).join(", ")}`);
     obs.progress = 0;
+    // P5: Treasure is slow — a silk sled (1 SP), or an extra round at the first Escape obstacle.
+    if (P.lootCarry === "sled" && obs.phase === "escape" && !this.hauled && this.objectiveTaken && this.lootHolder
+      && (/Treasure/.test(this.h.loot) || this.h.difficulty === "hard")) {
+      this.hauled = true;
+      const payer = P.silkPolicy === "hoard" ? null : this.present().filter(sp => sp.silk >= 1).sort((a, b) => b.silk - a.silk)[0];
+      if (payer) { this.spend(payer, "sled", 1); rec.inc("lootSled"); }
+      else {
+        rec.inc("lootHaulRound");
+        this.round = 1; ro.rounds++;
+        this.threatPhase(false);
+        if (this.loss) return;
+      }
+    }
     let cleared = false;
     while (!cleared) {
       if (this.round >= P.maxRounds) { this.stuck(obs); break; }
       this.round++;
       ro.rounds++;
+      if (P.stallClock && (this.round === P.stallClock || (P.stallEvery > 0 && this.round > P.stallClock && (this.round - P.stallClock) % P.stallEvery === 0))) this.stallComplication();
       cleared = this.runRound(obs);
       if (this.loss) return;
       this.threatPhase(cleared);
+      if (this.stallMod && --this.stallMod.rounds <= 0) this.stallMod = null;
       if (this.loss) return;
       if (!this.fullAlert && this.alert >= this.limit) {
         this.fullAlert = true;
@@ -1217,13 +1256,45 @@ export class HeistRun {
       for (const sp of this.present()) {
         if (sp.flaw !== "fear-of-vacuums") continue;
         const s = this.succ(this.rng.dice(Math.max(0, sp.attrs.nerve - this.pen(sp))));
-        rec.use("flaw:fear-of-vacuums", s < 3);
-        if (s < 3) { sp.frozenFirstRound = true; this.earn(sp, "flawMoment", 1); }
+        const need = this.P.passChecks === "partial" ? partialAt(3, this.P.partialRule) : 3;
+        rec.use("flaw:fear-of-vacuums", s < need);
+        if (s < need) { sp.frozenFirstRound = true; this.earn(sp, "flawMoment", 1); }
       }
       this.vacuumSeen = true;
     }
     if (r === 6) this.addAlert(1, "complication");
   }
+
+  /** P5 clock: the Ch 20 Mid-Heist Complication (v4.7 effects), rolled when the crew starts round N at one obstacle. */
+  stallComplication() {
+    const r = this.rng.d6(), rec = this.rec;
+    rec.inc(`stall:${r}`);
+    if (r === 1) {
+      // The cat woke up: the nearest sleeping creature is active now; nothing asleep → +1 Alert.
+      const id = this.creatureIds.find(k => this.cs[k].spawned && Number.isFinite(CREATURES[k].wake) && CREATURES[k].perRound > 0 && !this.active(k) && !this.cs[k].driven && !this.cs[k].paid);
+      if (id) { this.cs[id].forced = true; rec.inc("stallWake"); } else this.addAlert(1, "complication");
+    } else if (r === 2) {
+      this.obs.known = true;                                       // a detail the crew didn't case
+    } else if (r === 3) {
+      this.stallMod = { mod: 1, rounds: 2 };                       // a human up for water: Stealth +1, this round and next
+    } else if (r === 4) {
+      for (const sp of this.present()) {
+        if (sp.flaw !== "fear-of-vacuums") continue;
+        const s = this.succ(this.rng.dice(Math.max(0, sp.attrs.nerve - this.pen(sp))));
+        const need = this.P.passChecks === "partial" ? partialAt(3, this.P.partialRule) : 3;
+        rec.use("flaw:fear-of-vacuums", s < need);
+        if (s < need) { sp.frozenNext = true; this.earn(sp, "flawMoment", 1); }
+      }
+      this.vacuumSeen = true;
+      this.stallMod = { mod: -1, rounds: 1 };                      // its roar covers you: Stealth −1 this round
+    } else if (r === 5) {
+      this.stallMod = { mod: 1, rounds: 1 };                       // phone lights the room: no cover this round (≈ Stealth +1)
+    } else {
+      this.addAlert(1, "complication");
+    }
+  }
+
+  stallStealth() { return this.stallMod ? this.stallMod.mod : 0; }
 
   /* -------------------------------------------------------- one round -- */
 
@@ -1236,6 +1307,7 @@ export class HeistRun {
     this.feedUsedRound = false;
     this.helpers = [];
     if (this.round === 1) for (const sp of crew) if (sp.frozenFirstRound) { sp.frozen = true; sp.frozenFirstRound = false; }
+    for (const sp of crew) if (sp.frozenNext) { sp.frozen = true; sp.frozenNext = false; }
 
     // Loot on the floor: someone spends their Action to grab it.
     if (this.lootDropped) {
@@ -1265,7 +1337,8 @@ export class HeistRun {
         const d = 3 + st.stealth + (sp.flaw === "loud" && this.alert >= 5 ? 1 : 0);
         const pool = sp.attrs.nerve + sp.skills.stealth - this.pen(sp);
         const s = pool > 0 ? this.succ(rng.dice(pool)) : 0;
-        if (s < d) { this.earn(sp, "flawMoment", 1); this.addAlert(1, "flaw", { crewAction: true }); }
+        const need = P.passChecks === "partial" ? partialAt(d, P.partialRule) : d;
+        if (s < need) { this.earn(sp, "flawMoment", 1); this.addAlert(1, "flaw", { crewAction: true }); }
       }
       if (this.flawDue(sp, "butterfingers") && this.lootHolder === sp) {
         this.fireFlaw(sp);
@@ -1280,7 +1353,8 @@ export class HeistRun {
     if (this.round === 1) {
       const threats = this.activeThreatsHere();
       const ft = crew.find(sp => sp.perks.has("fast-talk") && !this.usedScene(sp, "ft"));
-      if (ft && threats.length) { this.markScene(ft, "ft"); this.suppress([threats[0]], 1, "perk:fast-talk"); }
+      const ftT = P.faceVsGuard ? threats.filter(id => id !== "guard-spider") : threats;
+      if (ft && ftT.length) { this.markScene(ft, "ft"); this.suppress([ftT[0]], 1, "perk:fast-talk"); }
       const te = crew.find(sp => sp.perks.has("thunderous-entrance") && !this.usedScene(sp, "te"));
       if (te && threats.length) {
         this.markScene(te, "te");
@@ -1303,7 +1377,14 @@ export class HeistRun {
       for (const sp of unpassed) {
         if (!canAct(sp)) continue;
         const auto = this.autoPass(sp, obs);
-        if (auto) { sp.acted = true; sp.everActed = true; sp.passed = true; rec.use(auto, true); if (obs.tags.includes("climb") && sp.perks.has("silk-trail") && P.silkLineBypass) this.trailUp = true; }
+        if (auto) {
+          sp.acted = true; sp.everActed = true; sp.passed = true; rec.use(auto, true); if (obs.tags.includes("climb") && sp.perks.has("silk-trail") && P.silkLineBypass) this.trailUp = true;
+          // P5: a Cellar Spider's Phase Through brings one adjacent crewmate along.
+          if (auto === "sig:ghost" && sp.species === "cellar" && P.cellarPhase) {
+            const buddy = unpassed.find(b => b !== sp && !b.passed && !b.frozen);
+            if (buddy) { buddy.passed = true; rec.inc("cellarPhaseBuddy"); }
+          }
+        }
       }
     }
     const stillUnpassed = crew.filter(sp => !sp.passed);
@@ -1387,6 +1468,7 @@ export class HeistRun {
         if (useSingle) {
           rec.obstacle(obs.id).clearedBy[`roll:${ch.skill}${ch.improvise ? "(improvised)" : ""}`] = (rec.obstacle(obs.id).clearedBy[`roll:${ch.skill}${ch.improvise ? "(improvised)" : ""}`] ?? 0) + 1;
           if (obs.objective) this.takeObjective(sp);
+          if (P.guardRules && ch.skill === "persuasion" && obs.threats?.includes("guard-spider")) { this.cs["guard-spider"].paid = true; rec.inc("guardPaid"); }
           this.afterRound();
           return this.clear(obs, null, sp, true);
         }

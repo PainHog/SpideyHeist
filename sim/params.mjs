@@ -395,6 +395,86 @@ export const PARAMS = {
     title: "CLARIFIED — I Made a Thing: Bypass",
     doc: "auto = no roll (the book). roll = the Tinkerer's Engineering roll against that small mechanical obstacle at −1 Difficulty (uses the once-per-scene gadget).",
     ref: "Ch 5 The Tinkerer; playtest H2-I-12"
+  },
+
+  /* ---- v4.7 rulings (REVIEW.md Part E), package P5. Defaults = v4.6 behaviour. */
+  creatureDefeat: {
+    default: "none", alts: ["critical"], pkg: true,
+    title: "P5 — driving a creature off",
+    doc: "none = beating a creature drives it off for the rest of its obstacle (v4.7; the simulator's obstacle-clearing already does this). critical = a Brawl or Intimidation Critical drives it off for the rest of the heist until Full Alert (tested and rejected: Office +14 pts).",
+    ref: "Ch 16 intro (v4.7); playtest H2-I-7"
+  },
+  guardRules: {
+    default: false, alts: ["paid", "full"], pkg: true,
+    title: "P5 — Guard Spider pay-off (and backup)",
+    doc: "paid = a guard talked past with Persuasion (the bribe) stops being aware; its backup comes only when it loses a fight, which the loud Brawl approach already charges (+1 per successful roll). full = also calls for backup at Alert 7 or Full Alert: +2 once (tested and rejected: Office −7 pts).",
+    ref: "Ch 16 Guard Spider (v4.7); playtest H2-I-8"
+  },
+  silkStart: {
+    default: "witNerve", alts: ["base+1"], pkg: true,
+    title: "P5 — starting Silk",
+    doc: "witNerve = WIT + NERVE after species bonuses (the book). base+1 = WIT + NERVE + 1, not counting species bonuses.",
+    ref: "Ch 7 Step 8 (v4.7); playtests H1-21, H2-I-23"
+  },
+  stallClock: {
+    default: 0, alts: [3], pkg: true,
+    title: "P5 — the clock: a Mid-Heist Complication when the crew starts round N at one obstacle",
+    doc: "0 = never. 3 = roll the Ch 20 table (v4.7 effects) at the start of the third round at any obstacle.",
+    ref: "Ch 20 Mid-Heist Complication (v4.7); playtests H1-26, H2-I-11/I-29/I-36, H5-R-23/R-24"
+  },
+  stallEvery: {
+    default: 0, alts: [2], pkg: true,
+    title: "P5 — the clock repeats",
+    doc: "0 = once per obstacle. 2 = again every second round after stallClock (rounds 3 and 5).",
+    ref: "Ch 20 Mid-Heist Complication (v4.7)"
+  },
+  lootCarry: {
+    default: "none", alts: ["sled"], pkg: true,
+    title: "P5 — carrying Treasure",
+    doc: "none = loot size costs nothing. sled = Treasure is slow: the crew pays 1 SP for a silk sled, or spends one extra round (threats act) at the first Escape obstacle.",
+    ref: "Ch 12 The Loot (v4.7); playtests H1-13, H2-I-18, H5-H-9"
+  },
+  passChecks: {
+    default: "success", alts: ["partial"], pkg: true,
+    title: "P5 — pass/fail checks (Flaw checks, That All You Got?)",
+    doc: "success = the check needs the full Difficulty. partial = a Partial passes (Allergic to Dust, Fear of Vacuums, That All You Got?).",
+    ref: "Ch 2 (v4.7); playtests H1-23, H5-R-5"
+  },
+  wolfShrug: {
+    default: false, alts: [true], pkg: true,
+    title: "P5 — Run It Again on a shrug-off",
+    doc: "true = a Wolf Spider may reroll the dice that didn't succeed on a shrug-off it lost (once per scene, shared with its other uses).",
+    ref: "Ch 10 (v4.7); playtests H1-17, H2-I-28"
+  },
+  rerollFix: {
+    default: false, alts: [true], pkg: true,
+    title: "P5 — rerolls reroll every die that didn't succeed",
+    doc: "false = the v4.6 simulator rerolled only faces 1–3 (under 5–6 Successes a 4 stayed). true = every non-Success die.",
+    ref: "Ch 8 Reroll; Ch 4 Wolf Spider (v4.7 'keep the better result')"
+  },
+  showOffRule: {
+    default: "d4", alts: ["plus1"], pkg: true,
+    title: "P5 — Show-Off",
+    doc: "d4 = the roll becomes Difficulty 4. plus1 = Difficulty 4, or +1 if it was already 4 or more.",
+    ref: "Ch 7 Show-Off (v4.7); playtests H1-25, H2-I-26"
+  },
+  cellarPhase: {
+    default: false, alts: [true], pkg: true,
+    title: "P5 — a Cellar Spider's Phase Through brings one crewmate",
+    doc: "true = a Cellar Spider Ghost's Phase Through also takes one adjacent crewmate through (tested and rejected: Pet Store +1.4 pts; v4.7 gives the rider to the loot instead, which the simulator doesn't need to model).",
+    ref: "Ch 5 Phase Through (v4.7); playtest H2-I-22"
+  },
+  earlyWarningAll: {
+    default: false, alts: [true], pkg: true,
+    title: "P5 — Early Warning reads any threat on the map",
+    doc: "true = Early Warning works on any threat at the obstacle, not only an active one.",
+    ref: "Ch 5 Early Warning (v4.7); playtest H1-31"
+  },
+  faceVsGuard: {
+    default: false, alts: [true], pkg: true,
+    title: "P5 — Face Perks don't work on a Guard Spider",
+    doc: "true = Fast Talk can't distract a Guard Spider (tested and rejected: Office −3.6 pts; v4.7 reads 'charm' as Persuasion only).",
+    ref: "Ch 16 Guard Spider (v4.7); playtest H2-I-34"
   }
 };
 
@@ -444,6 +524,14 @@ export const PACKAGES = {
   P4H: {
     title: "P4 + heist fixes: Heist 2's guard spider starts aware; Heist 5's closing staff are Alert Humans (4)",
     rules: { successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy", heistTweaks: ["office-guard-aware", "restaurant-alert-staff"] }
+  },
+  P5: {
+    title: "v4.7: P4H + the Part E rulings that can move the dice (Guard Spider pay-off, starting Silk, the stall clock, Treasure carrying, pass/fail checks, Improvise's Attribute, Wolf on shrug-offs, rerolls, Show-Off, Early Warning)",
+    rules: {
+      successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy", heistTweaks: ["office-guard-aware", "restaurant-alert-staff"],
+      guardRules: "paid", silkStart: "base+1", stallClock: 3, lootCarry: "sled", passChecks: "partial",
+      improviseAttr: "skill", wolfShrug: true, rerollFix: true, showOffRule: "plus1", earlyWarningAll: true
+    }
   }
 };
 
