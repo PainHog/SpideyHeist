@@ -55,6 +55,20 @@ export const PARAMS = {
     doc: "true = on a Failure/Botch, an active threat present at the obstacle attacks the spider (Ch 10 Taking Hits). false = Failure only costs the +1 Alert.",
     ref: "Ch 2 'something gets worse'; Ch 10 Taking Hits"
   },
+  threatTurn: {
+    default: "onFailure",
+    alts: ["everyRound"],
+    title: "When threats attack",
+    doc: "onFailure = a threat lands a hit only as the 'something worse' of a failed roll. everyRound = in the threat phase of every round, each engaged threat (active at its own obstacle, hunting, or pursuing at Full Alert) attacks a spider still exposed (Ch 3 'then the ST runs the threats').",
+    ref: "Ch 3 Turn Order; Ch 10 Taking Hits; Ch 16 'When a creature acts against the crew'"
+  },
+  partialHit: {
+    default: false,
+    alts: [true],
+    title: "Can a Partial's complication be a hit?",
+    doc: "true = on a Partial next to an engaged threat, the threat also lands an attack (the ST's 'funniest complication that actually costs you something').",
+    ref: "Ch 2 Partial Success"
+  },
   humanAttackPool: {
     default: 0,
     alts: [3],
@@ -244,12 +258,69 @@ export const PARAMS = {
     doc: "Damage Control says 'the crew… once per heist'; Not Part of the Plan just says once per heist.",
     ref: "Ch 8 Spending Silk Points"
   },
+  activeBandStealth: {
+    default: 1,
+    alts: [0],
+    title: "Does the Stirring Stealth +1 continue through Active (5–6)?",
+    doc: "1 = yes (config.mjs; the Storyteller Note says the Stirring and Lockdown penalties stack at 7+). 0 = the Active row read literally: 'No roll penalty yet'.",
+    ref: "Ch 9 Alert Thresholds vs its Storyteller Note; Ch 21"
+  },
+  critAlertRule: {
+    default: "book",
+    alts: ["baseD3"],
+    fix: true,
+    title: "FIX EXPERIMENT — when a Critical lowers the Alert",
+    doc: "book = final Difficulty 2+ (ruling B28). baseD3 = only on a base Difficulty of 3+ (before reducers), at most once per obstacle, never after Full Alert (the playtests' proposed fix).",
+    ref: "Ch 2 Critical Success; playtest issues H1-16 / H2-I-13"
+  },
+  bonusDiceCap: {
+    default: 99,
+    alts: [3],
+    fix: true,
+    title: "FIX EXPERIMENT — cap on bonus dice from all non-Silk sources",
+    doc: "99 = no cap (the book). 3 = Assist, intel, Make a Scene, Tactical Feed, I Called It, Boost, Decoy… add at most +3 dice to one roll (playtest proposal).",
+    ref: "Ch 2 Assists; Ch 5; playtest issue H1-18"
+  },
+  spittingLimit: {
+    default: "none",
+    alts: ["scene"],
+    fix: true,
+    title: "FIX EXPERIMENT — Spitting Spider jam frequency",
+    doc: "none = no usage limit (as written). scene = once per scene like every other active species ability.",
+    ref: "Ch 4 Precision Application; playtest issue H2-I-10"
+  },
   crewComposition: {
     default: "distinct",
     alts: ["ch20"],
     title: "Crew building",
     doc: "distinct = five different Roles (the book: 'the crew wants variety'). ch20 = every spider rolled on the Ch 20 tables.",
     ref: "Ch 7; Ch 20"
+  }
+};
+
+/**
+ * Reading presets. `generous` reads every ambiguous rule in the crew's favour;
+ * `strict` reads every one against the crew. Neither changes an unambiguous
+ * rule, and neither turns on a FIX EXPERIMENT.
+ */
+export const PRESETS = {
+  generous: {
+    partialCost: "none", threatTurn: "onFailure", partialHit: false, creatureRolls: "static", creatureWake: "hunt", creatureScope: "obstacle",
+    creatureStaysActive: false, failureAttack: false, humanAttackPool: 0, fullAlertPursuit: 0,
+    maxRounds: 20, obstacleSteps: 1, intelValue: "allRolls", silkLineBypass: true, slipperyDoubleMove: true,
+    cleanFailAlert: 0, improviseAttr: "skill", sceneIs: "obstacle", spittingJamsLocks: true,
+    bypassComplexLocks: true, assistFromPassed: true, replacementResets: true, nptpScope: "spider",
+    lootOnOut: "pickup", escapeDiffShift: 0, spectacularFailure: 0.75, creativeSpecies: 0.6,
+    brilliantPlan: 0.8, flawTiming: "random", activeBandStealth: 0, groupRolls: "leader"
+  },
+  strict: {
+    partialCost: "alert", threatTurn: "everyRound", partialHit: true, creatureRolls: "opposed", creatureWake: "escalation", creatureScope: "location",
+    creatureStaysActive: true, failureAttack: true, humanAttackPool: 3, fullAlertPursuit: 4,
+    maxRounds: 5, obstacleSteps: 2, intelValue: "none", silkLineBypass: false, slipperyDoubleMove: false,
+    cleanFailAlert: 1, improviseAttr: "called", sceneIs: "phase", spittingJamsLocks: false,
+    bypassComplexLocks: false, assistFromPassed: false, replacementResets: false, nptpScope: "crew",
+    lootOnOut: "lost", escapeDiffShift: 1, spectacularFailure: 0, creativeSpecies: 0,
+    brilliantPlan: 0, flawTiming: "worst", activeBandStealth: 1, groupRolls: "individual"
   }
 };
 

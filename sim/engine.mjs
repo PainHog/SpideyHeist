@@ -191,6 +191,13 @@ export class HeistRun {
 
   /* ---------------------------------------------------------- alert -- */
 
+  /** Alert band modifiers (config.mjs), with the Active-band Stealth reading as a parameter. */
+  band() {
+    const st = HEISTY.getAlertState(this.alert, this.limit);
+    if (this.alert >= 5 && this.alert <= 6 && !this.P.activeBandStealth) return { ...st, stealth: 0 };
+    return st;
+  }
+
   get pressure() { return this.alert / this.limit; }
 
   /** Would +n push the location to Full Alert while the objective is still in play? */
@@ -239,8 +246,12 @@ export class HeistRun {
   }
 
   /** Critical Success: the only thing that lowers the Alert (Difficulty 2+). */
-  critDrop(d, sp) {
+  critDrop(d, sp, baseD) {
     if (alertForResult("critical", d) === 0) { this.rec.issue("CRIT_D1_NO_ALERT", this.where(sp)); return; }
+    if (this.P.critAlertRule === "baseD3") {
+      if (baseD < 3 || this.fullAlert || this.obs.critDropped) { this.rec.inc("critDropBlockedByFix"); return; }
+      this.obs.critDropped = true;
+    }
     if (this.alert <= 0) { this.rec.issue("CRIT_AT_ZERO_ALERT", this.where(sp)); return; }
     this.alert -= 1;
     this.rec.alert("critical", -1);
@@ -426,9 +437,8 @@ export class HeistRun {
       d = 4;
     }
     const skill = ch.skill;
-    const st = HEISTY.getAlertState(this.alert, this.limit);
-    d += st.all;
-    if (skill === "stealth") d += st.stealth;
+    const st = this.band();
+    d += skill === "stealth" ? st.stealth : st.all;   // band.stealth is the Stealth total (as module/helpers/dice.mjs uses it)
     if (skill === "acrobatics" && obs.tags.includes("height") && !ch.noHeight) {
       if (sp.perks.has("dont-look-down")) this.rec.use("perk:dont-look-down", true);
       else d += 1;
@@ -499,8 +509,8 @@ export class HeistRun {
     // Jury-Rig: Engineering at D2 on a small mechanical device / lock / sensor. Once per scene.
     if (!improvise && skill === "engineering" && sp.perks.has("jury-rig") && !this.usedScene(sp, "jury")
       && (this.obs.tags.includes("smallMech") || this.obs.tags.includes("lock") || this.obs.tags.includes("sensor")) && appr.diff > 2) ch.jury = true;
-    const st = HEISTY.getAlertState(this.alert, this.limit);
-    let d = (ch.jury ? 2 : appr.diff) + st.all + (skill === "stealth" ? st.stealth : 0) + (improvise ? 1 : 0);
+    const st = this.band();
+    let d = (ch.jury ? 2 : appr.diff) + (skill === "stealth" ? st.stealth : st.all) + (improvise ? 1 : 0);
     if (skill === "acrobatics" && this.obs.tags.includes("height") && !sp.perks.has("dont-look-down")) d += 1;
     if (skill === "stealth" && sp.flaw === "loud" && this.alert >= 5) d += 1;
     if (skill === "stealth" && sp.flaw === "arachnophobe-magnet" && this.obs.tags.includes("human")) d += 1;
@@ -610,6 +620,14 @@ export class HeistRun {
 
     // Pool: Attribute + Skill − Vitality + bonuses
     let n = this.basePool(sp, skill, ch.calledSkill) + this.knownBonus(sp, ch);
+    if (skill === "deception" || skill === "disguise") {
+      if (sp.methodActorObs === obs.id) rec.use("perk:method-actor");
+      if (sp.perks.has("the-long-con")) rec.use("perk:the-long-con");
+    }
+    if (skill === "persuasion" && sp.role === "face") {
+      const np = this.present().find(b2 => b2.perks.has("negotiating-position"));
+      if (np) rec.use("perk:negotiating-position");
+    }
     if (obs.known && !sp.intelUsed.has(obs.id)) { sp.intelUsed.add(obs.id); if (P.intelValue !== "none") rec.inc("intelDice"); }
     sp.setback = 0;
     sp.bonusNext = 0;
@@ -642,6 +660,11 @@ export class HeistRun {
       rec.inc("assistDice", got);
     } else if (uncertain) rec.issue("NO_ASSIST_HELPER", this.where(sp) + ` ${skill} pool ${n} vs D${d}`);
 
+    // FIX EXPERIMENT: cap on non-Silk bonus dice.
+    const base0 = this.basePool(sp, skill, ch.calledSkill);
+    if (n - base0 > P.bonusDiceCap) { rec.inc("bonusDiceCapped", n - base0 - P.bonusDiceCap); n = base0 + P.bonusDiceCap; }
+    rec.inc("bonusDiceSum", Math.max(0, n - base0));
+
     // Hopeless: nothing but a Clutch gets this through.
     const overclockBonus = skill === "engineering" && sp.perks.has("overclock") ? 1 : 0;
     if (n + sp.silk + overclockBonus + (helper ? 0 : 3) <= 0) rec.issue("HOPELESS_ROLL", this.where(sp) + ` ${skill} pool ${n}, ${sp.silk} SP`);
@@ -661,7 +684,6 @@ export class HeistRun {
     }
 
     rec.inc("poolSum", n); rec.inc("diffSum", d);
-    rec.inc(`nd:${n}/${d}`);
     // ------- the roll
     let faces = null, s = 0, res, oppS = 0;
     if (n <= 0) {
@@ -761,8 +783,11 @@ export class HeistRun {
       this.addAlert(1, "clutch", { crewAction: true });
       if (!this.fullAlert && before < this.limit && this.alert >= this.limit) rec.issue("CLUTCH_AT_LIMIT", this.where(sp));
     }
-    if (res === "critical") this.critDrop(d, sp);
-    if (res === "partial") this.partialComplication(sp);
+    if (res === "critical") this.critDrop(d, sp, ch.jury ? 2 : ch.appr.diff);
+    if (res === "partial") {
+      this.partialComplication(sp);
+      if (P.partialHit && this.attacker()) { rec.inc("partialHits"); this.threatAttack(sp); }
+    }
     if (res === "failure" || res === "botch" || res === "cleanfail") {
       sp.consecFail++;
       if (sp.consecFail === 3) rec.issue("REPEATED_FAILURE", this.where(sp) + ` ${skill} pool ${n} vs D${d}`);
@@ -1006,7 +1031,7 @@ export class HeistRun {
       ro.rounds++;
       cleared = this.runRound(obs);
       if (this.loss) return;
-      this.threatPhase();
+      this.threatPhase(cleared);
       if (this.loss) return;
       if (!this.fullAlert && this.alert >= this.limit) {
         this.fullAlert = true;
@@ -1116,8 +1141,8 @@ export class HeistRun {
       }
       if (this.flawDue(sp, "allergic-to-dust")) {
         this.fireFlaw(sp);
-        const st = HEISTY.getAlertState(this.alert, this.limit);
-        const d = 3 + st.all + st.stealth + (sp.flaw === "loud" && this.alert >= 5 ? 1 : 0);
+        const st = this.band();
+        const d = 3 + st.stealth + (sp.flaw === "loud" && this.alert >= 5 ? 1 : 0);
         const pool = sp.attrs.nerve + sp.skills.stealth - this.pen(sp);
         const s = pool > 0 ? countSuccesses(rng.dice(pool)) : 0;
         if (s < d) { this.earn(sp, "flawMoment", 1); this.addAlert(1, "flaw", { crewAction: true }); }
@@ -1316,9 +1341,10 @@ export class HeistRun {
       }
     }
     if (t.includes("sensor") || t.includes("smallMech")) {
-      const spit = idle.find(sp => sp.species === "spitting");
+      const spit = idle.find(sp => sp.species === "spitting" && (P.spittingLimit !== "scene" || !this.usedScene(sp, "spit")));
       if (spit && (t.includes("sensor") || P.spittingJamsLocks)) {
         spit.acted = true;
+        this.markScene(spit, "spit");
         if (++this.spitUses === 2) rec.issue("SPITTING_UNLIMITED", this.where(spit));
         this.species(spit, "species:spitting");
         return { method: "species:spitting", actor: spit };
@@ -1421,7 +1447,33 @@ export class HeistRun {
 
   /* ------------------------------------------------------ threat phase -- */
 
-  threatPhase() {
+  threatPhase(cleared = false) {
+    // Threats act on their own (param threatTurn = everyRound): each engaged attacker hits a spider still exposed.
+    if (this.P.threatTurn === "everyRound" && !cleared) {
+      const exposed = this.present().filter(sp => !sp.passed);
+      const pool = exposed.length ? exposed : [];
+      const seen = new Set();
+      for (const id of this.creatureIds) {
+        if (!pool.length || this.loss) break;
+        const c = CREATURES[id], st = this.cs[id];
+        if (!c.attack || !this.activeHere(id)) continue;
+        if (c.attackOnlyHunting && this.alert < c.hunt) continue;
+        if (c.attackOnlyBad && !st.bad) continue;
+        const engaged = this.obs.threats?.includes(id) || this.alert >= c.hunt || (this.obs.phase === "escape" && this.fullAlert);
+        if (!engaged) continue;
+        seen.add(id);
+        const live = pool.filter(sp => !sp.out);
+        if (!live.length) break;
+        const t = this.sceneBruiser && !this.sceneBruiser.out ? this.sceneBruiser : this.rng.pick(live);
+        this.rec.inc("threatTurnAttacks");
+        this.resolveHit(t, { id, pool: c.attack.pool, label: `${c.name} ${c.attack.label}` });
+      }
+      if (!seen.size && this.obs.phase === "escape" && this.fullAlert && this.P.fullAlertPursuit > 0) {
+        const live = pool.filter(sp => !sp.out);
+        if (live.length) { this.rec.inc("threatTurnAttacks"); this.resolveHit(this.rng.pick(live), { id: "pursuit", pool: this.P.fullAlertPursuit, label: "Full Alert pursuit" }); }
+      }
+      if (this.loss) return;
+    }
     for (const id of this.creatureIds) {
       const st = this.cs[id], c = CREATURES[id];
       if (st.suppressed > 0) { st.suppressed--; continue; }
