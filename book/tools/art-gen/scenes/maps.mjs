@@ -401,19 +401,20 @@ export function map_library() {
   s += patrol([[G.cx(3), G.cy(3)], [G.cx(12), G.cy(3)]], false);
   s += token(U.cx(9), U.cy(2), "H");
   s += paw(U.cx(3), U.cy(1));
-  // ground floor: the resident guard spider's web in the lobby's south-west corner, anchored to both walls
-  { const x0 = G.X(1), y0 = G.Y(6), R = 78; let w = "";
-    for (let k = 0; k <= 4; k++) { const a = -k * Math.PI / 8; w += `M${x0} ${y0}L${n(x0 + Math.cos(a) * R)} ${n(y0 + Math.sin(a) * R)}`; }
-    for (const rr of [22, 40, 58, 76]) { let d = ""; for (let k = 0; k <= 4; k++) { const a = -k * Math.PI / 8; d += `${k ? "L" : "M"}${n(x0 + Math.cos(a) * rr)} ${n(y0 + Math.sin(a) * rr)}`; } w += d; }
+  // ground floor: the resident guard spider's web at the foot of the east stairs, in the corner between the
+  // east wall (rows 3–4, solid brick) and the bottom step of the stairs (cols 13–14): it overlooks the lobby and both entries
+  { const x0 = G.X(15), y0 = G.Y(3), R = 78; let w = "";
+    for (let k = 0; k <= 4; k++) { const a = Math.PI / 2 + k * Math.PI / 8; w += `M${x0} ${y0}L${n(x0 + Math.cos(a) * R)} ${n(y0 + Math.sin(a) * R)}`; }
+    for (const rr of [22, 40, 58, 76]) { let d = ""; for (let k = 0; k <= 4; k++) { const a = Math.PI / 2 + k * Math.PI / 8; d += `${k ? "L" : "M"}${n(x0 + Math.cos(a) * rr)} ${n(y0 + Math.sin(a) * rr)}`; } w += d; }
     s += line(w, 1.6, C.plum, ` opacity=".85"`); }
-  s += token(G.cx(2), G.cy(5), "G");
+  s += token(G.cx(13), G.cy(4), "G");
   // escape: case → the dumbwaiter (down) … ground: dumbwaiter → the lobby → out the book-return slot
   s += route([[U.X(6), U.cy(5)], [U.X(9) + 4, U.cy(4)]]);
   s += route([[G.X(10) + 6, G.cy(4) + 8], [G.cx(10), G.cy(5)], [G.cx(7), G.cy(5)], [G.cx(7), G.Y(6) + 26]]);
   // callouts
   s += entry(G.cx(7), G.Y(7) + 24, "A", "u");
   s += entry(G.X(16) + 24, G.cy(5), "B", "l");
-  s += mark(G.cx(4), G.cy(5), "1");
+  s += mark(G.cx(11), G.cy(3), "1");
   s += mark(U.cx(7), U.cy(2), "2");
   s += mark(U.cx(6), U.cy(4), "3");
   s += mark(U.cx(2), U.cy(4), "4", true);

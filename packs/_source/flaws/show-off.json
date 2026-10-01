@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/crack.svg",
   "system": {
     "rollValue": 10,
-    "effect": "<p>Once per heist, the ST may make one of your rolls Difficulty 4 (or +1, if it was already 4 or more), because you chose the flashier approach; Alert penalties still apply on top. It pays your Flaw Moment if it costs you &mdash; or if you Critical anyway; the crowd appreciated it. Spend 1 SP to delay the trigger one round.</p><p><em>You'll take the flashier, harder approach. Sometimes it even works.</em></p>"
+    "effect": "<p>Once per heist, the ST may make one of your rolls Difficulty 4 (or +1, if it was already 4 or more), because you chose the flashier approach; Alert penalties still apply on top. It pays your Flaw Moment if it costs you (a Partial or a Failure) &mdash; or if you Critical anyway; the crowd appreciated it. Spend 1 SP to delay the trigger one round.</p><p><em>You'll take the flashier, harder approach. Sometimes it even works.</em></p>"
   }
 }

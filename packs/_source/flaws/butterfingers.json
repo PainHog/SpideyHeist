@@ -4,6 +4,6 @@
   "img": "systems/heisty-spideys/assets/icons/crack.svg",
   "system": {
     "rollValue": 7,
-    "effect": "<p>Once per heist, at a moment of the ST's choosing while you're holding an item or the loot, you lose your grip. It lands in a random adjacent square. Someone must use an Action to recover it before moving on. That's your Flaw Moment (+1 SP).</p><p><em>You will drop the thing. The important thing. At the important moment.</em></p>"
+    "effect": "<p>Once per heist, at a moment of the ST's choosing while you're holding an item or the loot, you lose your grip. Roll 1d6 for where it lands: 1&ndash;2 the square ahead of you (the way you were going), 3&ndash;4 the square to its left, 5&ndash;6 to its right &mdash; and if that square is lower, it falls there. Someone must use an Action to recover it before moving on. That's your Flaw Moment (+1 SP).</p><p><em>You will drop the thing. The important thing. At the important moment.</em></p>"
   }
 }

@@ -247,3 +247,37 @@ test("P5 (v4.7): starting Silk ignores species bonuses; the clock's complication
   g.cs["guard-spider"].paid = true;
   assert.equal(g.active("guard-spider"), false);
 });
+
+test("P6 (v4.8): the parrot shrieks only at a spider it sees, never under its cover; a beaten guard's backup holds its post", () => {
+  // Earlier packages are untouched by the P6 rulings.
+  for (const k of ["groupOpposed", "fullAlertPartial", "weaknessRule", "parrotSight", "guardBeaten", "assistSilk", "silkLineRule", "engagedRule"]) {
+    assert.ok(!(k in PACKAGES.P5.rules), `P5 has no ${k}`);
+    assert.ok(k in PACKAGES.P6.rules, `P6 sets ${k}`);
+  }
+  const to7 = run => { for (let i = 0; i < 7; i++) run.addAlert(1, "test"); };   // one at a time: no Damage Control
+  const at = (run, id) => { run.idx = run.seq.findIndex(o => o.id === id); run.obs = run.seq[run.idx]; run.round = 1; run.seenBy = new Set(); };
+  const store = () => new HeistRun(getHeist("petstore"), inertCrew(), packageParams("P6"), new FixedRng(1), new Recorder());
+  // Out of its sight (obstacle 2, the tank): Alert 7 brings no shriek.
+  let r = store(); at(r, "O2"); to7(r);
+  assert.equal(r.alert, 7);
+  assert.equal(r.cs["alert-parrot"].shrieked, false);
+  // At its own obstacle it sees the crew: +2 once (capped at the Limit, 8).
+  r = store(); at(r, "O3"); to7(r);
+  assert.equal(r.cs["alert-parrot"].shrieked, true);
+  assert.equal(r.alert, 8);
+  // Covered, it never shrieks.
+  r = store(); at(r, "O3"); r.cs["alert-parrot"].shut = true; to7(r);
+  assert.equal(r.alert, 7);
+  // Once repeating, it hears the whole shop floor: it counts at obstacle 4, not in the stockroom (obstacle 1).
+  r = store(); at(r, "O4"); assert.equal(r.isHere("alert-parrot"), true);
+  at(r, "O1"); assert.equal(r.isHere("alert-parrot"), false);
+  // Library: a guard beaten at obstacle 1 is replaced next obstacle by an aware backup that stays in the lobby.
+  const lib = new HeistRun(getHeist("library"), inertCrew(), packageParams("P6"), new FixedRng(1), new Recorder());
+  const g = lib.cs["guard-spider"];
+  Object.assign(g, { beaten: true, forced: false, backupPending: true });
+  at(lib, "O2"); g.backupPending = false; g.forced = true;   // what runObstacle does as the next obstacle begins
+  assert.equal(lib.active("guard-spider"), true);
+  assert.equal(lib.isHere("guard-spider"), false, "it doesn't follow the crew upstairs");
+  at(lib, "E2");
+  assert.equal(lib.isHere("guard-spider"), true, "it holds the lobby");
+});

@@ -265,11 +265,12 @@ export const HEISTS = [
     id: "petstore", n: 3, name: "The Pet Store Problem", difficulty: "standard", limit: 8, loot: "Prize",
     ref: "Ch 19 Heist 3",
     creatures: ["corn-snake", "alert-parrot"],
+    earshot: { "alert-parrot": ["O2", "O3", "O4", "E1"] },   // v4.8 (P6): once repeating (Alert 5), it hears the whole shop floor
     intel: [
       { text: "The snake is slow to commit but fast once it does.", obstacle: "O2" },
-      { text: "The parrot's cage is 5 squares off the main aisle.", obstacle: "O3" },
-      { text: "The feeder bin sits behind the counter with one narrow approach.", obstacle: "O4" },
-      { text: "The parrot's cover is folded on the shelf beside its cage; there's a box of crackers on the counter.", obstacle: "O3" },
+      { text: "The folded cloth by the cage is the parrot's night cover: over the cage, it goes quiet.", obstacle: "O3" },
+      { text: "The only way to the bin passes within 3 squares of the tank.", obstacle: "O4" },
+      { text: "The box on the counter is the parrot's crackers.", obstacle: "O3" },
       { text: "The snake's heat lamp is off for the night.", obstacle: "O2" }
     ],
     obstacles: [
@@ -288,7 +289,7 @@ export const HEISTS = [
         tags: ["movement", "stealth"], threats: ["corn-snake"], awake: ["corn-snake"],
         approaches: [
           A("stealth", 3, "individual", { opposed: "perception", ref: "Ch 19: 'Stealth, opposed (its Perception 3)'" }),
-          A("engineering", 4, "single", { hold: "corn-snake", ref: "Ch 19: 'its Weakness — shut the heavy lid properly, or reach the heat lamp's switch over the snake: Engineering (4)'; v4.8 (P6): a Weakness that shuts it in holds it (Ch 16)" })
+          A("engineering", 4, "single", { hold: "corn-snake", ref: "Ch 19: 'its Weakness — shut the heavy lid properly, or reach the heat lamp's switch over the snake: Engineering (4)'; v4.8 (P6): a Weakness that shuts it in keeps it in (Ch 16)" })
         ],
         improvise: ["acrobatics", "disguise"]
       },
@@ -296,8 +297,8 @@ export const HEISTS = [
         id: "O3", name: "The parrot (it has seen you)", kind: "creature",
         tags: [], threats: ["alert-parrot"], awake: ["alert-parrot"],
         approaches: [
-          A("persuasion", 1, "single", { ref: "Ch 19 / Ch 16 Alert Parrot weakness: a cracker (Persuasion, Difficulty 1)" }),
-          A("acrobatics", 2, "single", { hold: "alert-parrot", ref: "Ch 19: 'drop the cover over the cage: Acrobatics (2)'; v4.8 (P6): the cover holds it (Ch 16)" }),
+          A("persuasion", 1, "single", { weakness: true, ref: "Ch 19 / Ch 16 Alert Parrot weakness: a cracker (Persuasion, Difficulty 1)" }),
+          A("acrobatics", 2, "single", { hold: "alert-parrot", ref: "Ch 19: 'drop the cover over the cage: Acrobatics (2)'; v4.8 (P6): under its cover it's quiet (Ch 16)" }),
           A("stealth", 4, "individual", { tags: ["stealth"], opposed: "perception", ref: "Ch 19: 'sneak by: Stealth, opposed (its Perception 4)'" })
         ],
         improvise: ["deception", "engineering"]
@@ -387,7 +388,7 @@ export const HEISTS = [
     ],
     escape: [
       {
-        id: "E1", name: "Down two floors with the book", kind: "environment",
+        id: "E1", name: "Down a floor with the book", kind: "environment",
         tags: ["escape"], threats: ["house-cat"],
         approaches: [
           A("engineering", 3, "single", { ref: "Ch 19 E1: 'The dumbwaiter: Engineering (3)'" }),
@@ -518,6 +519,18 @@ export const HEIST_TWEAKS = {
     heist: "cookie",
     text: "Heist 1: silk won't hold on the freshly wiped counter — the climb is an Acrobatics roll.",
     apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.tags.includes("climb") ? { ...o, tags: o.tags.filter(t => t !== "climb") } : o)) })
+  },
+  // v4.8 (P6): with every Silk Line at −1, the cabinet climb is Acrobatics (1), +1 for the height.
+  "cookie-climb-d1": {
+    heist: "cookie",
+    text: "Heist 1: the cabinet climb is Acrobatics (1), +1 for the height (was 2).",
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.tags.includes("climb") ? { ...o, approaches: o.approaches.map(a => (a.skill === "acrobatics" ? { ...a, diff: 1 } : a)) } : o)) })
+  },
+  // v4.8 (P6): the bottle cap the intel names is an approach to the cat — its Weakness (Ch 16: shiny objects, Difficulty 1).
+  "cookie-bottle-cap": {
+    heist: "cookie",
+    text: "Heist 1: obstacle 1 adds 'flick the bottle cap past it: Athletics (1), the cat's Weakness'.",
+    apply: h => ({ ...h, obstacles: h.obstacles.map(o => (o.id === "O1" ? { ...o, approaches: [...o.approaches, { skill: "athletics", diff: 1, mode: "single", weakness: true, ref: "Ch 19 v4.8: 'flick the bottle cap past it: Athletics (1)' — Ch 16 House Cat Weakness" }] } : o)) })
   },
   // Heist 5: "two staff moving unpredictably" are written as Ch 15 Alert Humans (Difficulty 4), not Moderate.
   "restaurant-alert-staff": {

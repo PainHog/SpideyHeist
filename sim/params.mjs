@@ -490,29 +490,29 @@ export const PARAMS = {
     doc: "alert = the Partial's +1 Alert, which the Limit swallows: free (v4.7). cost = never Alert: a hit from an engaged creature or human if there is one, otherwise −1 die on the spider's next roll; in a group check every Partial pays its own.",
     ref: "Ch 2 Partial; Ch 9 Full Alert (v4.8); verify-v4.7 N14"
   },
-  weaknessHold: {
-    default: false, alts: [true], pkg: true,
-    title: "P6 — a Weakness that shuts a creature in holds it",
-    doc: "true = an obstacle cleared by an approach marked `hold` (the snake's lid or heat lamp, the parrot's cage cover) holds that creature for the rest of the heist: not active, no +X, no attacks, no shriek.",
+  weaknessRule: {
+    default: false, alts: ["backoff"], pkg: true,
+    title: "P6 — a creature cleared by its Weakness",
+    doc: "backoff = a Weakness clears a creature's obstacle as Brawl or Intimidation do (it backs off for the rest of that obstacle; the clearing round's +X still counts). A Weakness that shuts it in (`hold`: the snake's lid or lamp, the parrot's cover) also keeps it in for the rest of the heist: it never leaves its obstacle, never strikes, and a covered parrot never shrieks; it still counts at its own obstacle (the snake at E1). false = v4.7: a shut-in creature is as free as before. Tested and rejected: no +X in the clearing round (Office +9.5, Pet Store +11 — one Alert point is worth ~10 pts at Limit 8); a full hold (not active at all for the heist) — Pet Store +10.6 pts, +14 if the held snake's E1 also needs no roll.",
     ref: "Ch 16 Driving one off (v4.8); verify-v4.7 N3"
   },
   parrotSight: {
     default: false, alts: [true], pkg: true,
     title: "P6 — the parrot shrieks only at a spider it can see",
-    doc: "true = the Alert-7 shriek (+2 once) happens only while the parrot sees a spider: at its own obstacle, or on an approach marked `seenBy` (the Pet Store's shelf tops); a covered (held) parrot never shrieks. false = it shrieks the moment the Alert reaches 7, wherever the crew is.",
+    doc: "true = the parrot sees and hears as Ch 16/19 v4.8 say: the Alert-7 shriek (+2 once) happens only while it sees a spider — at its own obstacle, or on an approach marked `seenBy` (the Pet Store's shelf tops) — and once it repeats (Alert 5) it hears the whole shop floor, so its +1 a round counts at every obstacle in the heist's `earshot` (Pet Store O2–O4, E1). A covered parrot does neither (weaknessRule). false = v4.7 sim: it shrieks the moment the Alert reaches 7, wherever the crew is, and counts only at its own obstacle. Sight alone: +0.7 pts; with the cover: +6.7; earshot brings the store back to P5.",
     ref: "Ch 16 Alert Parrot; Ch 19 Heist 3 (v4.8); verify-v4.7 N4, N6"
   },
   guardBeaten: {
     default: false, alts: ["post"], pkg: true,
     title: "P6 — beating a Guard Spider",
-    doc: "post = a guard beaten with Brawl is out of the heist; its backup (aware) holds the post and counts only at obstacles the guard is written into, never following the crew. The crew also values ending a following guard (bribe or fight): +0.25 to those approaches in the chooser. false = v4.7: the beaten guard sulks back at the next obstacle if it roams.",
+    doc: "post = a guard beaten with Brawl is out of the heist; at the start of the next obstacle its backup, aware, takes the post (heist `guardPost`: the Office's upper-floor loop and stairs, the Library's lobby) and counts only there, never following the crew. false = v4.7: the beaten guard sulks back at the next obstacle if it roams, and the sim let a library guard beaten without a failed roll stay unaware. Tested and rejected: an unaware backup (Office +17 pts), and a chooser that values ending a following guard (no further effect).",
     ref: "Ch 16 Guard Spider (v4.8); verify-v4.7 N12"
   },
-  crewSilk: {
-    default: false, alts: ["helper"], pkg: true,
-    title: "P6 — Silk from the spider Assisting you",
-    doc: "helper = the crewmate Assisting a roll may pay for its Silk (extra dice, a Reroll, the Clutch) when the roller's own pool runs short.",
-    ref: "Ch 8 (v4.8); verify-v4.7 N21"
+  assistSilk: {
+    default: false, alts: [true], pkg: true,
+    title: "P6 — Silk dice on your own Assist roll",
+    doc: "true = a spider Assisting an important roll (the objective, the last Escape obstacle, a roll that could hit the Limit) with fewer than 3 Assist dice adds 1 Silk die to its Assist roll, keeping 3 SP for its own Clutch (the roller still gains at most +2 bonus dice). Spending freely on every uncertain Assist cost 3–8 pts: it drains the Silk helpers later need. Tested and rejected: spending Silk on a crewmate's roll through the Assist (`crewSilk`: extra dice, Reroll and Clutch) — +4 pts at every difficulty; the Clutch alone +3.7.",
+    ref: "Ch 2 Assists; Ch 8 (v4.8); verify-v4.7 N21"
   },
   silkLineRule: {
     default: "bypass", alts: ["minus1"], pkg: true,
@@ -584,13 +584,13 @@ export const PACKAGES = {
     }
   },
   P6: {
-    title: "v4.8: P5 + the verify-v4.7 rulings that can move the dice (one creature roll per group check, Partials cost at Full Alert, a Weakness hold, the parrot's sight, a beaten guard stays beaten, Silk from your Assist, Silk Lines at −1, engaged means already active)",
+    title: "v4.8: P5 + the verify-v4.7 rulings that can move the dice (one creature roll per group check, Partials cost at Full Alert, a Weakness backs a creature off at once, the parrot's sight and earshot, a beaten guard's backup holds the post, Silk dice on your own Assist, Silk Lines at −1, engaged means already active; Heist 1's climb at Acrobatics 1 and the bottle cap as an approach)",
     rules: {
-      successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy", heistTweaks: ["office-guard-aware", "restaurant-alert-staff"],
+      successFace: 5, partialRule: "half", obstacleSteps: 2, critAlertMinDiff: 3, bonusDiceCap: 2, fullAlertFailure: "caught", silkPolicy: "spendy", heistTweaks: ["office-guard-aware", "restaurant-alert-staff", "cookie-climb-d1", "cookie-bottle-cap"],
       guardRules: "paid", silkStart: "base+1", stallClock: 3, lootCarry: "sled", passChecks: "partial",
       improviseAttr: "skill", wolfShrug: true, rerollFix: true, showOffRule: "plus1", earlyWarningAll: true,
-      groupOpposed: "once", fullAlertPartial: "cost", weaknessHold: true, parrotSight: true, guardBeaten: "post",
-      crewSilk: "helper", silkLineRule: "minus1", engagedRule: "before"
+      groupOpposed: "once", fullAlertPartial: "cost", weaknessRule: "backoff", parrotSight: true, guardBeaten: "post",
+      assistSilk: true, silkLineRule: "minus1", engagedRule: "before"
     }
   }
 };

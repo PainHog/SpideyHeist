@@ -227,15 +227,6 @@ export class HeistRun {
     sp.silkSpent = (sp.silkSpent ?? 0) + n;
     this.rec.spend(type, n);
   }
-  /** Silk the roller can reach: their own, plus (P6) the Assisting crewmate's. */
-  wallet(sp, donor = null) {
-    return Math.max(0, sp.silk) + (donor ? Math.max(0, donor.silk) : 0);
-  }
-  paySilk(sp, donor, type, n) {
-    const own = Math.min(n, Math.max(0, sp.silk));
-    if (own > 0) this.spend(sp, type, own);
-    if (n - own > 0 && donor) { this.spend(donor, type, n - own); this.rec.inc("crewSilkPaid", n - own); }
-  }
   earn(sp, type, n) {
     sp.silk += n;
     this.rec.earn(type, n);
@@ -351,9 +342,9 @@ export class HeistRun {
 
   /** P6: the parrot shrieks only at a spider it can see, and never under its cover. */
   parrotCanShriek() {
-    if (!this.P.parrotSight) return true;
     const st = this.cs["alert-parrot"];
-    if (st.held && this.P.weaknessHold) return false;
+    if (st.shut && this.P.weaknessRule === "backoff") return false;   // under its cover
+    if (!this.P.parrotSight) return true;
     return !!this.obs && (this.obs.threats?.includes("alert-parrot") || !!this.seenBy?.has("alert-parrot"));
   }
 
@@ -361,7 +352,6 @@ export class HeistRun {
     const c = CREATURES[id], st = this.cs[id];
     if (!st.spawned) return false;
     if (st.paid || (st.driven && !this.lockedFull)) return false;
-    if (st.held && this.P.weaknessHold) return false;   // P6: shut in by its Weakness
     if (st.forced || st.textAwake) return true;
     const thr = this.P.creatureWake === "hunt" ? c.hunt : c.wake;
     if (this.escAlert >= thr) {
@@ -375,6 +365,8 @@ export class HeistRun {
     const c = CREATURES[id], st = this.cs[id];
     if (this.obs.threats?.includes(id)) return true;
     if (st.beaten && this.P.guardBeaten === "post") return !!this.h.guardPost?.includes(this.obs.id);   // P6: the backup holds the post
+    if (st.shut && this.P.weaknessRule === "backoff") return false;   // P6: shut in, it can't follow anyone
+    if (this.P.parrotSight && this.h.earshot?.[id]?.includes(this.obs.id)) return true;   // P6: the parrot hears the whole shop floor
     if (this.P.creatureScope === "location") return true;
     if (this.P.creatureScope === "obstacle") return false;
     switch (c.mobile) {
@@ -409,6 +401,7 @@ export class HeistRun {
       if (!c.attack || !this.activeHere(id)) continue;
       if (c.attackOnlyHunting && this.escAlert < c.hunt) continue;
       if (c.attackOnlyBad && !st.bad) continue;
+      if (st.shut && this.P.weaknessRule === "backoff") continue;   // P6: shut in, it can't strike
       const engaged = this.obs.threats?.includes(id) || this.escAlert >= c.hunt || (this.obs.phase === "escape" && this.fullAlert);
       if (!engaged) continue;
       if (!best || c.attack.pool > best.pool) best = { id, pool: c.attack.pool, label: `${c.name} ${c.attack.label}` };
@@ -484,7 +477,7 @@ export class HeistRun {
     rec.inc("outs");
     rec.inc(`outBy:${cause}`);
     const last = this.idx >= this.seq.length - 1;
-    if (last) rec.issue("REPLACEMENT_NEVER_ARRIVES", this.where(sp) + ` — Out (${cause}) in the final obstacle`);
+    if (last) { rec.issue("REPLACEMENT_NEVER_ARRIVES", this.where(sp) + ` — Out (${cause}) in the final obstacle`); rec.inc("outsLastObstacle"); this.lastOuts = (this.lastOuts ?? 0) + 1; }
     else {
       sp.slot.pending = this.makeSpider(sp.slot, true);
       rec.inc("replacements");
@@ -649,14 +642,9 @@ export class HeistRun {
   /** Best choice for a spider among approaches of a mode, Improvise included. */
   bestFor(sp, mode) {
     let best = null;
-    const gd = this.cs["guard-spider"];
-    const endsGuard = a => this.P.guardBeaten === "post" && gd?.forced && !gd.paid && !gd.beaten && this.obs.threats?.includes("guard-spider")
-      && (a.skill === "brawl" || (a.skill === "persuasion" && this.P.guardRules));
     for (const a of this.approaches(mode)) {
       if (a.excludeRoles?.includes(sp.role)) continue;
       const ch = this.evalChoice(sp, a, a.skill, false);
-      if (endsGuard(a) && !this.P.xNoBonus) ch.est.v += 0.25;
-      if (this.P.xBribeBonus && a.skill === "persuasion" && gd?.forced && !gd.paid && this.obs.threats?.includes("guard-spider")) ch.est.v += 0.25;
       if (!best || ch.est.v > best.est.v) best = ch;
     }
     if (!best) return null;
@@ -690,7 +678,8 @@ export class HeistRun {
   }
 
   /** How many Silk Points to spend on extra dice before a roll. */
-  silkDice(sp, n, d, m, ch, important, maxDice = Infinity, avail = sp.silk) {
+  silkDice(sp, n, d, m, ch, important, maxDice = Infinity) {
+    const avail = sp.silk;
     const P = this.P;
     if (P.silkPolicy === "hoard") return { k: 0, dice: 0 };
     const overclock = ch.skill === "engineering" && sp.perks.has("overclock");
@@ -789,9 +778,14 @@ export class HeistRun {
       for (const k of new Set([skill, ...obs.approaches.map(a => a.skill)])) hs = Math.max(hs, helper.skills[k] ?? 0);
       const raw = Math.min(3, hs - this.pen(helper));
       if (this.pen(helper) > 0 && hs > 0) rec.issue("ASSIST_PENALTY", this.where(helper) + ` assists with Skill ${hs} (−${this.pen(helper)})`);
-      const dice = Math.max(1, raw);
+      let dice = Math.max(1, raw);
       helper.acted = true;
       helper.everActed = true;
+      // P6: the helper may put their own Silk dice into the Assist roll (the roller still gains at most +2).
+      if (P.assistSilk && P.silkPolicy !== "hoard" && helper.silk >= 4 && important && raw < 3) {
+        const k = 1;   // one die, and only while the helper keeps a Clutch in reserve
+        this.spend(helper, "assistDie", k); dice += k; rec.inc("assistSilkDice", k);
+      }
       const got = this.succ(rng.dice(dice));
       n += got;
       rec.inc("assists");
@@ -810,11 +804,9 @@ export class HeistRun {
     // Silk: extra dice
     const maxSilkDice = P.bonusCapScope === "all" ? Math.max(0, P.bonusDiceCap - Math.max(0, n - base0)) : Infinity;
     // P6: the spider Assisting you may pay for your Silk when your own runs short.
-    const donor = (P.crewSilk === "helper" || P.crewSilk === "clutch") && helper && !helper.out ? helper : null;
-    const donorAll = P.crewSilk === "helper" ? donor : null;
-    const buy = this.silkDice(sp, n, d, m, ch, important, maxSilkDice, this.wallet(sp, donorAll));
+    const buy = this.silkDice(sp, n, d, m, ch, important, maxSilkDice);
     if (buy.k > 0) {
-      this.paySilk(sp, donorAll, buy.dice > buy.k ? "overclock" : "extraDie", buy.k);
+      this.spend(sp, buy.dice > buy.k ? "overclock" : "extraDie", buy.k);
       if (buy.dice > buy.k) rec.use("perk:overclock");
       n += buy.dice;
     }
@@ -867,10 +859,10 @@ export class HeistRun {
       if (++this.persuadeRerolls === 2) rec.issue("PERSUADE_REROLL_UNLIMITED", this.where(sp));
     }
     // Silk Reroll (2 SP): up to 3 failed dice, keep the better.
-    if (faces && P.silkPolicy !== "hoard" && this.wallet(sp, donorAll) >= 2 && (res === "failure" || (res === "partial" && P.partialCost === "alert" && this.critical(1)))) {
+    if (faces && P.silkPolicy !== "hoard" && sp.silk >= 2 && (res === "failure" || (res === "partial" && P.partialCost === "alert" && this.critical(1)))) {
       const worth = P.silkPolicy === "spendy" || important || this.pressure >= 0.5;
       if (worth) {
-        this.paySilk(sp, donorAll, "reroll", 2);
+        this.spend(sp, "reroll", 2);
         const s2 = rerollFailed(3);
         const r2 = classify(s2);
         const flip = RANK[r2] > RANK[res];
@@ -887,13 +879,13 @@ export class HeistRun {
     }
     // Silk Clutch (3 SP): fail → succeed anyway, Alert +1.
     let clutched = false;
-    if ((res === "failure" || res === "botch" || res === "cleanfail") && this.wallet(sp, donor) >= 3) {
+    if ((res === "failure" || res === "botch" || res === "cleanfail") && sp.silk >= 3) {
       const worth = P.silkPolicy === "spendy" || important
         || (P.silkPolicy === "greedy" && (this.pressure >= 0.6 || sp.consecFail >= 2 || obs.phase === "escape"))
         || (P.silkPolicy === "hoard" && obs.objective);
       if (worth) {
         if (res === "botch") rec.issue("CLUTCH_ON_BOTCH", this.where(sp));
-        this.paySilk(sp, donor, "clutch", 3);
+        this.spend(sp, "clutch", 3);
         res = "success";
         clutched = true;
         rec.use("silk:clutch", true);
@@ -1058,7 +1050,6 @@ export class HeistRun {
     const g = this.cs["guard-spider"];
     if (g && obs.threats?.includes("guard-spider") && !g.forced) {
       g.forced = true;   // aware
-      if (this.P.xUnaware) g.beaten = false;   // the backup spotted them: now it follows
       this.addAlert(CREATURES["guard-spider"].spotAlert, "spotted");
       this.rec.inc("guardAware");
     }
@@ -1531,10 +1522,14 @@ export class HeistRun {
           // P6: a guard beaten in a fight is gone; its backup, aware, holds the post.
           if (P.guardBeaten === "post" && ch.skill === "brawl" && obs.threats?.includes("guard-spider")) {
             const gs = this.cs["guard-spider"]; gs.beaten = true; rec.inc("guardBeaten");
-            if (P.xUnaware) gs.forced = false; else { gs.forced = false; gs.backupPending = true; }   // the backup arrives next obstacle, aware
+            gs.forced = false; gs.backupPending = true;   // the backup arrives at the start of the next obstacle, aware
           }
           // P6: a Weakness that shuts the creature in holds it for the rest of the heist.
-          if (P.weaknessHold && ch.appr.hold && this.cs[ch.appr.hold] && !(P.xHoldOnly && P.xHoldOnly !== ch.appr.hold)) { this.cs[ch.appr.hold].held = true; rec.inc(`held:${ch.appr.hold}`); }
+          if (P.weaknessRule === "backoff") {
+            // P6: a Weakness clears a creature's obstacle like Brawl or Intimidation (it backs off for the rest of it, which
+            // the obstacle ending already covers; the clearing round's +X still counts). A Weakness that shuts it in keeps it in.
+            if (ch.appr.hold && this.cs[ch.appr.hold]) { this.cs[ch.appr.hold].shut = true; rec.inc(`shut:${ch.appr.hold}`); }
+          }
           this.afterRound();
           return this.clear(obs, null, sp, true);
         }
@@ -1589,8 +1584,6 @@ export class HeistRun {
   tryBypass(obs, crew) {
     const P = this.P, rec = this.rec, t = obs.tags;
     const idle = crew.filter(sp => !sp.frozen && !sp.acted);
-    // P6: every threat here is shut in by its Weakness — nothing left to get past (Ch 2 When Not to Roll).
-    if (P.weaknessHold && !P.xNoFreePass && obs.threats?.length && obs.threats.every(id => this.cs[id]?.held)) return { method: "weaknessHeld" };
     if ((t.includes("climb") || t.includes("gap")) && P.silkLineBypass) {
       if (this.preLines.has(obs.id) && P.preLineRule !== "minus1") return { method: "preparedSilkLine" };
       if (this.trailUp) return { method: "perk:silk-trail" };
@@ -1738,6 +1731,7 @@ export class HeistRun {
         if (!c.attack || !this.activeHere(id)) continue;
         if (c.attackOnlyHunting && this.escAlert < c.hunt) continue;
         if (c.attackOnlyBad && !st.bad) continue;
+      if (st.shut && this.P.weaknessRule === "backoff") continue;   // P6: shut in, it can't strike
         const engaged = this.obs.threats?.includes(id) || this.escAlert >= c.hunt || (this.obs.phase === "escape" && this.fullAlert);
         if (!engaged) continue;
         seen.add(id);
@@ -1804,6 +1798,8 @@ export class HeistRun {
       if (this.objectiveTaken && !lootOut) rec.inc("lootLostInEscape");
     }
     const ap = outcome === "win" ? AP[h.difficulty] : outcome === "partial" ? Math.floor(AP[h.difficulty] / 2) : 0;
+    // v4.8 (REVIEW G, N13): a player whose spider is caught in the last Escape obstacle earns half AP.
+    if (this.lastOuts && outcome !== "loss") { rec.inc("runsHalfAP"); if (outcome === "win") rec.inc("winsHalfAP"); rec.inc("playersHalfAP", this.lastOuts); }
 
     // Creature-driven Full Alert
     if (this.fullAlert) {

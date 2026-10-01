@@ -3,7 +3,7 @@
   "name": "Silk Line",
   "img": "systems/heisty-spideys/assets/icons/web.svg",
   "system": {
-    "effect": "<p>As your Action, roll GRACE + Acrobatics against Difficulty 2 (or spend 1 Silk Point to skip the roll; with nothing watching or closing in, skip it free) to run a Silk Line between two points up to 5 squares apart. It's safe footing the crew can climb or cross with no Acrobatics roll: up a wall, across a gap, along a ceiling. It holds up to two spiders at once and stays until it's broken or the scene ends (a line placed during Planning lasts the heist). A line pre-placed during Planning costs no SP and lowers that obstacle's Difficulty by 1; it doesn't skip it.</p>",
+    "effect": "<p>As your Action, roll GRACE + Acrobatics against Difficulty 2 (or spend 1 Silk Point to skip the roll; with nothing watching or closing in, skip it free) to run a Silk Line between two points up to 5 squares apart. It's safe footing: up a wall, across a gap, along a ceiling. With nothing watching or closing in, climbing or crossing it takes no roll; under pressure, it lowers that climb or crossing's Difficulty by 1. It holds up to two spiders at once and stays until it's broken or the scene ends (a line placed during Planning lasts the heist). A line pre-placed during Planning costs no SP and works the same way; it doesn't skip the obstacle. (The Orb Weaver's Line is better.)</p>",
     "uses": 0,
     "consumable": false,
     "source": "Every spider's own silk",

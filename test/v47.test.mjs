@@ -156,7 +156,7 @@ test("Guard Spider: senses, awareness and backup; no '+2 if it calls for backup'
 test("Silk Clutch only turns a Failure into a Success; rerolls keep Successes (E1, E7)", () => {
   const silk = byKey("rules", "silk-points");
   const spend = pageText(silk, "spending-silk-points");
-  assert.match(spend, /After a Failure \(a Partial isn't one\)/);
+  assert.match(spend, /After a Failure on your own roll \(a Partial isn't one/);
   assert.match(spend, /reroll up to 3 dice that didn't succeed/);
   assert.match(pageText(silk, "silk-points-overview"), /WIT \+ NERVE \+ 1/);
   assert.match(HEISTY.silkSpends.find(s => s.label === "Silk Clutch").text, /After a Failure/);

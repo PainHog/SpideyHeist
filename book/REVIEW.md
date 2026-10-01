@@ -346,3 +346,95 @@ P4H at 5,000 runs, win rate, v4.6 data → v4.7 data:
 | Restaurant | Hard | 64.6% | 65.0% |
 
 The Hard average is 57% (target 55–60). The Restaurant's Loss rate rises from 0.3% to 2.5%. `npm test` passes.
+
+---
+
+## G. The verification playtest's issues, resolved in v4.8 (authorised by Richard Moore)
+
+The v4.7 verification playtest (`sim/playtests/verify-v4.7.md`: Heist 3 in full, Heist 4 through the
+Escape, two drills) found 26 new issues (N1–N26) and two still-broken items (H1-7, which is N15, and
+the Silk-on-a-crewmate question, N21). Every one is resolved below with the smallest clear rule in the
+book's voice. Anything that can move win rates is modelled as package **P6** in the simulator (P5 + the
+rulings marked *P6*; `sim/params.mjs`, `sim/BALANCE.md` §12). P0–P5 are unchanged.
+
+**Balance check (5,000 runs per heist, seed 1, v4.8 heist data).** P5 90.1 / 77.7 / 59.3% →
+**P6 90.7 / 78.8 / 59.1%** (Easy / Standard / Hard wins; per heist 90.7 · 77.4 · 80.2 · 52.6 · 65.6;
+Hard Loss 1.9%). Every label stays within 2 points of 90 / 77 / 58.
+
+**Sim column.** Points are P6 minus P6-without-that-ruling (2,000 runs per heist), so they include the
+interplay with the other P6 rulings; "none" means the rule changes no roll the simulator makes, or the
+simulator already played it this way.
+
+### G1. Rulings
+
+| # | Issue | Ruling | Where | Sim |
+|---|---|---|---|---|
+| N1 | Two successful rolls vs a group check | A heist obstacle is done after two successful rolls (Partial or better; a Critical counts as one), by one spider or several. **When the crew gets past it together, a group check counts as both:** done once every spider is through; a spider who fails tries again next round. An Escape obstacle takes one successful roll — one spider's, or a group check with every spider through | Ch 11 Phase 3; Ch 2 Group Checks; Ch 19 reading box and every heist's table intro; Ch 21 Phases | none (the sim already cleared a group obstacle when all were through) |
+| N2 | One creature roll per group check? | **Once per round:** "Against a creature, it rolls once for the round, and that Difficulty applies to every spider in the check" | Ch 2 Group Checks; Ch 21 Opposed | *P6* `groupOpposed: "once"`: Pet Store −0.3, else 0 |
+| N3 | A Weakness clear doesn't stop +X | Clearing an obstacle with the creature's **Weakness**, Brawl or Intimidation backs it off for the rest of that obstacle. **A Weakness that shuts it in stays shut all heist**: the snake behind a shut lid can't strike or hunt, though it still watches through the glass and counts at its own obstacle; a covered parrot is quiet all night (no +1, no shriek). The clearing round's +X still counts (§G2 item 9) | Ch 16 intro, Corn Snake, Alert Parrot | *P6* `weaknessRule: "backoff"`: Pet Store +9.5 (with N4: the cover silences the parrot's earshot). Rejected: no +X in the clearing round (Office +9.5, Pet Store +11), and a full hold that frees E1 too (Pet Store +10.6 / +14) |
+| N4 | Parrot +2 at 7 vs Limit 8 | The parrot **shrieks only at a spider it can see** (its own obstacle, or up on the shelf tops or counter): +2, once. Its Senses are defined: it sees the front of the store and the shelf tops, and **hears its whole floor**, so once repeating (Alert 5) its +1 counts anywhere on the shop floor, not in the stockroom. At Limit 8, Lockdown (7) is now a real band unless the parrot sees you | Ch 16 Alert Parrot; Ch 9 +X row ("wherever it can hear them, if its stat block says it hears a whole floor"); Ch 19 Heist 3 ST Prep — the parrot | *P6* `parrotSight` (sight and earshot): Pet Store −3.4. Sight alone was +0.7; with the cover +6.7; earshot brings the store back |
+| N5 | Heist 3's Prize can't pass the squeeze exits | "The prize is alive: carried, it's a Prize and too big for a squeeze, but calmed (E2), it hops through a gap by itself." No map change | Ch 19 Heist 3 unknown obstacle | none |
+| N6 | Entry A never meets the parrot | Reading box: "an obstacle beside one entry is met only by a crew that uses that entry". Heist 3 caption: "Obstacle 1 is route A's and obstacle 3 route B's: from A, the parrot sees a spider only up on the shelf tops or the counter" | Ch 19 box, Heist 3 caption | via N4's `seenBy` on the shelf-top route |
+| N7 | Heist 3 intel already on the map | Caption drops "the only way round is the one-square gap by the east wall". Intel rewritten to what the map can't show: the bin route passes within 3 squares of the tank; the folded cloth is the parrot's night cover; the box is its crackers (the cage-distance item is gone) | Ch 19 Heist 3 | none (same five items, same obstacle mapping in `heists.mjs`) |
+| N8 | Heist 4 entry B skips the guard | **Map change:** the guard's web moves from the SW corner to the foot of the east stairs (G at (13,4)): 6 squares from A, 2 from B, in line of sight of both. Obstacle 1 marker moves to (11,3). Text: "Its web overlooks the lobby, its post" | `map-library` (`tools/art-gen/scenes/maps.mjs`), `assets/maps/`; Ch 19 Heist 4 caption, obstacle 1 | none (the sim always played obstacle 1) |
+| N9 | "Down two floors" | "Down a floor" | Ch 19 Heist 4 E1; `heists.mjs` name | none |
+| N10 | Librarian double roll; obstacle 2 can be empty | Roll 1d6 **as the crew comes in and at the end of every round** (one roll per boundary). **Obstacle 2 is wherever the crew and the librarian first share a floor — or the reference room, as the crew reaches the case, if they never have** (it always happens once) | Ch 19 Heist 4 ST Prep | none (the sim plays obstacle 2 once, before the case) |
+| N11 | The library cat's 3-round fuse | Kept, and said plainly: **a House Cat wakes at Alert 3** ("ears rotate and it starts to prowl — awake, so it roams"), as Ch 14 and Ch 9 already said; Heist 4: "it wakes at Alert 3 and prowls every floor: at a Limit of 6, that's the clock". The playtest itself called the per-round tick "the right feeling". Heist 1's cat is "active and roaming from the start" | Ch 16 House Cat; Ch 19 Heists 1 and 4 | none (as simulated). Considered: roaming only from Alert 5 — easier Library, needs retuning elsewhere |
+| N12 | Beating the guard gains nothing | **A beaten guard is out of the heist.** Its backup, already aware, takes the post **at the start of the next obstacle** (no +1 in the fight's own round) and **holds the post — the guard's obstacle and the patrol it walked — never following the crew beyond it.** Posts: Heist 2 the upper-floor loop and stairs; Heist 4 the lobby (it waits there for E2) | Ch 16 Guard Spider; Ch 19 Heists 2 and 4 | *P6* `guardBeaten: "post"` (+ heist `guardPost`): Office 0, Library +0.2. Finding: the v4.7 sim let a library guard beaten without a failed roll stay unaware, which the book never allowed. Rejected: an unaware backup (Office +17); a chooser that values ending a following guard (no further effect) |
+| N13 | Caught in the last Escape obstacle costs nothing | **That player earns half AP** (rounded down): "the crew got out; they didn't." The replacement still waits at the exit; either spider may come back | Ch 10 Waiting Web; Ch 11 Debrief; Ch 21 AP | AP only, no win effect. Under P6, 5.1% of wins (7.2% of escapes) have a player on half AP; 0.09 players per heist |
+| N14 | Partials free at Full Alert | "At Full Alert the noise costs nothing, so a Partial costs a hit from an engaged threat if there is one, otherwise −1 die on your next roll (or the ST's dropped item); in a group check, every Partial pays its own." | Ch 2 Partial; Ch 9 Full Alert; Ch 21 | *P6* `fullAlertPartial: "cost"`: ±0.2 |
+| N15 | A Planning Silk Line is worse than one spun in the scene (H1-7) | **Every Silk Line works the same:** safe footing; with nothing watching or closing in, no roll; under pressure, **−1 Difficulty** to the climb or crossing it serves. A Planning line is the same line, free and lasting the heist. The Orb Weaver's Line keeps its no-roll wording (a species edge). Heist 1's cabinet climb becomes Acrobatics (1), +1 height, "a Silk Line takes 1 off", to keep Easy on target | Ch 12 Silk; Ch 11 Preparation; Ch 21 Climbing; Ch 19 Heist 1 obstacle 2 | *P6* `silkLineRule: "minus1"`: Easy −2.2 (Cookie −5.3 before the content change); Heist 1's two content changes (with N22's bottle cap, below) +6.6 |
+| N16 | Squeeze rolls vs one Action; Escape obstacles take one | **A squeeze or climb roll under pressure is your Action.** In an Escape obstacle, the obstacle's one roll covers the whole way through it: nobody rolls again for a squeeze or climb along the route | Ch 3 Your Turn and Squeezing; Ch 11; Ch 21 Your turn | none (one roll per spider per round, as simulated) |
+| N17 | Fall rounding | "1 die per 2 squares fallen, rounded up" (a counter or desk, 3, is 2 dice) | Ch 3; Ch 21 Heights | none (no falls simulated) |
+| N18 | "Engaged" and a human's reach | **Engaged** = already active and able to reach you this round, or you're fighting it; one that only notices you because of the failed roll isn't engaged yet. If several see you fail, the biggest attack lands. **A human's reach is its room** (in its sight) | Ch 2 Failure; Ch 16 Human; Ch 21 Engaged | *P6* `engagedRule: "before"`: +0.2 |
+| N19 | Butterfingers needs a d8 | "Roll 1d6 for where it lands: 1–2 the square ahead of you, 3–4 the square to its left, 5–6 to its right — and if that square is lower, it falls there" | Ch 7 | none |
+| N20 | Picking up two-carrier loot | **One Action by one spider, whatever its size**; the other carriers just need to be adjacent. One spider can hold any loot in place, but it moves only with the carriers its row lists (a lone Treasure carrier stays put) | Ch 12 The Loot | none (as simulated) |
+| N21 | Silk pooling; Silk on a crewmate's roll | **No: Silk is your own.** You can't spend it on a crewmate's roll (Drill 2's crew couldn't have paid Pebbles' Clutch). The outlets are named instead: **your Assist roll is your roll, so your own Silk dice can go into it** (outside its 3-dice maximum; the roller still gains at most +2), plus lines, webs, Damage Control and Not Part of the Plan | Ch 2 Assists; Ch 8 (new paragraph, Management box); Ch 21 Assist | *P6* `assistSilk`: −0.4 to +0.3. Rejected after simulation: Silk through the Assist on a crewmate's roll (`crewSilk`) +4 at every difficulty; the Clutch alone +3.7. Spending Silk on every uncertain Assist cost 3–8 points (it drains helpers' Clutch reserve), so the advice keeps it for rolls that matter |
+| N22 | Casing always hits the cap | **No change to Casing:** five spiders casing a place well should know it, and the cap already stops the flood; intel is information, not a win. The knock-on is fixed: Mid-Heist Complication 2 with nothing uncased left gives "+1 die on the next roll here". Heist 1's intel item, the bottle cap, is now a real approach to the cat (its Weakness: Athletics (1)) | Ch 20; Ch 19 Heist 1 obstacle 1 | none for Casing; the bottle cap is in Heist 1's +6.6 above |
+| N23 | Quick Pick leaves shrugs at 2 dice | Endurance 2 in two more packages (**Tinkerer**: Athletics → Endurance; **Lookout**: Deception → Endurance), so four of seven Roles start with Endurance. The **Face** package swaps Stealth 3 / Perception 2 to Perception 3 / Stealth 2, so a Face no longer out-sneaks the Ghost | Ch 20 Quick Pick | none (the sim's crews are built freely, not from the Quick Pick) |
+| N24 | A Reroll can lock you out of the Clutch | Advice in Silk Point Management: "A Reroll that only lifts a Failure to a Partial costs you the Clutch and still costs the Partial's +1 — when the roll matters that much, Clutch instead" | Ch 8 | none |
+| N25 | The rival crew's outcomes | A Success settles it: **negotiated**, they back off for a favour owed; **recruited**, they help carry the book (a free silk sled); **outdone**, they're left with an empty case. **On a Failure they snatch the book**: the obstacle isn't done until the crew wins it back, and if it ends first, the book is gone | Ch 19 Heist 4 unknown obstacle | none (the sim retries a failed rival roll) |
+| N26 | Not Part of the Plan on a Partial | "Negate one complication the ST just introduced, **a Partial's included**" | Ch 8; Silk Points journal | none (as simulated) |
+
+### G2. Readings from the automation design (docs/AUTOMATION-DESIGN.md §15), written into the book
+
+| §15 | Reading | Book ruling | Where | Differs from the design? |
+|---|---|---|---|---|
+| 1 | Group-check Alert | "by the worst result — the largest rise any one of them would have caused" | Ch 2 | **Yes, in one detail:** a clean failure (the 4–6 Botch die) is "an ordinary Failure": +1, not 0 |
+| 2 | Silk Clutch on a Failure only | "After a Failure on your own roll (a Partial isn't one, and a Botch die can't be saved)" — no Botch and no clean failure, as the design reads it | Ch 8; Ch 2 Botch | No |
+| 3 | Earned SP above the start | "Earned Silk can take you above your starting total" | Ch 8 | No |
+| 4 | Speed halvings don't stack | "Halvings don't stack"; a lone Treasure carrier stays put | Ch 3; Ch 12 | No |
+| 5 | Vitality resets each heist | "You start every heist Unharmed, with WIT + NERVE + 1 Silk Points" | Ch 11 | No |
+| 6 | AP to both spiders of a slot | "for the original spider and any replacement alike" | Ch 11 | **Yes:** half AP for a player whose spider was caught in the last Escape obstacle (N13) |
+| 7 | A Critical counts as one success | "(Partial or better; a Critical counts as one)" | Ch 11 | No |
+| 8 | Gap recovery belongs to the obstacle | "once per obstacle (the gap after it counts as part of it)" | Ch 10 | No |
+| 9 | +X in the clearing round | "the round they clear it included" | Ch 9 | No (N3's back-off starts after that round) |
+| 10 | Reaction windows to round end | "can be called until the end of that round; the ST undoes what it cancels" (That's Not What Happened, Plausible Deniability, Abort Abort, Damage Control; Damage Control now "Call it before the round ends") | Ch 3; Ch 8 | No. Not Part of the Plan stays "used immediately" |
+| 11 | Big Score carrying | "Everyone present, at half Speed, and a plan" | Ch 12 | No |
+| 12 | Capture held until final | "caught — Out — once the roll is final: a Reroll or a Silk Clutch can still save it" | Ch 9 | No |
+| 13 | Dog bark | "the first time the Alert reaches 4, it rises by 2 more, once" | Ch 16 | No |
+| 14 | Guard backup | Backup arrives at the **start of the next obstacle**, aware, holds its post and never follows the crew beyond it (N12) | Ch 16; Ch 19 | **Yes:** not in the fight's own round, and posts per heist |
+| 15 | Strongest engaged attacker hits | "the one with the biggest attack, if several do" | Ch 2 | No |
+| 16 | Casing roll detection | No book change: one Casing roll per spider in Planning already | — | No |
+| 17 | Show-Off Flaw Moment | "if it costs you (a Partial or a Failure) — or if you Critical anyway" | Ch 7 | No |
+| 18 | Exterminator on the ST's call | No change: "only if the ST decides the humans called someone" | — | No |
+| 19 | Latest Assist replaces | No change: "Only one spider can Assist a given roll" (a table procedure) | — | No |
+
+### G3. Simulator, compendium, art and layout
+
+- **Simulator (P6).** New `pkg: true` parameters in `sim/params.mjs`, defaults = P5 behaviour:
+  `groupOpposed`, `fullAlertPartial`, `weaknessRule`, `parrotSight`, `guardBeaten`, `assistSilk`,
+  `silkLineRule`, `engagedRule`; heist data adds `hold`/`weakness`/`seenBy` approach flags, the Pet Store's
+  `earshot` and the Office's and Library's `guardPost` (read only under P6); two heist tweaks
+  (`cookie-climb-d1`, `cookie-bottle-cap`) carry Heist 1's v4.8 content. The engine also counts N13's
+  half-AP players. `npm test` passes (49 tests, including a new P6 test).
+- **Compendium.** `packs/_source` mirrors every changed rule, creature (Cat, Dog, Guard Spider, Snake,
+  Parrot, Human), Flaw (Butterfingers, Show-Off), the Silk Line gadget, the rules journals (core rules,
+  Alert, Silk, Vitality, phases and AP, creatures and humans, quick reference, random tables) and the
+  heist journals (all five, plus the reading guide). Rebuilt with `npm run build:packs`; `npm run validate` passes.
+- **Art.** One map changed (`map-library`: the guard's web and token, the obstacle-1 marker); audited
+  against `art/ART-CHECKLIST.md` (object table in the v4.8 hand-off). The copy in `assets/maps/` matches.
+- **Layout.** v4.8 is 51 pages digital (v4.7: 50), 50 print interior (49 + the even-page pad). The extra
+  page is Chapter 8: the Silk Point Management box no longer fits beside the tables and moves to a second
+  page with the cat-nap spot. Chapter 16's parrot and snake text was kept to the lines that let every stat
+  block keep v4.7's pages; Heist 4's new procedures were written to keep one heist per page.

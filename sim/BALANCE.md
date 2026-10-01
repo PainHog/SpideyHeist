@@ -363,3 +363,60 @@ On the v4.6 heists: Critical 18.0%, Failure 9.6%, 82% of spiders spend at least 
 - `stallEvery: 2` — the clock again on round 5: no measurable effect.
 
 **Loss** stays rare by design (REVIEW E44): 0.1% at Hard on the v4.6 heists. The v4.7 Chapter 19 Escapes raise it to about 2% (Restaurant 3.5%).
+
+## 12. Package P6 — the v4.8 rulings (REVIEW.md Part G, the verify-v4.7 playtest)
+
+P6 is P5 plus every Part G ruling that changes a roll the simulator makes, plus Heist 1's two v4.8
+content changes. Each is a `pkg: true` parameter whose default is the P5 behaviour, so P0–P5 are
+unchanged (P4H and P5 reproduce their v4.7-data numbers exactly).
+
+| Parameter (P6 value) | Ruling | Part G |
+|---|---|---|
+| `groupOpposed: "once"` | A creature rolls once per round against a group check; its Difficulty applies to every spider | N2 |
+| `fullAlertPartial: "cost"` | At Full Alert a Partial costs a hit from an engaged creature or human, else −1 die next roll; each Partial in a group check pays its own | N14 |
+| `weaknessRule: "backoff"` | A Weakness clears an obstacle as Brawl/Intimidation do; one that shuts the creature in (approach `hold`: the snake's lid or lamp, the parrot's cover) keeps it in all heist — it never leaves its obstacle, never strikes, and a covered parrot never shrieks or repeats | N3 |
+| `parrotSight: true` | The parrot shrieks only at a spider it sees (its obstacle, or approaches marked `seenBy`: the shelf tops) and, once repeating, counts its +1 at every obstacle in its `earshot` (Pet Store O2–O4, E1) | N4, N6 |
+| `guardBeaten: "post"` | A guard beaten in a fight is gone; its aware backup takes the post at the start of the next obstacle and counts only at the heist's `guardPost` obstacles | N12 |
+| `assistSilk: true` | A helper with fewer than 3 Assist dice on an important roll adds 1 of its own Silk dice to the Assist roll, keeping 3 SP for its own Clutch | N21 |
+| `silkLineRule: "minus1"` | Any Silk Line lowers the climb by 1; spinning one in the scene costs the spinner its Action and 1 SP (Orb Weaver and Silk Trail keep their no-roll wording) | N15 |
+| `engagedRule: "before"` | Only a threat already active when the roll failed, or one the spider was fighting, lands the hit | N18 |
+| `heistTweaks` + `cookie-climb-d1`, `cookie-bottle-cap` | Heist 1: the cabinet climb is Acrobatics (1) +1 height; obstacle 1 adds "flick the bottle cap past it: Athletics (1)" (the cat's Weakness, already in the intel) | N15, N22 |
+
+`node sim/packages.mjs --packages P4H,P5,P6 --runs 5000 --seed 1` (v4.8 heist data):
+
+| Heist | P4H | P5 | **P6** |
+|---|---|---|---|
+| 1. Cookie (easy, 10) | 90.1% | 90.1% | **90.7%** |
+| 2. Office (standard, 8) | 75.1% | 77.2% | **77.4%** |
+| 3. Pet Store (standard, 8) | 76.3% | 78.3% | **80.2%** |
+| 4. Library (hard, 6) | 51.1% | 53.0% | **52.6%** |
+| 5. Restaurant (hard, 6) | 64.7% | 65.5% | **65.6%** |
+| **Easy · Standard · Hard** | 90.1 · 75.7 · 57.9 | 90.1 · 77.7 · 59.3 | **90.7 · 78.8 · 59.1** |
+| Hard Loss | 1.30% | 1.86% | 1.90% |
+
+P6 dice: Critical 25.7%, Failure 7.5%, 0.28 Outs per heist, 68% of spiders spend at least half their
+Silk. N13 (half AP for a capture in the last Escape obstacle) changes no win: 5.1% of P6 wins (7.2% of
+escapes) leave a player on half AP, 0.09 players per heist.
+
+**Each ruling's weight** (P6 minus that ruling, 2,000 runs per heist; Cookie / Office / Pet Store /
+Library / Restaurant points): Heist 1 content +6.6 / 0 / 0 / 0 / 0; `weaknessRule` 0 / 0 / +9.5 / 0 / 0;
+`parrotSight` 0 / 0 / −3.4 / 0 / 0; `silkLineRule` −2.2 / 0 / 0 / 0 / 0; `groupOpposed` 0 / 0 / −0.3 / 0 / 0;
+`fullAlertPartial`, `guardBeaten`, `assistSilk`, `engagedRule` each within ±0.4. The Pet Store's two
+rulings interact: the cover silences the parrot, so the Weakness is worth more once the parrot hears the
+whole floor; together they are +1.9 on P5.
+
+**Tested and rejected** (parameters or notes kept in `params.mjs`):
+- Spending Silk on a crewmate's roll through the Assist (`crewSilk`): +4 points at every difficulty; the
+  Clutch alone +3.7. v4.8 keeps Silk your own and lets it into your own Assist roll.
+- Spending Silk on every uncertain Assist: −3 to −8 points (it drains the helper's Clutch reserve).
+- No +X in the round a Weakness/Brawl/Intimidation clears the obstacle: Office +9.5, Pet Store +11 (one
+  Alert point is worth about ten points of win rate at Limit 8).
+- A full Weakness hold (the creature not active at all for the rest of the heist): Pet Store +10.6, +14
+  if the held snake's E1 also needs no roll.
+- A beaten guard's backup that isn't aware: Office +17. An aware backup in the fight's own round, following
+  the crew: the v4.7 rule, which the playtest showed gains nothing.
+
+**A modelling gap found on the way:** under P5 the simulator let a guard beaten in a fight stay unaware
+whenever no roll had failed against it, so the Library's beaten guard never counted again. The book never
+said that (a fight is being spotted). P6's post rule is what the book now says, and it lands within
+0.4 points of P5's Library.

@@ -20,10 +20,10 @@
         "note": "Deception"
       }
     ],
-    "senses": "<p>Sees the whole front of the store from its cage.</p>",
+    "senses": "<p>Sees the front of the store and the shelf tops; hears, and repeats, its whole floor.</p>",
     "passive": "<p>Repeats what it hears, loudly and at length.</p>",
-    "escalation": "<p>Alert 3, mutters. Alert 5, repeats every noise it hears. Alert 7, shrieks &mdash; the Alert rises by 2 once.</p>",
-    "weakness": "<p>A cloth over the cage, a cracker (Persuasion, Difficulty 1).</p>",
+    "escalation": "<p>Alert 3, mutters. Alert 5, repeats every noise. Alert 7, shrieks at the first spider it sees: +2, once.</p>",
+    "weakness": "<p>A cloth over the cage (quiet all night), a cracker (Persuasion, Difficulty 1).</p>",
     "notes": "<p><strong>Speed:</strong> 0 (caged).</p>",
     "biography": "<p><em>&ldquo;It Will Describe You. In Detail. At Volume.&rdquo;</em></p><p>An alert parrot near the front of the pet store that repeats what it hears, loudly and at length. It has seen you. It will describe you. In detail. At volume.</p>"
   }

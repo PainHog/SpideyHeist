@@ -5,7 +5,7 @@
     <h2>Creature Compendium</h2>
   </header>
   <p class="opener">Every major threat has a stat block: what it rolls, how fast it moves in squares, how fast it escalates, and how to run it. When a creature acts against the crew, roll the listed pool and count 5+; that’s what the crew is up against. An Escalation step names an Alert level, and Full Alert counts as every step at once — at a low Limit, a creature can go straight from asleep to hunting.</p>
-  <p><strong>Driving one off.</strong> Spiders don’t win fights with cats; they end them. Clear a creature’s obstacle with Brawl or Intimidation and it backs off for the rest of that obstacle: no attacks, no +X there. If it roams, it’s back at the next one, sulking. Fights are loud: every roll of one that lands is +1 Alert, and a lost one is a Loud Failure.</p>
+  <p><strong>Driving one off.</strong> Spiders don’t win fights with cats; they end them. Clear a creature’s obstacle with its Weakness, Brawl or Intimidation and it backs off for the rest of that obstacle: no attacks, no +X there. If it roams, it’s back at the next one, sulking. A Weakness that shuts it in stays shut all heist. Fights are loud: every roll of one that lands is +1 Alert, and a lost one is a Loud Failure.</p>
 
   <article class="statblock" id="cr-house-cat">
     <figure class="art creature" data-art="creature-cat"></figure>
@@ -19,7 +19,7 @@
     <dl class="traits">
       <dt>Passive</dt><dd>asleep ~70% of the time. When awake, paying complete attention.</dd>
       <dt>Senses</dt><dd>spots suspicious movement within about 6 squares in line of sight.</dd>
-      <dt>Escalation</dt><dd>Alert 3, ears rotate. Alert 5, moves toward the sound. Alert 7, hunting.</dd>
+      <dt>Escalation</dt><dd>Alert 3, wakes: ears rotate and it starts to prowl — awake, so it roams (Chapter 9). Alert 5, moves toward the sound. Alert 7, hunting.</dd>
       <dt>Weakness</dt><dd>shiny objects (Difficulty 1 to redirect), sudden loud noises in the opposite direction, and cucumbers. The ST may rule a cucumber a Difficulty 0 distraction if the crew somehow produced one.</dd>
       <dt>Fear</dt><dd>nothing. The cat fears nothing.</dd>
     </dl>
@@ -37,7 +37,7 @@
     <dl class="traits">
       <dt>Passive</dt><dd>not malicious. Wants to play. Equally threatening.</dd>
       <dt>Senses</dt><dd>smells a spider automatically at Alert 2+; doesn’t need line of sight.</dd>
-      <dt>Escalation</dt><dd>at Alert 4 it barks. When it barks, the Alert immediately rises by 2.</dd>
+      <dt>Escalation</dt><dd>at Alert 4 it barks: the first time the Alert reaches 4, it rises by 2 more, once.</dd>
       <dt>Weakness</dt><dd>treats, another animal to fixate on, going outside (needs a door opened, which is a whole thing).</dd>
       <dt>Note</dt><dd>the dog will try to carry crew members gently in its mouth. Acrobatics (Difficulty 4) to escape. It thinks it’s helping.</dd>
     </dl>
@@ -92,7 +92,7 @@
       <dt>Senses</dt><dd>spots movement within 6 squares in line of sight.</dd>
       <dt>Escalation</dt><dd>aware the moment it spots the crew: +1 Alert (its “spotted,” not an extra), then +1 a round, and it follows the crew. Aware lasts the heist, unless it’s paid off.</dd>
       <dt>Note</dt><dd>cannot be charmed by the Face — professional courtesy. Fast Talk and Deception still work.</dd>
-      <dt>Weakness</dt><dd>bribery (the crew must produce something valuable on the spot), the Grifter’s Decoy (works once), the Bruiser (works, but loudly — and a beaten guard calls for backup: a fresh one, already aware, takes its post).</dd>
+      <dt>Weakness</dt><dd>bribery (the crew must produce something valuable on the spot), the Grifter’s Decoy (works once), the Bruiser (works, but loudly). A beaten guard is out of the heist, but it calls for backup: at the start of the next obstacle a fresh one, already aware, takes its post. The backup holds the post — the guard’s own obstacle and the patrol it walked — and never follows the crew beyond it.</dd>
       <dt>Note</dt><dd>guard spiders aren’t evil. They’re working. Anyone but the Face could try talking to one. The Difficulty is 4. Worth one attempt.</dd>
     </dl>
   </article>
@@ -110,7 +110,7 @@
       <dt>Passive</dt><dd>coiled in its display tank; the lid is loose.</dd>
       <dt>Senses</dt><dd>notices movement within 3 squares of the tank.</dd>
       <dt>Escalation</dt><dd>Alert 3, tongue flicks toward the crew. Alert 5, noses at the loose lid. Alert 7, out of the tank and hunting.</dd>
-      <dt>Weakness</dt><dd>a heat lamp to bask under, a lid that’s actually shut.</dd>
+      <dt>Weakness</dt><dd>a heat lamp to bask under, a lid that’s actually shut (no strikes or hunting; it still counts at its own obstacle).</dd>
       <dt>Note</dt><dd>a Strike that lands drops a Vitality level like any hit.</dd>
     </dl>
   </article>
@@ -126,9 +126,9 @@
     <p class="pools">Perception 4 · Mimicry (Deception) 3</p>
     <dl class="traits">
       <dt>Passive</dt><dd>repeats what it hears, loudly and at length.</dd>
-      <dt>Senses</dt><dd>sees the whole front of the store from its cage.</dd>
-      <dt>Escalation</dt><dd>Alert 3, mutters. Alert 5, repeats every noise it hears. Alert 7, shrieks — the Alert rises by 2 once.</dd>
-      <dt>Weakness</dt><dd>a cloth over the cage, a cracker (Persuasion, Difficulty 1).</dd>
+      <dt>Senses</dt><dd>sees the front of the store and the shelf tops; hears, and repeats, its whole floor.</dd>
+      <dt>Escalation</dt><dd>Alert 3, mutters. Alert 5, repeats every noise. Alert 7, shrieks at the first spider it sees: +2, once.</dd>
+      <dt>Weakness</dt><dd>a cloth over the cage (quiet all night), a cracker (Persuasion, Difficulty 1).</dd>
     </dl>
   </article>
 
@@ -194,7 +194,7 @@
       <dt>Passive</dt><dd>sleeping, distracted, alert or armed with a broom — its Chapter 15 row. You roll against that row’s Difficulty; it never rolls to spot you.</dd>
       <dt>Senses</dt><dd>sees anything in its room not in cover. A sleeper only hears.</dd>
       <dt>Escalation</dt><dd>stirs at 5; up with the lights on at 7 or Full Alert. Its row stays the same.</dd>
-      <dt>Note</dt><dd>a glimpse of a spider is “spotted” (+1); loot moving on its own is a confirmed alert (+2). Fail a roll within its reach and you’re swatted (a hit, Swat 3). A Critical spider it hits ends up under a glass: Out.</dd>
+      <dt>Note</dt><dd>a glimpse of a spider is “spotted” (+1); loot moving on its own is a confirmed alert (+2). Fail a roll in its room and in its sight, and you’re swatted (a hit, Swat 3); a Critical spider it hits ends up under a glass: Out.</dd>
       <dt>Weakness</dt><dd>its phone, the TV, and a deep conviction that it imagined you.</dd>
     </dl>
   </article>

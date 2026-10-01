@@ -1084,3 +1084,25 @@ Runtime namespaces (late-bound on `game.heistySpideys`):
 - `alert.raise({eventId, triggers, cause, source})`, `alert.amend(eventId, patch)` — C
 - `actorOps.*`, `abilities.use(actor, key, opts)`, `waitingWeb.promptReplacement(actor)` — A
 - `dice.rollCheck`, `dice.rollForced`, `dice.threatAttack`, `dice.rollAssist` — B
+
+## 16. Addendum — rulebook v4.8 changes the build must follow (supersedes earlier sections where they differ)
+
+Source: book/REVIEW.md Part G (G1 = playtest items N1–N26, G2 = §15 readings). Where this list and §1–15 disagree, this list and the book win.
+
+**§15 readings that changed:** #1 a clean failure (the 4–6 Botch die) is an ordinary Failure: +1 Alert, not 0. #6 AP go to both spiders of a slot, except a player caught in the last Escape obstacle earns half AP (N13). #14 a guard beaten in a fight is out of the heist; its aware backup arrives at the START of the next obstacle, holds its heist post (Heist 2: upper floor and stairs; Heist 4: lobby) and never follows the crew.
+
+1. config.mjs: Quick Pick packages for Face (Perception 3 / Stealth 2), Tinkerer and Lookout (Endurance 2) (N23); Silk Clutch text "on your own roll", not a Botch die; Damage Control timing "before the round ends"; Not Part of the Plan works on a Partial's complication (N26); Silk Line −1 Difficulty under pressure, no roll otherwise (Orb Weaver keeps its no-roll Line) (N15).
+2. Group checks: the creature rolls ONCE per round and that Difficulty applies to every spider (N2); Alert = the largest single trigger, a clean failure is +1; a group check fills BOTH of a heist obstacle's progress pips — the obstacle is done when every spider is through, a spider who fails retries next round (N1); an Escape obstacle needs one roll, which covers any squeeze or climb along the way.
+3. Full Alert: a Partial costs a hit from an engaged threat (not generic pursuit), otherwise −1 die on the next roll (or a dropped item); in a group check each Partial pays its own (N14). A capture waits until the roll is final.
+4. Engaged = already active and able to reach you, or the one you're fighting; if several see you fail, the biggest attack lands. A human's reach is its room (N18).
+5. Creature "shut" state from a Weakness: lasts the whole heist (snake: no strike/roam, still +X at its own obstacle incl. E1; covered parrot: no +1, no shriek). Clearing an obstacle with a Weakness otherwise = backs off for the rest of that obstacle, like Brawl/Intimidation (N3).
+6. Parrot: shrieks only at a spider it can see (its obstacle, shelf tops, counter); once repeating (Alert 5) its +1 counts on every shop-floor obstacle, not the stockroom (N4).
+7. House Cat wakes and roams at Alert 3 (Heist 1's cat roams from the start). Dog: +2 once, the first time the Alert reaches 4.
+8. Guard: see #14 above (N12).
+9. Silk: Silk dice may go into your own Assist roll, outside its 3-die maximum; no paying for a crewmate's roll (N21); earned Silk can exceed the starting total.
+10. Movement/loot: a squeeze or climb roll under pressure uses the Action (N16); falls 1 die per 2 squares rounded up (N17); Speed halvings don't stack; one Action by one spider picks up loot of any size; a lone Treasure carrier can't move; the Big Score moves at half Speed (N20).
+11. Butterfingers uses a d6 direction table: 1–2 ahead, 3–4 left, 5–6 right (N19).
+12. Debrief/recovery: half AP for a player caught in the last Escape obstacle; AP to both original and replacement; Vitality resets to Unharmed at heist start; gap recovery counts for the obstacle just finished.
+13. Reaction window (That's Not What Happened, Plausible Deniability, Abort Abort, Damage Control) lasts until the end of the round.
+14. Mid-Heist Complication 2 with nothing left uncased: +1 die on the next roll here (N22).
+15. Heist catalog (port from sim/heists.mjs, which matches v4.8): Cookie O1 adds the bottle cap (Athletics 1, the cat's Weakness), O2 is Acrobatics (1); Library: librarian floor rolled as the crew comes in and at the end of each round, obstacle 2 = where she and the crew first share a floor (or the reference room at the case), rival-crew outcomes (negotiated / recruited = free sled / outdone; a Failure = they snatch the book), guard post at the foot of the east stairs; Pet Store: route A meets obstacle 1, route B meets obstacle 3; the cricket hops through a gap once calmed (E2).
