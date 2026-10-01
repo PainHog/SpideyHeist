@@ -1,0 +1,34 @@
+<div class="heisty-roll-card heisty-card shrug-card result-{{verdictCss}}">
+  <header class="hrc-head">
+    <img class="hrc-avatar" src="{{actorImg}}" alt="" />
+    <div class="hrc-title">
+      <span class="hrc-actor">{{actorName}}</span>
+      <span class="hrc-label">Shrug it off <span class="hrc-sub">BODY + Endurance vs {{attackLabel}}</span></span>
+    </div>
+    <div class="hrc-verdict-badge">{{verdict}}</div>
+  </header>
+
+  <div class="hrc-dice">
+    {{#if noDice}}<span class="hrc-sub">No dice: 0 Successes (a shrug-off can't Botch).</span>{{/if}}
+    {{#each faces}}<span class="die face-{{this.result}}{{#if this.success}} hit{{/if}}{{#if this.rerolled}} rerolled{{/if}}">{{this.result}}</span>{{/each}}
+  </div>
+
+  <div class="hrc-result">
+    <span class="hrc-count"><strong>{{successes}}</strong> vs the attack's <strong>{{attackSuccesses}}</strong></span>
+  </div>
+  <p class="hrc-blurb">{{marginText}}</p>
+  {{#if tayg}}
+  <div class="hrc-tayg">
+    <div class="hrc-dice small">{{#each tayg.faces}}<span class="die face-{{this.result}}{{#if this.success}} hit{{/if}}">{{this.result}}</span>{{/each}}</div>
+    <p class="hrc-note">{{tayg.text}}</p>
+  </div>
+  {{/if}}
+  {{#if causeText}}<p class="hrc-note warn"><i class="fa-solid fa-skull"></i> {{causeText}}</p>{{/if}}
+  <p class="hrc-alert-line{{#unless applied}} dim{{/unless}}"><i class="fa-solid fa-heart-pulse"></i> Vitality: {{vitText}}{{#unless applied}} (not applied yet){{/unless}}</p>
+  {{#if hasHistory}}
+  <ul class="hrc-history">
+    {{#each history}}<li>{{this.text}}</li>{{/each}}
+  </ul>
+  {{/if}}
+  <div class="hrc-actions" data-heisty-actions></div>
+</div>

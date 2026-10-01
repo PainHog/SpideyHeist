@@ -1,0 +1,24 @@
+<div class="heisty-roll-card heisty-card attack-card">
+  <header class="hrc-head">
+    <img class="hrc-avatar" src="{{sourceImg}}" alt="" />
+    <div class="hrc-title">
+      <span class="hrc-actor">{{sourceName}}</span>
+      <span class="hrc-label">{{label}}{{#if why}} <span class="hrc-sub">{{why}}</span>{{/if}}</span>
+    </div>
+    <div class="hrc-verdict-badge threat">{{successes}} Succ.</div>
+  </header>
+
+  <div class="hrc-dice">
+    {{#if noDice}}<span class="hrc-sub">No dice: 0 Successes.</span>{{/if}}
+    {{#each faces}}<span class="die face-{{this.result}}{{#if this.success}} hit{{/if}}">{{this.result}}</span>{{/each}}
+  </div>
+
+  <div class="hrc-target">
+    <img class="hrc-avatar small" src="{{targetImg}}" alt="" />
+    <span>A hit on <strong>{{targetName}}</strong>: <strong>{{successes}}</strong> Success{{#if (heNeq successes 1)}}es{{/if}} on {{pool}}d6. Shrug it off with BODY + Endurance — beat it to take nothing; a tie or losing by 1–2 drops one level; by 3+ drops two.</span>
+  </div>
+  {{#if redirected}}<p class="hrc-note good"><i class="fa-solid fa-shield-halved"></i> {{redirected}}</p>{{/if}}
+  {{#if hasOuts}}{{#each outs}}<p class="hrc-note warn"><i class="fa-solid fa-skull"></i> {{this}}</p>{{/each}}{{/if}}
+  {{#if resolved}}<p class="hrc-alert-line {{resultCss}}"><i class="fa-solid fa-heart-crack"></i> {{resultText}}</p>{{/if}}
+  <div class="hrc-actions" data-heisty-actions></div>
+</div>

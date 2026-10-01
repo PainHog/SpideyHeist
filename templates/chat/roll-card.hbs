@@ -1,4 +1,4 @@
-<div class="heisty-roll-card result-{{resultCss}}{{#if isBotch}} is-botch{{/if}}">
+<div class="heisty-roll-card heisty-card result-{{resultCss}}{{#if isBotch}} is-botch{{/if}}{{#if final}} is-final{{/if}}">
   <header class="hrc-head">
     <img class="hrc-avatar" src="{{actorImg}}" alt="" />
     <div class="hrc-title">
@@ -9,7 +9,7 @@
   </header>
 
   <div class="hrc-dice">
-    {{#each faces}}<span class="die face-{{this.result}} {{#if this.success}}hit{{/if}}">{{this.result}}</span>{{/each}}
+    {{#each faces}}<span class="die face-{{this.result}}{{#if this.success}} hit{{/if}}{{#if this.rerolled}} rerolled{{/if}}">{{this.result}}</span>{{/each}}
   </div>
 
   <div class="hrc-result">
@@ -21,24 +21,23 @@
   </div>
 
   <p class="hrc-blurb">{{blurb}}</p>
-  {{#if opposed}}<p class="hrc-note"><i class="fa-solid fa-scale-balanced"></i> Opposed by {{opposed.name}} ({{opposed.label}}): {{opposed.successes}} Success{{#if (heNeq opposed.successes 1)}}es{{/if}} + 1 = Difficulty {{opposed.difficulty}}.</p>{{/if}}
-  {{#if bonusCapped}}<p class="hrc-note"><i class="fa-solid fa-hand"></i> Bonus dice capped at +{{bonusCap}} (asked for +{{bonusRequested}}). Silk dice don't count toward the limit.</p>{{/if}}
-  {{#if fullAlert}}<p class="hrc-note warn"><i class="fa-solid fa-lock"></i> Full Alert: the Alert is locked at the Limit. During the Escape, a failed roll gets this spider caught (Out).</p>{{/if}}
+  {{#each notes}}<p class="hrc-note{{#if this.warn}} warn{{/if}}{{#if this.good}} good{{/if}}"><i class="fa-solid {{this.icon}}"></i> {{this.text}}</p>{{/each}}
 
   <div class="hrc-breakdown">
-    <span class="chip">{{pool}}d6</span>
-    {{#if vitPenalty}}<span class="chip warn">Vitality {{heSigned vitPenalty}}</span>{{/if}}
-    {{#if bonus}}<span class="chip good">bonus +{{bonus}}{{#if bonusCapped}} (cap){{/if}}</span>{{/if}}
-    {{#if silk}}<span class="chip good">Silk +{{silk}}</span>{{/if}}
-    {{#if penalty}}<span class="chip warn">penalty −{{penalty}}</span>{{/if}}
-    {{#if modifier}}<span class="chip">Diff {{heSigned modifier}}</span>{{/if}}
-    {{#if alertApplied}}<span class="chip warn">Alert +{{alertDiff}} Diff</span>{{/if}}
+    {{#each chips}}<span class="chip {{this.cls}}">{{this.text}}</span>{{/each}}
   </div>
 
-  <div class="hrc-alert-controls">
-    <span class="hrc-alert-label"><i class="fa-solid fa-triangle-exclamation"></i> Alert</span>
-    <button type="button" data-heisty-alert="-1" class="{{#if (heEq suggested -1)}}suggested{{/if}}">−1</button>
-    <button type="button" data-heisty-alert="1" class="{{#if (heEq suggested 1)}}suggested{{/if}}">+1</button>
-    <button type="button" data-heisty-alert="2" class="{{#if (heEq suggested 2)}}suggested{{/if}}">+2</button>
-  </div>
+  {{#if alertLine}}<p class="hrc-alert-line {{alertLine.cls}}"><i class="fa-solid fa-triangle-exclamation"></i> {{alertLine.text}}</p>{{/if}}
+  {{#if hasConsequences}}
+  <ul class="hrc-consequences">
+    {{#each consequences}}<li class="{{this.cls}}">{{this.text}}</li>{{/each}}
+  </ul>
+  {{/if}}
+  {{#if hasHistory}}
+  <ul class="hrc-history">
+    {{#each history}}<li>{{this.text}}</li>{{/each}}
+  </ul>
+  {{/if}}
+  {{#if final}}<p class="hrc-final"><i class="fa-solid fa-lock"></i> Final.</p>{{/if}}
+  <div class="hrc-actions" data-heisty-actions></div>
 </div>

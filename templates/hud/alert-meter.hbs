@@ -20,6 +20,27 @@
 
     <p class="am-desc">{{state.description}}</p>
 
+    {{#if phaseLabel}}
+    <div class="am-heist-row">
+      <span class="am-heist-phase" title="{{heistName}}">{{phaseLabel}}{{#if inPlay}} · round {{round}}{{/if}}</span>
+      <button type="button" data-action="tracker" title="Open the Heist Tracker"><i class="fa-solid fa-route"></i></button>
+      {{#if isGM}}{{#if inPlay}}<button type="button" data-action="endRound" title="End the round (creatures, procedures, the clock)"><i class="fa-solid fa-hourglass-end"></i></button>{{/if}}{{/if}}
+    </div>
+    {{/if}}
+
+    {{#if hasPending}}
+    <div class="am-pending">
+      <span class="am-pending-title">Proposed changes</span>
+      {{#each pending}}
+      <div class="am-pending-row">
+        <span class="am-pending-text">{{this.text}}</span>
+        <button type="button" data-action="confirm" data-event-id="{{this.eventId}}" title="Apply it"><i class="fa-solid fa-check"></i></button>
+        <button type="button" data-action="reject" data-event-id="{{this.eventId}}" title="Drop it"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
     {{#if isGM}}
     <div class="am-controls">
       <button type="button" data-action="bump" data-delta="-1" {{#if atLimit}}disabled title="Full Alert: nothing lowers the Alert for the rest of the heist"{{else}}title="Critical Success at final Difficulty 3+ (−1, never below 0)"{{/if}}>−1</button>
@@ -33,6 +54,7 @@
       <select name="alertLimit">
         {{#each limits}}<option value="{{this.value}}" {{#if (heEq this.value ../limit)}}selected{{/if}}>{{this.label}} ({{this.value}})</option>{{/each}}
       </select>
+      {{#if freeplay}}<button type="button" class="am-new-scene" data-action="newScene" title="New Scene: once-per-scene abilities are ready again"><i class="fa-solid fa-clapperboard"></i> New Scene</button>{{/if}}
     </div>
     {{/if}}
   </div>

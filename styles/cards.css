@@ -1,0 +1,74 @@
+/* ==========================================================================
+   HEISTY SPIDEYS — Roll cards, reactions and Taking Hits (WP-B, 1.8.0)
+   Extends the 1.7 card look in heisty-spideys.css. Every selector is scoped to
+   .heisty-roll-card or .heisty-roll-dialog (see the note at the top of the main
+   stylesheet); chat cards use literal colours so they read the same in either
+   UI theme.
+   ========================================================================== */
+
+/* -------------------------------------------------- Card extras ----------- */
+.heisty-roll-card .hrc-dice .die.rerolled { outline: 2px dashed #b8892a; outline-offset: 1px; }
+.heisty-roll-card .hrc-dice.small { padding: 4px 10px; }
+.heisty-roll-card .hrc-dice.small .die { width: 20px; height: 20px; font-size: 0.7rem; }
+.heisty-roll-card .hrc-note.good { color: #2f7d4f; background: rgba(47,125,79,0.12); }
+.heisty-roll-card.is-final .hrc-head { filter: saturate(0.85); }
+
+.heisty-roll-card .hrc-alert-line {
+  margin: 0 10px 6px; padding: 4px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: 600;
+  color: #36343a; background: rgba(0,0,0,0.05); text-align: center;
+}
+.heisty-roll-card .hrc-alert-line.warn { color: #8f1d1d; background: rgba(143,29,29,0.10); }
+.heisty-roll-card .hrc-alert-line.good { color: #2f7d4f; background: rgba(47,125,79,0.12); }
+.heisty-roll-card .hrc-alert-line.dim { opacity: 0.65; }
+
+.heisty-roll-card .hrc-consequences,
+.heisty-roll-card .hrc-history { list-style: none; margin: 0 10px 6px; padding: 0; font-size: 0.72rem; color: #57525a; }
+.heisty-roll-card .hrc-consequences li { padding: 3px 8px; border-left: 3px solid #cbb589; margin-bottom: 3px; background: rgba(0,0,0,0.03); }
+.heisty-roll-card .hrc-consequences li.warn { border-left-color: #8f1d1d; color: #8f1d1d; }
+.heisty-roll-card .hrc-history li { padding: 1px 8px; }
+.heisty-roll-card .hrc-history li::before { content: "↺ "; color: #b8892a; }
+.heisty-roll-card .hrc-final { margin: 0 10px 6px; font-size: 0.68rem; color: #57525a; text-align: right; }
+
+/* -------------------------------------------------- Buttons --------------- */
+.heisty-roll-card .hrc-actions { border-top: 1px solid #cdbfa4; background: rgba(54,52,58,0.04); padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; }
+.heisty-roll-card .hrc-actions:empty { display: none; }
+.heisty-roll-card .hrc-actions-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.heisty-roll-card .hrc-actions-row.gm-row { padding-top: 4px; border-top: 1px dashed #cdbfa4; }
+.heisty-roll-card .hrc-actions-label { font-size: 0.66rem; font-weight: 700; color: #8f1d1d; margin-right: 2px; }
+.heisty-roll-card .heisty-card-btn {
+  flex: 0 1 auto; width: auto; line-height: 1.2; min-height: 0;
+  font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 5px; cursor: pointer;
+  border: 1px solid #36343a; background: #36343a; color: #f3eee4;
+}
+.heisty-roll-card .heisty-card-btn:hover:not(:disabled) { background: #1f1d22; border-color: #f0cf6b; }
+.heisty-roll-card .heisty-card-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.heisty-roll-card .heisty-card-btn.subtle { background: #fff; color: #36343a; border-color: #cbb589; }
+.heisty-roll-card .heisty-card-btn.gm { background: #fff; color: #141216; border-color: #cbb589; }
+.heisty-roll-card .heisty-card-btn.gm:hover:not(:disabled) { background: #36343a; color: #fff; }
+.heisty-roll-card .heisty-card-btn.suggested { background: #f0cf6b; border-color: #b8892a; color: #1f1d22; }
+
+/* -------------------------------------------------- Attack / shrug -------- */
+.heisty-roll-card.attack-card .hrc-head { background: linear-gradient(135deg, #5c1212, #8f1d1d); }
+.heisty-roll-card .hrc-target { display: flex; gap: 8px; align-items: center; padding: 4px 10px 8px; font-size: 0.76rem; color: #36343a; }
+.heisty-roll-card .hrc-avatar.small { width: 28px; height: 28px; flex: 0 0 auto; }
+.heisty-roll-card.shrug-card .hrc-head { background: linear-gradient(135deg, #1f1d22, #5a5660); }
+.heisty-roll-card.shrug-card.result-success .hrc-verdict-badge { background: #2f7d4f; color: #fff; }
+.heisty-roll-card.shrug-card.result-partial .hrc-verdict-badge { background: #8a6116; color: #fff; }
+.heisty-roll-card.shrug-card.result-failure .hrc-verdict-badge { background: #8f1d1d; color: #fff; }
+.heisty-roll-card.shrug-card.result-botch .hrc-verdict-badge { background: #141216; color: #f0cf6b; }
+.heisty-roll-card .hrc-tayg { margin: 0 10px 6px; border: 1px dashed #cbb589; border-radius: 6px; }
+.heisty-roll-card .hrc-tayg .hrc-note { margin: 0 6px 6px; }
+.heisty-roll-card.assist-card .hrc-head { background: linear-gradient(135deg, #2f4d3a, #2f7d4f); }
+
+/* -------------------------------------------------- Roll dialog ----------- */
+.heisty-roll-dialog .hrd-pool.hrd-diff { background: linear-gradient(135deg, #5c1212, #8f1d1d); }
+.heisty-roll-dialog .hrd-headline .hrd-silk { display: block; font-size: 0.72rem; font-weight: 700; color: var(--hs-gold); }
+.heisty-roll-dialog .hrd-options { border: 1px solid var(--hs-parch-edge); border-radius: 6px; padding: 4px 8px 6px; margin: 8px 0; }
+.heisty-roll-dialog .hrd-options legend { font-size: 0.74rem; font-weight: 700; color: var(--hs-plum-deep); padding: 0 4px; }
+.heisty-roll-dialog .hrd-options legend .dim { font-weight: 400; color: var(--hs-ink-soft); }
+.heisty-roll-dialog .hrd-opt { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; margin: 2px 0; }
+.heisty-roll-dialog .hrd-opt input[type="checkbox"] { flex: 0 0 auto; margin: 0; }
+.heisty-roll-dialog .hrd-inline-num { width: 3.2em; flex: 0 0 auto; height: 1.6em; }
+.heisty-roll-dialog .hrd-parts { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; padding: 0; margin: 6px 0; }
+.heisty-roll-dialog .hrd-parts li { font-size: 0.68rem; padding: 2px 7px; border-radius: 8px; background: rgba(0,0,0,0.06); color: var(--hs-ink-soft); }
+.heisty-roll-dialog .form-group[hidden] { display: none; }

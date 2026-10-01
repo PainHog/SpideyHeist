@@ -1,0 +1,18 @@
+<div class="heisty-roll-card heisty-card assist-card">
+  <header class="hrc-head">
+    <img class="hrc-avatar" src="{{actorImg}}" alt="" />
+    <div class="hrc-title">
+      <span class="hrc-actor">{{actorName}}</span>
+      <span class="hrc-label">Assist: {{skillLabel}} <span class="hrc-sub">helping {{targetName}}</span></span>
+    </div>
+    <div class="hrc-verdict-badge">+{{successes}}</div>
+  </header>
+  <div class="hrc-dice">
+    {{#each faces}}<span class="die face-{{this.result}}{{#if this.success}} hit{{/if}}">{{this.result}}</span>{{/each}}
+  </div>
+  <div class="hrc-result">
+    <span class="hrc-count"><strong>{{successes}}</strong> Success{{#if (heNeq successes 1)}}es{{/if}} on {{pool}}d6{{#if silkDice}} ({{silkDice}} Silk){{/if}}</span>
+  </div>
+  <p class="hrc-blurb">{{bonusText}}</p>
+  <div class="hrc-actions" data-heisty-actions></div>
+</div>

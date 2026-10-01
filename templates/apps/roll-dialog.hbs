@@ -1,27 +1,46 @@
 <div class="heisty-roll-dialog-body">
   <div class="hrd-summary">
     <div class="hrd-pool">
-      <span class="hrd-pool-num">{{base}}</span>
-      <span class="hrd-pool-lbl">base pool</span>
+      <span class="hrd-pool-num" data-preview="pool">{{poolNum}}</span>
+      <span class="hrd-pool-lbl">dice</span>
+    </div>
+    <div class="hrd-pool hrd-diff">
+      <span class="hrd-pool-num" data-preview="difficulty">{{diffNum}}</span>
+      <span class="hrd-pool-lbl">Difficulty</span>
     </div>
     <div class="hrd-headline">
       <span class="hrd-label">{{label}}</span>
       <span class="hrd-sub">{{subtitle}} &middot; 5 or 6 is a Success</span>
+      <span class="hrd-silk" data-preview="silk"></span>
     </div>
   </div>
 
-  {{#if hasVitPenalty}}<p class="hrd-note warn"><i class="fa-solid fa-heart-crack"></i> Vitality {{heSigned vitPenalty}} dice will apply.</p>{{/if}}
+  {{#if isScore}}<p class="hrd-note warn"><i class="fa-solid fa-circle-info"></i> The Score is roleplay only: no rolls, no Alert. Roll anyway only if the Storyteller asked.</p>{{/if}}
+  {{#if isPlanning}}<p class="hrd-note"><i class="fa-solid fa-map"></i> Planning: the Alert is off. A Perception or Tactics roll here is your Casing roll.</p>{{/if}}
+  {{#if hasVitPenalty}}<p class="hrd-note warn"><i class="fa-solid fa-heart-crack"></i> {{vitLabel}}: {{heSigned vitPenalty}} dice.</p>{{/if}}
   <p class="hrd-note{{#if band.atLimit}} warn{{/if}}"><i class="fa-solid fa-triangle-exclamation"></i> Alert {{alertValue}}/{{alertLimit}} &mdash; <strong>{{band.label}}</strong>. {{band.description}}</p>
 
+  {{#if hasApproaches}}
+  <div class="form-group">
+    <label>Approach{{#if obstacleName}} <span class="dim">({{obstacleName}})</span>{{/if}}</label>
+    <select name="approach">
+      <option value="" {{#if noApproachSelected}}selected{{/if}}>Other &mdash; a free roll</option>
+      {{#each approaches}}<option value="{{this.id}}" data-difficulty="{{this.difficulty}}" data-called="{{this.called}}" data-opposed="{{this.opposed}}" data-fight="{{this.fight}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
+    </select>
+  </div>
+  {{/if}}
+
+  {{#if presetOpposed}}
+  <p class="hrd-note"><i class="fa-solid fa-scale-balanced"></i> Opposed by {{presetOpposed.name}}: {{presetOpposed.successes}} Successes + 1 (rolled once for the round).</p>
+  {{/if}}
   {{#if hasOpposers}}
   <div class="form-group">
     <label>Opposed by <span class="dim">(it rolls first)</span></label>
     <select name="opposed">
       <option value="">&mdash; not opposed: use the Difficulty below &mdash;</option>
-      {{#each opposers}}<option value="{{this.value}}">{{this.label}}</option>{{/each}}
+      {{#each opposers}}<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
     </select>
   </div>
-  <p class="hrd-note"><i class="fa-solid fa-scale-balanced"></i> A resisting creature rolls its pool first; its Successes + 1 become your Difficulty (a tie goes to the world). The modifier and the Alert below then apply as usual. Humans never roll to spot you: leave this empty and use their Chapter 15 Difficulty.</p>
   {{/if}}
 
   <div class="form-row">
@@ -33,30 +52,60 @@
       </datalist>
     </div>
     <div class="form-group">
-      <label>Difficulty modifier <span class="dim">(cover, Perks, Flaws)</span></label>
-      <input type="number" name="modifier" value="0" min="-5" max="5" title="e.g. −2 on Stealth against something you have cover from" />
+      <label>Other modifier <span class="dim">(Difficulty)</span></label>
+      <input type="number" name="modifier" value="0" min="-5" max="5" />
     </div>
   </div>
 
-  {{#if hasAlertDiff}}
-  <div class="form-group checkbox-group">
-    <label><input type="checkbox" name="applyAlert" checked /> Apply Alert penalty (+{{alertDiff}} Difficulty{{#if isStealth}}, Stealth{{/if}}{{#if band.atLimit}}, Full Alert{{/if}})</label>
-  </div>
+  {{#if diffOptions.length}}
+  <fieldset class="hrd-options">
+    <legend>Difficulty modifiers <span class="dim">(untick what doesn't apply)</span></legend>
+    {{#each diffOptions}}<label class="hrd-opt"><input type="checkbox" data-opt="{{this.id}}" {{#if this.checked}}checked{{/if}} /> {{this.label}}</label>{{/each}}
+  </fieldset>
+  {{/if}}
+
+  {{#if diceOptions.length}}
+  <fieldset class="hrd-options">
+    <legend>Dice <span class="dim">(queued bonuses and Perks)</span></legend>
+    {{#each diceOptions}}<label class="hrd-opt"><input type="checkbox" data-opt="{{this.id}}" {{#if this.checked}}checked{{/if}} /> {{this.label}}</label>{{/each}}
+  </fieldset>
   {{/if}}
 
   <div class="form-row">
     <div class="form-group">
-      <label>Bonus dice <span class="dim">(Assist, Perk, Signature, intel)</span></label>
+      <label>Bonus dice <span class="dim">(Assist, intel)</span></label>
       <input type="number" name="bonus" value="0" min="0" max="20" />
     </div>
     <div class="form-group">
-      <label>Silk dice <span class="dim">(bought with SP)</span></label>
-      <input type="number" name="silk" value="0" min="0" max="20" />
+      <label>Silk dice <span class="dim">(1 SP each{{#if autoSilk}}; {{silkValue}} SP{{/if}})</span></label>
+      <input type="number" name="silk" value="0" min="0" max="{{silkMax}}" />
     </div>
     <div class="form-group">
       <label>Penalty dice</label>
       <input type="number" name="penalty" value="0" min="0" max="20" />
     </div>
   </div>
-  <p class="hrd-note hrd-cap-note"><i class="fa-solid fa-hand"></i> At most <strong>+{{bonusCap}} bonus dice</strong> per roll from Assists, Perks, Signature Moves and intel together. Silk dice (Overclock's included) don't count toward the limit.<span class="hrd-cap-over" hidden> Only +{{bonusCap}} will be added.</span></p>
+  <p class="hrd-note hrd-cap-note"><i class="fa-solid fa-hand"></i> At most <strong>+{{bonusCap}} bonus dice</strong> per roll from Assists, Perks, Signature Moves and intel together. Silk dice (Overclock's included) don't count toward the limit.</p>
+
+  <fieldset class="hrd-options">
+    <legend>This roll</legend>
+    {{#if canImprovise}}
+    <label class="hrd-opt"><input type="checkbox" name="improvise" {{#if improviseChecked}}checked{{/if}} /> Improvise (2 SP): the Storyteller called for another Skill — +1 Difficulty, this Skill's own Attribute</label>
+    <div class="form-group" {{#unless improviseChecked}}hidden{{/unless}}>
+      <label>Called-for Skill</label>
+      <select name="calledSkill">
+        <option value="">&mdash;</option>
+        {{#each skillChoices}}<option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
+      </select>
+    </div>
+    {{/if}}
+    {{#if canOverclock}}<label class="hrd-opt"><input type="checkbox" name="overclock" /> Overclock (1 SP): +2 Engineering dice, counted as Silk</label>{{/if}}
+    {{#if showFight}}<label class="hrd-opt"><input type="checkbox" name="fight" {{#if fightChecked}}checked{{/if}} /> A fight against a creature (landed +1 Alert, lost +2)</label>{{/if}}
+    <label class="hrd-opt"><input type="checkbox" name="physical" {{#if physicalChecked}}checked{{/if}} /> Chase, pursuit or physical confrontation{{#if hasWolf}} (Run It Again){{/if}}</label>
+    <label class="hrd-opt"><input type="checkbox" name="hazard" /> Avoiding a hazard: a Failure is the hit, rolled with its Difficulty <input type="number" name="hazardDifficulty" value="3" min="1" max="6" class="hrd-inline-num" /></label>
+    {{#each flagOptions}}<label class="hrd-opt"><input type="checkbox" data-opt="{{this.id}}" {{#if this.checked}}checked{{/if}} /> {{this.label}}</label>{{/each}}
+  </fieldset>
+
+  <ul class="hrd-parts" data-preview="parts"></ul>
+  <p class="hrd-note warn" data-preview="warnings" hidden></p>
 </div>
