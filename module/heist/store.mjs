@@ -70,6 +70,7 @@ export const store = {
       const before = this.state;
       const after = await fn(clone(before));
       if (!after || after === before) return before;
+      if (JSON.stringify(after) === JSON.stringify(before)) return before;
       await game.settings.set(SYSTEM_ID, SETTINGS.heistState, after);
       return after;
     };
