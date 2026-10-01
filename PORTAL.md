@@ -1,7 +1,7 @@
 # Heisty Spideys — project plan
 
-Now: Wrapping up the automated online game — all its pieces now work together in a full practice heist the computer plays through on its own.
-Next: Play a test heist online with the Storyteller and two players, fix anything that turns up, then release the 4.8 rulebook and the online game together.
+Now: The 4.8 rulebook and the fully automated online game are both out.
+Next: Play a test heist online with the Storyteller and two players, and fix anything that turns up.
 
 - [x] Playable online version of the game: spider character sheet, dice rolling and the shared Alert meter
 - [x] Guided Character Builder that walks players through making a spider step by step
@@ -16,10 +16,10 @@ Next: Play a test heist online with the Storyteller and two players, fix anythin
 - [x] New v4.7 rulebook laid out and built for digital and print
 - [x] Online game system updated to match the v4.7 rules (ready to release)
 - [x] Final playtest fixes applied to the rulebook (version 4.8, digital and print)
-- [ ] Final playtest fixes applied to the online game
+- [x] Final playtest fixes applied to the online game
 - [x] Automation pieces connected and passing a full practice heist run automatically (tracker, Silk, hits, Alert, replacements, rewards)
 - [ ] Automation tried in a real online game with a Storyteller and two players
-- [ ] Online game handles every rule automatically (heist tracker, Silk spending, hits, Alert)
-- [ ] Final rulebook and online game released together
+- [x] Online game handles every rule automatically (heist tracker, Silk spending, hits, Alert)
+- [x] Final rulebook and online game released together
 - [ ] License chosen for the game content
 - [ ] Rulebook launched for sale
