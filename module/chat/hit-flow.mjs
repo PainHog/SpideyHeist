@@ -62,6 +62,9 @@ export const HitFlow = {
 
   /** Write a Vitality state (WP-A actorOps when present) and fire the hook. */
   async setVitality(actor, to, cause = "hit") {
+    // WP-A's setVitality(actor, state, cause) takes the cause as a string.
+    if (cause && typeof cause === "object") cause = cause.cause ?? "hit";
+    cause = String(cause ?? "hit");
     const from = actor.system?.vitality?.state ?? "unharmed";
     if (from === to) return;
     const ops = ns().actorOps;

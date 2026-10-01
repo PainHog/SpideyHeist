@@ -96,8 +96,17 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     };
   }
 
+  /**
+   * Roll a pool. With spider tokens targeted, a GM's click is an attack on them:
+   * one attack card per target, each with its shrug-off (§3.8). Otherwise the
+   * pool is just rolled (an opposed roll, a check).
+   */
   static #onRollThreat(event, target) {
-    this.actor.rollThreat(Number(target.dataset.index));
+    const index = Number(target.dataset.index);
+    const targets = game.user.isGM ? [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a?.type === "spider") : [];
+    const dice = game.heistySpideys?.dice;
+    if (targets.length && typeof dice?.threatAttack === "function") return dice.threatAttack(this.actor, index, { targets });
+    return this.actor.rollThreat(index);
   }
   static async #onRollAdd() {
     const rolls = foundry.utils.deepClone(this.actor.system.rolls ?? []);

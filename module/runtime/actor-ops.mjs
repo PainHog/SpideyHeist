@@ -257,9 +257,13 @@ export async function prunePendingFor(actor, c = clock()) {
 /** Set a spider's Vitality state and announce it on the vitalityChanged hook. */
 export async function setVitality(actor, state, cause = "") {
   if (!actor || !HEISTY.vitality[state]) return null;
+  // Callers pass the cause as a string ("hit", "caught", "capture", …); accept
+  // a {cause} record too, so an outCause is never "[object Object]".
+  if (cause && typeof cause === "object") cause = cause.cause ?? cause.key ?? "";
+  cause = String(cause ?? "");
   const from = actor.system.vitality?.state ?? "unharmed";
   if (from === state) return state;
-  await actor.update({ "system.vitality.state": state, "system.vitality.outCause": state === "out" ? String(cause ?? "") : "" });
+  await actor.update({ "system.vitality.state": state, "system.vitality.outCause": state === "out" ? cause : "" });
   Hooks.callAll(HOOKS.vitalityChanged, actor, from, state, cause);
   return state;
 }

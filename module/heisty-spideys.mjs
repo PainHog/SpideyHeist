@@ -12,11 +12,14 @@ import { HeistyItem } from "./documents/item.mjs";
 import { SpiderSheet } from "./sheets/spider-sheet.mjs";
 import { ThreatSheet } from "./sheets/threat-sheet.mjs";
 import { HeistyItemSheet } from "./sheets/item-sheet.mjs";
-import { HeistyDice } from "./helpers/dice.mjs";
+import { HeistyDice, registerDiceAutomation } from "./helpers/dice.mjs";
 import { HeistyAlert, AlertMeter, registerAlertSettings } from "./helpers/alert.mjs";
 import { CharacterBuilder } from "./apps/character-builder.mjs";
 import { registerSocket } from "./helpers/socket.mjs";
 import { migrateWorld } from "./helpers/migration.mjs";
+import { registerHeistAutomation, readyHeistAutomation, heistApi } from "./heist/automation.mjs";
+import { registerSpiderAutomation, abilityActions, waitingWebApi } from "./runtime/ability-actions.mjs";
+import { actorOps } from "./runtime/actor-ops.mjs";
 
 /* -------------------------------------------- */
 /*  Init                                        */
@@ -25,11 +28,25 @@ import { migrateWorld } from "./helpers/migration.mjs";
 Hooks.once("init", function () {
   console.log("Heisty Spideys | Booting up the crew.");
 
-  // Public API
-  game.heistySpideys = {
+  // Heist automation first (docs/AUTOMATION-DESIGN.md §11 WP-D): its settings,
+  // the GM-operation registry and query handler, and the heist hooks. It
+  // attaches gm / heist / alert / openTracker to game.heistySpideys, which the
+  // other packages need before they register their own operations.
+  const heistNs = registerHeistAutomation();
+
+  // Public API (keeps what the heist automation attached).
+  const prev = game.heistySpideys ?? {};
+  game.heistySpideys = Object.assign(prev, {
     HEISTY,
-    dice: HeistyDice,
+    gm: heistNs.gm,
+    heist: heistNs.heist,
     alert: HeistyAlert,
+    openTracker: heistNs.openTracker,
+    dice: HeistyDice,
+    actorOps,
+    abilities: abilityActions,
+    // The Waiting Web: WP-C's orchestration (if any) plus WP-A's prompt and builder.
+    waitingWeb: { ...(prev.waitingWeb ?? {}), ...waitingWebApi },
     CharacterBuilder,
     openBuilder: () => {
       try {
@@ -44,15 +61,16 @@ Hooks.once("init", function () {
         ui.notifications?.error("The Character Builder failed to open — press F12 and check the console.");
       }
     }
-  };
+  });
   CONFIG.HEISTY = HEISTY;
 
   // Document classes
   CONFIG.Actor.documentClass = HeistyActor;
   CONFIG.Item.documentClass = HeistyItem;
 
-  // Data models
+  // Data models. A spider's Speed reads its carried loot from the heist state.
   Object.assign(CONFIG.Actor.dataModels, { spider: SpiderData, threat: ThreatData });
+  SpiderData.carryLookup = actor => heistApi.carryFor(actor?.id);
   Object.assign(CONFIG.Item.dataModels, {
     species: SpeciesData, role: RoleData, perk: PerkData, flaw: FlawData, gadget: GadgetData
   });
@@ -79,7 +97,13 @@ Hooks.once("init", function () {
   });
 
   registerHandlebarsHelpers();
-  HeistyDice.registerChatListeners();
+
+  // Spiders (abilities, usage, Waiting Web prompt, the actor.* ops) and dice
+  // (roll cards, reactions, hits, the card.* / hit.* ops). Each registers its
+  // GM operations on the registry above; registerDiceAutomation() also binds
+  // the chat-card listeners (so the 1.7 registerChatListeners() call is gone).
+  registerSpiderAutomation({ gm: heistNs.gm });
+  registerDiceAutomation();
 });
 
 /* -------------------------------------------- */
@@ -94,8 +118,17 @@ Hooks.once("ready", async function () {
   ui.heistyAlert = new AlertMeter();
   ui.heistyAlert.render();
 
-  // Version-keyed, GM-only, idempotent world migration.
+  // Version-keyed, GM-only, idempotent world migration — before the heist
+  // automation seeds its state and reconciles rolls made while no GM was on.
   await migrateWorld();
+
+  // Socket fallback for GM operations, heist-state seeding, reconcile.
+  try {
+    await readyHeistAutomation();
+  } catch (err) {
+    console.error("Heisty Spideys | heist automation failed to start:", err);
+    ui.notifications?.error("The heist automation failed to start — press F12 and check the console.");
+  }
 
   console.log("Heisty Spideys | The crew is in position.");
 });

@@ -222,7 +222,7 @@ export const heistApi = {
   /** Delay a Flaw one round (the player paid 1 SP). */
   async delayFlaw(actorId, flawKey) {
     if (isActiveGM()) return store.mutate(s => flow.delayFlaw(s, actorId, flawKey), { label: "delayFlaw" });
-    return gm.run("heist.delayFlaw", { actorId, flawKey, userId: game.user.id }, { quiet: true });
+    return gm.run(OPS.heistDelayFlaw, { actorId, flawKey, userId: game.user.id }, { quiet: true });
   },
 
   /** Set by the tracker module: () => the open tracker app (or null). */

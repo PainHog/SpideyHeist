@@ -693,7 +693,9 @@ async function handleOut(actor) {
   if (flow.isLoss(store.state.crew)) {
     await postPrompt({ title: "Everyone is Out", tone: "danger", html: "<p>The whole crew is Out at once — a Loss, unless you rule otherwise. (Replacements arrive at the next obstacle.)</p>", buttons: [{ action: "prompt", label: "Go to the Debrief", primary: true, args: { do: "debrief" } }] });
   }
-  await waitingWeb.onSpiderOut(actor, { postPrompt });
+  // Not awaited: asking the player for a name may take up to a minute, and the
+  // automation queue (every roll card's bookkeeping) must not wait on it.
+  waitingWeb.onSpiderOut(actor, { postPrompt }).catch(err => console.error("Heisty Spideys | Waiting Web failed:", err));
 }
 
 /* ------------------------------------------------------------- round end -- */
@@ -867,10 +869,11 @@ async function applyComplicationChoice(message, card, value) {
 async function flawCheckCard(actorId, { flawName, text, spec }) {
   const actor = game.actors.get(actorId);
   if (!actor) return;
+  let rolled = false;
   if (setting(SETTINGS.forcedRolls, "player") === "auto" && typeof api().dice?.rollForced === "function") {
-    await api().dice.rollForced(actor, spec, { local: true });
+    rolled = !!(await api().dice.rollForced(actor, spec, { local: true }));
   }
-  return postCard(CARD.flaw, { actorId, actorName: actor.name, flawName, text, rollSpec: spec, rollLabel: spec.label ?? "the check" });
+  return postCard(CARD.flaw, { actorId, actorName: actor.name, flawName, text, rollSpec: spec, rollLabel: spec.label ?? "the check", rolled });
 }
 
 /* ------------------------------------------------------------ procedures -- */
@@ -1408,6 +1411,16 @@ Object.assign(heistApi, {
   /** Roll the Mid-Heist Complication now ("when the night needs a nudge"). */
   async nudge() { return gmOnly(() => rollComplication({ reason: "nudge" })); },
 
+  /**
+   * A forced Flaw check (Allergic to Dust, Fear of Vacuums): a card with a Roll
+   * button for the spider's player (or rolled at once with forcedRolls = auto).
+   * @param {string} actorId
+   * @param {{flawName:string, text:string, spec:object}} opts  spec: a dice.rollForced spec
+   */
+  async flawCheck(actorId, { flawName = "Flaw", text = "", spec = {} } = {}) {
+    return gmOnly(() => flawCheckCard(actorId, { flawName, text, spec }));
+  },
+
   /** Fire a spider's ST-triggered Flaw (WP-A's ability runtime). */
   async fireFlaw(actorId) {
     const actor = game.actors.get(actorId);
@@ -1592,6 +1605,36 @@ const CANCEL_ABILITIES = {
   abortAbort: { key: "abort-abort", sp: 0, name: "Abort, Abort" }
 };
 
+/**
+ * What an effect does beyond being listed (active GM; both the GM's own
+ * heist.addEffect and the players' heist.addEffect op land here):
+ *  - a distracted NPC (Fast Talk, Decoy, a spit pin…) has its +X suppressed
+ *    while distracted ("all: true" — every NPC watching one spider, Make a
+ *    Scene — is a note, not a suppression);
+ *  - Phase Through marks the spider through the current obstacle: no roll, no Alert.
+ */
+async function afterEffect(e = {}) {
+  if (e.kind === "npcDistracted" && !e.all && (e.actors ?? []).length) {
+    const ids = new Set(e.actors);
+    await store.mutate(st => ({ ...st, creatures: st.creatures.map(c => (ids.has(c.id) || (c.actorUuid && ids.has(c.actorUuid.split(".").pop())) ? { ...c, state: { ...c.state, suppressedUntilRound: Math.max(Number(c.state.suppressedUntilRound ?? -1), Number(e.untilRoundSerial ?? st.roundSerial)) } } : c)) }), { label: "suppress" });
+  }
+  if (e.kind === "phaseThrough" && inPlay(store.state)) {
+    const obstacleId = e.obstacleId ?? store.state.current;
+    for (const actorId of e.actors ?? []) {
+      if (obstacleId && obstacleId === store.state.current) await heistApi.adjustProgress({ obstacleId, passActor: actorId });
+      await store.mutate(st => flow.markActed(st, actorId), { label: "acted" });
+    }
+  }
+}
+
+// The GM's own effects get the same follow-up as the players' op.
+const addEffectBase = heistApi.addEffect;
+heistApi.addEffect = async function addEffect(effect, opts = {}) {
+  const out = await addEffectBase.call(heistApi, effect, opts);
+  if (isActiveGM()) await afterEffect(effect ?? {});
+  return out;
+};
+
 /** Register this package's GM operations (§8). */
 export function registerHeistOps() {
   gm.register(OPS.alertCancel, {
@@ -1757,19 +1800,13 @@ export function registerHeistOps() {
     },
     async apply(args) {
       await store.mutate(st => flow.addEffect(st, { ...args.effect, sourceActorId: args.actorId ?? null, ability: args.ability ?? "" }), { label: "effect" });
-      // A distracted NPC: suppress the creature's +X while it's distracted.
-      const e = args.effect ?? {};
-      // ("all: true" — every NPC watching one spider, Make a Scene — is a note, not a suppression.)
-      if (e.kind === "npcDistracted" && !e.all && (e.actors ?? []).length) {
-        const ids = new Set(e.actors);
-        await store.mutate(st => ({ ...st, creatures: st.creatures.map(c => (ids.has(c.id) || (c.actorUuid && ids.has(c.actorUuid.split(".").pop())) ? { ...c, state: { ...c.state, suppressedUntilRound: Math.max(Number(c.state.suppressedUntilRound ?? -1), Number(e.untilRoundSerial ?? st.roundSerial)) } } : c)) }), { label: "suppress" });
-      }
+      await afterEffect(args.effect ?? {});
       return true;
     }
   });
 
-  // Internal (not in OPS): a player's ability raises the Alert (Make a Scene, Dramatic).
-  gm.register("heist.alertRaise", {
+  // A player's ability raises the Alert (Make a Scene, Dramatic): ability/flaw events only.
+  gm.register(OPS.heistAlertRaise, {
     check(args, ctx) {
       const actorId = args.source?.actorId;
       if (!actorId) throw new Error("No source spider.");
@@ -1785,8 +1822,8 @@ export function registerHeistOps() {
     }
   });
 
-  // Internal: a player delays their Flaw a round (they paid the SP).
-  gm.register("heist.delayFlaw", {
+  // A player delays their Flaw a round (they paid the SP).
+  gm.register(OPS.heistDelayFlaw, {
     check(args, ctx) { mustOwn(ctx, args.actorId); return true; },
     async apply(args) { await store.mutate(st => flow.delayFlaw(st, args.actorId, args.flawKey), { label: "delayFlaw" }); return true; }
   });

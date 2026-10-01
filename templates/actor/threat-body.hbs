@@ -9,7 +9,7 @@
       {{#each rolls}}
       <div class="threat-roll" data-index="{{this.index}}">
         <button type="button" class="roll-pool-btn" data-action="rollThreat" data-index="{{this.index}}"
-                title="Roll {{this.pool}}d6">
+                title="Roll {{this.pool}}d6 (with spider tokens targeted: attack them)">
           <span class="pool-num">{{this.pool}}</span><i class="fa-solid fa-dice-d6"></i>
         </button>
         <input class="roll-label" type="text" name="system.rolls.{{this.index}}.label" value="{{this.label}}" placeholder="Action" />

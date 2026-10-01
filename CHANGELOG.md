@@ -2,6 +2,49 @@
 
 All notable changes to the Heisty Spideys system are recorded here.
 
+## [1.8.0] — Full automation (rulebook v4.8)
+
+The system now does the bookkeeping of a heist for you, following **Heisty Spideys v4.8**: the Alert, Silk, reactions, hits, Vitality, creatures, the clock, the Waiting Web and the Debrief. Where the rules need the Storyteller's judgement, you get **one click with a rules-correct default** instead of a number to track. Every part can be switched off (see *Settings* below).
+
+### New — the Heist Tracker
+- One window for the whole heist: **Start Heist** (the five ready-to-run heists, or a heist journal dropped on it; the crew is picked for you), a **phase stepper** (Score → Planning → Heist → Escape → Debrief), the obstacle list (the unknown one hidden from players until revealed), the current obstacle with its approaches (**Call for roll**, **Group check**), progress pips, the round, the clock and the five-round stall, creatures (awake, hunting, aware, paid off, driven off, their +X a round), the crew (Vitality, Silk, who has acted, **Fire** a Flaw, Silk awards), Planning (Casing, Preparations, Contingency), loot and carrying, the heist's own tables and timers, and a log.
+- Opens from the **Heist Tracker** tool in the token controls, the Alert meter, or `game.heistySpideys.openTracker()`. Players get their own view (setting): the obstacle and its approaches with **Roll this approach**, progress, revealed intel, their spider with **I acted**, and the loot.
+- Starting a heist resets each crew spider to full starting Silk and Unharmed, starts a fresh Alert at the heist's Limit, and imports the heist's creatures from the compendium.
+
+### New — the Alert runs itself
+- Every roll card carries what it does to the Alert, and the Storyteller's client applies it: Failure +1 (a clean failure too, as the v4.8 book says), Partial +1, Botch +2, a Critical −1 at Difficulty 3+, loud approaches, fights, a Silk Clutch, a spider Out (+2, capture +3), creatures' +X at the end of each round, escalation spikes (the dog's bark, the parrot's shriek, the Rat's deal going bad), Mid-Heist Complications, Make a Scene and Dramatic.
+- **One event, one trigger:** the Storyteller's Spotted / Confirmed / Loud Failure buttons sit on the same card, so "a Failure that gets you spotted is +1, not +2". A group check raises the Alert once, by its largest single trigger.
+- Reactions are exact and reversible: a Reroll or Clutch re-applies the card; That's Not What Happened, Plausible Deniability, Abort Abort, Smoke and Mirrors, Not Part of the Plan and Damage Control amend the event. Undoing Full Alert asks the Storyteller first.
+- When the band changes you get a whispered **Describe it** prompt with the creatures' Escalation text; Full Alert marks the objective out of reach and offers the Escape.
+- Rolls made while no Storyteller is connected are applied when the Storyteller logs in.
+
+### New — rolling, Silk and reactions
+- The roll dialog knows the obstacle: pick an approach and its Difficulty, opposing creature, loud cost and fight flag fill in; **Improvise** (2 SP) with another Skill. Cover, height, Loud, Arachnophobe Magnet, Soundless, crab camouflage, a pre-placed Silk Line, I Know a Way, Bypass, Show-Off and the human rows are applied (each shown, each can be unticked). Bonus dice stay capped at +2; Silk dice and Overclock don't count against it.
+- **Silk is spent for you:** Silk dice, Improvise and Overclock come off when you roll. Buttons on your own card: **Reroll (2 SP)** (keeps your Successes), **Silk Clutch (3 SP)** on a Failure, **Run It Again** (Wolf), **Silver Tongue**, **Accept**. Crewmates get their reactions on your card; the Storyteller gets Spotted / Confirmed / Loud, Partial swaps, No consequence, the hit, Spectacular Failure and Contingency.
+- Alert spikes post a card for **Damage Control** (3 SP split between the crew) and **Not Part of the Plan** (4 SP).
+- **Assist** rolls from the sheet and queues the bonus on the crewmate's next roll.
+
+### New — hits, Vitality and the Waiting Web
+- A Failure with an engaged threat brings its hit (setting): an **attack card** with **Take the Hit** for an adjacent Bruiser and **Shrug it off** for the target's player. The shrug-off (BODY + Endurance) sets Vitality, rolls **That All You Got?** when it matters, and can be Rerolled (2 SP) or Run Again. Human glass, the Exterminator's spray and the curious child's capture send a spider Out. A threat sheet's pool clicked with spider tokens targeted is an attack on them. A roll to avoid a hazard (tick it in the roll dialog) brings the hazard's hit on a Failure; a fall (`game.heistySpideys.dice.fallAttack(actor)`) hits with one die per 2 squares.
+- **Out** adds its Alert, loses the loot only that spider carried, hides its token, and checks for a Loss. The **Waiting Web** asks the player for a name (and an optional species swap) and brings in the replacement at the next obstacle — same Role, Attributes, Skills, Perks and Flaw, Rattled, half its starting Silk, the uses it has left. Next heist the player may bring back either spider.
+- Recovery once per obstacle: in the gap between obstacles, and a **Quiet round: recover** prompt when nothing could reach the crew.
+
+### New — abilities, Flaws and advancement
+- The sheet's Kit tab has an **Abilities** panel (Species, Signature Move, Perks, Flaw) with Ready / Used this scene / Used this heist, a **Use** button and the cost; once-per-scene/heist/round uses are tracked on the items. A **Spend Silk** menu (Silk Line, Web Structure, silk sled, Delay a Flaw), queued bonuses, the heist status, and an **Advance** window (+1 Skill 1 AP, +1 Attribute 2 AP, a new Role Perk 3 AP).
+- Flaws the Storyteller triggers get a **Fire** button that pays the Flaw Moment (+1 SP) and does what the Flaw does; a player can **Delay** it for 1 SP and it fires by itself next round. Show-Off pays only if the armed roll costs you or you Critical.
+- **Creatures** wake, hunt and spike at their Escalation steps (Full Alert counts as every step), add their +X each round, and back off when beaten. Heist procedures (the twin tins, the guard's lap, the librarian's floor, the staff rolls, the Rat's deal, the water run, the sleeper) roll themselves and are whispered to the Storyteller. The **Mid-Heist Complication** rolls as the crew starts round 3 at an obstacle; **Nudge** rolls it any time.
+- **Debrief** works out the outcome (full, partial, loss), awards AP to every spider of each player's slot (half for a player caught in the last Escape obstacle), and returns the heist to freeplay.
+
+### Settings — every automation can be switched off
+*Game Settings → Configure Settings → Heisty Spideys:* **Automatic Alert** (Automatic / Propose — the Storyteller confirms each change / Manual), **Deduct Silk automatically**, **Hits after a Failure** (Ask the Storyteller / Automatic / Off), **Apply shrug-off results**, **Creatures act on their own**, **Mid-Heist Complication at round 3**, **Five-round stall prompt**, **Recovery between obstacles**, **The Waiting Web** (Automatic / Ask the Storyteller first / Off), **Capture in a Full Alert Escape**, **Flaw Moments and Flaw checks**, **Heist procedures**, **End the round** (Prompt / Automatic / Off), **Who rolls forced rolls** (the player / automatically), **Players see the Heist Tracker**, **Movement warnings**. With every automation off the system plays like 1.7.0, with the tracker as a checklist.
+
+### Changed
+- A clean failure (the 4–6 Botch die) is an ordinary Failure: +1 Alert (rulebook v4.8).
+- Player actions that touch something they don't own (the Alert, the heist, a crewmate, someone else's card) are carried out by the Storyteller's client; the Storyteller must be connected for those, and players are told so if not.
+
+### Upgrading
+- The Storyteller's first login after the update migrates the world automatically (stable keys on Perks and Flaws, a player slot on every spider, the creature key on threats). The current Alert carries over. **No compendium re-import is needed for 1.8.0** (worlds still on 1.6 or older content should re-import as the 1.7.0 notes say).
+
 ## [1.7.0] — Rulebook v4.7 rules update
 
 The system now follows **Heisty Spideys v4.7**: every open playtest item resolved (`book/REVIEW.md` Part E, rulings E1–E44) and the five ready-to-run heists finished (Part F: maps, obstacle Difficulties, suggested Escapes).

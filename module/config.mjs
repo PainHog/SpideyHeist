@@ -198,7 +198,7 @@ HEISTY.results = {
   partial: { label: "Partial Success", css: "partial", alert: 1, blurb: "It worked, but. Progress, and a complication lands: +1 Alert, or a complication that costs as much — never both. A Partial is never a failed roll: it passes a pass-or-fail check, and it can't be Clutched." },
   failure: { label: "Failure", css: "failure", alert: 1, blurb: "It did not work — fewer than half the Successes you needed. No progress, and something gets worse. A Silk Clutch (3 SP, +1 Alert) can turn this Failure into a Success." },
   botch: { label: "Botch", css: "botch", alert: 2, blurb: "Everything that could go wrong did, plus one new thing." },
-  cleanfail: { label: "Clean Failure", css: "cleanfail", alert: 0, blurb: "You fail — but no bonus disaster. This time." }
+  cleanfail: { label: "Clean Failure", css: "cleanfail", alert: 1, blurb: "You fail — an ordinary Failure (+1 Alert), but no bonus disaster. This time." }
 };
 
 /* -------------------------------------------- */

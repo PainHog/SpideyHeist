@@ -10,11 +10,16 @@
  *   gm.ask(userId, name, args)            // GM → a player's client ("ui.*" ops)
  *
  * Transport: Foundry v13's `User#query` with `CONFIG.queries[QUERY]`. The v13
- * query handler is called as `(data, { timeout })` — it is NOT told who sent
- * the query — so the payload carries `userId` and the GM checks that it is an
- * active user who owns the named actor (the trust level of the old spider
- * relay). If a future core passes the sender in the options, it is preferred.
- * Fallback when `User#query` is missing: a request/ack on the system socket.
+ * API documents a query handler as `(queryData, queryOptions)` where the
+ * options carry only `{ timeout }` (foundryvtt.com/api/v13: User#query,
+ * CONFIG.queries) — the handler is NOT told who sent the query. So the payload
+ * carries `userId` and the GM checks that it is an active user who owns the
+ * named actor (the trust level of the old spider relay). If a core passes the
+ * sender in the options (`user`, `sender`, `userId` or `senderId`, as a User or
+ * an id), that is used instead, and a payload `userId` that disagrees with it
+ * is refused. Fallback when `User#query` is missing: a request/ack on the
+ * system socket (the sender's id, when the socket passes one, is preferred
+ * the same way).
  *
  * The GM keeps the last 200 request ids with their results, so a retry never
  * applies twice. `check` may return true/undefined (ok), false or a string
@@ -95,29 +100,52 @@ async function execute(name, args, { userId, requestId, sender = null } = {}) {
   return out;
 }
 
+/**
+ * The verified sender of a query or socket message, when the transport tells
+ * us (a User document or a user id under any of the usual names); else null.
+ */
+export function senderFrom(options) {
+  const raw = typeof options === "string" ? options
+    : options?.user ?? options?.sender ?? options?.userId ?? options?.senderId ?? null;
+  if (!raw) return null;
+  const id = typeof raw === "string" ? raw : raw?.id;
+  if (!id) return null;
+  return game.users?.get?.(id) ?? null;
+}
+
+/** Who is asking: the verified sender, or the claimed payload id; refuses a mismatch. */
+function requester(sender, claimedId) {
+  if (sender && claimedId && sender.id !== claimedId) return { error: "The request didn't come from the user it names." };
+  return { userId: sender?.id ?? claimedId, sender };
+}
+
 /** The query handler (`CONFIG.queries[QUERY]`). */
 async function onQuery(data, options = {}) {
   const { op, args, userId, requestId } = data ?? {};
-  const sender = options?.user ?? options?.sender ?? null;   // preferred when core provides it
+  const who = requester(senderFrom(options), userId);
   if (isClientOp(op)) {
     // A "ui.*" query answers with the op's own result (callers may use User#query directly).
-    const res = await execute(op, args, { userId: sender?.id ?? userId, requestId, sender });
+    if (who.error) throw new Error(who.error);
+    const res = await execute(op, args, { userId: who.userId, requestId, sender: who.sender });
     if (!res.ok) throw new Error(res.error);
     return res.result;
   }
   if (!isActiveGM()) return { ok: false, error: "Not the active Storyteller." };
-  return execute(op, args, { userId: sender?.id ?? userId, requestId, sender });
+  if (who.error) return { ok: false, error: who.error };
+  return execute(op, args, { userId: who.userId, requestId, sender: who.sender });
 }
 
 /** Socket fallback (both directions). */
-async function onSocket(payload) {
+async function onSocket(payload, senderId) {
   if (!payload?.action) return;
   switch (payload.action) {
     case "heistyOp": {
       if (isClientOp(payload.op)) {
         if (payload.targetUserId !== game.user.id) return;
       } else if (!isActiveGM()) return;
-      const result = await execute(payload.op, payload.args, { userId: payload.userId, requestId: payload.requestId });
+      const who = requester(typeof senderId === "string" ? senderFrom(senderId) : null, payload.userId);
+      const result = who.error ? { ok: false, error: who.error }
+        : await execute(payload.op, payload.args, { userId: who.userId, requestId: payload.requestId, sender: who.sender });
       game.socket.emit(SOCKET, { action: "heistyOpResult", requestId: payload.requestId, userId: payload.userId, result });
       return;
     }
@@ -217,7 +245,11 @@ export function registerGmQueries() {
   }
 }
 
-/** Ready: the socket fallback listener. */
+let socketBound = false;
+
+/** Ready: the socket fallback listener (bound once). */
 export function registerGmSocket() {
-  game.socket?.on(SOCKET, onSocket);
+  if (socketBound || !game.socket) return;
+  socketBound = true;
+  game.socket.on(SOCKET, onSocket);
 }

@@ -2,7 +2,7 @@
 
 > *A tabletop roleplaying game of eight-legged larceny. Roll a handful of d6s, count every 5 or 6 as a Success, and try not to get vacuumed.*
 
-The official companion game system for **Heisty Spideys, First Edition** (rulebook v4.7) — built for **Foundry VTT v13 & v14** on the modern ApplicationV2 + DataModel architecture.
+The official companion game system for **Heisty Spideys, First Edition** (rulebook v4.8) — built for **Foundry VTT v13 & v14** on the modern ApplicationV2 + DataModel architecture.
 
 ![Foundry v13](https://img.shields.io/badge/Foundry-v13%E2%80%93v14-36343a) ![System](https://img.shields.io/badge/type-game%20system-b8892a)
 
@@ -16,6 +16,20 @@ The official companion game system for **Heisty Spideys, First Edition** (rulebo
 - **The Character Builder** — a guided, step-by-step wizard (Species → Role → Attributes → Skills → Perks → Flaw → Name) with live point-buy counters, the book's Chapter 20 random tables and quick picks (species, Role, Attribute spread, skill package, Perks, Flaw, name), and full validation. Finishes by exporting a complete, ready-to-play spider.
 - **Eight compendiums, ready to run** — all 6 Species, 7 Crew Roles, 42 Perks, 10 Flaws, Silk & Gadgets, the full Creature Compendium (Human included), the five ready-to-run Heists (multi-page journals with maps, obstacle Difficulties and suggested Escapes), and a Rules Reference (with the Random Tables and the Mid-Heist Complication clock).
 - **Threat sheets** for the cat, the dog, the vacuum, the curious child, the humans, and the professionally-unfortunate guard spider.
+
+## Automation
+
+Since 1.8.0 the system keeps the books for you, so nobody at the table has to "handle things" in the VTT. Where the rules ask for the Storyteller's judgement, you get one click with the rules-correct answer already picked.
+
+- **The Heist Tracker** (the route icon in the token controls, the Alert meter, or `game.heistySpideys.openTracker()`): start one of the five heists (or drop a heist journal on it), step through Score → Planning → Heist → Escape → Debrief, see the current obstacle, its approaches, progress, the round, creatures, crew, loot and the heist's own tables. **Call for roll**, **Group check**, **End round** and **Next obstacle** are one click each. Players can open their own view.
+- **The Alert moves itself** from the roll cards: one event raises it once, by its biggest trigger; creatures add their +X at the end of each round; spikes, Full Alert and band changes come with a prompt. Reactions (That's Not What Happened, Damage Control, a Reroll…) undo exactly what they should.
+- **Silk is spent for you** (Silk dice, Rerolls, Clutches, Improvise, reactions), and the buttons for each person appear on the cards they can act on.
+- **Hits, shrug-offs, Vitality, Out and the Waiting Web** run from attack cards; the replacement arrives at the next obstacle.
+- **Abilities** have Use buttons and track once-per-scene/heist uses; Flaws have Fire and Delay; the Debrief awards AP and the Advance window spends it.
+
+**Everything can be switched off.** *Game Settings → Configure Settings → Heisty Spideys* has a setting for each automation (Alert: Automatic / Propose / Manual; Silk; hits; shrug-offs; creatures; the clock; the stall; recovery; the Waiting Web; capture; Flaws; heist procedures; ending the round; who rolls forced rolls; the players' tracker; movement warnings). With them all off the system behaves like 1.7.0 with the tracker as a checklist.
+
+Players' actions that touch something they don't own (the Alert, the heist, a crewmate) are carried out by the Storyteller's client, so **keep the Storyteller connected** during play; a roll made while no Storyteller is online is caught up when they log in. The design is in [`docs/AUTOMATION-DESIGN.md`](docs/AUTOMATION-DESIGN.md).
 
 ## Installation
 
@@ -32,8 +46,8 @@ https://github.com/PainHog/SpideyHeist/releases/latest/download/system.json
 - **Build a spider:** click **🕷 Build a Spider** at the bottom of the **Actors** sidebar, or the **spider tool** in the canvas toolbar, or run the macro `game.heistySpideys.openBuilder()`. Walk the steps; the builder won't let you finish an illegal build. Hit **Create Spider** and the finished sheet opens.
   - *Players and permissions:* Foundry doesn't grant players the "Create New Actors" permission by default. This system handles that automatically — when a player finishes the builder, the request is passed to the **online Storyteller (GM)**, who creates the spider and hands ownership back to the player (no action needed on the GM's part). If you'd rather let players create actors directly, turn on **Game Settings → Configure Permissions → Create New Actors** for the Player role. Either way works; if no GM is online, the player is told to try again when one is.
 - **Roll:** on the sheet, click a Skill name (Attribute + Skill) or an Attribute's die. Set the Difficulty (Successes needed) — or pick the creature opposing you, which rolls first and sets it — plus bonus dice (capped at +2), Silk dice and penalty dice; Vitality and the Alert are applied automatically. Results post a themed card to chat.
-- **Run the Alert:** as Storyteller, use the floating **Alert** meter (drag it anywhere) or the ±1/±2 buttons on any roll card. Set the location's Alert **Limit** to pick its difficulty (Easy 10 · Standard 8 · Hard 6 · Absurd 4 · Legendary 2).
-- **Threats:** drag any creature from the *Creature Compendium* onto a scene. Its sheet lists action pools — click to roll them against the crew; a spider acting against it needs its Successes + 1. Humans are the exception: they never roll to spot you, so set the Difficulty from their Chapter 15 row (the Human's Swat 3 is for its hits).
+- **Run the Alert:** it moves by itself from the roll cards (see *Automation*); as Storyteller you can still nudge it on the floating **Alert** meter (drag it anywhere). In the *Manual* Alert setting, roll cards show the ±1/±2 buttons instead. Set the location's Alert **Limit** to pick its difficulty (Easy 10 · Standard 8 · Hard 6 · Absurd 4 · Legendary 2).
+- **Threats:** drag any creature from the *Creature Compendium* onto a scene. Its sheet lists action pools — click to roll them against the crew; a spider acting against it needs its Successes + 1. As Storyteller, target spider tokens first and the click is an attack on them (an attack card with its shrug-off). Humans are the exception: they never roll to spot you, so set the Difficulty from their Chapter 15 row (the Human's Swat 3 is for its hits).
 
 ## Developing / building
 
@@ -43,7 +57,7 @@ The compendiums ship pre-compiled. Source is **one JSON file per document** unde
 npm install          # dev deps: @foundryvtt/foundryvtt-cli, handlebars
 npm run build:packs  # packs/_source/<name>/*.json  ->  packs/<name>/  (LevelDB, via the official foundryvtt-cli) — commit the result
 npm run validate     # manifest, pack integrity (incl. journal pages attached), compiled-matches-source, templates
-npm test             # unit tests (node:test): dice/build math + roll-data regression
+npm test             # unit tests (node:test), the cross-package contracts test, and the integration smoke test
 npm run check        # validate + test (run before every commit)
 ```
 
@@ -59,16 +73,22 @@ module/                  ES modules
   data/                  TypeDataModel schemas (actors, items)
   documents/             Actor & Item document classes
   sheets/                ApplicationV2 sheets (spider, threat, item)
-  apps/                  The Character Builder
+  apps/                  The Character Builder, Heist Tracker, Advance and Waiting Web windows
   helpers/               Dice engine, Alert HUD, GM socket relay, migrations
+  logic/                 Pure rules (Foundry-free, unit-tested): rolls, hits, Alert ledger, heist flow, creatures…
+  runtime/               Spider operations and ability buttons
+  chat/                  Roll-card buttons, reactions and hits
+  heist/                 Heist store, automation hooks, settings, Waiting Web, tokens
+  net/                   GM operations (User#query, socket fallback)
+  contracts.mjs          Names shared by every package (ops, cards, settings, hooks)
 templates/               Handlebars templates
 styles/                  Theme
 assets/icons/            Wax-seal SVG icon set
 assets/maps/             The five heist maps (from the rulebook art)
 packs/_source/<name>/    Human-readable compendium source (one JSON per document)
 packs/<name>/            Compiled LevelDB compendiums
-tools/                   Pack build, validate & shared config
-test/                    node:test unit tests
+tools/                   Pack build, validate & shared config; fake-foundry.mjs (test support)
+test/                    node:test unit tests, the contracts test, and an end-to-end smoke test on a fake Foundry
 ```
 
 ## Compatibility

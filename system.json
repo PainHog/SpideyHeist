@@ -3,7 +3,7 @@
   "type": "system",
   "title": "Heisty Spideys",
   "description": "A tabletop roleplaying game of eight-legged larceny. Roll a handful of d6s, count every 5 or 6 as a Success, and try not to get vacuumed. The official companion system for Heisty Spideys, First Edition.",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14.368"
@@ -18,7 +18,10 @@
     "module/heisty-spideys.mjs"
   ],
   "styles": [
-    "styles/heisty-spideys.css"
+    "styles/heisty-spideys.css",
+    "styles/automation-sheets.css",
+    "styles/cards.css",
+    "styles/tracker.css"
   ],
   "languages": [
     {

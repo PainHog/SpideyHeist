@@ -29,11 +29,18 @@ export function classifyBotch(die) {
   return Number(die) <= 3 ? "botch" : "cleanfail";
 }
 
+/**
+ * The v4.5 results table's Alert column, frozen here: the live HEISTY.results
+ * follows the current book (v4.8 made a clean failure +1), and the simulator's
+ * default reading must not move with it.
+ */
+const V45_RESULT_ALERT = Object.freeze({ critical: -1, success: 0, partial: 1, failure: 1, botch: 2, cleanfail: 0 });
+
 /** v4.5: a Critical lowers the Alert only at Difficulty 2+. */
 export function alertForResult(resultKey, difficulty) {
   const d = Math.max(1, Number(difficulty) || 1);
   if (resultKey === "critical" && d < 2) return 0;
-  return HEISTY.results[resultKey]?.alert ?? 0;
+  return V45_RESULT_ALERT[resultKey] ?? 0;
 }
 
 /** v4.5 Alert state: band modifiers by value only; Full Alert adds no Lockdown below Alert 7. */

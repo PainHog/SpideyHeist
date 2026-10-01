@@ -156,7 +156,8 @@ export async function addPending(target, bonus, { sourceActor = null, ability = 
 export async function gmRun(op, args) {
   const gm = ns().gm;
   if (typeof gm?.run !== "function") throw new Error("The Storyteller isn't connected — nothing was changed.");
-  return gm.run(op, args);
+  // quiet: the button handler shows the refusal once (as an error toast).
+  return gm.run(op, args, { quiet: true });
 }
 
 /** The heist clock, or a freeplay stand-in. */

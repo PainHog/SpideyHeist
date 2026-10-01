@@ -67,7 +67,7 @@ export async function onSpiderOut(actor, { postPrompt = null } = {}) {
     await postPrompt?.({
       title: "The Waiting Web",
       html: `<p><strong>${esc(actor.name)}</strong> is Out. Bring in the replacement from the Waiting Web?</p>`,
-      buttons: [{ action: "replacement", label: "Bring in the replacement", primary: true, args: { actorId: actor.id } }]
+      buttons: [{ action: "prompt", label: "Bring in the replacement", primary: true, args: { do: "replacement", actorId: actor.id } }]
     });
     return null;
   }

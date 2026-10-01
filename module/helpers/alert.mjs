@@ -24,7 +24,7 @@
  */
 
 import { HEISTY } from "../config.mjs";
-import { SYSTEM_ID, SETTINGS, HOOKS } from "../contracts.mjs";
+import { SYSTEM_ID, SETTINGS, HOOKS, OPS } from "../contracts.mjs";
 import {
   foldLedger, upsertEvent, amendEvent, setEntry, compact, previewAmend, confirmEvent,
   proposedEntries, describeEntry, findEvent, hasEvent
@@ -84,7 +84,7 @@ export const HeistyAlert = {
    */
   async raise(e = {}) {
     if (!e?.eventId) throw new Error("alert.raise: an eventId is required");
-    if (!game.user.isGM) return gm.run("heist.alertRaise", { ...e, userId: game.user.id }, { quiet: true }).catch(() => null);
+    if (!game.user.isGM) return gm.run(OPS.heistAlertRaise, { ...e, userId: game.user.id }, { quiet: true }).catch(() => null);
     if (!isActiveGM()) return null;
     const c = store.clock();
     const isNew = !hasEvent(this.ledger, e.eventId);

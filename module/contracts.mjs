@@ -29,6 +29,7 @@ export const OPS = Object.freeze({
   alertCancel: "alert.cancel", alertPledge: "alert.pledge", crewNptp: "crew.nptp",       // WP-C
   heistActed: "heist.acted", heistLoot: "heist.loot", heistPrep: "heist.prep",
   heistCasingReveal: "heist.casingReveal", heistAddEffect: "heist.addEffect",
+  heistAlertRaise: "heist.alertRaise", heistDelayFlaw: "heist.delayFlaw",            // WP-C (added by WP-D)
   actorAddPending: "actor.addPending", actorHeal: "actor.heal",                          // WP-A
   uiPromptReplacement: "ui.promptReplacement",
   cardPatch: "card.patch", hitRetarget: "hit.retarget", uiForcedRoll: "ui.forcedRoll"    // WP-B

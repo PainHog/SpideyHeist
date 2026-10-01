@@ -765,21 +765,30 @@ function stFlaw(actor) {
 }
 
 /**
- * Storyteller: fire a spider's Flaw. Delegates to the heist runtime when it's
- * loaded; otherwise stamps it, pays the Flaw Moment (+1 SP, setting autoFlaws)
- * and applies the simple effects.
+ * Storyteller: fire a spider's Flaw (the sheet, the tracker's Fire button and
+ * a delayed Flaw coming due all land here). Stamps it, pays the Flaw Moment
+ * (+1 SP, setting autoFlaws) and applies its effect through the heist runtime
+ * when it's loaded (Dramatic +1 Alert, Allergic to Dust's forced Stealth check,
+ * Butterfingers drops the loot, Easily Distracted loses the Action, Show-Off
+ * arms the next roll).
+ *
+ * (The heist runtime's `heist.fireFlaw(actorId)` calls this — never the other
+ * way round, or the two would bounce between each other.)
  */
 export async function fireFlaw(actor, key = null) {
   if (!game.user.isGM) return fail("Only the Storyteller fires Flaws.");
+  if (typeof actor === "string") actor = game.actors.get(actor);
   const entry = key ? actorOps.abilityItems(actor).find(e => e.key === key) : stFlaw(actor);
   if (!entry?.def) return fail(`${actor?.name ?? "That spider"} has no Flaw to fire.`);
   const heist = api().heist;
-  if (typeof heist?.fireFlaw === "function") return heist.fireFlaw(actor, entry.key);
   const c = clock();
   const st = usageStatus(entry.def, entry.item.system.usage, c);
   if (!st.available) return fail(`${entry.def.name}: ${statusLabel(entry.def, st)}.`);
   await markUsed(actor, entry.key, c);
-  if (setting(SETTINGS.autoFlaws, true)) await earnSilk(actor, 1, { reason: "Flaw Moment" });
+  // Show-Off pays its Flaw Moment only if the armed roll costs (or Criticals) —
+  // the dice engine pays it then; every other Flaw pays on firing.
+  const paysNow = entry.key !== "show-off";
+  if (paysNow && setting(SETTINGS.autoFlaws, true)) await earnSilk(actor, 1, { reason: "Flaw Moment" });
   let extra = "";
   if (entry.key === "dramatic") {
     const ok = await raiseAlert(actor, entry.def, `flaw:dramatic:${actor.id}:${c.heistId}`, 1, "Dramatic");
@@ -789,12 +798,21 @@ export async function fireFlaw(actor, key = null) {
     extra = "<p>The next roll is armed: Difficulty 4, or +1 if it was already 4 or more.</p>";
   } else if (entry.key === "allergic-to-dust") {
     extra = "<p>Stealth, Difficulty 3, or the Alert rises by 1.</p>";
-    await preboundRoll(actor, { skill: "stealth", difficulty: 3, ability: entry.key, free: true });
+    const spec = { skill: "stealth", difficulty: 3, label: "Allergic to Dust (Stealth)", reason: "Allergic to Dust", passFail: true };
+    if (typeof heist?.flawCheck === "function") await heist.flawCheck(actor.id, { flawName: entry.def.name, text: "A Failure raises the Alert by 1.", spec });
+    else await preboundRoll(actor, { skill: "stealth", difficulty: 3, ability: entry.key, free: true });
   } else if (entry.key === "butterfingers") {
-    const r = 1 + Math.floor(Math.random() * 6);
-    extra = `<p>It lands ${r <= 2 ? "on the square ahead" : r <= 4 ? "on the square to its left" : "on the square to its right"} (d6: ${r}) — lower, if that square is lower. Someone must spend an Action to recover it.</p>`;
+    const roll = await new Roll("1d6").evaluate();
+    const r = Number(roll.total ?? roll.dice?.[0]?.results?.[0]?.result) || 1;
+    let dropped = null;
+    try { dropped = await heist?.dropLoot?.(actor.id); } catch (err) { dropped = null; }
+    extra = `<p>${dropped ? "The loot it was carrying" : "Whatever it holds"} lands ${r <= 2 ? "on the square ahead" : r <= 4 ? "on the square to its left" : "on the square to its right"} (d6: ${r}) — lower, if that square is lower. Someone must spend an Action to recover it.</p>`;
+  } else if (entry.key === "easily-distracted") {
+    // Its Action is lost this round: it counts as having acted.
+    try { await heist?.markActed?.(actor.id); } catch (err) { /* no heist running */ }
   }
-  await postNote(actor, `<p>${esc(entry.def.effect)}</p>${extra}<p class="dim">Flaw Moment: +1 SP.</p>`, { title: `Flaw — ${esc(entry.def.name)}`, flags: { ability: { key: entry.key, actorId: actor.id, flaw: true } } });
+  const moment = paysNow ? "Flaw Moment: +1 SP." : "Flaw Moment: +1 SP if the armed roll costs you (a Partial or a Failure) or is a Critical.";
+  await postNote(actor, `<p>${esc(entry.def.effect)}</p>${extra}<p class="dim">${moment}</p>`, { title: `Flaw — ${esc(entry.def.name)}`, flags: { ability: { key: entry.key, actorId: actor.id, flaw: true } } });
   return { ok: true };
 }
 
@@ -857,12 +875,18 @@ export function registerSpiderAutomation({ gm = null } = {}) {
   const refresh = foundry.utils.debounce ? foundry.utils.debounce(rerenderSpiderSheets, 100) : rerenderSpiderSheets;
   Hooks.on(HOOKS.heistChanged, refresh);
 
-  // Prune round/scene bonuses when the round ends (each owner writes their own).
-  Hooks.on(HOOKS.roundEnded, () => {
+  // Prune round/scene bonuses when the clock moves (each owner writes their own).
+  // HOOKS.roundEnded fires only on the GM's client, so players prune on
+  // heistChanged, which every client hears.
+  const prune = () => {
     for (const a of game.actors.filter(x => x.type === "spider" && x.isOwner && (x.system.heist?.pending?.length ?? 0))) {
       if (game.user.isGM && playerOwner(a)?.active) continue; // its player prunes it
       actorOps.prunePendingFor(a);
     }
+  };
+  Hooks.on(HOOKS.heistChanged, (state, { before } = {}) => {
+    if (!before || (before.roundSerial === state?.roundSerial && before.sceneSerial === state?.sceneSerial)) return;
+    prune();
   });
 
   // Wait, Was That There Before?: the camouflage ends when the token moves.

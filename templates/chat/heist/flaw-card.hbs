@@ -1,5 +1,5 @@
 <div class="heisty-heist-card hhc-flaw">
   <header class="hhc-head"><i class="fa-solid fa-bolt"></i> {{flawName}} — {{actorName}}</header>
   <p>{{text}}</p>
-  <div class="hhc-buttons"><button type="button" data-heist-action="flawRoll" data-owner="{{actorId}}"><i class="fa-solid fa-dice"></i> Roll {{rollLabel}}</button></div>
+  {{#if rolled}}<p class="hhc-dim">Rolled automatically — see the roll card.</p>{{else}}<div class="hhc-buttons"><button type="button" data-heist-action="flawRoll" data-owner="{{actorId}}"><i class="fa-solid fa-dice"></i> Roll {{rollLabel}}</button></div>{{/if}}
 </div>
