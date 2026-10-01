@@ -180,12 +180,19 @@ export const HeistyAlert = {
       await game.settings.set(HEISTY.id, "alert", f.value);
       this._announce(f.value);
       const entry = eventId ? findEvent(this.ledger, eventId) : null;
-      Hooks.callAll(HOOKS.alertChanged, f.value, entry, { prev: before, locked: f.locked, limit: this.limit, fold: f });
+      const info = { prev: before, locked: f.locked, limit: this.limit, fold: f };
+      Hooks.callAll(HOOKS.alertChanged, f.value, entry, info);
+      // The heist automation's after-fold step (creature Escalation, Full Alert,
+      // "Describe it") runs inline, so whatever raised the Alert sees its effects.
+      if (typeof this.afterFold === "function") await this.afterFold(f.value, entry, info);
     } else {
       ui.heistyAlert?.render();
     }
     return f;
   },
+
+  /** Set by the heist automation: async (value, entry, info) after every change of the fold (active GM). */
+  afterFold: null,
 
   _announce(val) {
     const state = HEISTY.getAlertState(val, this.limit);

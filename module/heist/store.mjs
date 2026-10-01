@@ -44,8 +44,14 @@ export const store = {
     return flow.newHeistState({ limit: alertLimitSetting() });
   },
 
+  /** The raw state without a copy (read-only use: derived data, roll context). */
+  peek() {
+    const raw = readRaw();
+    return raw && raw.v ? raw : null;
+  },
+
   clock() {
-    return flow.clock(this.state);
+    return flow.clock(this.peek() ?? this.state);
   },
 
   /** The catalog (or custom journal) heist the state was started from. */
@@ -170,8 +176,8 @@ export const heistApi = {
 
   /** Carry info for a spider (SpiderData.carryLookup). */
   carryFor(actorId) {
-    const s = store.state;
-    if (s.phase === "idle") return null;
+    const s = store.peek();
+    if (!s || s.phase === "idle") return null;
     const c = flow.carryFor(s, actorId);
     const passenger = (s.assists ?? []).some(a => a.carrier === actorId);
     if (!c && !passenger) return null;

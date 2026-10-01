@@ -1,0 +1,12 @@
+<div class="heisty-heist-card hhc-procedure">
+  <header class="hhc-head"><i class="fa-solid fa-dice-d6"></i> {{name}}{{#if reason}} <span class="hhc-dim">({{reason}})</span>{{/if}}</header>
+  {{#if text}}<p class="hhc-sub">{{text}}</p>{{/if}}
+  {{#if hasRows}}<ul class="hhc-rows">{{#each rows}}<li>{{#if this.label}}<strong>{{this.label}}</strong>: {{/if}}d6 <strong>{{this.roll}}</strong> — {{this.text}}</li>{{/each}}</ul>{{/if}}
+  {{#if timerText}}<p class="hhc-note">{{timerText}}</p>{{/if}}
+  {{#if hasOutcomes}}
+  <div class="hhc-gm" data-gm-only>
+    {{#each outcomes}}<button type="button" data-heist-action="procOutcome" data-args='{"key":"{{this.key}}"}'>{{this.text}}</button>{{/each}}
+  </div>
+  {{/if}}
+  {{#if chosen}}<p class="hhc-dim">Outcome: {{chosen}}.</p>{{/if}}
+</div>

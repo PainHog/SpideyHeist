@@ -1,0 +1,11 @@
+<div class="heisty-heist-card hhc-debrief">
+  <header class="hhc-head"><i class="fa-solid fa-trophy"></i> Debrief — {{heistName}}</header>
+  <p><strong>{{outcomeLabel}}</strong></p>
+  <ul class="hhc-rows">{{#each rows}}<li>{{this.names}}: <strong>{{this.ap}} AP</strong>{{#if this.half}} <span class="hhc-dim">(caught in the last Escape obstacle: half)</span>{{/if}}</li>{{/each}}</ul>
+  {{#if awarded}}<p class="hhc-note">AP awarded.</p>{{else}}
+  <div class="hhc-gm" data-gm-only>
+    <select name="outcome">{{#each outcomes}}<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}</select>
+    <button type="button" class="hhc-primary" data-heist-action="award"><i class="fa-solid fa-check"></i> Award AP</button>
+  </div>
+  {{/if}}
+</div>

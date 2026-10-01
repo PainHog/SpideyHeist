@@ -1,0 +1,6 @@
+<div class="heisty-heist-card hhc-request">
+  <header class="hhc-head"><i class="fa-solid fa-bullhorn"></i> {{actorName}}, roll — {{obstacleName}}</header>
+  <p class="hhc-sub">{{approachLabel}}</p>
+  {{#if note}}<p class="hhc-dim">{{note}}</p>{{/if}}
+  <div class="hhc-buttons"><button type="button" data-heist-action="rollRequest" data-owner="{{actorId}}"><i class="fa-solid fa-dice"></i> Roll {{skillLabel}}</button></div>
+</div>

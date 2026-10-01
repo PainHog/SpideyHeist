@@ -230,6 +230,7 @@ test("Preparations: one per spider; entry squares and Perk-granted ones are free
   assert.equal(r.state.obstacles.find(o => o.id === "O2").silkLinePrepared, true);
   assert.equal(addPreparation(r.state, "a", { kind: "stash" }).ok, false, "one Preparation each");
   assert.equal(addPreparation(r.state, "a", { kind: "perk", text: "Dead Drop" }).ok, true);
+  assert.equal(addPreparation(r.state, "a", { kind: "contingency", text: "if the cat wakes" }).ok, true, "a Perk-granted Contingency is free (E15)");
   assert.match(r.state.preparations.a[1].complication, /complication/);
 });
 
@@ -425,4 +426,31 @@ test("nextObstacleId and endHeist", () => {
   assert.equal(e.heistId, "freeplay");
   assert.ok(e.sceneSerial > s.sceneSerial);
   assert.equal(e.lastHeist.heistId, "h1");
+});
+
+/* ----------------------------------------------------------- grid.mjs -- */
+import { chebyshev, adjacent, withinRange, toSquare, toPixels, freeAdjacentSquare, butterfingersDirection, moveDistance } from "../module/logic/grid.mjs";
+
+test("grid: Chebyshev distance, adjacency and range (one square = one spider)", () => {
+  assert.equal(chebyshev({ x: 0, y: 0 }, { x: 3, y: 1 }), 3);
+  assert.equal(chebyshev({ x: 2, y: 2 }, { x: 1, y: 1 }), 1, "a diagonal step is one square");
+  assert.equal(adjacent({ x: 2, y: 2 }, { x: 3, y: 3 }), true);
+  assert.equal(adjacent({ x: 2, y: 2 }, { x: 4, y: 2 }), false);
+  assert.equal(withinRange({ x: 0, y: 0 }, { x: 6, y: 2 }, 6), true, "Precision Application: 6 squares");
+  assert.equal(withinRange({ x: 0, y: 0 }, { x: 7, y: 0 }, 6), false);
+  assert.deepEqual(toSquare({ x: 250, y: 100 }, 100), { x: 2, y: 1 });
+  assert.deepEqual(toPixels({ x: 2, y: 1 }, 100), { x: 200, y: 100 });
+  assert.equal(moveDistance({ x: 0, y: 0 }, { x: 5, y: 4 }), 5);
+});
+
+test("grid: a free square next to a crewmate for a Waiting Web arrival", () => {
+  assert.deepEqual(freeAdjacentSquare({ x: 3, y: 3 }, []), { x: 4, y: 3 });
+  assert.deepEqual(freeAdjacentSquare({ x: 3, y: 3 }, [{ x: 4, y: 3 }, { x: 2, y: 3 }]), { x: 3, y: 4 });
+  assert.deepEqual(freeAdjacentSquare({ x: 0, y: 0 }, [{ x: 1, y: 0 }, { x: 0, y: 1 }]), { x: 1, y: 1 }, "never off the map");
+  const all = [[4, 3], [2, 3], [3, 4], [3, 2], [4, 4], [2, 4], [4, 2], [2, 2]].map(([x, y]) => ({ x, y }));
+  assert.equal(freeAdjacentSquare({ x: 3, y: 3 }, all), null);
+});
+
+test("grid: Butterfingers lands ahead / left / right on a d6 (N19)", () => {
+  assert.deepEqual([1, 2, 3, 4, 5, 6].map(butterfingersDirection), ["ahead", "ahead", "left", "left", "right", "right"]);
 });

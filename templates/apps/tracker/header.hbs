@@ -1,0 +1,85 @@
+<section class="ht-part ht-header">
+  {{#if showTracker}}
+  <div class="ht-title-row">
+    <div class="ht-title">
+      <h2>{{heistName}}</h2>
+      {{#unless idle}}<span class="ht-sub">{{difficulty}} · Limit {{limit}}{{#if objectiveTaken}} · objective taken{{/if}}{{#if objectiveLost}} · <strong class="ht-warn">objective out of reach</strong>{{/if}}</span>{{/unless}}
+    </div>
+    <div class="ht-alert band-{{bandKey}}" title="The Alert">
+      <span class="ht-alert-value">{{alert}}</span><span class="ht-alert-limit">/ {{limit}}</span>
+      <span class="ht-alert-band">{{bandLabel}}</span>
+      <div class="ht-alert-bar"><div class="ht-alert-fill" style="width:{{pct}}%"></div></div>
+    </div>
+  </div>
+
+  {{#unless idle}}
+  <ol class="ht-phases">
+    {{#each phases}}
+    <li class="ht-phase {{#if this.active}}active{{/if}} {{#if this.done}}done{{/if}}">
+      {{#if ../isGM}}<button type="button" data-action="phase" data-phase="{{this.key}}" {{#if this.active}}disabled{{/if}}>{{this.label}}</button>{{else}}<span>{{this.label}}</span>{{/if}}
+    </li>
+    {{/each}}
+  </ol>
+  {{/unless}}
+
+  {{#if isGM}}
+  {{#if idle}}
+  <div class="ht-start">
+    <h3><i class="fa-solid fa-flag-checkered"></i> Start a heist</h3>
+    {{#if lastHeist}}<p class="ht-dim">Last heist: {{lastHeist.name}} ({{lastHeist.outcome}}).</p>{{/if}}
+    <div class="ht-row">
+      <label>Heist</label>
+      <select name="heistKey">
+        <option value="">— pick one, or drop a heist journal here —</option>
+        {{#each heistChoices}}<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
+      </select>
+    </div>
+    <div class="ht-row">
+      <label>Limit</label>
+      <select name="limit">
+        {{#each limits}}<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
+      </select>
+    </div>
+    <div class="ht-row ht-crew-pick">
+      <label>Crew</label>
+      <div class="ht-checks">
+        {{#each crewChoices}}<label class="ht-check"><input type="checkbox" name="crew" value="{{this.id}}" {{#if this.checked}}checked{{/if}} /> {{this.name}}{{#if (heNeq this.status "active")}} <em class="ht-dim">({{this.status}})</em>{{/if}}</label>{{/each}}
+      </div>
+    </div>
+    <p class="ht-dim">Starting resets the Alert, gives every crew spider full starting Silk and Unharmed, imports the creatures and rolls the heist's secret d6s.</p>
+    <div class="ht-buttons">
+      <button type="button" class="ht-primary" data-action="startHeist"><i class="fa-solid fa-play"></i> Start the heist</button>
+      <button type="button" data-action="newScene" title="Freeplay: once-per-scene abilities are ready again"><i class="fa-solid fa-clapperboard"></i> New Scene</button>
+    </div>
+  </div>
+  {{else}}
+  <div class="ht-buttons ht-top-buttons">
+    {{#if inPlay}}
+    <button type="button" data-action="nextObstacle"><i class="fa-solid fa-forward-step"></i> Next obstacle</button>
+    <button type="button" data-action="endRound"><i class="fa-solid fa-hourglass-end"></i> End round</button>
+    <button type="button" data-action="nudge" title="Roll a Mid-Heist Complication now (when the night needs a nudge)"><i class="fa-solid fa-dice-d6"></i> Nudge</button>
+    {{/if}}
+    <button type="button" data-action="endHeist" class="ht-quiet" title="Close the heist without a Debrief"><i class="fa-solid fa-xmark"></i> End heist</button>
+  </div>
+  {{#if isDebrief}}
+  <div class="ht-debrief">
+    <h3><i class="fa-solid fa-trophy"></i> Debrief</h3>
+    {{#if awarded}}<p>AP awarded.</p>{{else}}
+    <div class="ht-row">
+      <label>Outcome</label>
+      <select name="debriefOutcome">
+        <option value="full" {{#if (heEq outcome "full")}}selected{{/if}}>Full Success</option>
+        <option value="partial" {{#if (heEq outcome "partial")}}selected{{/if}}>Partial Success (half AP)</option>
+        <option value="loss" {{#if (heEq outcome "loss")}}selected{{/if}}>Loss (no AP)</option>
+      </select>
+      <button type="button" class="ht-primary" data-action="awardDebrief">Award AP</button>
+    </div>
+    {{/if}}
+  </div>
+  {{/if}}
+  {{/if}}
+  {{/if}}
+  {{else}}
+  <p class="ht-dim">The Storyteller keeps the heist tracker to themselves.</p>
+  {{/if}}
+</section>

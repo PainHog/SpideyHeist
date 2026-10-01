@@ -1,0 +1,39 @@
+<section class="ht-part ht-obstacles">
+  {{#if hasObstacles}}
+  <h3><i class="fa-solid fa-list-ol"></i> Obstacles</h3>
+  <ol class="ht-obstacle-list">
+    {{#each obstacles}}
+    <li class="ht-obstacle status-{{this.status}} {{#if this.isCurrent}}current{{/if}} {{#if this.unknown}}unknown{{/if}}">
+      <span class="ht-ob-id">{{this.id}}</span>
+      <span class="ht-ob-name">{{this.name}}{{#if this.objective}} <i class="fa-solid fa-star" title="The objective"></i>{{/if}}{{#if this.unknown}}{{#unless this.revealed}} <em class="ht-dim">(unknown — hidden from players)</em>{{/unless}}{{/if}}</span>
+      <span class="ht-pips">{{#each this.pips}}<i class="ht-pip {{#if this.filled}}filled{{/if}}"></i>{{/each}}</span>
+      <span class="ht-ob-status">{{this.statusLabel}}</span>
+      {{#if ../isGM}}
+      <span class="ht-ob-tools">
+        {{#if this.canStart}}<button type="button" data-action="startObstacle" data-id="{{this.id}}" title="Start this obstacle"><i class="fa-solid fa-play"></i></button>{{/if}}
+        {{#if this.canSkip}}<button type="button" data-action="obstacle" data-op="skip" data-id="{{this.id}}" title="Skip it (the crew went another way)"><i class="fa-solid fa-forward"></i></button>{{/if}}
+        {{#if this.canUnskip}}<button type="button" data-action="obstacle" data-op="unskip" data-id="{{this.id}}" title="Put it back"><i class="fa-solid fa-rotate-left"></i></button>{{/if}}
+        <button type="button" data-action="moveObstacle" data-dir="-1" data-id="{{this.id}}" title="Move up"><i class="fa-solid fa-arrow-up"></i></button>
+        <button type="button" data-action="moveObstacle" data-dir="1" data-id="{{this.id}}" title="Move down"><i class="fa-solid fa-arrow-down"></i></button>
+        {{#if this.canReveal}}<button type="button" data-action="obstacle" data-op="reveal" data-id="{{this.id}}" title="Reveal it to the players"><i class="fa-solid fa-eye"></i></button>{{/if}}
+      </span>
+      {{/if}}
+    </li>
+    {{/each}}
+  </ol>
+  {{#if isGM}}
+  <details class="ht-add-obstacle">
+    <summary>Add an obstacle</summary>
+    <div class="ht-row">
+      <input type="text" name="obName" placeholder="What's in the way" />
+      <select name="obPhase"><option value="heist">Heist</option><option value="escape">Escape</option></select>
+      <select name="obSkill">{{#each skills}}<option value="{{this.value}}">{{this.label}}</option>{{/each}}</select>
+      <select name="obDiff">{{#each difficultyRungs}}<option value="{{this}}" {{#if (heEq this 3)}}selected{{/if}}>{{this}}</option>{{/each}}</select>
+      <select name="obMode"><option value="individual">each spider</option><option value="single">one roll</option></select>
+      <button type="button" data-action="addObstacle"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <button type="button" data-action="saveToJournal" title="Save this obstacle list on the heist's journal"><i class="fa-solid fa-floppy-disk"></i> Save to the journal</button>
+  </details>
+  {{/if}}
+  {{/if}}
+</section>

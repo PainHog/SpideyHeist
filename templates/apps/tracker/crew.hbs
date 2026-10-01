@@ -1,0 +1,35 @@
+<section class="ht-part ht-crew">
+  {{#if hasCrew}}
+  <h3><i class="fa-solid fa-spider"></i> Crew</h3>
+  {{#if isGM}}{{#if isEscape}}
+  <div class="ht-row"><label>Escape leader</label>
+    <select data-escape-leader>
+      <option value="">— nobody —</option>
+      {{#each crew}}<option value="{{this.actorId}}" {{#if this.leader}}selected{{/if}}>{{this.name}}</option>{{/each}}
+    </select>
+  </div>
+  {{/if}}{{/if}}
+  <ul class="ht-crew-list">
+    {{#each crew}}
+    <li class="ht-crewmate {{#unless this.isPresent}}away{{/unless}}">
+      <img src="{{this.img}}" alt="" />
+      <div class="ht-cm-main">
+        <a data-action="openSheet" data-actor="{{this.actorId}}"><strong>{{this.name}}</strong></a>{{#if this.replacement}} <em class="ht-dim">(replacement)</em>{{/if}}
+        <div class="ht-dim">{{this.status}} · {{this.vitality}} · {{this.silk}} SP{{#if this.flaw}} · {{this.flaw}}{{/if}}{{#if this.caughtLast}} · half AP{{/if}}</div>
+      </div>
+      <div class="ht-cm-tools">
+        {{#if this.isPresent}}
+        {{#if this.acted}}<span class="ht-chip acted">acted</span>{{else}}{{#if this.mine}}<button type="button" data-action="acted" data-actor="{{this.actorId}}">I acted</button>{{else}}{{#if ../isGM}}<button type="button" data-action="acted" data-actor="{{this.actorId}}" title="Mark acted">Acted</button>{{/if}}{{/if}}{{/if}}
+        {{/if}}
+        {{#if ../isGM}}
+        {{#if this.flaw}}<button type="button" data-action="fireFlaw" data-actor="{{this.actorId}}" title="Fire their Flaw (+1 SP Flaw Moment)">Fire Flaw</button>{{/if}}
+        <button type="button" data-action="award" data-actor="{{this.actorId}}" data-sp="1" data-reason="Spectacular Failure" title="Spectacular Failure (+1 SP)">+1 SF</button>
+        <button type="button" data-action="award" data-actor="{{this.actorId}}" data-sp="1" data-reason="Creative Species Use" title="Creative Species Use (+1 SP)">+1 CS</button>
+        <button type="button" data-action="award" data-actor="{{this.actorId}}" data-sp="2" data-reason="Brilliant Plan" title="Brilliant Plan (+2 SP)">+2 BP</button>
+        {{/if}}
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</section>

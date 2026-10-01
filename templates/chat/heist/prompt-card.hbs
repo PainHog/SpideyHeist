@@ -1,0 +1,15 @@
+<div class="heisty-heist-card hhc-prompt {{#if tone}}tone-{{tone}}{{/if}} {{#if done}}done{{/if}}">
+  <header class="hhc-head"><i class="fa-solid fa-user-secret"></i> {{title}}</header>
+  <div class="hhc-body">{{{html}}}</div>
+  {{#if hasChecks}}
+  <ul class="hhc-checks">
+    {{#each checks}}<li><label><input type="checkbox" data-check="{{this.id}}" {{#if this.checked}}checked{{/if}} {{#if ../done}}disabled{{/if}} /> {{this.label}}</label></li>{{/each}}
+  </ul>
+  {{/if}}
+  {{#if hasButtons}}
+  <div class="hhc-buttons" data-gm-only>
+    {{#each buttons}}<button type="button" class="{{#if this.primary}}hhc-primary{{/if}}" data-heist-action="prompt" data-args='{{this.argsJson}}'>{{this.label}}</button>{{/each}}
+  </div>
+  {{/if}}
+  {{#if done}}{{#if chosenLabel}}<p class="hhc-dim">Done: {{chosenLabel}}</p>{{/if}}{{/if}}
+</div>

@@ -1,0 +1,38 @@
+<section class="ht-part ht-creatures">
+  {{#if hasCreatures}}
+  <h3><i class="fa-solid fa-paw"></i> Creatures</h3>
+  <ul class="ht-creature-list">
+    {{#each creatures}}
+    <li class="ht-creature {{#if this.active}}active{{/if}}">
+      <div class="ht-cr-head">
+        <strong>{{this.name}}</strong>
+        {{#if this.here}}<span class="ht-tag">here</span>{{/if}}{{#if this.roams}}<span class="ht-tag">roams</span>{{/if}}
+        {{#if (heGt this.perRound 0)}}<span class="ht-tag ht-warn">+{{this.perRound}} at End Round</span>{{/if}}
+      </div>
+      <div class="ht-chips">{{#each this.chips}}<span class="ht-chip">{{this}}</span>{{/each}}</div>
+      <div class="ht-cr-tools">
+        <button type="button" data-action="creature" data-op="wake" data-id="{{this.id}}" title="Active now (permanent)">Wake</button>
+        <button type="button" data-action="creature" data-op="engaged" data-id="{{this.id}}" title="Engaged with the crew (fighting, or able to reach them)">{{#if this.engaged}}Disengage{{else}}Engaged{{/if}}</button>
+        <button type="button" data-action="creature" data-op="suppress" data-id="{{this.id}}" title="Distracted this round: no +X">Distract</button>
+        <button type="button" data-action="creature" data-op="driveOff" data-id="{{this.id}}" title="Backs off for the rest of this obstacle">Drive off</button>
+        {{#if this.shutAvailable}}<button type="button" data-action="creature" data-op="shut" data-id="{{this.id}}" title="Its Weakness shuts it in for the heist">Shut in</button>{{/if}}
+        {{#if this.isGuard}}
+        <button type="button" data-action="creature" data-op="spotted" data-id="{{this.id}}" title="It spots the crew: aware for the heist">Spotted</button>
+        <button type="button" data-action="creature" data-op="paid" data-id="{{this.id}}" title="Bribed: awareness ends">Paid off</button>
+        <button type="button" data-action="creature" data-op="beaten" data-id="{{this.id}}" title="Beaten in a fight: out of the heist; backup takes the post next obstacle">Beaten</button>
+        {{/if}}
+        {{#if this.isRat}}
+        <button type="button" data-action="creature" data-op="paid" data-id="{{this.id}}" title="The deal holds">Deal holds</button>
+        <button type="button" data-action="creature" data-op="dealBad" data-id="{{this.id}}" title="+2 once, then he fights">Deal went bad</button>
+        {{/if}}
+        {{#if this.isVacuum}}<button type="button" data-action="creature" data-op="pursuit" data-id="{{this.id}}">Pursuit</button>{{/if}}
+        {{#if this.isExterminator}}<button type="button" data-action="creature" data-op="onMap" data-id="{{this.id}}">On the map</button>{{/if}}
+        {{#if this.perceptionLabel}}<button type="button" data-action="creatureRoll" data-which="perception" data-id="{{this.id}}" title="Roll its pool">{{this.perceptionLabel}}</button>{{/if}}
+        {{#if this.attackLabel}}<button type="button" data-action="creatureRoll" data-which="attack" data-id="{{this.id}}" title="Roll its attack" {{#unless this.canAttack}}class="ht-quiet"{{/unless}}>{{this.attackLabel}}</button>{{/if}}
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+  {{#if exterminatorCallable}}<button type="button" data-action="callExterminator"><i class="fa-solid fa-spray-can"></i> Call the Exterminator</button>{{/if}}
+  {{/if}}
+</section>

@@ -1,0 +1,23 @@
+<div class="heisty-heist-card hhc-group">
+  <header class="hhc-head"><i class="fa-solid fa-people-group"></i> Group check — {{obstacleName}}</header>
+  <p class="hhc-sub">{{approachLabel}}. Every spider rolls and gets through on its own result; the Alert rises once, by the largest single rise.</p>
+  {{#if opposedText}}<p class="hhc-note">{{opposedText}}</p>{{/if}}
+  <ul class="hhc-spiders">
+    {{#each spiders}}
+    <li class="{{#if this.passed}}passed{{/if}}">
+      <span class="hhc-name">{{this.name}}</span>
+      {{#if this.rolled}}<span class="hhc-result">{{this.resultLabel}}</span>{{else}}{{#unless ../closed}}<button type="button" data-heist-action="rollGroup" data-actor-id="{{this.actorId}}" data-owner="{{this.actorId}}"><i class="fa-solid fa-dice"></i> Roll {{../skillLabel}}</button>{{/unless}}{{/if}}
+    </li>
+    {{/each}}
+  </ul>
+  {{#if closed}}<p class="hhc-dim">Closed. Anyone who failed tries again next round.</p>{{/if}}
+  {{#unless closed}}
+  <div class="hhc-gm" data-gm-only>
+    {{#if canOppose}}<button type="button" data-heist-action="creatureRoll"><i class="fa-solid fa-paw"></i> {{opposedName}} rolls once for the round ({{opposedPool}})</button>{{/if}}
+    {{#if canLead}}
+    <label>Led by (Drafting) <select data-heist-change="leadGroup"><option value="">—</option>{{#each leaderChoices}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}</select></label>
+    {{/if}}
+    <button type="button" data-heist-action="closeGroup"><i class="fa-solid fa-lock"></i> Close</button>
+  </div>
+  {{/unless}}
+</div>

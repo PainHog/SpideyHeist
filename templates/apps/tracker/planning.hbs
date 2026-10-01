@@ -1,0 +1,40 @@
+<section class="ht-part ht-planning">
+  {{#if hasIntel}}
+  <h3><i class="fa-solid fa-magnifying-glass"></i> Intel</h3>
+  {{#if casingRolled}}<p class="ht-dim">Cased: {{casingRolled}}.</p>{{/if}}
+  <ul class="ht-intel">
+    {{#each intel}}
+    <li class="{{#if this.revealed}}revealed{{/if}} {{#if this.unknown}}unknown{{/if}}">
+      {{#if this.revealed}}<i class="fa-solid fa-eye"></i>{{else}}<i class="fa-solid fa-eye-slash"></i>{{/if}} {{this.text}}
+      {{#if ../isGM}}{{#unless this.revealed}}{{#unless this.unknown}}<button type="button" data-action="revealIntel" data-id="{{this.id}}">Reveal</button>{{/unless}}{{#if this.unknown}}<em class="ht-dim">(about the unknown obstacle: never cased)</em>{{/if}}{{/unless}}{{/if}}
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+
+  {{#if isPlanning}}
+  <h3><i class="fa-solid fa-clipboard-list"></i> Preparations</h3>
+  <p class="ht-dim">One per spider. Entry squares and anything a Perk grants are free. For each, the Storyteller notes one texture complication.</p>
+  <div class="ht-row ht-prep-form">
+    <select name="prepActor">{{#each prepActors}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}</select>
+    <select name="prepKind">{{#each prepKinds}}<option value="{{this.value}}">{{this.label}}</option>{{/each}}</select>
+    <select name="prepObstacle"><option value="">(obstacle, for a Silk Line)</option>{{#each prepObstacles}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}</select>
+    <input type="text" name="prepText" placeholder="What, where" />
+    <button type="button" data-action="addPrep"><i class="fa-solid fa-plus"></i></button>
+  </div>
+  {{/if}}
+  {{#if hasPreps}}
+  <ul class="ht-preps">
+    {{#each preps}}
+    <li>
+      <strong>{{this.actorName}}</strong>: {{this.kindLabel}}{{#if this.obstacleName}} — {{this.obstacleName}}{{/if}}{{#if this.text}} — {{this.text}}{{/if}}
+      {{#if ../isGM}}
+      <a data-action="removePrep" data-actor="{{this.actorId}}" data-prep="{{this.id}}" title="Remove"><i class="fa-solid fa-xmark"></i></a>
+      <textarea data-prep-complication data-actor="{{this.actorId}}" data-prep="{{this.id}}" rows="1" placeholder="The complication">{{this.complication}}</textarea>
+      {{/if}}
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  {{#if contingency}}<p><strong>Contingency</strong> ({{contingency.actorName}}): {{contingency.trigger}}{{#if contingency.used}} — <em>used</em>{{/if}}</p>{{/if}}
+</section>

@@ -1,0 +1,73 @@
+<section class="ht-part ht-current">
+  {{#if hasCurrent}}
+  <h3><i class="fa-solid fa-location-crosshairs"></i> {{current.name}}</h3>
+  <p class="ht-dim">{{current.phaseLabel}}{{#if current.tags}} · {{current.tags}}{{/if}}{{#if current.human}} · {{current.human}}{{/if}}{{#if current.silkLine}} · a Silk Line is placed (−1){{/if}}{{#if current.keyLock}} · the key lock (no Bypass){{/if}}</p>
+  {{#if current.note}}<p class="ht-note">{{current.note}}</p>{{/if}}
+
+  <div class="ht-progress">
+    <span class="ht-pips big">{{#each current.pips}}<i class="ht-pip {{#if this.filled}}filled{{/if}}"></i>{{/each}}</span>
+    <span>{{#if current.cleared}}<strong>Cleared.</strong>{{else}}{{current.have}} / {{current.need}} successful rolls{{/if}}</span>
+    {{#if isGM}}
+    <span class="ht-tools">
+      <button type="button" data-action="progress" data-delta="1" title="+1 success">+1</button>
+      <button type="button" data-action="progress" data-delta="-1" title="−1 success">−1</button>
+      {{#if current.cleared}}<button type="button" data-action="unclearObstacle" title="Not cleared after all">Unclear</button>{{else}}<button type="button" data-action="clearObstacle" title="Mark it cleared">Mark cleared</button>{{/if}}
+    </span>
+    {{/if}}
+  </div>
+
+  <div class="ht-chips">
+    {{#each current.passed}}
+    <span class="ht-chip {{#if this.passed}}passed{{/if}} {{#if this.acted}}acted{{/if}}" title="{{#if this.passed}}Through{{else}}Not through yet{{/if}}{{#if this.acted}} · acted this round{{/if}}">
+      {{this.name}}{{#if this.passed}} <i class="fa-solid fa-check"></i>{{/if}}
+      {{#if ../isGM}}{{#if this.passed}}<a data-action="unpassActor" data-actor="{{this.id}}" title="Not through"><i class="fa-solid fa-xmark"></i></a>{{else}}<a data-action="passActor" data-actor="{{this.id}}" title="Mark through"><i class="fa-solid fa-check"></i></a>{{/if}}{{/if}}
+    </span>
+    {{/each}}
+  </div>
+
+  <ul class="ht-approaches">
+    {{#each current.approaches}}
+    <li class="ht-approach">
+      <div class="ht-ap-main">
+        <strong>{{this.label}}</strong> <span class="ht-dim">— {{this.mode}}{{#if this.loud}}, {{this.loud}}{{/if}}{{#if this.fight}}, a fight (loud){{/if}}{{#if this.excluded}}, {{this.excluded}}{{/if}}</span>
+        {{#if this.note}}<div class="ht-dim">{{this.note}}</div>{{/if}}
+      </div>
+      <div class="ht-ap-tools">
+        {{#if ../isGM}}
+        <button type="button" data-action="groupCheck" data-approach="{{this.id}}" title="Every spider not yet through rolls; the Alert rises once"><i class="fa-solid fa-people-group"></i> Group check</button>
+        <select data-call-actor="{{this.id}}">{{#each this.crew}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}</select>
+        <button type="button" data-action="callRoll" data-approach="{{this.id}}" title="Ask one spider to roll this"><i class="fa-solid fa-bullhorn"></i> Call for roll</button>
+        {{else}}
+        <button type="button" data-action="rollApproach" data-approach="{{this.id}}"><i class="fa-solid fa-dice"></i> Roll this approach</button>
+        {{/if}}
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+  {{#if isGM}}
+  <details class="ht-add-approach">
+    <summary>Add an approach</summary>
+    <div class="ht-row">
+      <select name="apSkill">{{#each skills}}<option value="{{this.value}}">{{this.label}}</option>{{/each}}</select>
+      <select name="apDiff">{{#each difficultyRungs}}<option value="{{this}}" {{#if (heEq this 3)}}selected{{/if}}>{{this}}</option>{{/each}}</select>
+      <select name="apMode"><option value="single">one roll</option><option value="individual">each spider</option></select>
+      <button type="button" data-action="addApproach"><i class="fa-solid fa-plus"></i></button>
+    </div>
+  </details>
+  {{/if}}
+  {{#unless isGM}}{{#if current.myActors.length}}<div class="ht-row"><label>Rolling as</label><select name="myActor">{{#each current.myActors}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}</select></div>{{/if}}{{/unless}}
+
+  <div class="ht-round">
+    <span><strong>Round {{current.round}}</strong></span>
+    <span class="ht-dim">{{current.clockText}}</span>
+    <span class="ht-dim {{#if current.stallNow}}ht-warn{{/if}}">{{current.stallText}}</span>
+    {{#if isGM}}{{#if current.stallNow}}<button type="button" data-action="stall">Five rounds: end it</button>{{/if}}{{/if}}
+  </div>
+
+  {{#if current.hasEffects}}
+  <ul class="ht-effects">
+    {{#each current.effects}}<li>{{this.label}} <span class="ht-dim">({{this.until}})</span>{{#if ../isGM}} <a data-action="removeEffect" data-id="{{this.id}}" title="Remove"><i class="fa-solid fa-xmark"></i></a>{{/if}}</li>{{/each}}
+  </ul>
+  {{/if}}
+  {{/if}}
+</section>

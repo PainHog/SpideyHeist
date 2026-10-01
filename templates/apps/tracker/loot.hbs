@@ -1,0 +1,34 @@
+<section class="ht-part ht-loot">
+  {{#if hasLoot}}
+  <h3><i class="fa-solid fa-gem"></i> Loot</h3>
+  <ul class="ht-loot-list">
+    {{#each loot}}
+    <li class="ht-loot-item {{#if this.objective}}objective{{/if}}">
+      <div><strong>{{this.name}}</strong> <span class="ht-dim">{{this.tier}} · {{this.status}}{{#if this.carriers}} · {{this.carriers}}{{/if}}{{#if this.sled}} · on a silk sled{{/if}}{{#if this.incomplete}} · incomplete{{/if}}</span></div>
+      <div class="ht-dim">{{this.carry}}</div>
+      {{#if this.canPick}}
+      <div class="ht-loot-tools">
+        <select data-loot-actor="{{this.id}}">{{#each ../lootActors}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}</select>
+        <button type="button" data-action="loot" data-op="pickUp" data-loot="{{this.id}}" title="Pick it up (an Action)">Pick up</button>
+        <button type="button" data-action="loot" data-op="join" data-loot="{{this.id}}" title="Help carry it">Carry too</button>
+        <button type="button" data-action="loot" data-op="leave" data-loot="{{this.id}}" title="Let go of it">Let go</button>
+        {{#if ../isGM}}
+        <button type="button" data-action="loot" data-op="drop" data-loot="{{this.id}}">Dropped</button>
+        {{#if this.isTreasure}}<button type="button" data-action="loot" data-op="sled" data-loot="{{this.id}}" data-value="{{#if this.sled}}false{{else}}true{{/if}}">{{#if this.sled}}No sled{{else}}Silk sled{{/if}}</button>{{/if}}
+        <button type="button" data-action="loot" data-op="incomplete" data-loot="{{this.id}}" data-value="{{#if this.incomplete}}false{{else}}true{{/if}}">{{#if this.incomplete}}Complete{{else}}Break it off{{/if}}</button>
+        <button type="button" data-action="loot" data-op="lose" data-loot="{{this.id}}">Lost</button>
+        {{/if}}
+      </div>
+      {{/if}}
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  {{#if isGM}}{{#unless idle}}
+  <div class="ht-row ht-add-loot">
+    <input type="text" name="lootName" placeholder="Add loot" />
+    <select name="lootTier">{{#each lootTiers}}<option value="{{this.value}}">{{this.label}}</option>{{/each}}</select>
+    <button type="button" data-action="addLoot"><i class="fa-solid fa-plus"></i></button>
+  </div>
+  {{/unless}}{{/if}}
+</section>

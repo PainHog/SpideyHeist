@@ -1,0 +1,19 @@
+<section class="ht-part ht-log">
+  {{#if hasProcedures}}
+  <h3><i class="fa-solid fa-dice-d6"></i> Procedures</h3>
+  <ul class="ht-procs">
+    {{#each procedures}}
+    <li><strong>{{this.name}}</strong> <span class="ht-dim">({{this.when}}){{#if this.fired}} · fired{{/if}}{{#if this.last}} · last roll {{this.last}}{{/if}}</span>
+      <button type="button" data-action="runProc" data-proc="{{this.id}}" title="Roll it now">Roll</button>
+      {{#if this.text}}<div class="ht-dim">{{this.text}}</div>{{/if}}
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  {{#if isGM}}{{#if hasLog}}
+  <details class="ht-log-box">
+    <summary><i class="fa-solid fa-scroll"></i> Log</summary>
+    <ul>{{#each log}}<li>{{this}}</li>{{/each}}</ul>
+  </details>
+  {{/if}}{{/if}}
+</section>

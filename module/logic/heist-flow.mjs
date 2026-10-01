@@ -769,9 +769,9 @@ export function revealIntel(state, ids) {
   return { ...state, intel: { ...state.intel, list: (state.intel?.list ?? []).map(i => (set.has(i.id) && !i.unknown ? { ...i, revealed: true } : i)) } };
 }
 
-/** Preparation kinds that don't use up the spider's one Preparation. */
-export const FREE_PREPS = Object.freeze(["entry", "perk", "deadDrop"]);
-export const PREP_KINDS = Object.freeze(["entry", "silkLine", "stash", "perk", "deadDrop", "contingency", "other"]);
+/** Preparation kinds that don't use up the spider's one Preparation (E15: anything a Perk grants is free). */
+export const FREE_PREPS = Object.freeze(["entry", "perk", "deadDrop", "contingency"]);
+export const PREP_KINDS = Object.freeze(["entry", "silkLine", "stash", "perk", "deadDrop", "contingency", "trap", "other"]);
 
 /** May this spider make this Preparation? One per spider; entry squares and Perk-granted ones are free. */
 export function canPrepare(state, actorId, kind) {

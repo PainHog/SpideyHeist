@@ -1,0 +1,145 @@
+/* ==========================================================================
+   HEISTY SPIDEYS — Heist Tracker, heist chat cards, Alert HUD additions (WP-C)
+   Every selector is scoped to one of our own roots (.heisty-tracker,
+   .heisty-heist-card, #heisty-alert-meter). The tracker is an ApplicationV2
+   carrying .heisty-spideys (palette and parchment from heisty-spideys.css);
+   the chat cards use literal colours so they read the same in either UI theme.
+   ========================================================================== */
+
+/* ------------------------------------------------------------ Tracker ---- */
+.heisty-tracker .window-content { padding: 8px 10px; overflow-y: auto; display: block; }
+.heisty-tracker .ht-part { margin-bottom: 10px; }
+.heisty-tracker .ht-part:empty { display: none; }
+.heisty-tracker h2 { margin: 0; font-family: var(--hs-font-display); font-size: 1.25rem; color: var(--hs-plum-deep); border: none; }
+.heisty-tracker h3 { margin: 6px 0 4px; font-family: var(--hs-font-display); font-size: 1rem; color: var(--hs-plum-deep); border-bottom: 1px solid var(--hs-line); padding-bottom: 2px; }
+.heisty-tracker h3 i { color: var(--hs-gold); }
+.heisty-tracker .ht-dim { color: var(--hs-ink-soft); font-size: 0.85em; }
+.heisty-tracker .ht-warn { color: var(--hs-ox); }
+.heisty-tracker .ht-note { background: rgba(240, 207, 107, 0.18); border-left: 3px solid var(--hs-gold); padding: 3px 6px; margin: 4px 0; font-size: 0.9em; }
+.heisty-tracker button { font-size: 0.8rem; line-height: 1.4; padding: 1px 6px; width: auto; min-height: 0; flex: 0 0 auto; }
+.heisty-tracker button.ht-primary { background: var(--hs-plum); color: var(--hs-cream); border-color: var(--hs-plum-deep); }
+.heisty-tracker button.ht-quiet { opacity: 0.65; }
+.heisty-tracker select, .heisty-tracker input[type="text"] { font-size: 0.85rem; height: auto; min-height: 22px; width: auto; }
+.heisty-tracker .ht-row { display: flex; align-items: center; gap: 6px; margin: 4px 0; flex-wrap: wrap; }
+.heisty-tracker .ht-row > label { font-weight: 600; min-width: 64px; }
+.heisty-tracker .ht-buttons { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+
+/* Header */
+.heisty-tracker .ht-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.heisty-tracker .ht-sub { font-size: 0.85em; color: var(--hs-ink-soft); }
+.heisty-tracker .ht-alert { min-width: 150px; text-align: right; }
+.heisty-tracker .ht-alert-value { font-family: var(--hs-font-display); font-size: 1.6rem; font-weight: 700; color: var(--hs-plum-deep); }
+.heisty-tracker .ht-alert-limit { color: var(--hs-ink-soft); margin-left: 2px; }
+.heisty-tracker .ht-alert-band { display: block; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.05em; }
+.heisty-tracker .ht-alert-bar { height: 6px; background: var(--hs-parch-edge); border-radius: 3px; overflow: hidden; }
+.heisty-tracker .ht-alert-fill { height: 100%; background: var(--hs-gold); }
+.heisty-tracker .ht-alert.band-active .ht-alert-fill { background: var(--hs-partial); }
+.heisty-tracker .ht-alert.band-lockdown .ht-alert-fill,
+.heisty-tracker .ht-alert.band-fullalert .ht-alert-fill { background: var(--hs-ox-bright); }
+.heisty-tracker .ht-phases { display: flex; list-style: none; padding: 0; margin: 6px 0; gap: 2px; }
+.heisty-tracker .ht-phase { flex: 1; text-align: center; }
+.heisty-tracker .ht-phase button, .heisty-tracker .ht-phase span { width: 100%; display: block; padding: 2px 0; border-radius: 3px; background: var(--hs-parch); border: 1px solid var(--hs-parch-edge); font-size: 0.8rem; }
+.heisty-tracker .ht-phase.done button, .heisty-tracker .ht-phase.done span { background: var(--hs-parch-edge); }
+.heisty-tracker .ht-phase.active button, .heisty-tracker .ht-phase.active span { background: var(--hs-plum); color: var(--hs-cream); font-weight: 700; }
+.heisty-tracker .ht-start, .heisty-tracker .ht-debrief { border: 1px solid var(--hs-parch-edge); border-radius: 4px; padding: 6px 8px; background: rgba(255, 255, 255, 0.35); }
+.heisty-tracker .ht-checks { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.heisty-tracker .ht-check { font-weight: normal; display: inline-flex; align-items: center; gap: 3px; }
+
+/* Obstacles */
+.heisty-tracker .ht-obstacle-list { list-style: none; padding: 0; margin: 0; }
+.heisty-tracker .ht-obstacle { display: grid; grid-template-columns: 30px 1fr auto 60px auto; gap: 6px; align-items: center; padding: 2px 4px; border-bottom: 1px dotted var(--hs-parch-edge); }
+.heisty-tracker .ht-obstacle.current { background: rgba(240, 207, 107, 0.25); font-weight: 600; }
+.heisty-tracker .ht-obstacle.status-cleared .ht-ob-name { text-decoration: line-through; color: var(--hs-ink-soft); }
+.heisty-tracker .ht-obstacle.status-skipped { opacity: 0.55; }
+.heisty-tracker .ht-obstacle.unknown .ht-ob-id { color: var(--hs-ox); }
+.heisty-tracker .ht-ob-id { font-family: var(--hs-font-mono); font-weight: 700; }
+.heisty-tracker .ht-ob-status { font-size: 0.75rem; color: var(--hs-ink-soft); text-align: right; }
+.heisty-tracker .ht-ob-tools { display: flex; gap: 2px; }
+.heisty-tracker .ht-pips { display: inline-flex; gap: 3px; }
+.heisty-tracker .ht-pip { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--hs-plum); display: inline-block; }
+.heisty-tracker .ht-pip.filled { background: var(--hs-good); border-color: var(--hs-good); }
+.heisty-tracker .ht-pips.big .ht-pip { width: 14px; height: 14px; }
+
+/* Current obstacle */
+.heisty-tracker .ht-progress { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.heisty-tracker .ht-tools { display: inline-flex; gap: 3px; margin-left: auto; }
+.heisty-tracker .ht-chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
+.heisty-tracker .ht-chip { font-size: 0.75rem; padding: 0 6px; border-radius: 10px; background: var(--hs-parch); border: 1px solid var(--hs-parch-edge); }
+.heisty-tracker .ht-chip.passed { background: rgba(47, 125, 79, 0.18); border-color: var(--hs-good); }
+.heisty-tracker .ht-chip.acted { border-style: dashed; }
+.heisty-tracker .ht-chip a { margin-left: 3px; cursor: pointer; }
+.heisty-tracker .ht-approaches { list-style: none; padding: 0; margin: 4px 0; }
+.heisty-tracker .ht-approach { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; border-bottom: 1px dotted var(--hs-parch-edge); flex-wrap: wrap; }
+.heisty-tracker .ht-ap-tools { display: flex; gap: 3px; align-items: center; flex-wrap: wrap; }
+.heisty-tracker .ht-round { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+.heisty-tracker .ht-effects { margin: 4px 0; padding-left: 18px; font-size: 0.85em; }
+.heisty-tracker .ht-effects a { cursor: pointer; }
+
+/* Creatures */
+.heisty-tracker .ht-creature-list, .heisty-tracker .ht-crew-list, .heisty-tracker .ht-loot-list,
+.heisty-tracker .ht-intel, .heisty-tracker .ht-preps, .heisty-tracker .ht-procs { list-style: none; padding: 0; margin: 0; }
+.heisty-tracker .ht-creature { padding: 4px 0; border-bottom: 1px dotted var(--hs-parch-edge); }
+.heisty-tracker .ht-creature.active .ht-cr-head strong { color: var(--hs-ox); }
+.heisty-tracker .ht-cr-head { display: flex; gap: 6px; align-items: center; }
+.heisty-tracker .ht-tag { font-size: 0.7rem; padding: 0 5px; border-radius: 3px; background: var(--hs-plum-soft); color: var(--hs-cream); }
+.heisty-tracker .ht-tag.ht-warn { background: var(--hs-ox); color: var(--hs-cream); }
+.heisty-tracker .ht-cr-tools { display: flex; flex-wrap: wrap; gap: 3px; }
+
+/* Crew */
+.heisty-tracker .ht-crewmate { display: grid; grid-template-columns: 36px 1fr auto; gap: 6px; align-items: center; padding: 3px 0; border-bottom: 1px dotted var(--hs-parch-edge); }
+.heisty-tracker .ht-crewmate img { width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--hs-parch-edge); object-fit: cover; }
+.heisty-tracker .ht-crewmate.away { opacity: 0.6; }
+.heisty-tracker .ht-cm-tools { display: flex; flex-wrap: wrap; gap: 3px; justify-content: flex-end; }
+.heisty-tracker .ht-crewmate a { cursor: pointer; }
+
+/* Planning, loot, log */
+.heisty-tracker .ht-intel li { padding: 2px 0; }
+.heisty-tracker .ht-intel li.revealed { color: var(--hs-ink); }
+.heisty-tracker .ht-intel li:not(.revealed) { color: var(--hs-ink-soft); }
+.heisty-tracker .ht-intel li.unknown { font-style: italic; }
+.heisty-tracker .ht-preps li { padding: 2px 0; }
+.heisty-tracker .ht-preps textarea { width: 100%; min-height: 22px; font-size: 0.85em; resize: vertical; }
+.heisty-tracker .ht-preps a { cursor: pointer; }
+.heisty-tracker .ht-loot-item { padding: 3px 0; border-bottom: 1px dotted var(--hs-parch-edge); }
+.heisty-tracker .ht-loot-item.objective strong::before { content: "★ "; color: var(--hs-gold); }
+.heisty-tracker .ht-loot-tools { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.heisty-tracker .ht-procs li { padding: 2px 0; }
+.heisty-tracker .ht-log-box ul { max-height: 180px; overflow-y: auto; font-size: 0.8em; padding-left: 16px; }
+
+/* ----------------------------------------------------------- Chat cards -- */
+.heisty-heist-card { border: 1px solid #cdbfa4; border-radius: 6px; overflow: hidden; background: #f3eee4; color: #141216; font-size: 0.9em; }
+.heisty-heist-card p { margin: 4px 8px; }
+.heisty-heist-card .hhc-head { padding: 5px 8px; background: linear-gradient(135deg, #1f1d22, #36343a); color: #f3eee4; font-weight: 700; font-family: Georgia, "Palatino Linotype", serif; }
+.heisty-heist-card .hhc-head i { color: #f0cf6b; }
+.heisty-heist-card.hhc-alert-event .hhc-head,
+.heisty-heist-card.tone-danger .hhc-head { background: linear-gradient(135deg, #5c1212, #8f1d1d); }
+.heisty-heist-card.hhc-complication .hhc-head { background: linear-gradient(135deg, #5a3d0c, #8a6116); }
+.heisty-heist-card.negated { opacity: 0.7; }
+.heisty-heist-card.negated .hhc-applied { text-decoration: line-through; }
+.heisty-heist-card .hhc-sub { color: #57525a; }
+.heisty-heist-card .hhc-dim { color: #57525a; font-size: 0.85em; }
+.heisty-heist-card .hhc-note { background: rgba(240, 207, 107, 0.25); border-left: 3px solid #b8892a; padding: 2px 6px; }
+.heisty-heist-card ul { margin: 4px 8px; padding-left: 16px; }
+.heisty-heist-card .hhc-spiders { list-style: none; padding: 0; }
+.heisty-heist-card .hhc-spiders li { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding: 2px 0; border-bottom: 1px dotted #cdbfa4; }
+.heisty-heist-card .hhc-spiders li.passed .hhc-name { color: #2f7d4f; font-weight: 700; }
+.heisty-heist-card .hhc-checks { list-style: none; padding: 0; }
+.heisty-heist-card .hhc-checks label { display: flex; gap: 4px; align-items: flex-start; font-weight: normal; }
+.heisty-heist-card .hhc-buttons, .heisty-heist-card .hhc-gm, .heisty-heist-card .hhc-crew { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 4px 8px 6px; }
+.heisty-heist-card .hhc-crew { border-top: 1px dashed #cdbfa4; }
+.heisty-heist-card .hhc-label { font-size: 0.85em; color: #57525a; }
+.heisty-heist-card button { font-size: 0.8rem; line-height: 1.5; padding: 0 6px; width: auto; flex: 0 0 auto; }
+.heisty-heist-card button.hhc-primary { background: #36343a; color: #f3eee4; border-color: #1f1d22; }
+.heisty-heist-card select { font-size: 0.8rem; width: auto; }
+.heisty-heist-card.done .hhc-buttons { display: none; }
+
+/* ------------------------------------------------- Alert HUD additions -- */
+#heisty-alert-meter .am-heist-row { display: flex; align-items: center; gap: 4px; padding: 0 8px 4px; font-size: 0.8rem; }
+#heisty-alert-meter .am-heist-phase { flex: 1; font-weight: 600; }
+#heisty-alert-meter .am-heist-row button { width: auto; padding: 0 5px; line-height: 1.5; }
+#heisty-alert-meter .am-pending { margin: 0 8px 6px; padding: 4px 6px; border: 1px dashed var(--hs-gold); border-radius: 4px; background: rgba(240, 207, 107, 0.15); }
+#heisty-alert-meter .am-pending-title { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--hs-ink-soft); }
+#heisty-alert-meter .am-pending-row { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; }
+#heisty-alert-meter .am-pending-text { flex: 1; }
+#heisty-alert-meter .am-pending-row button { width: auto; padding: 0 5px; line-height: 1.4; }
+#heisty-alert-meter .am-new-scene { width: auto; margin-left: auto; padding: 0 6px; font-size: 0.75rem; }

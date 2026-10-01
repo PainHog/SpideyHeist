@@ -1,0 +1,17 @@
+<div class="heisty-heist-card hhc-alert-event">
+  <header class="hhc-head"><i class="fa-solid fa-triangle-exclamation"></i> Alert spike: {{label}}</header>
+  {{#if pledges.length}}<p class="hhc-sub">Damage Control pledges: {{#each pledges}}{{this.name}} {{this.sp}} SP{{#unless @last}}, {{/unless}}{{/each}} ({{pledged}}/3)</p>{{/if}}
+  {{#if dcDone}}<p class="hhc-note">Damage Control: reduced by 1.</p>{{/if}}
+  {{#if showCrew}}
+  <div class="hhc-crew" data-crew-only>
+    <select data-crew-picker></select>
+    {{#unless dcClosed}}
+    <span class="hhc-label">Damage Control (3 SP between you, once per heist):</span>
+    <button type="button" data-heist-action="chip" data-sp="1">Chip in 1</button>
+    <button type="button" data-heist-action="chip" data-sp="2">2</button>
+    <button type="button" data-heist-action="chip" data-sp="3">3</button>
+    {{/unless}}
+    {{#unless nptpUsed}}<button type="button" data-heist-action="nptp" title="4 SP, one payer, once per heist">Not Part of the Plan (4 SP)</button>{{/unless}}
+  </div>
+  {{/if}}
+</div>
