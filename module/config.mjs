@@ -170,13 +170,13 @@ HEISTY.alertOneTrigger = "One event, one trigger: a single roll or moment raises
 /** Ways to spend Silk Points. */
 HEISTY.silkSpends = [
   { cost: 1, label: "Extra Die", text: "Add 1 die to a roll before it's made. The most common spend, and a good one. Silk dice don't count toward the +2 bonus-dice limit." },
-  { cost: 1, label: "Silk Line", text: "Run a silk line between two points up to 5 squares apart without the roll (GRACE + Acrobatics, Difficulty 2)." },
+  { cost: 1, label: "Silk Line", text: "Run a silk line between two points up to 5 squares apart without the roll (GRACE + Acrobatics, Difficulty 2); it still takes your Action. With nothing watching or closing in, a line needs no roll and no SP. A Silk Line is safe footing: crossing or climbing it takes no roll, and under pressure it lowers that roll's Difficulty by 1 (a line placed in Planning works the same way and lasts the heist)." },
   { cost: 2, label: "Reroll", text: "After rolling, reroll up to 3 dice that didn't succeed. Your Successes stay, so it can only help." },
   { cost: 2, label: "Web Structure", text: "Build a small web structure with no roll — a net, a tripwire, a platform, a hammock." },
   { cost: 2, label: "Improvise", text: "Swap the called-for Skill for one of yours that could plausibly work — Engineering to rig a hoist instead of Athletics to climb, Deception instead of Stealth — at +1 Difficulty, rolled with the new Skill's own Attribute." },
-  { cost: 3, label: "Silk Clutch", text: "After a Failure (a Partial isn't one), turn it into a Success. The Alert rises by 1." },
-  { cost: 3, label: "Damage Control", text: "The crew spends 3 SP between them, split any way, to reduce one Alert spike of +2 or more by 1. Once per heist." },
-  { cost: 4, label: "Not Part of the Plan", text: "Negate one complication the ST just introduced. Once per heist." }
+  { cost: 3, label: "Silk Clutch", text: "After a Failure on your own roll (a Partial isn't one, and a Botch die can't be saved), turn it into a Success. The Alert rises by 1." },
+  { cost: 3, label: "Damage Control", text: "The crew spends 3 SP between them, split any way, to reduce one Alert spike of +2 or more by 1. Once per heist. Call it before the round ends." },
+  { cost: 4, label: "Not Part of the Plan", text: "Negate one complication the ST just introduced, a Partial's included — used immediately, before consequences resolve. Once per heist." }
 ];
 
 /** Ways to earn Silk Points back. */
@@ -231,7 +231,7 @@ HEISTY.species = {
 HEISTY.roles = {
   face: {
     label: "The Face", coreSkills: ["deception", "persuasion"], signature: "That's Not What Happened",
-    quickPick: { stealth: 3, perception: 2, disguise: 2, intimidation: 2 },
+    quickPick: { perception: 3, stealth: 2, disguise: 2, intimidation: 2 },
     perks: ["Silver Tongue", "Read the Room", "Plausible Deniability", "Fast Talk", "Actually, I Planned This", "Familiar Face"]
   },
   ghost: {
@@ -241,7 +241,7 @@ HEISTY.roles = {
   },
   tinkerer: {
     label: "The Tinkerer", coreSkills: ["engineering", "perception"], signature: "I Made a Thing",
-    quickPick: { stealth: 3, acrobatics: 2, tactics: 2, athletics: 2 },
+    quickPick: { stealth: 3, acrobatics: 2, tactics: 2, endurance: 2 },
     perks: ["Jury-Rig", "Spider-Sense… Sort Of", "Overclock", "Field Repair", "Trap Architect", "I See How This Works"]
   },
   bruiser: {
@@ -251,7 +251,7 @@ HEISTY.roles = {
   },
   lookout: {
     label: "The Lookout", coreSkills: ["perception", "tactics"], signature: "I Called It",
-    quickPick: { stealth: 3, acrobatics: 2, engineering: 2, deception: 2 },
+    quickPick: { stealth: 3, acrobatics: 2, engineering: 2, endurance: 2 },
     perks: ["Early Warning", "Tactical Feed", "Pattern Recognition", "Contingency", "Escape Routes", "Counter-Surveillance"]
   },
   wheelman: {

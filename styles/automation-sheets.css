@@ -1,0 +1,144 @@
+/* ==========================================================================
+   HEISTY SPIDEYS — Automation: sheets, abilities, advancement, Waiting Web
+   (WP-A, system 1.8.0). Builds on the variables in heisty-spideys.css.
+   ========================================================================== */
+
+/* -------------------------------------------------- Header additions ------ */
+.heisty-spideys .heisty-header .heist-status-tag { background: rgba(240,207,107,0.18); }
+.heisty-spideys .heisty-header .heist-status-tag.hs-out { background: rgba(209,58,47,0.45); }
+.heisty-spideys .heisty-header .heist-status-tag.hs-waiting { background: rgba(143,29,29,0.35); }
+.heisty-spideys .heisty-header .heist-status-tag.hs-escaped { background: rgba(47,125,79,0.45); }
+.heisty-spideys .heisty-header .heist-status-tag.hs-camo { background: rgba(47,125,79,0.3); }
+
+.heisty-spideys .pending-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.heisty-spideys .pending-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.68rem; padding: 2px 8px; border-radius: 10px;
+  background: rgba(240,207,107,0.2); color: var(--hs-cream);
+  border: 1px solid rgba(240,207,107,0.5);
+}
+.heisty-spideys .pending-chip .pc-text { color: var(--hs-gold-bright); }
+.heisty-spideys .pending-chip .pc-remove { color: var(--hs-cream); cursor: pointer; margin-left: 2px; }
+
+.heisty-spideys .stat-block .advance-btn {
+  margin-top: 4px; padding: 1px 6px; font-size: 0.6rem; line-height: 1.4;
+  text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer;
+  background: var(--hs-gold); color: var(--hs-plum-deep); border: none; border-radius: 4px;
+}
+.heisty-spideys .stat-block .advance-btn:hover { background: var(--hs-gold-bright); }
+
+/* -------------------------------------------------- Silk menu ------------- */
+.heisty-spideys .silk-pips .pip.extra { border-style: dashed; }
+.heisty-spideys .silk-menu { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 8px; width: 100%; }
+.heisty-spideys .silk-menu-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--hs-plum); }
+.heisty-spideys .silk-spend {
+  flex: 0 0 auto; width: auto; padding: 2px 9px; font-size: 0.75rem; line-height: 1.6;
+  border: 1px solid var(--hs-gold); border-radius: 12px; background: var(--hs-cream); color: var(--hs-plum-deep); cursor: pointer;
+}
+.heisty-spideys .silk-spend:hover:not([disabled]) { background: var(--hs-gold-bright); }
+.heisty-spideys .silk-spend[disabled] { opacity: 0.45; cursor: default; }
+.heisty-spideys .silk-spend.assist-btn { margin-left: auto; background: var(--hs-plum); color: var(--hs-cream); border-color: var(--hs-plum); }
+.heisty-spideys .silk-spend.assist-btn:hover { background: var(--hs-ox); }
+
+/* -------------------------------------------------- Abilities panel ------- */
+.heisty-spideys .ability-list { list-style: none; margin: 0; padding: 0; }
+.heisty-spideys .ability-row {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center;
+  padding: 6px 4px; border-bottom: 1px dashed var(--hs-line);
+}
+.heisty-spideys .ability-row:last-child { border-bottom: none; }
+.heisty-spideys .ability-main { display: flex; align-items: baseline; gap: 8px; min-width: 0; flex-wrap: wrap; }
+.heisty-spideys .ability-kind {
+  font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--hs-cream);
+  background: var(--hs-plum-soft); border-radius: 3px; padding: 1px 5px;
+}
+.heisty-spideys .ability-row.kind-species .ability-kind { background: var(--hs-good); }
+.heisty-spideys .ability-row.kind-signature .ability-kind { background: var(--hs-gold); color: var(--hs-plum-deep); }
+.heisty-spideys .ability-row.kind-flaw .ability-kind { background: var(--hs-ox); }
+.heisty-spideys .ability-name { font-family: var(--hs-font-display); font-weight: 700; color: var(--hs-plum-deep); }
+.heisty-spideys .ability-freq { font-size: 0.7rem; color: var(--hs-ink-soft); }
+.heisty-spideys .ability-side { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+.heisty-spideys .ability-effect { grid-column: 1 / 3; margin: 0; font-size: 0.76rem; line-height: 1.35; color: var(--hs-ink-soft); }
+.heisty-spideys .ability-row.st-used .ability-name { color: var(--hs-ink-soft); }
+
+.heisty-spideys .ability-chip, .heisty-ability-card .ability-chip {
+  font-size: 0.65rem; padding: 1px 7px; border-radius: 9px; white-space: nowrap;
+  background: rgba(90,86,96,0.12); color: var(--hs-plum, #36343a); border: 1px solid transparent;
+}
+.heisty-spideys .ability-chip.chip-ready { background: rgba(47,125,79,0.15); color: var(--hs-good); border-color: rgba(47,125,79,0.4); }
+.heisty-spideys .ability-chip.chip-used { background: rgba(143,29,29,0.1); color: var(--hs-ox); border-color: rgba(143,29,29,0.3); }
+.heisty-spideys .ability-chip.chip-blocked { background: rgba(138,97,22,0.12); color: var(--hs-partial); }
+.heisty-spideys .ability-chip.chip-passive { background: rgba(90,86,96,0.08); color: var(--hs-ink-soft); }
+
+.heisty-spideys .ability-use, .heisty-spideys .ability-setup, .heisty-spideys .ability-fire, .heisty-spideys .ability-delay,
+.heisty-spideys .usage-reset {
+  flex: 0 0 auto; width: auto; padding: 1px 9px; font-size: 0.72rem; line-height: 1.6; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--hs-plum); background: var(--hs-plum); color: var(--hs-cream);
+}
+.heisty-spideys .ability-use:hover { background: var(--hs-ox); border-color: var(--hs-ox); }
+.heisty-spideys .ability-setup { background: var(--hs-cream); color: var(--hs-plum); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.heisty-spideys .ability-fire { background: var(--hs-ox); border-color: var(--hs-ox); }
+.heisty-spideys .ability-delay { background: var(--hs-cream); color: var(--hs-ox); border-color: var(--hs-ox); }
+.heisty-spideys .ability-reset { color: var(--hs-plum); cursor: pointer; }
+.heisty-spideys .usage-reset { background: var(--hs-cream); color: var(--hs-plum); }
+
+/* -------------------------------------------------- Item sheet ------------ */
+.heisty-spideys .ability-automation .auto-line { margin: 6px 0 2px; font-size: 0.85rem; }
+.heisty-spideys .ability-automation .auto-effect { margin: 0 0 6px; font-size: 0.8rem; color: var(--hs-ink-soft); }
+.heisty-spideys .ability-automation .usage-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* -------------------------------------------------- Threat sheet ---------- */
+.heisty-spideys .automation-panel .automation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.heisty-spideys .automation-panel .auto-field { display: flex; flex-direction: column; gap: 2px; }
+.heisty-spideys .automation-panel .auto-field > span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--hs-plum); }
+.heisty-spideys .automation-panel .auto-hint { margin: 6px 0 0; font-size: 0.72rem; }
+
+/* -------------------------------------------------- Advancement ----------- */
+.heisty-spideys.heisty-advancement .window-content { display: flex; flex-direction: column; }
+.heisty-spideys .heisty-advancement-body { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; }
+.heisty-spideys .adv-head { display: flex; gap: 12px; align-items: center; padding: 12px 14px; background: linear-gradient(135deg, var(--hs-plum-deep), var(--hs-plum)); color: var(--hs-cream); border-bottom: 3px solid var(--hs-gold); }
+.heisty-spideys .adv-ap { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.heisty-spideys .adv-ap-num { font-family: var(--hs-font-display); font-size: 2rem; font-weight: 700; line-height: 1; color: var(--hs-gold-bright); }
+.heisty-spideys .adv-ap-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.heisty-spideys .adv-rules { margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--hs-cream); }
+.heisty-spideys .adv-rules .dim { color: rgba(243,238,228,0.65); }
+.heisty-spideys .adv-body { overflow-y: auto; padding: 12px 14px; flex: 1 1 auto; }
+.heisty-spideys .adv-list { list-style: none; margin: 0; padding: 0; }
+.heisty-spideys .adv-list.adv-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; }
+.heisty-spideys .adv-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px dashed var(--hs-line); }
+.heisty-spideys .adv-row.blocked { opacity: 0.6; }
+.heisty-spideys .adv-name { flex: 1 1 auto; font-weight: 600; }
+.heisty-spideys .adv-val { font-family: var(--hs-font-display); font-weight: 700; color: var(--hs-plum-deep); }
+.heisty-spideys .adv-why { font-size: 0.7rem; font-style: italic; color: var(--hs-ink-soft); }
+.heisty-spideys .adv-buy { flex: 0 0 auto; width: auto; padding: 1px 10px; font-size: 0.75rem; line-height: 1.6; border-radius: 4px; border: none; cursor: pointer; background: var(--hs-plum); color: var(--hs-cream); }
+.heisty-spideys .adv-buy:hover { background: var(--hs-ox); }
+
+/* -------------------------------------------------- Waiting Web ----------- */
+.heisty-spideys .heisty-replacement-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.heisty-spideys .rep-lead { margin: 0; font-size: 0.85rem; line-height: 1.45; }
+.heisty-spideys .rep-field > span { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--hs-plum); }
+.heisty-spideys .rep-name-row { display: flex; gap: 6px; }
+.heisty-spideys .rep-name-row input { flex: 1 1 auto; }
+.heisty-spideys .rep-name-row button { flex: 0 0 auto; width: auto; }
+.heisty-spideys .rep-species { border: 1px solid var(--hs-parch-edge); border-radius: 8px; padding: 6px 10px; }
+.heisty-spideys .rep-species legend { font-size: 0.75rem; color: var(--hs-plum); padding: 0 4px; }
+.heisty-spideys .rep-option { display: flex; align-items: center; gap: 6px; padding: 2px 0; font-size: 0.82rem; }
+.heisty-spideys .rep-timer { margin: 0; font-size: 0.72rem; }
+.heisty-spideys .rep-footer { display: flex; justify-content: flex-end; }
+.heisty-spideys .rep-go { width: auto; background: var(--hs-ox); color: var(--hs-cream); border: none; border-radius: 6px; padding: 4px 14px; cursor: pointer; }
+
+/* -------------------------------------------------- Small dialogs --------- */
+.heisty-dialog .heisty-ask { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+.heisty-dialog .heisty-ask > span { font-size: 0.75rem; }
+
+/* -------------------------------------------------- Ability chat cards ---- */
+.heisty-ability-card { font-size: 0.85rem; line-height: 1.4; }
+.heisty-ability-card .hac-title { margin: 0 0 4px; font-family: Georgia, "Palatino Linotype", serif; font-size: 1rem; color: #1f1d22; border-bottom: 1px solid #cbb589; padding-bottom: 2px; }
+.heisty-ability-card .hac-list { margin: 4px 0; padding-left: 18px; }
+.heisty-ability-card .hac-question { font-style: italic; }
+.heisty-ability-card .hac-buttons { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.heisty-ability-card .hac-btn { flex: 1 1 auto; width: auto; font-size: 0.78rem; line-height: 1.8; }
+.heisty-ability-card .hac-btn.primary { background: #36343a; color: #f3eee4; }
+.heisty-ability-card .hac-outcome { margin: 6px 0 0; font-weight: 600; }
+.heisty-ability-card .dim { color: #57525a; font-size: 0.85em; }
+.heisty-ability-card details summary { cursor: pointer; font-weight: 600; }

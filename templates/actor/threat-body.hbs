@@ -23,6 +23,47 @@
     </div>
   </div>
 
+  {{#if editable}}
+  <div class="panel automation-panel">
+    <h3 class="panel-title">Heist automation
+      <span class="panel-sub">blank = the creature table{{#if automation.guessed}} ({{automation.guessed}}){{/if}}</span>
+    </h3>
+    <div class="automation-grid">
+      <label class="auto-field"><span>Creature</span>
+        <select name="system.automation.key">
+          <option value="">— match by name —</option>
+          {{#each automation.keys}}<option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.key}}</option>{{/each}}
+        </select>
+      </label>
+      <label class="auto-field"><span>Alert per round</span>
+        <input type="number" name="system.automation.perRound" value="{{automation.perRound}}" placeholder="{{automation.defaults.perRound}}" />
+      </label>
+      <label class="auto-field"><span>Wakes at Alert</span>
+        <input type="number" name="system.automation.wakeAt" value="{{automation.wakeAt}}" placeholder="{{automation.defaults.wakeAt}}" />
+      </label>
+      <label class="auto-field"><span>Hunts at Alert</span>
+        <input type="number" name="system.automation.huntAt" value="{{automation.huntAt}}" placeholder="{{automation.defaults.huntAt}}" />
+      </label>
+      <label class="auto-field"><span>Roams</span>
+        <select name="system.automation.roams">
+          <option value="">— table ({{automation.defaults.roams}}) —</option>
+          {{#each automation.roams}}<option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.key}}</option>{{/each}}
+        </select>
+      </label>
+      <label class="auto-field"><span>Attack pool #</span>
+        <input type="number" min="0" name="system.automation.attackIndex" value="{{automation.attackIndex}}" placeholder="{{automation.defaults.attackIndex}}" />
+      </label>
+      <label class="auto-field"><span>Human row</span>
+        <select name="system.automation.humanRow">
+          <option value="">— not a human —</option>
+          {{#each automation.humanRows}}<option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
+        </select>
+      </label>
+    </div>
+    <p class="auto-hint dim">Attack pool # counts the action pools above from 0. Leave a field blank to use the Chapter 16 stat block.</p>
+  </div>
+  {{/if}}
+
   <div class="threat-fields">
     {{#*inline "threatField"}}
     <div class="panel threat-field">

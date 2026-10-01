@@ -1,0 +1,58 @@
+<section class="heisty-advancement-body">
+  <header class="adv-head">
+    <div class="adv-ap"><span class="adv-ap-num">{{ap}}</span><span class="adv-ap-label">AP to spend</span></div>
+    <p class="adv-rules">1 AP: +1 Skill · 2 AP: +1 Attribute · 3 AP: a new Perk from your Role list.
+      Skills and Attributes can reach 5 (Attributes include the species bonus). Unspent AP carry over.
+      <span class="dim">Earned in total: {{earned}} · starting Silk now {{silkMax}}.</span></p>
+  </header>
+
+  <div class="adv-body">
+    <div class="panel">
+      <h3 class="panel-title">Attributes <span class="panel-sub">2 AP each</span></h3>
+      <ul class="adv-list">
+        {{#each attributes}}
+        <li class="adv-row {{#unless this.allowed}}blocked{{/unless}}">
+          <span class="adv-name">{{this.label}} <span class="dim">{{this.abbr}}</span></span>
+          <span class="adv-val">{{this.from}}{{#if this.allowed}} → {{this.to}}{{/if}}</span>
+          {{#if this.allowed}}
+          <button type="button" class="adv-buy" data-action="buy" data-type="attribute" data-key="{{this.key}}">Buy · {{this.cost}} AP</button>
+          {{else}}<span class="adv-why">{{this.why}}</span>{{/if}}
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3 class="panel-title">Skills <span class="panel-sub">1 AP each</span></h3>
+      <ul class="adv-list adv-grid">
+        {{#each skills}}
+        <li class="adv-row {{#unless this.allowed}}blocked{{/unless}}">
+          <span class="adv-name">{{this.label}} <span class="dim">{{this.attr}}</span></span>
+          <span class="adv-val">{{this.from}}{{#if this.allowed}} → {{this.to}}{{/if}}</span>
+          {{#if this.allowed}}
+          <button type="button" class="adv-buy" data-action="buy" data-type="skill" data-key="{{this.key}}">+1</button>
+          {{else}}<span class="adv-why">{{this.why}}</span>{{/if}}
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3 class="panel-title">Perks <span class="panel-sub">3 AP each{{#if roleLabel}} · {{roleLabel}}{{/if}}</span></h3>
+      {{#if hasRole}}
+      <ul class="adv-list">
+        {{#each perks}}
+        <li class="adv-row {{#unless this.allowed}}blocked{{/unless}}">
+          <span class="adv-name">{{this.label}}</span>
+          {{#if this.allowed}}
+          <button type="button" class="adv-buy" data-action="buy" data-type="perk" data-key="{{this.key}}">Learn · {{this.cost}} AP</button>
+          {{else}}<span class="adv-why">{{this.why}}</span>{{/if}}
+        </li>
+        {{/each}}
+      </ul>
+      {{else}}
+      <p class="empty-hint">No Role yet — add one to pick from its Perk list.</p>
+      {{/if}}
+    </div>
+  </div>
+</section>

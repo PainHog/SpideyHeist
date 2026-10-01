@@ -7,6 +7,19 @@
  */
 
 import { HEISTY } from "../config.mjs";
+import { THREAT_KEYS, threatKeyFor } from "../helpers/migration.mjs";
+
+/** WP-C's creature table, loaded lazily (the sheet works without it). */
+let creaturesModule = null;
+async function creatureTable() {
+  if (creaturesModule === null) {
+    try { creaturesModule = await import("../logic/creatures.mjs"); } catch (err) { creaturesModule = false; }
+  }
+  return creaturesModule || null;
+}
+
+const ROAMS = ["active", "hunting", "aware", "always", "earshot", "never", "route", "procedure"];
+const HUMAN_ROWS = { sleeping: "Sleeping (2)", distracted: "Distracted (1)", alert: "Alert (4)", broom: "With broom (3)", lightsOn: "Lights on (2)" };
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -45,6 +58,7 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.system = sys;
     context.editable = this.isEditable;
     context.rolls = (sys.rolls ?? []).map((r, i) => ({ ...r, index: i }));
+    context.automation = await this._automationContext();
     context.enriched = {
       senses: await enrich(sys.senses, actor),
       passive: await enrich(sys.passive, actor),
@@ -54,6 +68,32 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       biography: await enrich(sys.biography, actor)
     };
     return context;
+  }
+
+  /** The automation override fields, with the creature table's defaults as hints. */
+  async _automationContext() {
+    const a = this.actor.system.automation ?? {};
+    const mod = await creatureTable();
+    const guessed = a.key || (mod?.resolveCreatureKey?.(this.actor.name) ?? threatKeyFor(this.actor.name));
+    let def = null;
+    try { def = guessed && mod?.creatureDef ? mod.creatureDef(guessed) : null; } catch (err) { def = null; }
+    const hint = v => (v === null || v === undefined || v === "" ? "—" : String(v));
+    return {
+      key: a.key ?? "",
+      guessed: guessed || "",
+      keys: THREAT_KEYS.map(k => ({ key: k, selected: k === a.key })),
+      perRound: a.perRound ?? "",
+      wakeAt: a.wakeAt ?? "",
+      huntAt: a.huntAt ?? "",
+      attackIndex: a.attackIndex ?? "",
+      roams: ROAMS.map(r => ({ key: r, selected: r === a.roams })),
+      humanRows: Object.entries(HUMAN_ROWS).map(([k, label]) => ({ key: k, label, selected: k === a.humanRow })),
+      defaults: {
+        perRound: hint(def?.perRound), wakeAt: hint(def?.wakeAt), huntAt: hint(def?.huntAt),
+        roams: hint(def?.roams), attackIndex: hint(def?.attack?.index)
+      },
+      hasTable: !!def
+    };
   }
 
   static #onRollThreat(event, target) {

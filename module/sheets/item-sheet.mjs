@@ -6,6 +6,9 @@
  */
 
 import { HEISTY } from "../config.mjs";
+import { itemAbilityKey, slugKey } from "../logic/keys.mjs";
+import { getAbility, usageStatus, statusLabel, blankUsage, FREQ_LABELS } from "../logic/abilities.mjs";
+import { actorOps } from "../runtime/actor-ops.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -33,6 +36,7 @@ export class HeistyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     window: { resizable: true, icon: "fa-solid fa-scroll" },
     form: { submitOnChange: true, closeOnSubmit: false },
     actions: {
+      resetUsage: HeistyItemSheet.#onResetUsage
     }
   };
 
@@ -62,7 +66,40 @@ export class HeistyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     context.roleChoices = Object.entries(HEISTY.roles).map(([k, r]) => ({ key: k, label: r.label }));
     context.speciesChoices = Object.entries(HEISTY.species).map(([k, s]) => ({ key: k, label: s.label }));
 
+    // Ability automation: the key, the ABILITIES entry and the usage stamp.
+    context.ability = this._abilityContext();
+
     return context;
+  }
+
+  _abilityContext() {
+    const item = this.item;
+    if (!["species", "role", "perk", "flaw"].includes(item.type)) return null;
+    const key = itemAbilityKey(item);
+    const def = getAbility(key);
+    const usage = item.system.usage ?? blankUsage();
+    const clock = actorOps.clock();
+    const status = def ? usageStatus(def, usage, clock) : null;
+    return {
+      key,
+      keyEditable: item.type === "perk" || item.type === "flaw",
+      keyPlaceholder: slugKey(item.name),
+      known: !!def,
+      name: def?.name ?? "",
+      freq: def ? FREQ_LABELS[def.freq] : "",
+      automation: def?.automation ?? "",
+      cost: def?.cost ?? 0,
+      effect: def?.effect ?? "",
+      status: def ? statusLabel(def, status) : "No automation — text only",
+      used: !!usage.count,
+      usage,
+      canReset: game.user.isGM && !!usage.count
+    };
+  }
+
+  static async #onResetUsage() {
+    if (!game.user.isGM) return;
+    await this.item.update({ "system.usage": blankUsage() });
   }
 
 }

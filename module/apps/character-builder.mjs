@@ -24,7 +24,7 @@ const d6 = () => 1 + Math.floor(Math.random() * 6);
 const normName = s => String(s ?? "").replace(/[\u2018\u2019]/g, "'").trim().toLowerCase();
 
 /** The book's 2d6 Spider Name table (Chapter 20). */
-const NAME_TABLE = {
+export const NAME_TABLE = {
   2: "Gerald", 3: "Pebbles", 4: "Dusty", 5: "Crinkle", 6: "Jar Lid", 7: "The Architect",
   8: "Filament", 9: "Nook", 10: "Cassette", 11: "Widow", 12: "Eight"
 };

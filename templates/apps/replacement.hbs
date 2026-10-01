@@ -1,0 +1,35 @@
+<section class="heisty-replacement-body">
+  <p class="rep-lead">
+    <strong>{{actor.name}}</strong> is Out. A fresh spider drops from the Waiting Web: same Role, Attributes,
+    Skills, Perks and Flaw. They enter at the start of the next obstacle, next to a crewmate,
+    <em>Rattled</em>, with <strong>{{silkHalf}} SP</strong> (half the starting Silk) — and the uses you have left.
+  </p>
+
+  <label class="rep-field">
+    <span>Name</span>
+    <div class="rep-name-row">
+      <input type="text" name="name" value="{{name}}" placeholder="Name your replacement" autofocus />
+      <button type="button" data-action="rollName" title="Roll 2d6 on the name table"><i class="fa-solid fa-dice"></i> Roll</button>
+    </div>
+  </label>
+
+  <fieldset class="rep-species">
+    <legend>Species <span class="dim">(optional swap: the old bonus and Speed come off, the new ones go on; nothing above 5)</span></legend>
+    <label class="rep-option">
+      <input type="radio" name="speciesUuid" value="" {{#if keepSelected}}checked{{/if}} />
+      <span>Keep: {{currentSpecies}}</span>
+    </label>
+    {{#each species}}
+    <label class="rep-option">
+      <input type="radio" name="speciesUuid" value="{{this.uuid}}" {{#if this.selected}}checked{{/if}} />
+      <span>{{this.name}} <span class="dim">Speed {{this.speed}}{{#if this.bonusSummary}} · {{this.bonusSummary}}{{/if}} · {{this.ability}}</span></span>
+    </label>
+    {{/each}}
+  </fieldset>
+
+  <p class="rep-timer dim">No answer within {{seconds}} seconds keeps these choices.</p>
+
+  <footer class="rep-footer">
+    <button type="submit" class="rep-go"><i class="fa-solid fa-spider"></i> Send them in</button>
+  </footer>
+</section>

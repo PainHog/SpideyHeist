@@ -1,0 +1,39 @@
+<div class="panel abilities-panel">
+  <h3 class="panel-title">Abilities
+    <span class="panel-sub">{{clockLabel}}</span>
+  </h3>
+  {{#if rows.length}}
+  <ul class="ability-list">
+    {{#each rows}}
+    <li class="ability-row kind-{{this.kind}} st-{{this.statusClass}}" data-ability-key="{{this.key}}" data-item-id="{{this.id}}">
+      <div class="ability-main">
+        <span class="ability-kind">{{this.kindLabel}}</span>
+        <span class="ability-name" title="{{this.effect}}">{{this.name}}</span>
+        <span class="ability-freq">{{this.freqLabel}}{{#if this.cost}} · {{this.cost}} SP{{/if}}</span>
+      </div>
+      <div class="ability-side">
+        <span class="ability-chip chip-{{this.statusClass}}">{{this.status}}</span>
+        {{#if this.canUse}}
+        <button type="button" class="ability-use" data-action="useAbility" data-key="{{this.key}}" title="{{this.effect}}">{{this.useLabel}}</button>
+        {{/if}}
+        {{#if this.needsSetup}}
+        <button type="button" class="ability-setup" data-action="setupAbility" data-key="{{this.key}}" title="Set it up">{{#if this.setupValue}}{{this.setupValue}}{{else}}Set…{{/if}}</button>
+        {{/if}}
+        {{#if this.canFire}}
+        <button type="button" class="ability-fire" data-action="fireFlaw" data-key="{{this.key}}" title="Storyteller: fire this Flaw (pays the Flaw Moment)">Fire</button>
+        {{/if}}
+        {{#if this.showDelay}}
+        <button type="button" class="ability-delay" data-action="delayFlaw" data-key="{{this.key}}" title="Spend 1 SP to delay it one round">Delay · 1 SP</button>
+        {{/if}}
+        {{#if this.canReset}}
+        <a class="ability-reset" data-action="resetAbility" data-item-id="{{this.id}}" title="Storyteller: reset this use"><i class="fa-solid fa-rotate-left"></i></a>
+        {{/if}}
+      </div>
+      <p class="ability-effect">{{this.effect}}</p>
+    </li>
+    {{/each}}
+  </ul>
+  {{else}}
+  <p class="empty-hint">No abilities yet: add a Species, a Role, Perks and a Flaw.</p>
+  {{/if}}
+</div>

@@ -20,14 +20,27 @@
       {{else}}<span class="tag tag-empty">No Species</span>{{/if}}
       {{#if role}}<span class="tag role-tag"><i class="fa-solid fa-user-secret"></i> {{role.name}}</span>
       {{else}}<span class="tag tag-empty">No Role</span>{{/if}}
+      {{#if showHeistStatus}}<span class="tag heist-status-tag hs-{{heistStatus.cls}}" title="Heist status"><i class="fa-solid fa-mask"></i> {{heistStatus.label}}</span>{{/if}}
+      {{#if replacement}}<span class="tag heist-status-tag hs-replacement" title="Drawn from the Waiting Web"><i class="fa-solid fa-diagram-project"></i> Replacement</span>{{/if}}
+      {{#if camouflaged}}<span class="tag heist-status-tag hs-camo" title="Wait, Was That There Before?: Stealth −2 until you move"><i class="fa-solid fa-eye-slash"></i> Holding still</span>{{/if}}
     </div>
+    {{#if pending.length}}
+    <div class="pending-chips" title="Queued bonuses: used up by your next roll unless marked otherwise">
+      {{#each pending}}
+      <span class="pending-chip" title="{{this.text}}"><i class="fa-solid fa-dice-d6"></i> {{this.label}} <span class="pc-text">{{this.text}}</span>
+        {{#if @root.isGM}}<a class="pc-remove" data-action="removePending" data-pending-id="{{this.id}}" title="Remove"><i class="fa-solid fa-xmark"></i></a>{{/if}}
+      </span>
+      {{/each}}
+    </div>
+    {{/if}}
   </div>
 
   <div class="header-stats">
     <div class="stat-block">
-      <span class="stat-value">{{system.speed.effective}}</span>
+      <span class="stat-value" title="{{speedNotes}}">{{system.speed.effective}}</span>
       <span class="stat-label"><i class="fa-solid fa-shoe-prints"></i> Speed</span>
-      {{#if vitalityState.assisted}}<span class="stat-note" title="Critical: can't move on your own — an adjacent crewmate can bring you along at half their Speed.">assisted</span>
+      {{#if system.speed.carrying}}<span class="stat-note" title="{{speedNotes}}">carrying</span>
+      {{else if vitalityState.assisted}}<span class="stat-note" title="Critical: can't move on your own — an adjacent crewmate can bring you along at half their Speed.">assisted</span>
       {{else if vitalityState.halfSpeed}}<span class="stat-note">halved</span>{{/if}}
     </div>
     <div class="stat-block silk-block">
@@ -37,6 +50,7 @@
     <div class="stat-block">
       <span class="stat-value">{{system.advancement.value}}</span>
       <span class="stat-label"><i class="fa-solid fa-trophy"></i> AP</span>
+      {{#if canAdvance}}<button type="button" class="advance-btn" data-action="advance" title="Spend Advancement Points">Advance</button>{{/if}}
     </div>
   </div>
 </header>

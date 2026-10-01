@@ -7,6 +7,7 @@
  */
 
 import { HeistyDice } from "../helpers/dice.mjs";
+import { itemAbilityKey } from "../logic/keys.mjs";
 
 export class HeistyActor extends Actor {
 
@@ -45,6 +46,24 @@ export class HeistyActor extends Actor {
 
   /** All Silk / Gadget / Found-Material items on the spider. */
   get gadgets() { return this.items.filter(i => i.type === "gadget"); }
+
+  /** The Species, Role, Perk and Flaw items, each with its ABILITIES key. */
+  get abilityItems() {
+    return this.items
+      .filter(i => ["species", "role", "perk", "flaw"].includes(i.type))
+      .map(item => ({ item, key: itemAbilityKey(item) }))
+      .filter(e => e.key);
+  }
+
+  /** The item that carries an ability key (e.g. "unfazed", "sig:face"), or null. */
+  abilityItem(key) {
+    return this.abilityItems.find(e => e.key === key)?.item ?? null;
+  }
+
+  /** True if the spider has the ability (a Perk, Flaw, Signature or species key). */
+  hasAbility(key) {
+    return !!this.abilityItem(key);
+  }
 
   /* -------------------------------------------- */
   /*  Roll shortcuts                              */

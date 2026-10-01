@@ -91,4 +91,30 @@
     {{> editor field="description" value=system.description enriched=enriched.description}}
   {{/if}}
 
+  {{#if ability}}
+  <div class="ability-automation">
+    <h4 class="field-head">Automation</h4>
+    {{#if ability.keyEditable}}
+    <label class="field"><span>Ability key <span class="dim">(blank = from the name)</span></span>
+      <input type="text" name="system.key" value="{{system.key}}" placeholder="{{ability.keyPlaceholder}}" />
+    </label>
+    {{/if}}
+    {{#if ability.known}}
+    <p class="auto-line"><strong>{{ability.name}}</strong> · {{ability.freq}}{{#if ability.cost}} · {{ability.cost}} SP{{/if}} · <em>{{ability.automation}}</em></p>
+    <p class="auto-effect">{{ability.effect}}</p>
+    {{else}}
+    <p class="auto-line dim">Key <code>{{ability.key}}</code> has no automation: the system shows the text and the Storyteller rules on it.</p>
+    {{/if}}
+    <div class="usage-line">
+      <span class="ability-chip">{{ability.status}}</span>
+      {{#if ability.used}}
+      <span class="dim">Last used: heist {{ability.usage.heistId}}, scene {{ability.usage.sceneSerial}}, round {{ability.usage.roundSerial}} ({{ability.usage.count}}×)</span>
+      {{/if}}
+      {{#if ability.canReset}}
+      <button type="button" class="usage-reset" data-action="resetUsage"><i class="fa-solid fa-rotate-left"></i> Reset use</button>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+
 </section>
