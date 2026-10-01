@@ -2,6 +2,10 @@
 
 Now: The team is test-playing the automated online game.
 Next: Fix whatever the test games turn up, then get the rulebook ready for launch.
+Number: Heists ready to run = 5
+Number: Spider species = 6
+Number: Crew roles = 7
+Number: Rulebook pages = 51
 
 - [x] Playable online version of the game: spider character sheet, dice rolling and the shared Alert meter
 - [x] Guided Character Builder that walks players through making a spider step by step
