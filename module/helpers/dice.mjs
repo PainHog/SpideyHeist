@@ -20,12 +20,12 @@ import { HEISTY } from "../config.mjs";
 import { CARD, HOOKS, SETTINGS } from "../contracts.mjs";
 import { BONUS_DICE_CAP, countSuccesses, opposedDifficulty } from "../logic/rules.mjs";
 import {
-  buildRollPlan, resolveRoll, isFailed, FIGHT_SKILLS, PHYSICAL_SKILLS, ALERT_OFF_PHASES
+  buildRollPlan, resolveRoll, isFailed, normalizeRollContext, FIGHT_SKILLS, PHYSICAL_SKILLS, ALERT_OFF_PHASES
 } from "../logic/rolls.mjs";
 import { newCard, renderCardContent } from "../chat/card-flags.mjs";
 import {
   ns, setting, alertMode, abilityKeysOf, markUsed, earnSilk, addPending, silkOf, clockNow, alertNow,
-  rollDice, recomputeCard, finalizeActorCards, finalizeCard, finalizePending, registerCardActions, registerCardOps
+  actorFrom, rollDice, recomputeCard, finalizeActorCards, finalizeCard, finalizePending, registerCardActions, registerCardOps
 } from "../chat/card-actions.mjs";
 import { HitFlow } from "../chat/hit-flow.mjs";
 
@@ -156,15 +156,21 @@ export const HeistyDice = {
    * Assist (as your Action): roll one Skill, no Attribute, 1–3 dice, plus your
    * own Silk dice outside that maximum; each Success queues +1 die on the
    * target's next roll (only one Assist per roll — the latest replaces).
+   * Also callable as rollAssist(helper, {targetId, skill, silk}) (WP-A's
+   * ability-actions); with a target, a Skill and a Silk count it skips the dialog.
    * @param {Actor} helper
-   * @param {Actor|null} [target]
+   * @param {Actor|{targetId?:string, skill?:string, silk?:number|null}|null} [target]
    * @param {string|null} [skillKey]
-   * @param {{silk?:number, fast?:boolean}} [opts]
+   * @param {{silk?:number|null, fast?:boolean}} [opts]
    */
-  async rollAssist(helper, target = null, skillKey = null, { silk = 0, fast = false } = {}) {
+  async rollAssist(helper, target = null, skillKey = null, { silk = null, fast = false } = {}) {
     if (!helper?.isOwner) return null;
-    let choice = { targetId: target?.id, skill: skillKey, silk };
-    if (!fast || !target || !skillKey) {
+    if (target && !(target instanceof Actor) && typeof target === "object") {
+      ({ skill: skillKey = skillKey, silk = silk } = target);
+      target = target.targetId ? game.actors.get(target.targetId) : null;
+    }
+    let choice = { targetId: target?.id, skill: skillKey, silk: Math.max(0, Number(silk) || 0) };
+    if (!(fast || silk != null) || !target || !skillKey) {
       choice = await this._assistPrompt(helper, target, skillKey);
       if (!choice) return null;
     }
@@ -234,6 +240,22 @@ export const HeistyDice = {
     return { message, successes, pool, label: entry.label || "Action" };
   },
 
+  /** A creature's pool rolled by name (no actor in this world), posted as a threat card. */
+  async _anonPool(name, label, pool, opposing = "") {
+    const { roll, faces } = await rollDice(Math.max(0, Number(pool) || 0));
+    const successes = countSuccesses(faces);
+    const clock = clockNow();
+    const id = foundry.utils.randomID();
+    const card = newCard(CARD.threat, {
+      actorUuid: null, actorName: name, actorImg: "icons/svg/mystery-man.svg", userId: game.user.id,
+      heistId: clock.heistId, obstacleSerial: clock.obstacleSerial, roundSerial: clock.roundSerial, eventId: id, alertMode: alertMode(),
+      roll: { index: null, label: label || "Action", note: "", pool, faces, successes, opposing },
+      alert: { triggers: [], cancels: [] }
+    });
+    await postMessage({ _id: id, content: await renderCardContent(card), rolls: roll ? [roll] : [], speaker: { alias: name }, flags: { "heisty-spideys": { card } } }, { keepId: true });
+    return { successes };
+  },
+
   /**
    * Threat pools a spider can roll against: threats on the viewed scene (hidden
    * tokens only for the GM), then — for the GM — every threat in the Actors
@@ -269,17 +291,26 @@ export const HeistyDice = {
   async _baseInput(actor, skill, attr, options) {
     const keys = abilityKeysOf(actor);
     const clock = clockNow();
-    let rc = null;
-    try { rc = await ns().heist?.rollContext?.(actor, skill) ?? null; } catch (e) { console.warn("Heisty Spideys | rollContext failed", e); }
+    let raw = null;
+    try { raw = await ns().heist?.rollContext?.(actor, skill) ?? null; } catch (e) { console.warn("Heisty Spideys | rollContext failed", e); }
+    const rc = normalizeRollContext(raw, { creatures: ns().heist?.state?.creatures ?? [], actorId: actor.id, skill });
     const phase = options.phase ?? rc?.phase ?? clock.phase ?? "idle";
     const alert = alertNow();
     const h = actor.system.heist ?? {};
-    const pendingAll = Array.isArray(h.pending) ? h.pending.map(p => ({ ...p })) : [];
+    let pendingAll = Array.isArray(h.pending) ? h.pending.map(p => ({ ...p })) : [];
+    try {
+      const listed = ns().actorOps?.listPending?.(actor);
+      if (Array.isArray(listed)) pendingAll = listed.map(p => ({ ...p })); // expired bonuses dropped
+    } catch (e) { /* keep the raw list */ }
     const autoSilk = setting(SETTINGS.autoSilk, true) !== false;
+    // An open group check this spider is expected in binds the roll to it.
+    const group = options.groupId ? null : rc?.group ?? null;
+    const groupId = options.groupId ?? group?.groupId ?? null;
     const approaches = (rc?.approaches ?? []).map(a => ({ ...a }));
-    const approachId = options.approachId ?? rc?.approachId ?? null;
+    const approachId = options.approachId ?? group?.approachId ?? null;
     return {
-      actor, skill, attr, keys, clock, rc, phase, alert, autoSilk, approaches, approachId,
+      actor, skill, attr, keys, clock, rc, phase, alert, autoSilk, approaches, approachId, groupId,
+      presetOpposed: options.opposed ?? group?.opposed ?? null,
       pending: pendingAll,
       showOffMarker: pendingAll.find(p => p.source === "show-off") ?? null,
       opposers: this._opposedChoices(),
@@ -292,20 +323,39 @@ export const HeistyDice = {
         alert: { value: alert.value, limit: alert.limit }, phase,
         effects: rc?.effects ?? [],
         pending: pendingAll.filter(p => p.source !== "show-off"),
-        bonuses: options.bonuses ?? rc?.bonuses ?? [],
+        bonuses: options.bonuses ?? [],
         humanRow: options.humanRow ?? rc?.humanRow ?? null,
         silkAvailable: autoSilk ? silkOf(actor) : null,
         context: {
-          tags: rc?.tags ?? [], cover: options.cover ?? rc?.cover ?? false, moving: options.moving ?? true,
-          vsHuman: rc?.vsHuman ?? false, silkLinePrepared: !!rc?.silkLinePrepared,
+          tags: rc?.tags ?? [], cover: options.cover ?? false, moving: options.moving ?? true,
+          vsHuman: !!rc?.vsHuman, silkLinePrepared: !!rc?.silkLinePrepared,
           camouflaged: !!h.camouflaged, showOffArmed: options.showOff ?? !!pendingAll.find(p => p.source === "show-off"),
-          escapeLeader: !!rc?.escapeLeader && (rc.escapeLeader === true || rc.escapeLeader === actor.id),
+          escapeLeader: !!options.escapeLeader,
           longConIdentity: h.longConIdentity ?? "", methodActorTarget: h.methodActorTarget ?? "",
           drafting: options.drafting ?? rc?.drafting ?? false, forget: options.forget ?? false, height: options.height ?? false,
-          escape: phase === "escape"
+          escape: phase === "escape", casing: rc?.casing ?? null
         }
       }
     };
+  },
+
+  /** Resolve an approach's opposed creature to an opposer value ("uuid#index"), if the heist maps an actor. */
+  _opposerFor(base, opp) {
+    if (!opp?.uuid) return "";
+    const actor = actorFrom(opp.uuid);
+    if (!actor) return "";
+    let index = opp.index;
+    if (!Number.isInteger(index)) {
+      const want = String(opp.roll ?? "").toLowerCase();
+      index = (actor.system.rolls ?? []).findIndex(r => String(r.label ?? "").toLowerCase().includes(want) || String(r.note ?? "").toLowerCase().includes(want));
+    }
+    if (!(index >= 0)) return "";
+    const value = `${actor.uuid}#${index}`;
+    if (!base.opposers.some(o => o.value === value)) {
+      const r = actor.system.rolls[index];
+      base.opposers.push({ value, label: `${actor.name} — ${r?.label || "Action"} (${r?.pool ?? 0}d6)`, actor, index });
+    }
+    return value;
   },
 
   /** The approach a choice binds, if any. */
@@ -320,7 +370,7 @@ export const HeistyDice = {
     return {
       approachId: appr?.id ?? null, difficulty: options.difficulty ?? appr?.difficulty ?? 3,
       modifier: 0, bonusDice: 0, silkDice: 0, penaltyDice: 0, toggles: {},
-      improvise: false, calledSkill, overclock: false, opposed: "",
+      improvise: !!calledSkill && !options.fast, calledSkill, overclock: false, opposed: appr?.opposed ? this._opposerFor(base, appr.opposed) : "",
       physical: options.physical ?? PHYSICAL_SKILLS.includes(base.skill),
       fight: options.fight ?? !!appr?.fight,
       hazard: options.hazard ?? null
@@ -354,7 +404,7 @@ export const HeistyDice = {
     const appr = this._approach(base, choice.approachId);
 
     // Opposed: a resisting creature rolls first (once per round in a group check — then it's passed in).
-    let opposed = options.opposed ? { ...options.opposed } : null;
+    let opposed = base.presetOpposed ? { ...base.presetOpposed } : null;
     if (opposed && opposed.difficulty == null) opposed.difficulty = opposedDifficulty(opposed.successes);
     if (!opposed && choice.opposed) {
       const src = base.opposers.find(o => o.value === choice.opposed);
@@ -364,9 +414,17 @@ export const HeistyDice = {
         if (res) opposed = { uuid: src.actor.uuid, name: src.actor.name, label: res.label, successes: res.successes, difficulty: opposedDifficulty(res.successes) };
       }
     }
+    // An approach whose creature has no actor in this world: roll its listed pool by name.
+    if (!opposed && !choice.opposed && appr?.opposed?.pool && !appr.opposed.uuid) {
+      const res = await this._anonPool(appr.opposed.name, appr.opposed.roll ?? "", appr.opposed.pool, `${actor.name}`);
+      opposed = { uuid: null, name: appr.opposed.name, label: appr.opposed.roll ?? "", successes: res.successes, difficulty: opposedDifficulty(res.successes) };
+    }
 
+    // Re-check against the Silk on hand now (it may have changed while the dialog was open).
+    base.input.silkAvailable = base.autoSilk ? silkOf(actor) : null;
     const plan = buildRollPlan(this._planInput(base, choice, opposed));
     if (!plan.valid) { ui.notifications?.warn(plan.warnings.join(" ")); return null; }
+    if (plan.silkDice < choice.silkDice) ui.notifications?.warn(`Only ${plan.silkDice} Silk ${plan.silkDice === 1 ? "die" : "dice"} could be paid for.`);
 
     // Earlier pending cards of this spider become final (its next roll closes their window).
     await finalizeActorCards(actor.uuid);
@@ -393,12 +451,11 @@ export const HeistyDice = {
     const id = foundry.utils.randomID();
     const skillLbl = base.skill ? HEISTY.skills[base.skill].label : null;
     const attrDef = HEISTY.attributes[base.attr];
-    const fightDefault = !!opposed && FIGHT_SKILLS.includes(base.skill);
     const card = recomputeCard(newCard(CARD.check, {
       actorUuid: actor.uuid, actorId: actor.id, actorName: actor.name, actorImg: actor.img, userId: game.user.id,
       heistId: clock.heistId, obstacleId: base.rc?.obstacleId ?? null, obstacleSerial: clock.obstacleSerial,
       roundSerial: clock.roundSerial, sceneSerial: clock.sceneSerial,
-      groupId: options.groupId ?? null, approachId: appr?.id ?? null, eventId: options.groupId ?? id,
+      groupId: base.groupId, approachId: appr?.id ?? null, eventId: base.groupId ?? id,
       phase: base.phase, fullAlert: plan.fullAlert, alertMode: alertMode(), alertOff: ALERT_OFF_PHASES.includes(base.phase),
       roll: {
         label: options.label ?? (skillLbl ?? attrDef.label),
@@ -408,9 +465,9 @@ export const HeistyDice = {
         diffParts: plan.diffParts, poolParts: plan.poolParts, bonus: plan.bonus,
         faces, rerolls: [], successes: res.successes, result: res.result, botch: plan.botch,
         clutched: false, contingency: false, forced: !!options.forced, reason: options.reason ?? "",
-        fight: !!(choice.fight ?? fightDefault), hazard: choice.hazard ?? null, physical: !!choice.physical,
+        fight: !!choice.fight, hazard: choice.hazard ?? null, physical: !!choice.physical,
         casing: plan.casing, opposed, humanRow: opposed ? null : (this._planInput(base, choice).humanRow ?? null),
-        showOff: plan.showOff, alertOnUse: Number(appr?.alertOnUse) || 0, approachLabel: appr ? (appr.label ?? appr.note ?? appr.id) : "",
+        showOff: plan.showOff, alertOnUse: Number(appr?.alertOnUse) || 0, approachLabel: appr ? (appr.label ?? appr.id) : "",
         passFail: !!options.passFail, noAlert: !!options.noAlert, warnings: plan.warnings.filter(w => !/capped/.test(w))
       },
       silk: {
@@ -420,7 +477,7 @@ export const HeistyDice = {
       alert: { triggers: [], cancels: [] },
       consequences: { status: "pending", hit: null, caught: false, partialCost: null, swap: null, candidates: [], noConsequence: false, applied: false, hitMessageId: null, penaltyApplied: false, custom: null },
       ctx: {
-        engaged: (options.engaged ?? base.rc?.engaged ?? []).map(e => ({ ...e })),
+        engaged: (options.engaged ?? base.rc?.engaged ?? []).map(e => ({ ...e })).filter(e => e.uuid !== actor.uuid),
         autoHits: setting(SETTINGS.autoHits, "prompt"), autoCapture: setting(SETTINGS.autoCapture, true) !== false,
         fullAlert: plan.fullAlert, phase: base.phase,
         alertState: { atLimit: plan.alertState.atLimit, key: plan.alertState.key, label: plan.alertState.label, stealth: plan.alertState.stealth, all: plan.alertState.all },
@@ -457,26 +514,27 @@ export const HeistyDice = {
     const attrDef = HEISTY.attributes[base.attr];
     const label = options.label ?? (skillLbl ?? attrDef.label);
     const subtitle = skillLbl ? `${attrDef.abbr} + ${skillLbl}` : `${attrDef.abbr} only`;
-    const opposerValue = o => o ? `${o.uuid ?? o.creatureUuid ?? o.actorUuid ?? ""}#${o.index ?? o.roll ?? 0}` : "";
-    const approaches = base.approaches.map(a => ({
-      id: a.id, selected: a.id === def.approachId,
-      label: `${a.label ?? a.note ?? a.id} — ${(a.skills ?? []).map(k => HEISTY.skills[k]?.label ?? k).join("/")} (${a.difficulty ?? "?"})${(a.skills ?? []).includes(base.skill) ? "" : " · Improvise"}`,
-      difficulty: a.difficulty ?? 3, called: (a.skills ?? []).includes(base.skill) ? "" : (a.skills?.[0] ?? ""),
-      opposed: a.opposed ? opposerValue(a.opposed) : "", fight: a.fight ? "1" : ""
-    }));
-    const opp = appr?.opposed ? opposerValue(appr.opposed) : "";
+    const approaches = base.approaches
+      .slice().sort((x, y) => Number(!!y.matches) - Number(!!x.matches))
+      .map(a => ({
+        id: a.id, selected: a.id === def.approachId,
+        label: `${a.label ?? a.id} (${a.opposed ? `vs ${a.opposed.name}` : `Difficulty ${a.difficulty ?? "?"}`})${a.matches ? "" : " · Improvise"}${a.alertOnUse ? ` · +${a.alertOnUse} Alert` : ""}`,
+        difficulty: a.difficulty ?? 3, called: a.matches ? "" : (a.skills?.[0] ?? ""),
+        opposed: a.opposed ? this._opposerFor(base, a.opposed) : "", fight: a.fight ? "1" : ""
+      }));
+    const opp = def.opposed;
     const pick = list => list.map(o => ({ id: o.id, label: o.label, checked: o.checked }));
     const vit = base.input.vitality;
     const content = await renderTemplate("systems/heisty-spideys/templates/apps/roll-dialog.hbs", {
       label, subtitle,
       plan, poolNum: plan.botch ? 0 : plan.pool, diffNum: plan.difficulty,
       phase: base.phase, isScore: base.phase === "score", isPlanning: base.phase === "planning",
-      obstacleName: base.rc?.obstacleName ?? "",
+      obstacleName: base.rc?.obstacleName ?? "", groupNote: base.groupId ? "Group check: each spider gets through on its own result; the Alert rises once, by the largest trigger." : "",
       alertValue: base.alert.value, alertLimit: base.alert.limit, band: base.alert.state,
       vitLabel: HEISTY.vitality[vit]?.label ?? vit, vitPenalty: plan.vitalityPenalty, hasVitPenalty: plan.vitalityPenalty !== 0,
       approaches, hasApproaches: approaches.length > 0, noApproachSelected: !def.approachId,
       opposers: base.opposers.map(o => ({ value: o.value, label: o.label, selected: o.value === opp })),
-      hasOpposers: base.opposers.length > 0 && !options.opposed, presetOpposed: options.opposed ?? null,
+      hasOpposers: base.opposers.length > 0 && !base.presetOpposed, presetOpposed: base.presetOpposed,
       defaultDifficulty: def.difficulty, difficulties: HEISTY.difficulties,
       diffOptions: pick(plan.options.filter(o => o.group === "diff")),
       diceOptions: pick(plan.options.filter(o => o.group === "dice")),
@@ -486,7 +544,7 @@ export const HeistyDice = {
       canImprovise: !!base.skill, improviseChecked: !!(appr && def.calledSkill), calledSkill: def.calledSkill ?? "",
       skillChoices: Object.entries(HEISTY.skills).filter(([k]) => k !== base.skill).map(([k, s]) => ({ key: k, label: s.label, selected: k === def.calledSkill })),
       canOverclock: base.skill === "engineering" && base.keys.includes("overclock"),
-      physicalChecked: def.physical, showFight: FIGHT_SKILLS.includes(base.skill), fightChecked: def.fight,
+      physicalChecked: def.physical, showFight: FIGHT_SKILLS.includes(base.skill), fightChecked: def.fight || (!!def.opposed && FIGHT_SKILLS.includes(base.skill)),
       hasWolf: base.keys.includes("species:wolf")
     });
 

@@ -67,8 +67,8 @@ export function slugName(name) {
 export function abilityKeysOf(actor) {
   if (!actor) return [];
   try {
-    const viaOps = ns().actorOps?.abilityKeys?.(actor);
-    if (Array.isArray(viaOps)) return viaOps;
+    const items = ns().actorOps?.abilityItems?.(actor);
+    if (Array.isArray(items)) return items.map(e => e.key).filter(Boolean);
   } catch (e) { /* fall through */ }
   const keys = [];
   for (const item of actor.items ?? []) {
@@ -313,6 +313,18 @@ function viewerCrew(card) {
     });
 }
 
+/** That's Not What Happened also works on a roll the ST made for an NPC, when it raised the Alert. */
+function threatReactions(card) {
+  if ((card.alert?.cancels ?? []).length || cardAlertDelta(card.alert) <= 0) return [];
+  const out = [];
+  for (const c of viewerCrew(card)) {
+    if (!c.keys.includes(ABILITY_KEYS.thatsNotWhatHappened) || c.available[ABILITY_KEYS.thatsNotWhatHappened] === false) continue;
+    const poor = setting(SETTINGS.autoSilk, true) !== false && c.silk < SILK_COSTS.thatsNotWhatHappened;
+    out.push({ action: "cancel", value: "thatsNotWhatHappened", actorId: c.actorId, label: `That's Not What Happened (2 SP) — ${c.name}`, disabled: poor });
+  }
+  return out;
+}
+
 /** The buttons for one viewer on one card. */
 export function buttonsFor(message, card) {
   const actor = actorFrom(card.actorUuid);
@@ -340,6 +352,7 @@ export function buttonsFor(message, card) {
       break;
     }
     case CARD.threat:
+      out.push(...threatReactions(card));
       if (gm && mode !== "manual") {
         out.push({ action: "trigger", value: "spotted", label: "Spotted +1", cls: "gm" });
         out.push({ action: "trigger", value: "confirmed", label: "Confirmed +2", cls: "gm" });
@@ -460,6 +473,7 @@ async function onAction(messageId, b, btn) {
 
   if (card.kind === CARD.threat) {
     if (action === "trigger" && game.user.isGM) return doTrigger(message, card, b.value);
+    if (action === "cancel" && threatReactions(card).some(x => x.actorId === b.actorId)) return doCancel(message, card, b.value, b.actorId);
     return;
   }
 

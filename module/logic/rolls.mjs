@@ -413,7 +413,7 @@ export function buildRollPlan(input = {}) {
   }
 
   const casing = phase === "planning" && CASING_SKILLS.includes(skill)
-    ? option("casing", "flag", "Casing roll (Planning: a Success reveals intel)", 0, true)
+    ? option("casing", "flag", "Casing roll (Planning: a Success reveals intel)", 0, ctx.casing ?? true)
     : false;
 
   return {
@@ -651,10 +651,96 @@ export function recomputeCheckCard(card) {
     }
     c.partialCost = partial && x.fullAlert && !c.swap ? (c.hit ? "hit" : fullAlertPartialCost(autoHits === "off" ? [] : engaged)) : null;
     if (c.partialCost === "hit" && !c.hit) c.partialCost = "penalty";
-    c.candidates = (failed || (partial && x.fullAlert)) && autoHits === "prompt" ? engaged : [];
+    c.candidates = (failed || (partial && x.fullAlert)) && autoHits === "prompt" && !c.caught && !c.hitMessageId ? engaged : [];
   }
   next.alert = mergeAlert(next.alert, rollAlertTriggers(next, { alertState: x.alertState, phase: x.phase, abilityKeys: x.abilityKeys }));
   return next;
+}
+
+/* -------------------------------------------- */
+/*  Heist roll context (WP-C) → roll plan       */
+/* -------------------------------------------- */
+
+/** Chapter 15 human rows (fallback when the context gives only a key). */
+export const HUMAN_ROW_DIFFICULTY = Object.freeze({
+  sleeping: { label: "Sleeping Human", difficulty: 2, skills: ["stealth"] },
+  distracted: { label: "Distracted Human", difficulty: 1, skills: ["stealth"] },
+  alert: { label: "Alert Human", difficulty: 4, skills: ["deception", "stealth"] },
+  broom: { label: "Human With Broom", difficulty: 3, skills: ["athletics"] },
+  lightsOn: { label: "Human in the kitchen, lights on", difficulty: 2, skills: ["stealth"] }
+});
+
+/** A human row from a key ("alert") or an object ({difficulty, label}). */
+export function humanRowOf(row) {
+  if (!row) return null;
+  if (typeof row === "object") return row.difficulty != null ? { key: row.key ?? "", label: row.label ?? "Human", difficulty: int(row.difficulty), skills: row.skills ?? null } : null;
+  const def = HUMAN_ROW_DIFFICULTY[row];
+  return def ? { key: row, ...def } : null;
+}
+
+/**
+ * Normalize `heist.rollContext(actor, skill)` (WP-C) for the roll plan and the
+ * card: the obstacle, its approaches (with their opposed creature resolved to
+ * an actor uuid where the heist maps one), effects, the engaged threats as
+ * attackers, the open group check and the human row.
+ * @param {object|null} rc
+ * @param {{creatures?:{id:string,key:string,name?:string,actorUuid?:string}[], actorId?:string, skill?:string}} [opts]
+ */
+export function normalizeRollContext(rc, { creatures = [], actorId = null, skill = "" } = {}) {
+  if (!rc) return null;
+  const ob = rc.obstacle ?? null;
+  const byKey = k => creatures.find(c => c.key === k) ?? null;
+  const byId = id => creatures.find(c => c.id === id) ?? null;
+  const human = humanRowOf(ob?.human ?? rc.humanRow ?? null);
+  const humanApplies = human && (!human.skills?.length || !skill || human.skills.includes(skill));
+  const approaches = (rc.approaches ?? []).map(a => {
+    let opposed = null;
+    if (a.opposed) {
+      const c = a.opposed.uuid ? null : byKey(a.opposed.creature);
+      opposed = {
+        uuid: a.opposed.uuid ?? c?.actorUuid ?? null, name: c?.name ?? a.opposed.creature ?? "Creature",
+        roll: a.opposed.roll ?? null, index: Number.isInteger(a.opposed.index) ? a.opposed.index : null, pool: a.opposed.pool ?? null
+      };
+    }
+    const skillsTxt = (a.skills ?? []).map(k => HEISTY.skills[k]?.label ?? k).join("/");
+    return {
+      id: a.id, label: a.label ?? (a.note ? `${skillsTxt}: ${a.note}` : (skillsTxt || a.id)), skills: [...(a.skills ?? [])],
+      difficulty: a.difficulty ?? null, opposed, alertOnUse: int(a.alertOnUse), fight: !!a.fight, mode: a.mode ?? "single",
+      matches: a.matches ?? (a.skills ?? []).includes(skill)
+    };
+  });
+  const effects = [...(rc.effects ?? [])];
+  if (rc.escapeDiff && !effects.some(e => e.kind === "escapeDiff"))
+    effects.push({ id: "escapeDiff", kind: "escapeDiff", value: int(rc.escapeDiff), label: "Escape (I Know a Way / Escape Routes)" });
+  const engaged = (rc.engaged ?? []).map(e => {
+    if (e.uuid) return e;
+    const c = byId(e.id) ?? byKey(e.key);
+    const atk = e.attack ?? {};
+    if (!atk.pool && !e.pool) return null;
+    return {
+      uuid: c?.actorUuid ?? null, key: e.key ?? c?.key ?? "", name: e.name ?? c?.name ?? "Threat",
+      index: Number.isInteger(atk.index) ? atk.index : (e.index ?? null), label: atk.label ?? e.label ?? "Attack", pool: int(atk.pool ?? e.pool),
+      human: !!e.human, critToOut: !!e.human, capture: e.key === "curious-child"
+    };
+  }).filter(Boolean);
+  const g = rc.group ?? null;
+  return {
+    phase: rc.phase ?? "idle",
+    obstacleId: ob?.id ?? rc.obstacleId ?? null,
+    obstacleName: ob?.name ?? rc.obstacleName ?? "",
+    tags: [...(ob?.tags ?? rc.tags ?? [])],
+    silkLinePrepared: !!(ob?.silkLinePrepared ?? rc.silkLinePrepared),
+    humanRow: humanApplies ? human : null,
+    vsHuman: !!human || (ob?.tags ?? rc.tags ?? []).includes("human"),
+    approaches, effects, engaged,
+    group: g ? {
+      groupId: g.groupId, approachId: g.approachId ?? null, ledBy: g.ledBy ?? null,
+      opposed: g.opposed ? { name: g.opposed.name ?? byKey(g.opposed.creature)?.name ?? g.opposed.creature ?? "Creature", label: g.opposed.label ?? "", successes: int(g.opposed.successes), difficulty: int(g.opposed.successes) + 1 } : null
+    } : null,
+    drafting: !!g?.ledBy && g.ledBy !== actorId,
+    casing: rc.casing ?? null,
+    contingency: rc.contingency ?? null
+  };
 }
 
 /* -------------------------------------------- */
@@ -768,7 +854,7 @@ export function cardActions(card, viewer = {}) {
         out.push({ action: "swap", value: s, cls: "gm", label: { penalty: "Swap: −1 die next roll", drop: "Swap: drops an item", hit: "Swap: a hit from an engaged threat", custom: "Swap: custom…" }[s] });
       }
     }
-    if (failed && pending && !card.consequences?.hitMessageId) out.push({ action: "hit", label: "Engaged threat lands a hit…", cls: "gm" });
+    if (failed && pending && !card.consequences?.hitMessageId && !card.consequences?.caught) out.push({ action: "hit", label: "Engaged threat lands a hit…", cls: "gm" });
     if (failed && !(card.silk?.earned ?? []).some(e => e.type === "spectacular")) out.push({ action: "spectacular", label: "Spectacular Failure +1 SP", cls: "gm" });
     if (viewer.contingencyOpen && !r.contingency) out.push({ action: "contingency", label: "Contingency: trigger happened", cls: "gm" });
   }

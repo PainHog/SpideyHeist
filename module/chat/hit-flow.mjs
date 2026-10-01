@@ -65,12 +65,11 @@ export const HitFlow = {
     const from = actor.system?.vitality?.state ?? "unharmed";
     if (from === to) return;
     const ops = ns().actorOps;
-    if (typeof ops?.setVitality === "function") await ops.setVitality(actor, to, { cause });
-    else {
-      const data = { "system.vitality.state": to };
-      if (actor.system?.schema?.getField?.("vitality.outCause")) data["system.vitality.outCause"] = to === "out" ? cause : "";
-      await actor.update(data);
-    }
+    // WP-A's setVitality writes the state and fires the vitalityChanged hook itself.
+    if (typeof ops?.setVitality === "function") return ops.setVitality(actor, to, cause);
+    const data = { "system.vitality.state": to };
+    if (actor.system?.schema?.getField?.("vitality.outCause")) data["system.vitality.outCause"] = to === "out" ? cause : "";
+    await actor.update(data);
     Hooks.callAll(HOOKS.vitalityChanged, actor, from, to, cause);
   },
 
@@ -449,7 +448,10 @@ export const HitFlow = {
       try {
         const args = { actorUuid: actor.uuid, spec, userId: game.user.id, requestId: foundry.utils.randomID() };
         const gm = ns().gm;
-        if (typeof gm?.ask === "function") return await gm.ask(owner, OPS.uiForcedRoll, args);
+        if (typeof gm?.ask === "function") {
+          const res = await gm.ask(owner.id, OPS.uiForcedRoll, args);
+          return res?.ok ? res.result : null;
+        }
         if (typeof owner.query === "function") return await owner.query(QUERY, { op: OPS.uiForcedRoll, args, userId: game.user.id, requestId: args.requestId }, { timeout: 30000 });
       } catch (e) { console.warn("Heisty Spideys | the player's client didn't answer; rolling here", e); }
     }

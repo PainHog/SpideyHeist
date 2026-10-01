@@ -503,3 +503,45 @@ test("card template data: alert line, Clutch, consequences", () => {
   assert.match(alertLine({ roll: { result: "failure" }, alert: { triggers: [{ delta: 1 }], cancels: [{ key: "abortAbort" }] } }).text, /Abort, Abort/);
   assert.match(alertLine({ roll: { result: "failure" }, alertMode: "manual", alert: { triggers: [{ delta: 1, label: "Failure" }], cancels: [] } }).text, /Suggested Alert \+1/);
 });
+
+import { normalizeRollContext, humanRowOf } from "../module/logic/rolls.mjs";
+
+test("normalizeRollContext maps the heist's obstacle, approaches, engaged threats and group", () => {
+  const rc = {
+    phase: "heist",
+    obstacle: { id: "o1", name: "The Counter", tags: ["height", "human"], human: "alert", silkLinePrepared: true },
+    approaches: [
+      { id: "a1", skills: ["stealth"], difficulty: 3, opposed: { creature: "house-cat", roll: "perception" }, alertOnUse: 0, fight: false, note: "sneak past" },
+      { id: "a2", skills: ["brawl"], difficulty: 3, opposed: null, alertOnUse: 1, fight: true }
+    ],
+    effects: [{ id: "e", kind: "diff", value: 1, skills: ["stealth"], label: "Complication 3" }],
+    engaged: [
+      { id: "c1", key: "house-cat", name: "House Cat", attack: { label: "Pounce", pool: 4, index: 2 } },
+      { id: "human", key: "human", name: "Human", attack: { label: "Swat", pool: 3, index: 0 }, human: true },
+      { id: "p", key: "alert-parrot", name: "Parrot", attack: null }
+    ],
+    group: { groupId: "g1", approachId: "a1", opposed: { creature: "house-cat", successes: 2, roundSerial: 4 }, ledBy: "wheel" },
+    escapeDiff: 0, casing: false
+  };
+  const n = normalizeRollContext(rc, { creatures: [{ id: "c1", key: "house-cat", name: "House Cat", actorUuid: "Actor.cat" }], actorId: "me", skill: "stealth" });
+  assert.equal(n.obstacleId, "o1");
+  assert.equal(n.humanRow.difficulty, 4);
+  assert.equal(n.vsHuman, true);
+  assert.equal(n.approaches[0].opposed.uuid, "Actor.cat");
+  assert.equal(n.approaches[0].matches, true);
+  assert.equal(n.approaches[1].alertOnUse, 1);
+  assert.deepEqual(n.engaged.map(e => [e.name, e.uuid, e.pool, e.critToOut]), [["House Cat", "Actor.cat", 4, false], ["Human", null, 3, true]]);
+  assert.equal(n.group.opposed.difficulty, 3);
+  assert.equal(n.drafting, true);
+  assert.equal(normalizeRollContext(rc, { actorId: "wheel", skill: "stealth" }).drafting, false);
+  assert.equal(normalizeRollContext(rc, { skill: "athletics" }).humanRow, null); // the alert row is for Deception/Stealth
+});
+
+test("humanRowOf: keys and objects; escapeDiff becomes an effect", () => {
+  assert.equal(humanRowOf("sleeping").difficulty, 2);
+  assert.equal(humanRowOf({ difficulty: 3, label: "Broom" }).difficulty, 3);
+  assert.equal(humanRowOf("nope"), null);
+  const n = normalizeRollContext({ phase: "escape", escapeDiff: -1, effects: [] });
+  assert.deepEqual(n.effects.map(e => [e.kind, e.value]), [["escapeDiff", -1]]);
+  assert.equal(normalizeRollContext(null), null);
+});
