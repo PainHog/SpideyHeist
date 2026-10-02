@@ -1,6 +1,6 @@
 # Heisty Spideys — project plan
 
-Now: The team is test-playing the automated online game.
+Now: The online game is about to be test-played; old drafts of the rulebook have been cleared out so only the current 4.8 edition remains.
 Next: Fix whatever the test games turn up, then get the rulebook ready for launch.
 Number: Heists ready to run = 5
 Number: Spider species = 6
