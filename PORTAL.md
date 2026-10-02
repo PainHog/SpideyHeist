@@ -6,6 +6,10 @@ Number: Heists ready to run = 5
 Number: Spider species = 6
 Number: Crew roles = 7
 Number: Rulebook pages = 51
+Screenshot: docs/portal/rulebook-cover.webp = The rulebook cover: cartoon spiders sneaking toward a cookie jar past a sleeping cat
+Screenshot: docs/portal/spider-species.webp = A rulebook page introducing the spider species players can choose from
+Screenshot: docs/portal/heist-cookie.webp = A ready-to-run heist with its kitchen map and list of obstacles
+Screenshot: docs/portal/creatures.webp = Creature pages for the vacuum, a curious child and a guard spider
 
 - [x] Playable online version of the game: spider character sheet, dice rolling and the shared Alert meter
 - [x] Guided Character Builder that walks players through making a spider step by step
